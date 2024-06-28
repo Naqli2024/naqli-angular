@@ -1,0 +1,63 @@
+import { Component } from '@angular/core';
+import { NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './header/header/header.component';
+import { PartnerComponent } from './partner/partner/partner.component';
+import { HomeComponent } from './home/home.component';
+import { HttpClientModule } from '@angular/common/http';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
+import { BookingComponent } from './dashboard/booking/booking.component';
+import { BookingHistoryComponent } from './dashboard/booking-history/booking-history.component';
+import { PaymentsComponent } from './dashboard/payments/payments.component';
+import { ReportComponent } from './dashboard/report/report.component';
+import { HelpComponent } from './dashboard/help/help.component';
+import { ProfileComponent } from './dashboard/profile/profile.component';
+import { MakePaymentComponent } from './dashboard/booking/make-payment/make-payment.component';
+import { SpinnerComponent } from './spinner/spinner.component';
+import { RegisterComponent } from './partner/auth/register/register.component';
+import { MapComponent } from './map/map.component';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    HeaderComponent,
+    HomeComponent,
+    PartnerComponent,
+    RouterModule,
+    HttpClientModule,
+    GoogleMapsModule,
+    DashboardComponent,
+    BookingComponent,
+    BookingHistoryComponent,
+    PaymentsComponent,
+    ReportComponent,
+    HelpComponent,
+    ProfileComponent,
+    MakePaymentComponent, 
+    SpinnerComponent,
+    RegisterComponent, 
+    MapComponent
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
+})
+export class AppComponent {
+  title = 'naqli';
+
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        if (event.urlAfterRedirects === '/home/partner') {
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('firstName');
+          localStorage.removeItem('lastName');
+          localStorage.removeItem('userId');
+        }
+      }
+    });
+  }
+}

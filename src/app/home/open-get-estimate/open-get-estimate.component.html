@@ -1,0 +1,32 @@
+<div class="container" style="background-color: #fff">
+  <div class="row">
+    <div class="col-md-4 col-sm-12 get-an-estimate">
+      <h2>Get an Estimate</h2>
+      <p>
+        To ensure we give you the best Possible service, kindly fill out the
+        Information
+      </p>
+    </div>
+    <div class="col-md-8 col-sm-12">
+      <div class="modal-close">
+        <button
+          type="button"
+          class="close"
+          aria-label="Close"
+          (click)="activeModal.dismiss()"
+          
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div *ngFor="let item of items">
+        <a [routerLink]="getRoute(item.name)" class="item estimate-image" (click)="dismissModal()">
+          <img [src]="item.image" alt="{{ item.name }}" />
+          <hr class="line" />
+          <!-- Horizontal line -->
+          <p>{{ item.name }}</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="full-height-container">
+  <div class="container">
+    <div class="row w-100">
+      <div class="col-md-12">
+        <div class="modal-close">
+          <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="activeModal.dismiss()"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <form class="col-md-6 forget-pass-form" (ngSubmit)="verifyOtp()">
+          <h2>Verify</h2>
+          <div class="mb-3 otp-verify-inputs">
+            <label for="otp" class="form-label">Enter OTP</label>
+            <div class="otp-container">
+              <ng-otp-input
+                [config]="{ length: 6, allowNumbersOnly: true }"
+                #ngOtpInput
+              ></ng-otp-input>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <button type="submit" class="btn"  class="btn-changepass">Verify</button>
+          </div>
+        </form>
+        <div class="mt-3 form-label text-center">
+          <div
+            style="display: flex; justify-content: center; margin-bottom: 3px"
+          >
+            Didn't receive OTP?
+            <p
+              (click)="resendOtp()"
+              style="margin: 0 0 0 5px; cursor: pointer; color: #6a66d1"
+            >
+              Resend
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

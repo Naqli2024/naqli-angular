@@ -1,0 +1,123 @@
+<div class="home-container">
+  <div class="custom-slider"></div>
+  <div class="container booking-container partner-register-container">
+    <div class="row">
+      <h2 class="form-title">Join Us</h2>
+
+      <form (ngSubmit)="register()" #registerForm="ngForm">
+        <div class="form-group">
+          <div class="row form-check-row">
+            <div class="col form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="type"
+                id="enterprise"
+                [(ngModel)]="formData.type"
+                value="enterprise"
+              />
+              <label class="form-check-label" for="enterprise"
+                >Enterprise</label
+              >
+            </div>
+            <div class="col form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="type"
+                id="multipleUnits"
+                [(ngModel)]="formData.type"
+                value="multipleUnits"
+              />
+              <label class="form-check-label" for="multipleUnits"
+                >Multiple Units</label
+              >
+            </div>
+            <div class="col form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="type"
+                id="singleUnit + operator"
+                [(ngModel)]="formData.type"
+                value="singleUnit + operator"
+              />
+              <label class="form-check-label" for="singleUnitOperator"
+                >Single Unit + Operator</label
+              >
+            </div>
+            <div class="col form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="type"
+                id="operator"
+                [(ngModel)]="formData.type"
+                value="operator"
+              />
+              <label class="form-check-label" for="operator">Operator</label>
+            </div>
+          </div>
+        </div>
+        <div class="partner-register">
+          <label for="partnerName">Partner Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="partnerName"
+            name="partnerName"
+            placeholder="Enter your Name"
+            [(ngModel)]="formData.partnerName"
+            required
+          />
+        </div>
+        <div class="partner-register">
+          <label for="mobileNo">Mobile No</label>
+          <input
+            type="text"
+            class="form-control"
+            id="mobileNo"
+            name="mobileNo"
+            placeholder="Enter your Mobile Number"
+            [(ngModel)]="formData.mobileNo"
+            required
+          />
+        </div>
+        <div class="partner-register">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            name="email"
+            placeholder="Enter your Email"
+            [(ngModel)]="formData.email"
+            required
+          />
+        </div>
+        <div class="partner-register">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="Enter your Password"
+            [(ngModel)]="formData.password"
+            required
+          />
+        </div>
+        <div class="text-center">
+          <button
+            type="submit"
+            class="btn custom-register-btn"
+            [disabled]="!registerForm.form.valid"
+            style="margin-bottom: 20px !important;"
+          >
+            Register
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
