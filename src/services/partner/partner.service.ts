@@ -3,24 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PartnerService {
-  private partnerDetails: any; 
+  private partnerDetails: any;
   private baseUrl = 'http://localhost:4000/api/partner';
 
   constructor(private http: HttpClient) {}
-
-  setPartnerDetails(partnerDetails: any) {
-    this.partnerDetails = partnerDetails;
-  }
-
-  getPartnerDetails(): any {
-    return this.partnerDetails;
-  }
-
-  clearPartnerDetails() {
-    this.partnerDetails = null;
+  
+  getPartnerDetails(partnerId: string): Observable<any> {
+    const url = `${this.baseUrl}/${partnerId}`;
+    return this.http.get(url);
   }
 
   updatePartnerName(partnerId: string, partnerName: string): Observable<any> {
@@ -30,7 +23,7 @@ export class PartnerService {
   }
 
   checkPartnerExists(partnerName: string): Observable<boolean> {
-    console.log(partnerName)
+    console.log(partnerName);
     const url = `${this.baseUrl}/${encodeURIComponent(partnerName)}`;
     return this.http.get<boolean>(url);
   }

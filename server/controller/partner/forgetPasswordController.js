@@ -1,8 +1,8 @@
-const User = require("../Models/userModel");
+const Partner = require("../../Models/partner/partnerModel");
 const { validationResult } = require("express-validator");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { sendOTP } = require('../controller/userController');
+const { sendOTP } = require('../partner/partnerController');
 const { ObjectId } = require('mongoose').Types;
 
 const generateOTP = () => {
@@ -17,13 +17,13 @@ const forgotPassword = async (req, res) => {
        return res.status(400).json({ errors: errors.array() });
      }
 
-     const existingUser = await User.findOne({
-      emailAddress: req.body.emailAddress
+     const existingPartner = await Partner.findOne({
+      email: req.body.email
     });
 
-    if (!existingUser) {
+    if (!existingPartner) {
       return res.status(400).send({
-        message: "User not found",
+        message: "partner not found",
         success: false,
         data: null,
       });
@@ -32,12 +32,12 @@ const forgotPassword = async (req, res) => {
     const otp = generateOTP();
     // Save the OTP in the database or cache (e.g., Redis) associated with the user's email
     // For simplicity, we'll assume you save it in the user's document (not recommended for production)
-    existingUser.resetOTP = otp;
-    existingUser.otpExpiry = Date.now() + 3600000; // 1 hour expiration
-    await existingUser.save();
+    existingPartner.resetOTP = otp;
+    existingPartner.otpExpiry = Date.now() + 3600000; // 1 hour expiration
+    await existingPartner.save();
 
     // Send OTP to user's registered contact number
-    const otpResponse = await sendOTP(existingUser.contactNumber, otp);
+    const otpResponse = await sendOTP(existingPartner.mobileNo, otp);
 
     if (!otpResponse.success) {
       return res.status(500).json({
@@ -77,12 +77,12 @@ const verifyOTPAndUpdatePassword = async (req, res) => {
     }
 
     // Find user by OTP and its expiry
-    const existingUser = await User.findOne({
+    const existingPartner = await Partner.findOne({
       resetOTP: otp,
       otpExpiry: { $gt: Date.now() }
     });
 
-    if (!existingUser) {
+    if (!existingPartner) {
       return res.status(400).json({
         message: 'Incorrect or expired OTP',
         success: false,
@@ -92,17 +92,17 @@ const verifyOTPAndUpdatePassword = async (req, res) => {
 
     // Hash the new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    existingUser.password = hashedPassword;
+    existingPartner.password = hashedPassword;
 
     // Clear OTP fields
-    existingUser.resetOTP = null;
-    existingUser.otpExpiry = null;
+    existingPartner.resetOTP = null;
+    existingPartner.otpExpiry = null;
 
     // Save updated user document
-    await existingUser.save();
+    await existingPartner.save();
 
     // Generate JWT token for user authentication
-    const token = jwt.sign({ userId: existingUser._id }, process.env.JSON_WEB_TOKEN, { expiresIn: '1d' });
+    const token = jwt.sign({ userId: existingPartner._id }, process.env.JSON_WEB_TOKEN, { expiresIn: '1d' });
 
     // Respond with success message and token
     res.status(200).json({

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 @Injectable({
@@ -20,8 +20,8 @@ export class AuthService {
     );
   }
 
-  forgotPassword(emailData: { emailAddress: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/forgot-password`, emailData);
+  forgotPassword(email: { email: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/forgot-password`, email);
   }
 
   otpVerify(otp: string): Observable<any> {
@@ -45,5 +45,25 @@ export class AuthService {
 
   resendOtp(email: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/resend-otp`, { email });
+  }
+
+  login(loginData: {
+    emailOrMobile: string;
+    password: string;
+  }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, loginData).pipe(
+      tap((response: any) => {
+        if (
+          response &&
+          response.data.token &&
+          response.data.partner.partnerName
+        ) {
+          localStorage.setItem('authToken', response.data.token);
+          localStorage.setItem('partnerName', response.data.partner.partnerName);
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      })
+    );
   }
 }

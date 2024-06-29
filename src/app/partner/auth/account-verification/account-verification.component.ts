@@ -22,7 +22,18 @@ export class AccountVerificationComponent {
   ) {}
 
   ngOnInit() {
-    this.partnerDetails = this.partnerService.getPartnerDetails(); 
+    const partnerId: string | null = localStorage.getItem('partnerId');
+    if(partnerId) {
+      this.partnerService.getPartnerDetails(partnerId).subscribe(
+        (partnerDetails) => {
+          this.partnerDetails = partnerDetails.data;
+          console.log(this.partnerDetails); 
+        },
+        (error) => {
+          console.error('Error fetching partner details:', error);
+        }
+      );
+    }
   }
 
   closeModal() {

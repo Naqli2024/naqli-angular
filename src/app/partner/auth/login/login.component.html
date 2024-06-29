@@ -13,16 +13,16 @@
           <h2>Login</h2>
           <form (ngSubmit)="login()">
             <div class="mb-3">
-              <label for="partnerId" class="form-label"
-                >Partner Id / Mobile No / Mail id</label
+              <label for="emailOrMobile" class="form-label"
+                >Mobile No / Email</label
               >
               <input
                 type="email"
                 class="form-control"
-                id="partnerId"
+                id="emailOrMobile"
                 required
-                [(ngModel)]="loginData.partnerId"
-                name="partnerId"
+                [(ngModel)]="loginData.emailOrMobile"
+                name="emailOrMobile"
               />
             </div>
             <div class="mb-3">

@@ -42,7 +42,7 @@ export class RegisterComponent {
       (response) => {
         this.spinnerService.hide();
         if (response.success && response.success == true) {
-          this.partnerService.setPartnerDetails(response.data.partner);
+          localStorage.setItem('partnerId', response.data.partner._id);
           this.toastr.success(response.message, 'Success');
           this.resetForm();
           this.otpVerificatoionModal();

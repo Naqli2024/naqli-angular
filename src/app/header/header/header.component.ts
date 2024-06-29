@@ -8,6 +8,7 @@ export interface User {
   authToken: string;
   firstName: string;
   lastName: string;
+  partnerName: string;
 }
 
 @Component({
@@ -25,6 +26,7 @@ export class HeaderComponent {
   userDetails: any;
   firstName: string | null = '';
   lastName: string | null = '';
+  partnerName: string | null = '';
 
   constructor(private modalService: NgbModal, private router: Router) {}
 
@@ -39,16 +41,23 @@ export class HeaderComponent {
       this.isAuthenticated = true;
       this.firstName = localStorage.getItem('firstName');
       this.lastName = localStorage.getItem('lastName');
+      this.partnerName = localStorage.getItem('partnerName');
     } else {
       this.isAuthenticated = false;
     }
   }
 
   logout() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('firstName');
-    localStorage.removeItem('lastName');
-    localStorage.removeItem('userId');
+    const currentUrl = this.router.url;
+    localStorage.clear();
+
+    // Navigate to the current active route
+    if (currentUrl.includes('user')) {
+      this.router.navigate(['/home/user']);
+    } else if (currentUrl.includes('partner')) {
+      this.router.navigate(['/home/partner']);
+    }
+    
     this.updateUserState();
   }
 

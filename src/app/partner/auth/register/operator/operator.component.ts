@@ -10,6 +10,8 @@ import { OperatorService } from '../../../../../services/partner/operator.servic
 import { PartnerService } from '../../../../../services/partner/partner.service';
 import { faEdit, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ToastrService } from 'ngx-toastr';
+import { SpinnerService } from '../../../../../services/spinner.service';
 
 interface FormData {
   type: string;
@@ -61,45 +63,33 @@ export class OperatorComponent implements OnInit{
     private equipmentService: EquipmentService,
     private specialService: SpecialService,
     private operatorService: OperatorService,
-    private partnerService: PartnerService
+    private partnerService: PartnerService,
+    private toastr: ToastrService,
+    private spinnerService: SpinnerService,
   ) {}
 
   ngOnInit(): void {
-    const partnerDetails = this.partnerService.getPartnerDetails();
-    if (partnerDetails) {
-      this.formData.partnerName = partnerDetails.partnerName;
-      this.originalPartnerName = partnerDetails.partnerName;
-      this.formData.partnerId = partnerDetails._id;
+    const partnerId: string | null = localStorage.getItem('partnerId');
+    if (partnerId) {
+      this.partnerService.getPartnerDetails(partnerId).subscribe(
+        partnerDetails => {
+          this.formData.partnerName = partnerDetails.data.partnerName;
+          this.formData.partnerId = partnerDetails.data._id;
+          this.originalPartnerName = partnerDetails.data.partnerName;
+        },
+        error => {
+          console.error('Error fetching partner details:', error);
+        }
+      );
     }
   }
 
   toggleEditMode() {
     this.isEditing = !this.isEditing;
-    
-    // Reset formData.partnerName to originalPartnerName when canceling edits
-    if (!this.isEditing) {
-      this.formData.partnerName = this.originalPartnerName;
-    }
   }
 
   enableSubmitButton() {
     this.isSubmitEnabled = true;
-  }
-
-  savePartnerName() {
-    if (this.isEditing) {
-      this.partnerService.updatePartnerName(this.formData.partnerId, this.formData.partnerName).subscribe(
-        response => {
-          console.log('Partner name updated:', response);
-          this.partnerService.setPartnerDetails(response);
-          this.originalPartnerName = response.partnerName;
-          this.isEditing = false;
-        },
-        error => {
-          console.error('Error updating partner name:', error);
-        }
-      );
-    }
   }
 
   handleSubmit() {
@@ -112,14 +102,18 @@ export class OperatorComponent implements OnInit{
       }
     });
 
+    this.spinnerService.show();
     this.operatorService.addOperator(formData).subscribe(
       response => {
-        console.log('Operator added:', response);
+        this.spinnerService.hide();
+        this.toastr.success(response.message, 'Success');
         this.router.navigate(['/home/partner/login']);
         this.resetForm();
       },
       error => {
-        console.error('Error adding operator:', error);
+        this.spinnerService.hide();
+        const errorMessage = error.error?.message || 'An error occurred';
+        this.toastr.error(errorMessage, 'Error');
       }
     );
   }
@@ -132,7 +126,7 @@ export class OperatorComponent implements OnInit{
       mobileNo: '',
       email: '',
       password: '',
-      unitType: '', 
+      unitType: '',
       unitClassification: '',
       subClassification: '',
       plateInformation: '',
@@ -150,15 +144,14 @@ export class OperatorComponent implements OnInit{
     };
   }
 
-  resetForm() {
-    this.formData = this.initializeFormData();
-  }
-
   onUnitTypeChange(unitType: string): void {
     this.formData.unitType = unitType;
     this.classifications = [];
     this.subClassifications = [];
     this.allData = [];
+
+    // Reset isEditing flag when changing unitType
+    this.isEditing = false;
 
     switch (unitType) {
       case 'vehicle':
@@ -201,5 +194,9 @@ export class OperatorComponent implements OnInit{
     if (input.files && input.files.length > 0) {
       this.formData[field] = input.files[0];
     }
+  }
+
+  resetForm() {
+    this.formData = this.initializeFormData();
   }
 }
