@@ -31,4 +31,12 @@ export class PartnerService {
   getPartnerId(): string {
     return this.partnerDetails ? this.partnerDetails._id : '';
   }
+
+  updateQuotePrice(partnerId: string, bookingId: string, quotePrice: number): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/update-quote`, {
+      quotePrice: quotePrice,
+      partnerId: partnerId,
+      bookingId: bookingId
+    });
+  }
 }

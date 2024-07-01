@@ -50,6 +50,7 @@ export class HeaderComponent {
   logout() {
     const currentUrl = this.router.url;
     localStorage.clear();
+    sessionStorage.clear();
 
     // Navigate to the current active route
     if (currentUrl.includes('user')) {

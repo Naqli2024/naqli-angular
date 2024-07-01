@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require('uuid');
 
 const bookingSchema = new mongoose.Schema({
   name: String,
@@ -22,7 +23,7 @@ const bookingSchema = new mongoose.Schema({
   cityName: { type: String },
   address: { type: String },
   zipCode: { type: String },
-  bookingId: { type: String, unique: true },
+  bookingId: { type: String, unique: true, default: uuidv4 },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
   paymentStatus: {
     type: String,

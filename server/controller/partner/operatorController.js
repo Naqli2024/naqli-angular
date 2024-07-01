@@ -1,4 +1,3 @@
-const Operator = require("../../Models/partner/operatorModel");
 const Partner = require("../../Models/partner/partnerModel");
 
 const createOperator = async (req, res) => {
@@ -34,7 +33,7 @@ const createOperator = async (req, res) => {
      }
 
     // Create a new operator
-    const operator = new Operator({
+    const newOperator = {
       unitType,
       unitClassification,
       subClassification,
@@ -46,7 +45,6 @@ const createOperator = async (req, res) => {
       mobileNo,
       iqamaNo,
       dateOfBirth,
-      partner: partner._id,
       partnerName,
       partnerId,
       istimaraCard: {
@@ -69,18 +67,17 @@ const createOperator = async (req, res) => {
         data: nationalID[0].buffer,
         contentType: nationalID[0].mimetype,
       },
-    });
-    await operator.save();
+    };
 
     // Add operator reference to partner
-    partner.operators.push(operator._id);
+    partner.operators.push(newOperator);
     partner.partnerName = req.body.partnerName;
     await partner.save();
 
     res.status(201).json({
       success: true,
       message: "Operator created successfully",
-      operator,
+      operator: newOperator,
     });
   } catch (error) {
     res

@@ -98,6 +98,44 @@ const checkPartnerExists = async(req,res) => {
   }
 }
 
+const updateQuotePrice = async (req, res) => {
+  const { quotePrice, partnerId, bookingId } = req.body;
+
+  try {
+    // Validate inputs if necessary
+    if (!partnerId || !bookingId || !quotePrice) {
+      return res.status(400).json({ message: "Missing required fields", success: false });
+    }
+
+    const partnerUpdate = await partner.findById(partnerId);
+    if (!partnerUpdate) {
+      return res.status(404).json({ message: 'Partner not found', success: false });
+    }
+
+     // Ensure quotePrices array exists or initialize it if undefined
+     partnerUpdate.quotePrices = partnerUpdate.quotePrices || [];
+
+     // Update or push quotePrice for the booking
+     const existingQuote = partnerUpdate.quotePrices.find(q => q.bookingId.toString() === bookingId);
+     if (existingQuote) {
+       existingQuote.quotePrice = quotePrice;
+     } else {
+       partnerUpdate.quotePrices.push({ bookingId, quotePrice });
+     }
+ 
+     // Save the updated partner document
+     const updatedPartner = await partnerUpdate.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Quote price updated successfully',
+      partner: updatedPartner,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false });
+  }
+};
+
 /*****************************************
             Send OTP 
  *****************************************/
@@ -243,3 +281,4 @@ exports.resendOTP = resendOTP;
 exports.sendOTP = sendOTP;
 exports.updatePartnerName = updatePartnerName;
 exports.checkPartnerExists = checkPartnerExists;
+exports.updateQuotePrice = updateQuotePrice;

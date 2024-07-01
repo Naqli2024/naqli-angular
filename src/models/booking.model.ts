@@ -13,4 +13,11 @@ export interface Booking {
     paymentAmount: number;
     paymentStatus: string;
     remainingBalance?: number;
+    address: string;
+    zipCode: string;
+    cityName: string;
+    fromTime: string;
+    toTime: string;
   }
+
+  

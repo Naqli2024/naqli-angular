@@ -1,5 +1,73 @@
 const mongoose = require("mongoose");
 
+const operatorSchema = new mongoose.Schema({
+  unitType: {
+    type: String,
+    required: true,
+    enum: ["vehicle", "bus", "equipment", "special", "others"],
+  },
+  unitClassification: {
+    type: String,
+    required: true,
+  },
+  subClassification: {
+    type: String,
+    required: false,
+  },
+  plateInformation: {
+    type: String,
+    required: true,
+  },
+  istimaraNo: {
+    type: String,
+    required: true,
+  },
+  istimaraCard: {
+    data: { type: Buffer },
+    contentType: { type: String, required: true },
+  },
+  pictureOfVehicle: {
+    data: { type: Buffer },
+    contentType: { type: String, required: true },
+  },
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  mobileNo: {
+    type: String,
+    required: true,
+  },
+  iqamaNo: {
+    type: String,
+    required: true,
+  },
+  dateOfBirth: {
+    type: Date,
+    required: true,
+  },
+  drivingLicense: {
+    data: { type: Buffer },
+    contentType: { type: String, required: true },
+  },
+  aramcoLicense: {
+    data: { type: Buffer },
+    contentType: { type: String, required: true },
+  },
+  nationalID: {
+    data: { type: Buffer },
+    contentType: { type: String, required: true },
+  },
+});
+
 const partnerSchema = new mongoose.Schema(
   {
     type: {
@@ -36,13 +104,14 @@ const partnerSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isVerified: { type: Boolean, default: false },
-    operators: [
+    quotePrices: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Operator'
-      }
-    ]
+        bookingId: { type: mongoose.Schema.Types.ObjectId, ref: "booking" },
+        quotePrice: { type: Number },
+      },
+    ],
+    isVerified: { type: Boolean, default: false },
+    operators: [operatorSchema],
   },
   {
     timestamps: true,

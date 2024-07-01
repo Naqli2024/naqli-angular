@@ -224,8 +224,21 @@ const verifyOTP = async (req, res) => {
   }
 };
 
+const getUserById = async(req, res) => {
+  try {
+    const User = await user.findById(req.params.id);
+    if (!User) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(User);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 
 exports.userRegister = userRegister;
 exports.verifyOTP = verifyOTP;
 exports.resendOTP = resendOTP;
 exports.sendOTP = sendOTP;
+exports.getUserById = getUserById;

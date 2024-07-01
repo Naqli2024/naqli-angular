@@ -32,5 +32,6 @@ router.get("/:id", getPartnerDetailsController.getPartnerDetails);
 router.post("/login", partnerLoginController.partnerLogin);
 router.post('/forgot-password', forgetPartnerPasswordValidation, forgotPassword.forgotPassword);
 router.post('/verify-otp-update-password', forgotPassword.verifyOTPAndUpdatePassword);
+router.post("/update-quote", partnerController.updateQuotePrice);
 
 module.exports = router;

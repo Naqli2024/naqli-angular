@@ -1835,12 +1835,12 @@ input[type="checkbox"] {
   overflow-x: auto;
 }
 
-.booking-history table {
+.booking-history .table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.booking-history th, .booking-history td {
+.booking-history .table th, .booking-history .table td {
   padding: 10px;
   text-align: center;
 }
@@ -1848,20 +1848,25 @@ input[type="checkbox"] {
 .booking-history .location-cell {
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 .booking-history .location-item {
   display: flex;
-  flex-direction: row;
-  margin: 0 5px;
+  margin: auto 2px !important;
+  align-items: center !important;
+}
+
+.booking-history .location-item i {
+  margin: 0px 5px !important;
+}
+
+.booking-history .location-item p {
+  padding-top: 14px !important;
 }
 
 .booking-history .location-item div {
-  width: 10px;
-  height: 10px;
-  margin-right: 5px;
   border-radius: 50%;
+ vertical-align: middle !important;
 }
 
 .partner-booking-page {
@@ -1871,6 +1876,21 @@ input[type="checkbox"] {
 .table th, .table td {
   white-space: nowrap;
   text-align: center;
+  vertical-align: middle;
+}
+
+.send-btn {
+  font-size: 14px !important;
+  padding: 5px 10px !important;
+}
+
+.align-middle {
+  vertical-align: middle;
+}
+
+.quote-price {
+  border-color: #7e7e7e !important;
+  box-shadow: none !important;
 }
 
 .booking-history .btn-success {
@@ -1885,9 +1905,6 @@ input[type="checkbox"] {
   margin: auto 0px !important;
 }
 
-.partner-booking-page .close-icon:hover {
-  color: #ff0000;
-}
 .partner-booking-page input {
   width: 100%;
   max-width: 200px !important;
