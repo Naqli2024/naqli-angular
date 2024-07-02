@@ -82,7 +82,7 @@
                 <option value="">Select Classification</option>
                 <option
                   *ngFor="let classification of classifications"
-                  [value]="classification._id"
+                  [value]="classification.name"
                 >
                   {{ classification.name }}
                 </option>

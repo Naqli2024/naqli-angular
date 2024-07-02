@@ -1,3 +1,4 @@
+const Booking = require("../../Models/BookingModel");
 const Partner = require("../../Models/partner/partnerModel");
 
 const createOperator = async (req, res) => {
@@ -31,6 +32,16 @@ const createOperator = async (req, res) => {
      if (!partner) {
        return res.status(404).json({ message: "Partner not found" });
      }
+
+    // Find matching bookings
+    const matchingBookings = await Booking.find({
+      name: unitClassification,
+      type: {
+        $elemMatch: {
+          typeName: subClassification,
+        }
+      }
+    });
 
     // Create a new operator
     const newOperator = {
@@ -67,6 +78,7 @@ const createOperator = async (req, res) => {
         data: nationalID[0].buffer,
         contentType: nationalID[0].mimetype,
       },
+      bookingRequest: matchingBookings.map(booking => booking),
     };
 
     // Add operator reference to partner

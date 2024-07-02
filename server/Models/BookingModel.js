@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require('uuid');
+const partner = require("./partner/partnerModel");
 
 const bookingSchema = new mongoose.Schema({
   name: String,
@@ -32,6 +33,17 @@ const bookingSchema = new mongoose.Schema({
   },
   paymentAmount: { type: Number, default: 0 },
   remainingBalance: { type: Number, default: 0 },
+});
+
+bookingSchema.post('remove', async function (doc) {
+  try {
+    await partner.updateMany(
+      { 'operators.bookingRequest': doc._id },
+      { $pull: { 'operators.$.bookingRequest': doc._id } }
+    );
+  } catch (error) {
+    console.error("Error updating operators after booking deletion:", error);
+  }
 });
 
 module.exports = mongoose.model("booking", bookingSchema);

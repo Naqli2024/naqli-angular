@@ -84,4 +84,14 @@ export class BookingService {
   getAllBookings(): Observable<Booking[]> {
     return this.http.get<Booking[]>(`${this.apiUrl}/getAllBookings`);
   }
+
+  getBookingsByBookingId(bookingId: string): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get<any>(
+      `${this.apiUrl}/getBookingsByBookingId/${bookingId}`,
+      { headers }
+    );
+  }
 }

@@ -185,7 +185,7 @@ export class OperatorComponent implements OnInit{
     const target = event.target as HTMLSelectElement;
     const classificationId = target.value;
     this.formData.unitClassification = classificationId;
-    const selectedClassification = this.allData.find(item => item._id === classificationId);
+    const selectedClassification = this.allData.find(item => item.name === classificationId);
     this.subClassifications = selectedClassification ? selectedClassification.type : [];
   }
 

@@ -9,6 +9,7 @@ import { SpinnerService } from '../../../../services/spinner.service';
 import { CommonModule } from '@angular/common';
 import { PartnerService } from '../../../../services/partner/partner.service';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-booking',
@@ -23,6 +24,8 @@ export class PartnerBookingComponent implements OnInit {
   partnerId: string = '';
   partner: any;
   quotePrice: any[] = [];
+  bookingId: string = '';
+  bookingRequests: string[] = [];
 
   constructor(
     private router: Router,
@@ -38,7 +41,6 @@ export class PartnerBookingComponent implements OnInit {
       sessionStorage.setItem('partnerName', 'true');
       window.location.reload();
     }
-    this.getAllBookings();
     this.partnerId = this.getPartnerId();
     this.getPartnerDetails();
   }
@@ -53,6 +55,17 @@ export class PartnerBookingComponent implements OnInit {
       (response) => {
         this.spinnerService.hide();
         this.partner = response.data;
+        if (this.partner && this.partner.operators) {
+          this.bookingRequests = this.partner.operators.reduce((acc, operator) => {
+            if (operator.bookingRequest && operator.bookingRequest.length) {
+              operator.bookingRequest.forEach((bookingId: string) => {
+                acc.push(bookingId);
+              });
+            }
+            return acc;
+          }, []);
+          this.getBookingsByBookingId()
+        }
         this.updateBookingsWithQuotePrice();
       },
       (error) => {
@@ -63,13 +76,19 @@ export class PartnerBookingComponent implements OnInit {
     )
   }
 
-  getAllBookings() {
-    this.spinnerService.show();
-    this.bookingService.getAllBookings().subscribe(
-      (data: Booking[]) => {
+  getBookingsByBookingId() {
+    const bookingObservables = this.bookingRequests.map((bookingId: string) => 
+      this.bookingService.getBookingsByBookingId(bookingId)
+    );
+
+    // this.spinnerService.show();
+    forkJoin(bookingObservables).subscribe(
+      (responses: any[]) => {
         this.spinnerService.hide();
-        this.bookings = data;
+        this.bookings = responses.map(response => response.data);
+        this.bookings = this.bookings.flat();
         this.fetchUsers();
+        console.log(this.bookings)
       },
       (error) => {
         this.spinnerService.hide();
@@ -79,21 +98,25 @@ export class PartnerBookingComponent implements OnInit {
   }
 
   fetchUsers() {
-    this.spinnerService.show();
-    this.bookings.forEach((booking) => {
-      if (booking.user) {
-        this.userService.getUserById(booking.user).subscribe(
-          (user: User) => {
-            this.users.push(user);
-            this.spinnerService.hide();
-          },
-          (error) => {
-            this.spinnerService.hide();
-            this.toastr.error(error, 'Error');
-          }
-        );
-      }
-    });
+    // this.spinnerService.show();
+    const userIds = this.bookings.map(booking => booking.user).filter((value, index, self) => value && self.indexOf(value) === index);
+
+    if (userIds.length > 0) {
+      const userObservables = userIds.map(userId => this.userService.getUserById(userId));
+      this.spinnerService.show();
+
+      forkJoin(userObservables).subscribe(
+        (users: any[]) => {
+          this.spinnerService.hide();
+          this.users = users;
+        },
+        (error) => {
+          this.spinnerService.hide();
+          this.toastr.error('Failed to fetch user details');
+          console.error('Error fetching user details', error);
+        }
+      );
+    }
   }
 
   openPaymentConfirmation(partnerId: string, bookingId: string, quotePrice: number) {

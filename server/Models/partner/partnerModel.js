@@ -66,6 +66,12 @@ const operatorSchema = new mongoose.Schema({
     data: { type: Buffer },
     contentType: { type: String, required: true },
   },
+  bookingRequest: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "booking",
+    },
+  ],
 });
 
 const partnerSchema = new mongoose.Schema(
