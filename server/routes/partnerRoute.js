@@ -6,6 +6,7 @@ const partnerRegisterValidation = require("../middlewares/partnerRegisterValidat
 const partnerLoginController = require("../controller/partner/partnerLoginController");
 const forgotPassword = require("../controller/partner/forgetPasswordController");
 const { check } = require("express-validator");
+const { protect } = require("../middlewares/authMiddleware");
 
 const forgetPartnerPasswordValidation = [
   check("email")
@@ -33,5 +34,7 @@ router.post("/login", partnerLoginController.partnerLogin);
 router.post('/forgot-password', forgetPartnerPasswordValidation, forgotPassword.forgotPassword);
 router.post('/verify-otp-update-password', forgotPassword.verifyOTPAndUpdatePassword);
 router.post("/update-quote", partnerController.updateQuotePrice);
+router.delete("/:partnerId/booking-request/:bookingId", protect, partnerController.deletedBookingRequest);
+router.post("/filtered-vendors", partnerController.getTopPartners);
 
 module.exports = router;

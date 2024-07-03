@@ -28,6 +28,7 @@ export class VehicleBookingComponent implements OnInit {
   optionsVisible: { [key: string]: boolean } = {};
 
   bookingData: any = {
+    unitType: '',
     name: '',
     type: [{ typeName: '', scale: '', typeImage: '', typeOfLoad: '' }],
     time: '',
@@ -49,6 +50,9 @@ export class VehicleBookingComponent implements OnInit {
   ngOnInit(): void {
     this.vehicleService.getVehicles().subscribe((data: Vehicle[]) => {
       this.vehicles = data;
+      if (this.vehicles.length > 0) {
+        this.bookingData.unitType = this.vehicles[0].unitType; 
+      }
       this.vehicles.forEach((vehicle) => {
         this.filteredLoads[vehicle.name] = [];
         this.optionsVisible[vehicle.name] = false;

@@ -39,7 +39,7 @@ const partnerLogin = async (req, res) => {
 
       // Check password
       const matchedPassword = await bcrypt.compare(
-        req.body.password,
+        password,
         existPartner.password
       );
       if (!matchedPassword) {

@@ -3,7 +3,8 @@ const { v4: uuidv4 } = require('uuid');
 const partner = require("./partner/partnerModel");
 
 const bookingSchema = new mongoose.Schema({
-  name: String,
+  name: {type: String, required: true},
+  unitType: String,
   type: [
     {
       typeName: String,

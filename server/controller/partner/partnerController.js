@@ -1,7 +1,7 @@
 const partner = require("../../Models/partner/partnerModel");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-const twilio = require('twilio');
+const twilio = require("twilio");
 
 /*****************************************
             Partner registration
@@ -67,25 +67,33 @@ const partnerRegister = async (req, res) => {
   }
 };
 
-const updatePartnerName = async(req, res) => {
+
+
+const updatePartnerName = async (req, res) => {
   const { partnerId } = req.params;
   const { partnerName } = req.body;
 
   try {
-    const updatedPartner = await partner.findByIdAndUpdate(partnerId, { partnerName }, { new: true });
+    const updatedPartner = await partner.findByIdAndUpdate(
+      partnerId,
+      { partnerName },
+      { new: true }
+    );
 
     if (!updatedPartner) {
-      return res.status(404).json({ error: 'Partner not found' });
+      return res.status(404).json({ error: "Partner not found" });
     }
 
     res.json(updatedPartner);
   } catch (err) {
-    console.error('Error updating partner name:', err);
-    res.status(500).json({ error: 'Server error' });
+    console.error("Error updating partner name:", err);
+    res.status(500).json({ error: "Server error" });
   }
-}
+};
 
-const checkPartnerExists = async(req,res) => {
+
+
+const checkPartnerExists = async (req, res) => {
   try {
     const { partnerName } = req.params;
     const existingPartner = await partner.findOne({ partnerName });
@@ -93,48 +101,163 @@ const checkPartnerExists = async(req,res) => {
     // Return true if partnerName exists, false otherwise
     res.json(!!existingPartner);
   } catch (error) {
-    console.error('Error checking partner existence:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error("Error checking partner existence:", error);
+    res.status(500).json({ error: "Server error" });
   }
-}
+};
+
+
 
 const updateQuotePrice = async (req, res) => {
   const { quotePrice, partnerId, bookingId } = req.body;
 
   try {
-    // Validate inputs if necessary
+    // Validate inputs
     if (!partnerId || !bookingId || !quotePrice) {
-      return res.status(400).json({ message: "Missing required fields", success: false });
+      return res
+        .status(400)
+        .json({ message: "Missing required fields", success: false });
     }
 
+    // Find the partner by ID
     const partnerUpdate = await partner.findById(partnerId);
     if (!partnerUpdate) {
-      return res.status(404).json({ message: 'Partner not found', success: false });
+      return res
+        .status(404)
+        .json({ message: "Partner not found", success: false });
     }
 
-     // Ensure quotePrices array exists or initialize it if undefined
-     partnerUpdate.quotePrices = partnerUpdate.quotePrices || [];
+    // Ensure operators array exists and is not empty
+    partnerUpdate.operators = partnerUpdate.operators || [];
 
-     // Update or push quotePrice for the booking
-     const existingQuote = partnerUpdate.quotePrices.find(q => q.bookingId.toString() === bookingId);
-     if (existingQuote) {
-       existingQuote.quotePrice = quotePrice;
-     } else {
-       partnerUpdate.quotePrices.push({ bookingId, quotePrice });
-     }
- 
-     // Save the updated partner document
-     const updatedPartner = await partnerUpdate.save();
+    let bookingFound = false;
+
+    // Iterate through operators and their booking requests
+    partnerUpdate.operators.forEach((operator) => {
+      operator.bookingRequest.forEach((booking) => {
+        // Check if bookingId matches
+        if (booking && booking.bookingId.toString() === bookingId) {
+          booking.quotePrice = quotePrice; // Update quotePrice for the booking
+          bookingFound = true;
+        }
+      });
+    });
+
+    // If bookingId was not found, return error
+    if (!bookingFound) {
+      return res
+        .status(404)
+        .json({
+          message: "Booking ID not found for this partner",
+          success: false,
+        });
+    }
+
+    // Save the updated partner document
+    const updatedPartner = await partnerUpdate.save();
 
     res.status(200).json({
       success: true,
-      message: 'Quote price updated successfully',
+      message: "Quote price updated successfully",
       partner: updatedPartner,
     });
   } catch (error) {
+    console.error("Error in updateQuotePrice:", error);
     res.status(500).json({ message: error.message, success: false });
   }
 };
+
+
+
+const deletedBookingRequest = async (req, res) => {
+  const { partnerId, bookingId } = req.params;
+
+  try {
+    const partnerExists = await partner.findById(partnerId);
+
+    if (!partnerExists) {
+      return res.status(404).json({ message: "Partner not found" });
+    }
+
+    let bookingRequestDeleted = false;
+
+    partnerExists.operators.forEach((operator) => {
+      const initialLength = operator.bookingRequest.length;
+      operator.bookingRequest = operator.bookingRequest.filter(
+        (request) => request.bookingId.toString() !== bookingId
+      );
+      if (operator.bookingRequest.length < initialLength) {
+        bookingRequestDeleted = true;
+      }
+    });
+
+    if (!bookingRequestDeleted) {
+      return res.status(404).json({ message: 'Booking request not found' });
+    }
+
+    await partnerExists.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Booking request deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting booking request:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+const getTopPartners = async(req, res) => {
+  const { unitType, unitClassification, subClassification } = req.body;
+
+  try {
+    const results = await partner.aggregate([
+      { $unwind: "$operators" },
+      { $unwind: "$operators.bookingRequest" },
+      // Match the operators based on unitType and unitClassification
+      {
+        $match: {
+          "operators.unitType": unitType,
+          "operators.unitClassification": unitClassification,
+          ...(subClassification && { "operators.subClassification": subClassification }),
+        },
+      },
+      // Project the necessary fields
+      {
+        $project: {
+          partnerName: "$partnerName",
+          quotePrice: "$operators.bookingRequest.quotePrice",
+          unitType: "$operators.unitType",
+          unitClassification: "$operators.unitClassification",
+          subClassification: {
+            $cond: {
+              if: { $eq: [{ $ifNull: ["$operators.subClassification", ""] }, ""] },
+              then: "$$REMOVE",
+              else: "$operators.subClassification"
+            }
+          }
+        },
+      },
+      // Sort by quotePrice in ascending order
+      { $sort: { "quotePrice": 1 } },
+      // Limit to top 3 results
+      { $limit: 3 },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: results,
+    });
+  } catch (error) {
+    console.error('Error fetching top 3 partners:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
+  }
+}
+
 
 /*****************************************
             Send OTP 
@@ -181,7 +304,7 @@ const sendOTP = async (mobileNo, otp) => {
  *******************************************/
 const resendOTP = async (req, res) => {
   try {
-    const { email } = req.body; 
+    const { email } = req.body;
     const existPartner = await partner.findOne({ email });
 
     if (!existPartner) {
@@ -282,3 +405,5 @@ exports.sendOTP = sendOTP;
 exports.updatePartnerName = updatePartnerName;
 exports.checkPartnerExists = checkPartnerExists;
 exports.updateQuotePrice = updateQuotePrice;
+exports.deletedBookingRequest = deletedBookingRequest;
+exports.getTopPartners = getTopPartners;

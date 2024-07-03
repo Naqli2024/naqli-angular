@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,7 +10,7 @@ export class PartnerService {
   private baseUrl = 'http://localhost:4000/api/partner';
 
   constructor(private http: HttpClient) {}
-  
+
   getPartnerDetails(partnerId: string): Observable<any> {
     const url = `${this.baseUrl}/${partnerId}`;
     return this.http.get(url);
@@ -32,11 +32,36 @@ export class PartnerService {
     return this.partnerDetails ? this.partnerDetails._id : '';
   }
 
-  updateQuotePrice(partnerId: string, bookingId: string, quotePrice: number): Observable<any> {
+  updateQuotePrice(
+    partnerId: string,
+    bookingId: string,
+    quotePrice: number
+  ): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/update-quote`, {
       quotePrice: quotePrice,
       partnerId: partnerId,
-      bookingId: bookingId
+      bookingId: bookingId,
+    });
+  }
+
+  deletedBookingRequest(partnerId: string, bookingId: string) {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(
+      `${this.baseUrl}/${partnerId}/booking-request/${bookingId}`,
+      { headers }
+    );
+  }
+
+  getTopPartners(
+    unitType: string,
+    unitClassification: string,
+    subClassification: string
+  ) {
+    return this.http.post<any>(`${this.baseUrl}/filtered-vendors`, {
+      unitType: unitType,
+      unitClassification: unitClassification,
+      subClassification: subClassification,
     });
   }
 }

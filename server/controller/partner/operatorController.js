@@ -27,20 +27,20 @@ const createOperator = async (req, res) => {
       nationalID,
     } = req.files;
 
-     // Find the partner and add the operator reference
-     const partner = await Partner.findById(partnerId);
-     if (!partner) {
-       return res.status(404).json({ message: "Partner not found" });
-     }
+    // Find the partner and add the operator reference
+    const partner = await Partner.findById(partnerId);
+    if (!partner) {
+      return res.status(404).json({ message: "Partner not found" });
+    }
 
     // Find matching bookings
     const matchingBookings = await Booking.find({
       name: unitClassification,
-      type: {
-        $elemMatch: {
-          typeName: subClassification,
-        }
-      }
+      $or: [
+        { type: { $exists: false } },
+        { type: { $size: 0 } },
+        { type: { $elemMatch: { typeName: subClassification } } }
+      ]
     });
 
     // Create a new operator
@@ -78,7 +78,10 @@ const createOperator = async (req, res) => {
         data: nationalID[0].buffer,
         contentType: nationalID[0].mimetype,
       },
-      bookingRequest: matchingBookings.map(booking => booking),
+      bookingRequest: matchingBookings.map(booking => ({
+        bookingId: booking._id,  
+        quotePrice: null,  
+      })),
     };
 
     // Add operator reference to partner

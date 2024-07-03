@@ -1,5 +1,17 @@
 const mongoose = require("mongoose");
 
+const bookingRequestSchema = new mongoose.Schema({
+  bookingId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "booking",
+    required: true,
+  },
+  quotePrice: {
+    type: Number,
+    required: false,
+  },
+});
+
 const operatorSchema = new mongoose.Schema({
   unitType: {
     type: String,
@@ -66,12 +78,7 @@ const operatorSchema = new mongoose.Schema({
     data: { type: Buffer },
     contentType: { type: String, required: true },
   },
-  bookingRequest: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "booking",
-    },
-  ],
+  bookingRequest: [bookingRequestSchema],
 });
 
 const partnerSchema = new mongoose.Schema(
@@ -110,12 +117,6 @@ const partnerSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    quotePrices: [
-      {
-        bookingId: { type: mongoose.Schema.Types.ObjectId, ref: "booking" },
-        quotePrice: { type: Number },
-      },
-    ],
     isVerified: { type: Boolean, default: false },
     operators: [operatorSchema],
   },

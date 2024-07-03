@@ -3,6 +3,7 @@ const updateOperatorsWithNewBooking = require("./partner/updateOperatorWithNewBo
 
 const createBooking = async (req, res) => {
   const {
+    unitType,
     name,
     type,
     image,
@@ -21,6 +22,7 @@ const createBooking = async (req, res) => {
 
   try {
     const booking = new Booking({
+      unitType,
       name,
       type,
       image,

@@ -12,6 +12,7 @@ export interface TypeOfLoad {
   }
   
   export interface Vehicle {
+    unitType: string;
     name: string;
     type: VehicleType[];
   }

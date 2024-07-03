@@ -1,5 +1,6 @@
 export interface Equipment {
     name: string;
+    unitType: string;
     type: EquipmentType[];
   }
   

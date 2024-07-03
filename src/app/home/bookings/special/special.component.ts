@@ -30,6 +30,7 @@ export class SpecialComponent {
 
   bookingData: any = {
     name: '',
+    unitType: '',
     fromTime: '',
     toTime: '',
     cityName: '',
@@ -51,6 +52,9 @@ export class SpecialComponent {
   ngOnInit(): void {
     this.busService.getSpecialUnits().subscribe((data: any[]) => {
       this.buses = data;
+      if (this.buses.length > 0) {
+        this.bookingData.unitType = this.buses[0].unitType; 
+      }
     });
   }
 

@@ -33,6 +33,7 @@ export class EquipmentBookingComponent {
 
   bookingData: any = {
     name: '',
+    unitType: '',
     type: [{ typeName: '', typeImage: '' }],
     fromTime: '',
     toTime: '',
@@ -54,6 +55,9 @@ export class EquipmentBookingComponent {
   ngOnInit(): void {
     this.equipmentService.getEquipment().subscribe((data: Equipment[]) => {
       this.equipment = data;
+      if (this.equipment.length > 0) {
+        this.bookingData.unitType = this.equipment[0].unitType; 
+      }
     });
   }
 

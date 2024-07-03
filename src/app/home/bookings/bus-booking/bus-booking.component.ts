@@ -30,6 +30,7 @@ export class BusBookingComponent implements OnInit {
 
   bookingData: any = {
     name: '',
+    unitType: '',
     time: '',
     date: '',
     productValue: '',
@@ -50,6 +51,9 @@ export class BusBookingComponent implements OnInit {
   ngOnInit(): void {
     this.busService.getBuses().subscribe((data: any[]) => {
       this.buses = data;
+      if (this.buses.length > 0) {
+        this.bookingData.unitType = this.buses[0].unitType; 
+      }
     });
   }
 

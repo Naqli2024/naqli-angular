@@ -32,7 +32,7 @@ export class PartnerBookingComponent implements OnInit {
     private bookingService: BookingService,
     private userService: UserService,
     private spinnerService: SpinnerService,
-    private toastr: ToastrService, 
+    private toastr: ToastrService,
     private partnerService: PartnerService
   ) {}
 
@@ -56,28 +56,37 @@ export class PartnerBookingComponent implements OnInit {
         this.spinnerService.hide();
         this.partner = response.data;
         if (this.partner && this.partner.operators) {
-          this.bookingRequests = this.partner.operators.reduce((acc, operator) => {
-            if (operator.bookingRequest && operator.bookingRequest.length) {
-              operator.bookingRequest.forEach((bookingId: string) => {
-                acc.push(bookingId);
-              });
-            }
-            return acc;
-          }, []);
-          this.getBookingsByBookingId()
+          this.bookingRequests = this.partner.operators.reduce(
+            (acc: any[], operator: any) => {
+              if (operator.bookingRequest && operator.bookingRequest.length) {
+                operator.bookingRequest.forEach((booking: any) => {
+                  if(booking.bookingId) {
+                    acc.push(booking.bookingId);
+                     // Populate quotePrice array
+                     this.quotePrice.push({
+                      bookingId: booking.bookingId.toString(),
+                      quotePrice: booking.quotePrice
+                    });
+                  }
+                });
+              }
+              return acc;
+            },
+            []
+          );
+          this.getBookingsByBookingId();
         }
-        this.updateBookingsWithQuotePrice();
       },
       (error) => {
         this.spinnerService.hide();
         this.toastr.error('Failed to fetch partner details');
         console.error('Error fetching partner details', error);
       }
-    )
+    );
   }
 
   getBookingsByBookingId() {
-    const bookingObservables = this.bookingRequests.map((bookingId: string) => 
+    const bookingObservables = this.bookingRequests.map((bookingId: string) =>
       this.bookingService.getBookingsByBookingId(bookingId)
     );
 
@@ -85,10 +94,9 @@ export class PartnerBookingComponent implements OnInit {
     forkJoin(bookingObservables).subscribe(
       (responses: any[]) => {
         this.spinnerService.hide();
-        this.bookings = responses.map(response => response.data);
+        this.bookings = responses.map((response) => response.data);
         this.bookings = this.bookings.flat();
         this.fetchUsers();
-        console.log(this.bookings)
       },
       (error) => {
         this.spinnerService.hide();
@@ -99,10 +107,14 @@ export class PartnerBookingComponent implements OnInit {
 
   fetchUsers() {
     // this.spinnerService.show();
-    const userIds = this.bookings.map(booking => booking.user).filter((value, index, self) => value && self.indexOf(value) === index);
+    const userIds = this.bookings
+      .map((booking) => booking.user)
+      .filter((value, index, self) => value && self.indexOf(value) === index);
 
     if (userIds.length > 0) {
-      const userObservables = userIds.map(userId => this.userService.getUserById(userId));
+      const userObservables = userIds.map((userId) =>
+        this.userService.getUserById(userId)
+      );
       this.spinnerService.show();
 
       forkJoin(userObservables).subscribe(
@@ -119,47 +131,71 @@ export class PartnerBookingComponent implements OnInit {
     }
   }
 
-  openPaymentConfirmation(partnerId: string, bookingId: string, quotePrice: number) {
-    this.updateQuotePrice(partnerId, bookingId, quotePrice)
-  }
-
-  updateBookingsWithQuotePrice() {
-    if(this.partner && this.partner.quotePrices) {
-        this.quotePrice = this.partner.quotePrices;
-    }
+  openPaymentConfirmation(
+    partnerId: string,
+    bookingId: string,
+    quotePrice: number
+  ) {
+    this.updateQuotePrice(partnerId, bookingId, quotePrice);
   }
 
   updateQuotePrice(partnerId: string, bookingId: string, quotePrice: number) {
     this.spinnerService.show();
-    this.partnerService.updateQuotePrice(partnerId, bookingId, quotePrice).subscribe(
-      (response) => {
-        this.spinnerService.hide();
-        this.toastr.success(response.message);
-        this.router.navigate(['/home/partner/dashboard/booking/confirm-payment']);
-      },
-      (error) => {
-        this.spinnerService.hide();
-        this.toastr.error('Failed to update quote price');
-        console.error('Error updating quote price', error);
-      }
-    );
+    this.partnerService
+      .updateQuotePrice(partnerId, bookingId, quotePrice)
+      .subscribe(
+        (response) => {
+          this.spinnerService.hide();
+          this.toastr.success(response.message);
+          this.router.navigate([
+            '/home/partner/dashboard/booking/confirm-payment',
+          ]);
+        },
+        (error) => {
+          this.spinnerService.hide();
+          this.toastr.error('Failed to update quote price');
+          console.error('Error updating quote price', error);
+        }
+      );
   }
 
   getQuotePrice(bookingId: string): number {
-    const found = this.quotePrice.find(q => q.bookingId === bookingId);
+    const found = this.quotePrice.find((q) => q.bookingId === bookingId);
     return found ? found.quotePrice : undefined;
   }
-  
+
   setQuotePrice(newPrice: number, bookingId: string): void {
-    const foundIndex = this.quotePrice.findIndex(q => q.bookingId === bookingId);
+    const foundIndex = this.quotePrice.findIndex(
+      (q) => q.bookingId === bookingId
+    );
     if (foundIndex !== -1) {
       this.quotePrice[foundIndex].quotePrice = newPrice;
     } else {
       this.quotePrice.push({ bookingId, quotePrice: newPrice });
     }
+    // Update the partner object to reflect the change in quotePrice
+    this.partner.operators.forEach((operator: any) => {
+      operator.bookingRequest.forEach((booking: any) => {
+        if (booking.bookingId.toString() === bookingId) {
+          booking.quotePrice = newPrice;
+        }
+      });
+    });
   }
 
-  removeBooking(index: number) {
-    this.bookings.splice(index, 1);
+  removeBooking(partnerId: string, bookingId: string) {
+    this.spinnerService.show();
+    this.partnerService.deletedBookingRequest(partnerId, bookingId).subscribe(
+      (response) => {
+        this.spinnerService.hide();
+        this.toastr.success(response.message);
+        // Optionally, remove the booking from the local bookings array
+      this.bookings = this.bookings.filter(booking => booking._id !== bookingId);
+      },
+      (error) => {
+        this.spinnerService.hide();
+        this.toastr.error(error);
+      }
+    );
   }
 }
