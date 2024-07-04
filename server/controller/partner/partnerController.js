@@ -2,6 +2,7 @@ const partner = require("../../Models/partner/partnerModel");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const twilio = require("twilio");
+const mongoose = require("mongoose");
 
 /*****************************************
             Partner registration
@@ -67,8 +68,6 @@ const partnerRegister = async (req, res) => {
   }
 };
 
-
-
 const updatePartnerName = async (req, res) => {
   const { partnerId } = req.params;
   const { partnerName } = req.body;
@@ -91,8 +90,6 @@ const updatePartnerName = async (req, res) => {
   }
 };
 
-
-
 const checkPartnerExists = async (req, res) => {
   try {
     const { partnerName } = req.params;
@@ -105,8 +102,6 @@ const checkPartnerExists = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-
-
 
 const updateQuotePrice = async (req, res) => {
   const { quotePrice, partnerId, bookingId } = req.body;
@@ -145,12 +140,10 @@ const updateQuotePrice = async (req, res) => {
 
     // If bookingId was not found, return error
     if (!bookingFound) {
-      return res
-        .status(404)
-        .json({
-          message: "Booking ID not found for this partner",
-          success: false,
-        });
+      return res.status(404).json({
+        message: "Booking ID not found for this partner",
+        success: false,
+      });
     }
 
     // Save the updated partner document
@@ -166,8 +159,6 @@ const updateQuotePrice = async (req, res) => {
     res.status(500).json({ message: error.message, success: false });
   }
 };
-
-
 
 const deletedBookingRequest = async (req, res) => {
   const { partnerId, bookingId } = req.params;
@@ -192,7 +183,7 @@ const deletedBookingRequest = async (req, res) => {
     });
 
     if (!bookingRequestDeleted) {
-      return res.status(404).json({ message: 'Booking request not found' });
+      return res.status(404).json({ message: "Booking request not found" });
     }
 
     await partnerExists.save();
@@ -207,56 +198,98 @@ const deletedBookingRequest = async (req, res) => {
 };
 
 
-
-const getTopPartners = async(req, res) => {
-  const { unitType, unitClassification, subClassification } = req.body;
+const getTopPartners = async (req, res) => {
+  const { unitType, unitClassification, subClassification, bookingId } = req.body;
 
   try {
-    const results = await partner.aggregate([
-      { $unwind: "$operators" },
-      { $unwind: "$operators.bookingRequest" },
-      // Match the operators based on unitType and unitClassification
-      {
-        $match: {
-          "operators.unitType": unitType,
-          "operators.unitClassification": unitClassification,
-          ...(subClassification && { "operators.subClassification": subClassification }),
-        },
-      },
-      // Project the necessary fields
-      {
-        $project: {
-          partnerName: "$partnerName",
-          quotePrice: "$operators.bookingRequest.quotePrice",
-          unitType: "$operators.unitType",
-          unitClassification: "$operators.unitClassification",
-          subClassification: {
-            $cond: {
-              if: { $eq: [{ $ifNull: ["$operators.subClassification", ""] }, ""] },
-              then: "$$REMOVE",
-              else: "$operators.subClassification"
-            }
-          }
-        },
-      },
-      // Sort by quotePrice in ascending order
-      { $sort: { "quotePrice": 1 } },
-      // Limit to top 3 results
-      { $limit: 3 },
-    ]);
+    // Step 1: Query partners matching criteria
+    const partners = await partner.find({
+      "operators.unitType": unitType,
+      "operators.unitClassification": unitClassification,
+      ...(subClassification && { "operators.subClassification": subClassification })
+    }).populate('operators.bookingRequest');
 
+    // Step 2: Prepare filtered results
+    const filteredPartners = partners.reduce((filtered, partner) => {
+      const matchingOperators = partner.operators.filter(operator =>
+        operator.unitType === unitType &&
+        operator.unitClassification === unitClassification &&
+        (!subClassification || operator.subClassification === subClassification)
+      );
+
+      matchingOperators.forEach(operator => {
+        // Filter bookingRequest for the given bookingId
+        operator.bookingRequest = operator.bookingRequest.filter(booking =>
+          booking.bookingId.toString() === bookingId.toString() // Ensure bookingId comparison
+        );
+      });
+
+      // Check if any matching operators with valid bookingRequest
+      if (matchingOperators.length > 0) {
+        filtered.push({
+          partnerName: partner.partnerName,
+          operators: matchingOperators
+        });
+      }
+
+      return filtered;
+    }, []);
+
+    // Step 3: Flatten the results into the desired format
+    const results = filteredPartners.flatMap(partner =>
+      partner.operators.flatMap(operator =>
+        operator.bookingRequest.map(booking => ({
+          partnerName: partner.partnerName,
+          quotePrice: booking.quotePrice,
+          unitType: operator.unitType,
+          unitClassification: operator.unitClassification,
+          subClassification: operator.subClassification,
+          bookingId: booking.bookingId
+        }))
+      )
+    );
+
+    // Return the final results
     res.status(200).json({
       success: true,
       data: results,
     });
+
   } catch (error) {
-    console.error('Error fetching top 3 partners:', error);
+    console.error('Error fetching partners:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',
     });
   }
-}
+};
+
+
+
+const handleBookingPaymentStatusUpdate = async (bookingId, newPaymentStatus) => {
+  try {
+    // Find all partners that have this bookingId in their operators
+    const partnersToUpdate = await Partner.find({
+      "operators.bookingRequest.bookingId": bookingId,
+      // Optionally, filter by paymentStatus if needed
+      "operators.bookingRequest.paymentStatus": newPaymentStatus
+    });
+
+    // Update each partner's operators to remove the bookingRequest
+    await Promise.all(partnersToUpdate.map(async (partner) => {
+      partner.operators.forEach(operator => {
+        const index = operator.bookingRequest.findIndex(req => req.bookingId === bookingId);
+        if (index !== -1) {
+          operator.bookingRequest.splice(index, 1);
+        }
+      });
+      await partner.save();
+    }));
+  } catch (error) {
+    console.error("Error handling booking payment status update:", error);
+    throw error; // Handle error as needed
+  }
+};
 
 
 /*****************************************
@@ -407,3 +440,4 @@ exports.checkPartnerExists = checkPartnerExists;
 exports.updateQuotePrice = updateQuotePrice;
 exports.deletedBookingRequest = deletedBookingRequest;
 exports.getTopPartners = getTopPartners;
+exports.handleBookingPaymentStatusUpdate = handleBookingPaymentStatusUpdate;

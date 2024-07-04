@@ -43,6 +43,11 @@ const createOperator = async (req, res) => {
       ]
     });
 
+    // Filter bookings based on paymentStatus and remove from bookingRequest
+    const filteredBookings = matchingBookings.filter(booking =>
+      !["halfPaid", "paid", "completed"].includes(booking.paymentStatus)
+    );
+
     // Create a new operator
     const newOperator = {
       unitType,
@@ -78,7 +83,7 @@ const createOperator = async (req, res) => {
         data: nationalID[0].buffer,
         contentType: nationalID[0].mimetype,
       },
-      bookingRequest: matchingBookings.map(booking => ({
+      bookingRequest: filteredBookings.map(booking => ({
         bookingId: booking._id,  
         quotePrice: null,  
       })),

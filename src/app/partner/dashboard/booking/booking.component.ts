@@ -62,8 +62,7 @@ export class PartnerBookingComponent implements OnInit {
                 operator.bookingRequest.forEach((booking: any) => {
                   if(booking.bookingId) {
                     acc.push(booking.bookingId);
-                     // Populate quotePrice array
-                     this.quotePrice.push({
+                    this.quotePrice.push({
                       bookingId: booking.bookingId.toString(),
                       quotePrice: booking.quotePrice
                     });
@@ -86,7 +85,7 @@ export class PartnerBookingComponent implements OnInit {
   }
 
   getBookingsByBookingId() {
-    const bookingObservables = this.bookingRequests.map((bookingId: string) =>
+    const bookingObservables = this.bookingRequests.map((bookingId: string) => 
       this.bookingService.getBookingsByBookingId(bookingId)
     );
 
@@ -97,6 +96,7 @@ export class PartnerBookingComponent implements OnInit {
         this.bookings = responses.map((response) => response.data);
         this.bookings = this.bookings.flat();
         this.fetchUsers();
+        console.log(this.bookings)
       },
       (error) => {
         this.spinnerService.hide();
@@ -106,7 +106,7 @@ export class PartnerBookingComponent implements OnInit {
   }
 
   fetchUsers() {
-    // this.spinnerService.show();
+    this.spinnerService.show();
     const userIds = this.bookings
       .map((booking) => booking.user)
       .filter((value, index, self) => value && self.indexOf(value) === index);
@@ -115,12 +115,14 @@ export class PartnerBookingComponent implements OnInit {
       const userObservables = userIds.map((userId) =>
         this.userService.getUserById(userId)
       );
-      this.spinnerService.show();
 
       forkJoin(userObservables).subscribe(
         (users: any[]) => {
           this.spinnerService.hide();
-          this.users = users;
+          this.users = users.reduce((acc, user) => {
+            acc[user._id] = user;
+            return acc;
+          }, {});
         },
         (error) => {
           this.spinnerService.hide();

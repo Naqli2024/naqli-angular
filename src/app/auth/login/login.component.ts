@@ -57,7 +57,7 @@ export class LoginComponent {
           this.toastr.success(response.message, 'Success');
           this.clearForm();
           this.activeModal.dismiss();
-
+          window.location.reload();
           // Example usage in the component
         const token = localStorage.getItem('authToken');
         const firstName = localStorage.getItem('firstName');

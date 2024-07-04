@@ -53,15 +53,7 @@ export class PartnerService {
     );
   }
 
-  getTopPartners(
-    unitType: string,
-    unitClassification: string,
-    subClassification: string
-  ) {
-    return this.http.post<any>(`${this.baseUrl}/filtered-vendors`, {
-      unitType: unitType,
-      unitClassification: unitClassification,
-      subClassification: subClassification,
-    });
+  getTopPartners(requestBody: any) {
+    return this.http.post<any>(`${this.baseUrl}/filtered-vendors`, requestBody);
   }
 }

@@ -10,6 +10,7 @@ import { checkoutService } from '../../../services/checkout.service';
 import { MapComponent } from '../../map/map.component';
 import { AuthService } from '../../../services/auth.service';
 import { Booking } from '../../../models/booking.model';
+import { PartnerService } from '../../../services/partner/partner.service';
 
 @Component({
   selector: 'app-booking',
@@ -20,18 +21,16 @@ import { Booking } from '../../../models/booking.model';
 })
 export class BookingComponent implements OnInit {
   @ViewChild('payAdvanceModal') payAdvanceModal?: TemplateRef<any>;
-  vendors = [
-    { name: 'Vendor 1', price: 100 },
-    { name: 'Vendor 2', price: 120 },
-    { name: 'Vendor 3', price: 90 },
-  ];
-  bookingId: string | null = null;
+  vendors: Array<{name: string; price: number | null}> = [];
+  bookingId: any;
   @ViewChild('cancelBookingModal', { static: true }) cancelBookingModal: any;
   private modalRef: NgbModalRef | null = null;
   selectedVendor: any;
   paymentHandler: any = null;
   bookings: Booking[] = [];
-
+  unitType: string = '';
+  unitClassification: string = '';
+  subClassification: string = '';
 
   constructor(
     private modalService: NgbModal,
@@ -41,7 +40,8 @@ export class BookingComponent implements OnInit {
     private spinnerService: SpinnerService,
     private toastr: ToastrService,
     private checkout: checkoutService,
-    private authService: AuthService
+    private authService: AuthService,
+    private partnerService: PartnerService
   ) {}
 
   ngOnInit(): void {
@@ -50,17 +50,69 @@ export class BookingComponent implements OnInit {
     });
     this.invokeStripe();
     this.fetchBookings();
+    this.getTopPartners();
+  }
+
+  getTopPartners() {
+    this.spinnerService.show();
+    this.bookingService.getBookingsByBookingId(this.bookingId).subscribe(
+      (response) => {
+        if (response.success) {
+          this.spinnerService.hide();
+          const bookingData = response.data[0];
+
+          this.unitType = bookingData.unitType;
+          this.unitClassification = bookingData.name;
+          this.subClassification = bookingData.type?.[0]?.typeName || '';
+
+          const requestBody = {
+            unitType: this.unitType,
+            unitClassification: this.unitClassification,
+            subClassification: this.subClassification,
+            bookingId: this.bookingId
+          };
+
+          this.partnerService.getTopPartners(requestBody).subscribe(
+            (response) => {
+              if (response.success) {
+                console.log(response.data)
+                this.vendors = response.data
+                .filter((vendor: any) => vendor.bookingId === this.bookingId)
+                .map((vendor: any) => ({
+                  name: vendor.partnerName,
+                  price: vendor.quotePrice,
+                }));
+              } else {
+                this.toastr.info('No filtered vendors found.');
+              }
+            },
+            (error) => {
+              this.toastr.error('Failed to fetch top partners', error);
+            }
+          );
+        } else {
+          this.spinnerService.hide();
+          this.toastr.error('Failed to fetch bookings');
+        }
+      },
+      (error) => {
+        this.spinnerService.hide();
+        this.toastr.error('Failed to fetch bookings', error);
+      }
+    );
   }
 
   fetchBookings() {
+    this.spinnerService.show();
     const userId = this.authService.getUserId();
     if (userId) {
       this.bookingService.getBookingByUserId(userId).subscribe(
         (response) => {
           if (response.success) {
+            this.spinnerService.hide();
             this.bookings = response.data;
-            console.log(this.bookings)
           } else {
+            this.spinnerService.hide();
             this.toastr.error('Failed to fetch bookings');
           }
         },
@@ -136,7 +188,12 @@ export class BookingComponent implements OnInit {
   makePayment(event: Event, amount: number, status: string) {
     event.preventDefault();
 
-    console.log('Clicked "Pay" button with amount:', amount, 'and status:', status);
+    console.log(
+      'Clicked "Pay" button with amount:',
+      amount,
+      'and status:',
+      status
+    );
 
     if (typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid payment amount or status');
@@ -200,22 +257,31 @@ export class BookingComponent implements OnInit {
     }
   }
 
-  private updateBookingPaymentStatus(bookingId: string, status: string, amount: number) {
+  private updateBookingPaymentStatus(
+    bookingId: string,
+    status: string,
+    amount: number
+  ) {
     if (!bookingId || typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid input for payment update');
       return;
     }
     this.spinnerService.show();
-    this.bookingService.updateBookingPaymentStatus(bookingId, status, amount).subscribe(
-      (response) => {
-        this.spinnerService.hide();
-        console.log('Booking payment status updated successfully:', response);
-      },
-      (error) => {
-        console.error('Error updating booking payment status:', error);
-        this.spinnerService.hide();
-        this.toastr.error(error.error?.message || 'Failed to update booking payment status', 'Error');
-      }
-    );
+    this.bookingService
+      .updateBookingPaymentStatus(bookingId, status, amount)
+      .subscribe(
+        (response) => {
+          this.spinnerService.hide();
+          console.log('Booking payment status updated successfully:', response);
+        },
+        (error) => {
+          console.error('Error updating booking payment status:', error);
+          this.spinnerService.hide();
+          this.toastr.error(
+            error.error?.message || 'Failed to update booking payment status',
+            'Error'
+          );
+        }
+      );
   }
 }
