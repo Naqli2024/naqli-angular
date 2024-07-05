@@ -1,5 +1,6 @@
 const Booking = require("../Models/BookingModel");
 const updateOperatorsWithNewBooking = require("./partner/updateOperatorWithNewBooking");
+const Partner = require("../Models/partner/partnerModel");
 
 const createBooking = async (req, res) => {
   const {
@@ -17,7 +18,7 @@ const createBooking = async (req, res) => {
     toTime,
     cityName,
     address,
-    zipCode,
+    zipCode
   } = req.body;
 
   try {
@@ -80,10 +81,33 @@ const cancelBooking = async (req, res) => {
   }
 };
 
+const deleteBooking = async(bookingId) => {
+  try {
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return { success: false, message: "Booking not found" };
+    }
+
+    if (booking.partner) {
+      // Remove booking requests from operators of all other partners
+      await Partner.updateMany(
+        { _id: { $ne: booking.partner } },
+        { $pull: { "operators.$[].bookingRequest": { bookingId: booking._id } } }
+      );
+    } 
+    return{ success: true, message: "Booking request removed from partners successfully" };
+
+  } catch (error) {
+    console.error("Error deleting booking:", error);
+    res.status(500).json({ success: false, message: "Failed to delete booking" });
+  }
+}
+
 const updateBookingPaymentStatus = async (req, res) => {
   const { bookingId } = req.params;
-  const { status, amount, originalAmount, remainingBalance } = req.body;
-
+  const { status, amount, originalAmount, remainingBalance, partnerId } = req.body;
+ 
   try {
     // Find the booking by ID
     const booking = await Booking.findById(bookingId);
@@ -98,8 +122,10 @@ const updateBookingPaymentStatus = async (req, res) => {
     booking.paymentStatus = status;
     booking.originalAmount = originalAmount;
     booking.remainingBalance = remainingBalance;
+    booking.partner = partnerId
 
     const updatedBooking = await booking.save();
+    deleteBooking(bookingId)
 
     return res.status(200).json({
       success: true,

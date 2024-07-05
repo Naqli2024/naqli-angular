@@ -12,6 +12,13 @@ import { AuthService } from '../../../services/auth.service';
 import { Booking } from '../../../models/booking.model';
 import { PartnerService } from '../../../services/partner/partner.service';
 
+
+interface Vendor {
+  name: string;
+  price: number | null;
+  partnerid: string;
+}
+
 @Component({
   selector: 'app-booking',
   standalone: true,
@@ -21,7 +28,7 @@ import { PartnerService } from '../../../services/partner/partner.service';
 })
 export class BookingComponent implements OnInit {
   @ViewChild('payAdvanceModal') payAdvanceModal?: TemplateRef<any>;
-  vendors: Array<{name: string; price: number | null}> = [];
+  vendors: Vendor[] = [];
   bookingId: any;
   @ViewChild('cancelBookingModal', { static: true }) cancelBookingModal: any;
   private modalRef: NgbModalRef | null = null;
@@ -71,6 +78,8 @@ export class BookingComponent implements OnInit {
             subClassification: this.subClassification,
             bookingId: this.bookingId
           };
+          this.pollForQuotePrices(requestBody);
+          this.showFindingOperatorsMessage();
 
           this.partnerService.getTopPartners(requestBody).subscribe(
             (response) => {
@@ -81,6 +90,7 @@ export class BookingComponent implements OnInit {
                 .map((vendor: any) => ({
                   name: vendor.partnerName,
                   price: vendor.quotePrice,
+                  partnerId: vendor.partnerId
                 }));
               } else {
                 this.toastr.info('No filtered vendors found.');
@@ -101,6 +111,67 @@ export class BookingComponent implements OnInit {
       }
     );
   }
+
+  showFindingOperatorsMessage() {
+    this.toastr.info('Wait for a while... Finding operators', 'Message', {
+      timeOut: 5000, // 5 seconds
+      progressBar: true,
+      progressAnimation: 'increasing'
+    });
+  }
+
+  pollForQuotePrices(requestBody: any) {
+    const pollInterval = 5000; // Poll every 5 seconds
+    let polling = true;
+    let numVendorsNeeded = 3; // Number of vendors needed
+    let numVendorsFetched = 0; // Number of vendors with prices fetched
+  
+    const poll = () => {
+      if (polling) {
+        this.spinnerService.show(); // Show loading spinner
+  
+        this.partnerService.getTopPartners(requestBody).subscribe(
+          (response) => {
+            this.spinnerService.hide(); // Hide loading spinner
+  
+            if (response.success) {
+              const vendorsWithPrices = response.data.filter((vendor: any) => vendor.quotePrice !== null);
+              if (vendorsWithPrices.length > 0) {
+                this.vendors = vendorsWithPrices.map((vendor: any) => ({
+                  name: vendor.partnerName,
+                  price: vendor.quotePrice,
+                  partnerId: vendor.partnerId
+                }));
+  
+                // Count how many vendors with prices have been fetched
+                numVendorsFetched = this.vendors.length;
+  
+                // Check if we have fetched enough vendors
+                if (numVendorsFetched >= numVendorsNeeded) {
+                  polling = false; // Stop polling
+                } else {
+                  setTimeout(poll, pollInterval); // Continue polling
+                }
+              } else {
+                setTimeout(poll, pollInterval); // No vendors found, continue polling
+              }
+            } else {
+              this.toastr.info('No filtered vendors found.');
+              setTimeout(poll, pollInterval); // Response not successful, continue polling
+            }
+          },
+          (error) => {
+            this.spinnerService.hide(); // Hide loading spinner on error
+            this.toastr.error('Failed to fetch top partners', error);
+            setTimeout(poll, pollInterval); // Retry polling on error
+          }
+        );
+      }
+    };
+  
+    poll(); // Start polling initially
+  }
+
 
   fetchBookings() {
     this.spinnerService.show();
@@ -185,7 +256,7 @@ export class BookingComponent implements OnInit {
     }
   }
 
-  makePayment(event: Event, amount: number, status: string) {
+  makePayment(event: Event, amount: number, status: string, partnerId: string) {
     event.preventDefault();
 
     console.log(
@@ -205,7 +276,7 @@ export class BookingComponent implements OnInit {
       key: environment.stripePublicKey,
       locale: 'auto',
       token: (stripeToken: any) => {
-        this.processPayment(stripeToken, amount, status);
+        this.processPayment(stripeToken, amount, status, partnerId);
       },
     });
 
@@ -216,11 +287,11 @@ export class BookingComponent implements OnInit {
     });
   }
 
-  processPayment(stripeToken: any, amount: number, status: string) {
+  processPayment(stripeToken: any, amount: number, status: string, partnerId: string) {
     this.checkout.makePayment(stripeToken).subscribe((data: any) => {
       if (data.success && this.bookingId) {
         this.toastr.success(data.message);
-        this.updateBookingPaymentStatus(this.bookingId, status, amount);
+        this.updateBookingPaymentStatus(this.bookingId, status, amount, partnerId);
         if (status === 'completed' || 'halfPaid') {
           this.router.navigate(['/home/user/dashboard/booking-history']);
         }
@@ -260,7 +331,8 @@ export class BookingComponent implements OnInit {
   private updateBookingPaymentStatus(
     bookingId: string,
     status: string,
-    amount: number
+    amount: number,
+    partnerId: string
   ) {
     if (!bookingId || typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid input for payment update');
@@ -268,7 +340,7 @@ export class BookingComponent implements OnInit {
     }
     this.spinnerService.show();
     this.bookingService
-      .updateBookingPaymentStatus(bookingId, status, amount)
+      .updateBookingPaymentStatus(bookingId, status, amount, partnerId)
       .subscribe(
         (response) => {
           this.spinnerService.hide();

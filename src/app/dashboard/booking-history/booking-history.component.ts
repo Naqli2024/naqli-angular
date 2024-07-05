@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../services/auth.service';
 import { Booking } from '../../../models/booking.model';
 import { CommonModule } from '@angular/common';
+import { SpinnerService } from '../../../services/spinner.service';
 
 @Component({
   selector: 'app-booking-history',
@@ -18,7 +19,8 @@ export class BookingHistoryComponent implements OnInit {
   constructor(
     private bookingService: BookingService,
     private toastr: ToastrService, 
-    private authService: AuthService
+    private authService: AuthService,
+    private spinnerService: SpinnerService
   ) {}
 
   ngOnInit(): void {
@@ -26,20 +28,22 @@ export class BookingHistoryComponent implements OnInit {
   }
 
   fetchCompletedBookings() {
+    this.spinnerService.show();
     const userId = this.authService.getUserId();
     if (userId) {
       this.bookingService.getCompletedBookingsByUser(userId).subscribe(
         (response) => {
+          this.spinnerService.hide();
           if (response.success) {
             this.bookings = response.data;
-            console.log(this.bookings)
           } else {
+            this.spinnerService.hide();
             this.toastr.error('Failed to fetch bookings');
           }
         },
         (error) => {
-          this.toastr.error('Failed to fetch bookings');
-          console.error('Error fetching bookings:', error);
+          this.spinnerService.hide();
+          this.toastr.error('Failed to fetch bookings', error);
         }
       );
     } else {

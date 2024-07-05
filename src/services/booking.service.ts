@@ -30,7 +30,8 @@ export class BookingService {
   updateBookingPaymentStatus(
     bookingId: string,
     status: string,
-    amount: number
+    amount: number, 
+    partnerId: string
   ): Observable<any> {
     let originalAmount: number;
     let remainingBalance: number;
@@ -55,6 +56,7 @@ export class BookingService {
       amount: amount,
       originalAmount: originalAmount,
       remainingBalance: remainingBalance,
+      partnerId: partnerId
     };
     console.log(amount, status);
     return this.http.put(

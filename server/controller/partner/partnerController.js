@@ -2,7 +2,6 @@ const partner = require("../../Models/partner/partnerModel");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const twilio = require("twilio");
-const mongoose = require("mongoose");
 
 /*****************************************
             Partner registration
@@ -227,6 +226,7 @@ const getTopPartners = async (req, res) => {
       // Check if any matching operators with valid bookingRequest
       if (matchingOperators.length > 0) {
         filtered.push({
+          partnerId: partner._id,
           partnerName: partner.partnerName,
           operators: matchingOperators
         });
@@ -239,12 +239,13 @@ const getTopPartners = async (req, res) => {
     const results = filteredPartners.flatMap(partner =>
       partner.operators.flatMap(operator =>
         operator.bookingRequest.map(booking => ({
+          partnerId: partner.partnerId,
           partnerName: partner.partnerName,
           quotePrice: booking.quotePrice,
           unitType: operator.unitType,
           unitClassification: operator.unitClassification,
           subClassification: operator.subClassification,
-          bookingId: booking.bookingId
+          bookingId: booking.bookingId,
         }))
       )
     );
@@ -269,7 +270,7 @@ const getTopPartners = async (req, res) => {
 const handleBookingPaymentStatusUpdate = async (bookingId, newPaymentStatus) => {
   try {
     // Find all partners that have this bookingId in their operators
-    const partnersToUpdate = await Partner.find({
+    const partnersToUpdate = await partner.find({
       "operators.bookingRequest.bookingId": bookingId,
       // Optionally, filter by paymentStatus if needed
       "operators.bookingRequest.paymentStatus": newPaymentStatus

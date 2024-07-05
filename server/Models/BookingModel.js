@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 const partner = require("./partner/partnerModel");
 
 const bookingSchema = new mongoose.Schema({
-  name: {type: String, required: true},
+  name: { type: String, required: true },
   unitType: String,
   type: [
     {
@@ -29,19 +29,32 @@ const bookingSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
   paymentStatus: {
     type: String,
-    enum: ["pending", "halfPaid", "paid", 'completed'],
+    enum: ["pending", "halfPaid", "paid", "completed"],
     default: "pending",
   },
   paymentAmount: { type: Number, default: 0 },
   remainingBalance: { type: Number, default: 0 },
+  partner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "partner",
+  },
 });
 
-bookingSchema.post('remove', async function (doc) {
+bookingSchema.post("remove", async function (doc) {
   try {
-    await partner.updateMany(
-      { 'operators.bookingRequest': doc._id },
-      { $pull: { 'operators.$.bookingRequest': doc._id } }
-    );
+    if (doc.partner) {
+      // Remove booking requests from operators of the associated partner
+      await partner.updateOne(
+        { _id: doc.partner },
+        { $pull: { "operators.$[].bookingRequest": { bookingId: doc._id } } }
+      );
+
+      // Remove booking requests from operators of all other partners
+      await partner.updateMany(
+        { _id: { $ne: doc.partner } },
+        { $pull: { "operators.$[].bookingRequest": { bookingId: doc._id } } }
+      );
+    }
   } catch (error) {
     console.error("Error updating operators after booking deletion:", error);
   }
