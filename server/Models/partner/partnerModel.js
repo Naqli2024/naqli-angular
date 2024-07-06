@@ -10,6 +10,10 @@ const bookingRequestSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
+  paymentStatus: {
+    type: String,
+    required: false
+  }
 });
 
 const operatorSchema = new mongoose.Schema({

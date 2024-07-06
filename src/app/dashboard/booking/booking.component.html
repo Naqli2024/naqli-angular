@@ -31,7 +31,7 @@
           (click)="openBookingCancelModal($event)"
           >Cancel Request</a
         >
-        <div class="modal-footer cancel-booking-btns" *ngIf="selectedVendor">
+        <div class="modal-footer cancel-booking-btns" *ngIf="selectedVendor && fetchedVendors">
           <button
             type="button"
             class="btn btn-pay-advance"

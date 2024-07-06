@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { BookingService } from '../../../services/booking.service';
 import { SpinnerService } from '../../../services/spinner.service';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrService, ActiveToast, IndividualConfig  } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
 import { checkoutService } from '../../../services/checkout.service';
 import { MapComponent } from '../../map/map.component';
@@ -34,10 +34,12 @@ export class BookingComponent implements OnInit {
   private modalRef: NgbModalRef | null = null;
   selectedVendor: any;
   paymentHandler: any = null;
+  fetchedVendors: boolean = false;
   bookings: Booking[] = [];
   unitType: string = '';
   unitClassification: string = '';
   subClassification: string = '';
+  polling = true;
 
   constructor(
     private modalService: NgbModal,
@@ -113,63 +115,95 @@ export class BookingComponent implements OnInit {
   }
 
   showFindingOperatorsMessage() {
-    this.toastr.info('Wait for a while... Finding operators', 'Message', {
-      timeOut: 5000, // 5 seconds
+    return this.toastr.info('Wait for a while... Finding operators', 'Message', {
+      timeOut: 5000,
       progressBar: true,
-      progressAnimation: 'increasing'
-    });
+      progressAnimation: 'increasing',
+      onHidden: () => {
+        if (this.polling) {
+          this.toastr.info('Still searching for vendors...', 'Message', {
+            disableTimeOut: true, // Keep the message displayed
+            progressBar: true,
+            progressAnimation: 'increasing'
+          });
+        } 
+      }
+    }as Partial<IndividualConfig<any>>);
   }
 
   pollForQuotePrices(requestBody: any) {
-    const pollInterval = 5000; // Poll every 5 seconds
-    let polling = true;
-    let numVendorsNeeded = 3; // Number of vendors needed
-    let numVendorsFetched = 0; // Number of vendors with prices fetched
-  
-    const poll = () => {
-      if (polling) {
-        this.spinnerService.show(); // Show loading spinner
-  
-        this.partnerService.getTopPartners(requestBody).subscribe(
-          (response) => {
-            this.spinnerService.hide(); // Hide loading spinner
-  
-            if (response.success) {
-              const vendorsWithPrices = response.data.filter((vendor: any) => vendor.quotePrice !== null);
-              if (vendorsWithPrices.length > 0) {
-                this.vendors = vendorsWithPrices.map((vendor: any) => ({
-                  name: vendor.partnerName,
-                  price: vendor.quotePrice,
-                  partnerId: vendor.partnerId
-                }));
-  
-                // Count how many vendors with prices have been fetched
-                numVendorsFetched = this.vendors.length;
-  
-                // Check if we have fetched enough vendors
-                if (numVendorsFetched >= numVendorsNeeded) {
-                  polling = false; // Stop polling
-                } else {
-                  setTimeout(poll, pollInterval); // Continue polling
+  const pollInterval = 5000; // Poll every 5 seconds
+  let numVendorsNeeded = 3; // Number of vendors needed
+  let numVendorsFetched = 0; // Number of vendors with prices fetched
+  let toastrRef: ActiveToast<any> | undefined; // Store the ActiveToast reference
+  let successToastShown = false; // To keep track if success message was shown
+
+  const poll = () => {
+    if (this.polling) {
+      if (!toastrRef && !successToastShown) {
+        // Show initial Toastr message if not already shown and success message has not been shown
+        toastrRef = this.showFindingOperatorsMessage();
+      } else if (numVendorsFetched > 0 && toastrRef) {
+        // Update the Toastr message with the number of vendors fetched
+        this.toastr.clear(toastrRef.toastId);
+        toastrRef = this.toastr.info(`Found ${numVendorsFetched} out of ${numVendorsNeeded} vendors. Continuing to search...Wait for a while...`, 'Message', {
+          disableTimeOut: true, // Keep the message displayed
+          progressBar: true,
+          progressAnimation: 'increasing'
+        });
+      }
+
+      this.spinnerService.show(); // Show loading spinner
+
+      this.partnerService.getTopPartners(requestBody).subscribe(
+        (response) => {
+          this.spinnerService.hide(); // Hide loading spinner
+
+          if (response.success) {
+            const vendorsWithPrices = response.data.filter((vendor: any) => vendor.quotePrice !== null);
+            if (vendorsWithPrices.length > 0) {
+              this.vendors = vendorsWithPrices.map((vendor: any) => ({
+                name: vendor.partnerName,
+                price: vendor.quotePrice,
+                partnerId: vendor.partnerId
+              }));
+
+              // Count how many vendors with prices have been fetched
+              numVendorsFetched = this.vendors.length;
+
+              // Check if we have fetched enough vendors
+              if (numVendorsFetched >= numVendorsNeeded) {
+                this.polling = false; // Stop polling
+                this.fetchedVendors = true;
+                if (toastrRef) {
+                  this.toastr.clear(toastrRef.toastId); // Clear the Toastr message
                 }
+                this.toastr.success('Select your vendor and make a payment');
+                successToastShown = true; // Set the flag indicating success message was shown
               } else {
-                setTimeout(poll, pollInterval); // No vendors found, continue polling
+                setTimeout(poll, pollInterval); // Continue polling
               }
             } else {
-              this.toastr.info('No filtered vendors found.');
-              setTimeout(poll, pollInterval); // Response not successful, continue polling
+              setTimeout(poll, pollInterval); // No vendors found, continue polling
             }
-          },
-          (error) => {
-            this.spinnerService.hide(); // Hide loading spinner on error
-            this.toastr.error('Failed to fetch top partners', error);
-            setTimeout(poll, pollInterval); // Retry polling on error
+          } else {
+            this.toastr.info('No filtered vendors found.');
+            setTimeout(poll, pollInterval); // Response not successful, continue polling
           }
-        );
-      }
-    };
-  
-    poll(); // Start polling initially
+        },
+        (error) => {
+          this.spinnerService.hide(); // Hide loading spinner on error
+          if (toastrRef) {
+            this.toastr.clear(toastrRef.toastId); // Clear the Toastr message on error
+          }
+          this.toastr.error('Failed to fetch top partners', error);
+          this.polling = false; // Stop polling on error
+        }
+      );
+    }
+  };
+
+  poll(); // Start polling initially
   }
 
 
@@ -198,8 +232,10 @@ export class BookingComponent implements OnInit {
   }
 
   onSelect(vendor: any) {
+    if(this.fetchedVendors) {
     this.selectedVendor = vendor;
     console.log('Selected vendor:', vendor);
+    }
   }
 
   openBookingCancelModal(event: Event): void {

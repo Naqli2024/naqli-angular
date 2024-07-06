@@ -122,9 +122,28 @@ const updateBookingPaymentStatus = async (req, res) => {
     booking.paymentStatus = status;
     booking.originalAmount = originalAmount;
     booking.remainingBalance = remainingBalance;
-    booking.partner = partnerId
+    booking.partner = partnerId;
 
     const updatedBooking = await booking.save();
+
+     // Update partner's operators' booking requests
+     const partner = await Partner.findById(partnerId);
+     if (!partner) {
+       return res
+         .status(404)
+         .json({ success: false, message: "Partner not found" });
+     }
+ 
+     // Update booking request in operators array
+     partner.operators.forEach(operator => {
+       operator.bookingRequest.forEach(request => {
+         if (request.bookingId.equals(booking._id)) {
+           request.paymentStatus = status; // Update payment status
+         }
+       });
+     });
+ 
+    await partner.save();
     deleteBooking(bookingId)
 
     return res.status(200).json({
