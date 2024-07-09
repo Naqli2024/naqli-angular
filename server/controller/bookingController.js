@@ -124,6 +124,11 @@ const updateBookingPaymentStatus = async (req, res) => {
     booking.remainingBalance = remainingBalance;
     booking.partner = partnerId;
 
+    // Update booking status based on payment status
+    if (status === 'HalfPaid' || status === 'Completed' || status === 'Paid') {
+      booking.bookingStatus = 'Running';
+    }
+
     const updatedBooking = await booking.save();
 
      // Update partner's operators' booking requests
@@ -166,7 +171,7 @@ const bookingCompleted = async (req, res) => {
   try {
     const bookings = await Booking.find({
       user: userId,
-      paymentStatus: { $in: ["completed", "halfPaid"] },
+      paymentStatus: { $in: ["Completed", "HalfPaid"] },
     });
     res.status(200).json({ success: true, data: bookings });
   } catch (error) {

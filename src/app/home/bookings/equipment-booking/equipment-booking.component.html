@@ -48,10 +48,10 @@
           </div>
           <div class="row" style="margin: 20px 0px">
             <div class="col-md-6">
-              <input type="time" class="form-control" [(ngModel)]="bookingData.fromTime" name="fromTime" />
+              <input type="time" class="form-control" [(ngModel)]="bookingData.fromTime" name="fromTime" required/>
             </div>
             <div class="col-md-6">
-              <input type="time" class="form-control" [(ngModel)]="bookingData.toTime" name="toTime" />
+              <input type="time" class="form-control" [(ngModel)]="bookingData.toTime" name="toTime" required/>
             </div>
           </div>
           <div class="row">
@@ -61,6 +61,7 @@
                 [(ngModel)]="bookingData.date"
                 name="date"
                 class="form-control"
+                required
               />
             </div>
           </div>
@@ -122,6 +123,7 @@
               placeholder="Enter city name"
               [(ngModel)]="bookingData.cityName"
               style="margin-bottom: 8px"
+              required
             />
           </div>
           <div class="input-field design">
@@ -131,6 +133,7 @@
               placeholder="Enter your address"
               [(ngModel)]="bookingData.address"
               style="margin-bottom: 8px"
+              required
             />
           </div>
           <div class="input-field design">
@@ -140,6 +143,7 @@
               placeholder="Zip code for construction site"
               [(ngModel)]="bookingData.zipCode"
               style="margin-bottom: 8px"
+              required
             />
           </div>
         </div>

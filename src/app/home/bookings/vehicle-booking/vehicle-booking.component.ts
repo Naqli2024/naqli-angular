@@ -14,7 +14,13 @@ import { MapComponent } from '../../../map/map.component';
 @Component({
   selector: 'app-vehicle-booking',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule, BookingModalComponent, MapComponent],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    FormsModule,
+    BookingModalComponent,
+    MapComponent,
+  ],
   templateUrl: './vehicle-booking.component.html',
   styleUrl: './vehicle-booking.component.css',
 })
@@ -26,6 +32,7 @@ export class VehicleBookingComponent implements OnInit {
   inputFields = [{ value: '' }];
   selectedOptions: { [key: string]: VehicleType | null } = {};
   optionsVisible: { [key: string]: boolean } = {};
+  formSubmitted = false;
 
   bookingData: any = {
     unitType: '',
@@ -36,7 +43,7 @@ export class VehicleBookingComponent implements OnInit {
     productValue: '',
     pickup: '',
     dropPoints: [''],
-    additionalLabour: null
+    additionalLabour: null,
   };
 
   constructor(
@@ -51,7 +58,7 @@ export class VehicleBookingComponent implements OnInit {
     this.vehicleService.getVehicles().subscribe((data: Vehicle[]) => {
       this.vehicles = data;
       if (this.vehicles.length > 0) {
-        this.bookingData.unitType = this.vehicles[0].unitType; 
+        this.bookingData.unitType = this.vehicles[0].unitType;
       }
       this.vehicles.forEach((vehicle) => {
         this.filteredLoads[vehicle.name] = [];
@@ -76,12 +83,14 @@ export class VehicleBookingComponent implements OnInit {
     this.onVehicleTypeChange(type, vehicleName);
 
     this.bookingData.name = vehicleName;
-    this.bookingData.type = [{
-      typeName: type.typeName,
-      scale: type.scale,
-      typeImage: type.typeImage,
-      typeOfLoad: '' 
-    }];
+    this.bookingData.type = [
+      {
+        typeName: type.typeName,
+        scale: type.scale,
+        typeImage: type.typeImage,
+        typeOfLoad: '',
+      },
+    ];
   }
 
   onVehicleTypeChange(type: VehicleType, vehicleName: string): void {
@@ -114,35 +123,87 @@ export class VehicleBookingComponent implements OnInit {
       scrollable: true,
       windowClass: 'no-background',
     });
-    modalRef.componentInstance.bookingId = bookingId; 
+    modalRef.componentInstance.bookingId = bookingId;
+  }
+
+  formIsValid() {
+    const requiredFields = [
+      { key: 'time', message: 'Please select a time' },
+      { key: 'date', message: 'Please select a date' },
+      { key: 'productValue', message: 'Please enter the product value' },
+      { key: 'pickup', message: 'Please enter a pickup location' },
+    ];
+
+    for (let field of requiredFields) {
+      const keys = field.key.split('.');
+      let value = this.bookingData;
+
+      for (let key of keys) {
+        if (value === undefined || value === null) {
+          this.toastr.error(field.message);
+          return false;
+        }
+        value = value[key];
+      }
+
+      if (!value) {
+        this.toastr.error(field.message);
+        return false;
+      }
+    }
+
+    if (!this.bookingData.dropPoints.some(dropPoint => dropPoint.trim())) {
+      this.toastr.error('Please enter at least one drop point');
+      return false;
+    }
+
+    if (this.bookingData.type && this.bookingData.type.length > 0) {
+      if (this.filteredLoads[this.selectedVehicleName] && this.filteredLoads[this.selectedVehicleName].length > 0) {
+        if (!this.bookingData.type[0].typeOfLoad) {
+          this.toastr.error('Please select a load type');
+          return false;
+        }
+      }
+    }
+
+    const atLeastOneVehicleSelected = Object.keys(this.selectedOptions).some(key => !!this.selectedOptions[key]);
+    if (!atLeastOneVehicleSelected) {
+      this.toastr.error('Please select an option for at least one vehicle');
+      return false;
+    }
+
+    return true;
   }
 
   submitBooking(): void {
-    this.spinnerService.show();
-    this.bookingService.createBooking(this.bookingData).subscribe(
-      (response) => {
-        this.spinnerService.hide();
-        if (response && response._id ) {
-          this.toastr.success(response.message, 'Booking Successful!');
-          this.clearForm();
-          this.openBookingModal(response._id);
-        } else {
-          this.toastr.error(response.message, 'Booking Failed!');
+    this.formSubmitted = true;
+    if (this.formIsValid()) {
+      this.spinnerService.show();
+      this.bookingService.createBooking(this.bookingData).subscribe(
+        (response) => {
+          this.spinnerService.hide();
+          if (response && response._id) {
+            this.toastr.success(response.message, 'Booking Successful!');
+            this.clearForm();
+            this.openBookingModal(response._id);
+          } else {
+            this.toastr.error(response.message, 'Booking Failed!');
+          }
+        },
+        (error) => {
+          this.spinnerService.hide();
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage, 'Error');
+          console.log('Backend Error:', error);
         }
-      },
-      (error) => {
-        this.spinnerService.hide();
-        const errorMessage = error.error?.message || 'An error occurred';
-        this.toastr.error(errorMessage, 'Error');
-        console.log('Backend Error:', error);
-      }
-    );
+      );
+    }
   }
 
   addInputField(): void {
     this.bookingData.dropPoints.push('');
   }
-  
+
   removeInputField(index: number): void {
     if (this.bookingData.dropPoints.length > 1) {
       this.bookingData.dropPoints.splice(index, 1);
@@ -190,7 +251,7 @@ export class VehicleBookingComponent implements OnInit {
       productValue: '',
       pickup: '',
       dropPoints: [''],
-      additionalLabour: null
+      additionalLabour: null,
     };
   }
 

@@ -31,18 +31,18 @@ export class BookingService {
     bookingId: string,
     status: string,
     amount: number, 
-    partnerId: string
+    partnerId: string,
   ): Observable<any> {
     let originalAmount: number;
     let remainingBalance: number;
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    if (status === 'halfPaid') {
+    if (status === 'HalfPaid') {
       // Calculate original amount and remaining balance for halfPaid
       originalAmount = amount * 2;
       remainingBalance = originalAmount / 2;
-    } else if (status === 'completed') {
+    } else if (status === 'Completed') {
       // For completed, original amount is the amount paid and remaining balance is 0
       originalAmount = amount;
       remainingBalance = 0;
@@ -56,7 +56,7 @@ export class BookingService {
       amount: amount,
       originalAmount: originalAmount,
       remainingBalance: remainingBalance,
-      partnerId: partnerId
+      partnerId: partnerId,
     };
     console.log(amount, status);
     return this.http.put(

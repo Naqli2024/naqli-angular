@@ -133,6 +133,12 @@ export class PartnerBookingComponent implements OnInit {
     }
   }
 
+  navigateToConfirmPayment(bookingId: string):void{
+    this.router.navigate(['/home/partner/dashboard/booking/confirm-payment'], {
+      queryParams: { bookingId }
+    });
+  }
+
   openPaymentConfirmation(
     partnerId: string,
     bookingId: string,
@@ -149,9 +155,6 @@ export class PartnerBookingComponent implements OnInit {
         (response) => {
           this.spinnerService.hide();
           this.toastr.success(response.message);
-          this.router.navigate([
-            '/home/partner/dashboard/booking/confirm-payment',
-          ]);
         },
         (error) => {
           this.spinnerService.hide();

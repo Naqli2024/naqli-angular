@@ -201,14 +201,14 @@ const getTopPartners = async (req, res) => {
   const { unitType, unitClassification, subClassification, bookingId } = req.body;
 
   try {
-    // Step 1: Query partners matching criteria
+    // Query partners matching criteria
     const partners = await partner.find({
       "operators.unitType": unitType,
       "operators.unitClassification": unitClassification,
       ...(subClassification && { "operators.subClassification": subClassification })
     }).populate('operators.bookingRequest');
 
-    // Step 2: Prepare filtered results
+    // Prepare filtered results
     const filteredPartners = partners.reduce((filtered, partner) => {
       const matchingOperators = partner.operators.filter(operator =>
         operator.unitType === unitType &&
@@ -235,7 +235,7 @@ const getTopPartners = async (req, res) => {
       return filtered;
     }, []);
 
-    // Step 3: Flatten the results into the desired format
+    // Flatten the results into the desired format
     const results = filteredPartners.flatMap(partner =>
       partner.operators.flatMap(operator =>
         operator.bookingRequest.map(booking => ({
@@ -250,10 +250,13 @@ const getTopPartners = async (req, res) => {
       )
     );
 
+    // Sort results by quotePrice in ascending order and take the top 3
+    const topResults = results.sort((a, b) => a.quotePrice - b.quotePrice).slice(0, 3);
+
     // Return the final results
     res.status(200).json({
       success: true,
-      data: results,
+      data: topResults,
     });
 
   } catch (error) {
@@ -291,6 +294,8 @@ const handleBookingPaymentStatusUpdate = async (bookingId, newPaymentStatus) => 
     throw error; // Handle error as needed
   }
 };
+
+
 
 
 /*****************************************

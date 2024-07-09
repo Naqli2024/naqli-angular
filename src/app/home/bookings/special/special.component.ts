@@ -10,6 +10,19 @@ import { SpinnerService } from '../../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { MapComponent } from '../../../map/map.component';
 
+interface BookingData {
+  name: string;
+  unitType: string;
+  fromTime: string;
+  toTime: string;
+  cityName: string;
+  address: string;
+  zipCode: string;
+  additionalLabour: number | null;
+  image: string;
+  date: string;
+}
+
 @Component({
   selector: 'app-special',
   standalone: true,
@@ -28,7 +41,7 @@ export class SpecialComponent {
   selectedBus: any = null;
   additionalLabourEnabled: boolean = false;
 
-  bookingData: any = {
+  bookingData: BookingData = {
     name: '',
     unitType: '',
     fromTime: '',
@@ -53,7 +66,7 @@ export class SpecialComponent {
     this.busService.getSpecialUnits().subscribe((data: any[]) => {
       this.buses = data;
       if (this.buses.length > 0) {
-        this.bookingData.unitType = this.buses[0].unitType; 
+        this.bookingData.unitType = this.buses[0].unitType;
       }
     });
   }
@@ -86,31 +99,72 @@ export class SpecialComponent {
     modalRef.componentInstance.bookingId = bookingId;
   }
 
-  submitBooking(): void {
-    this.spinnerService.show();
-    this.bookingService.createBooking(this.bookingData).subscribe(
-      (response: any) => {
-        this.spinnerService.hide();
-        if (response && response._id) {
-          this.toastr.success(response.message, 'Booking Successful!');
-          this.clearForm();
-          this.openBookingModal(response._id);
-        } else {
-          this.toastr.error(response.message || 'Booking Failed!', 'Error');
-        }
-      },
-      (error) => {
-        this.spinnerService.hide();
-        const errorMessage = error.error?.message || 'An error occurred';
-        this.toastr.error(errorMessage, 'Error');
-        console.error('Backend Error:', error);
+  formIsValid(): boolean {
+    let isValid = true;
+    const errors: string[] = [];
+
+    // Define required fields and their error messages
+    const requiredFields: { key: keyof BookingData; message: string }[] = [
+      { key: 'fromTime', message: 'Please select a from time' },
+      { key: 'toTime', message: 'Please select a to time' },
+      { key: 'date', message: 'Please select a date' },
+      { key: 'cityName', message: 'Please enter city name' },
+      { key: 'address', message: 'Please enter address' },
+      { key: 'zipCode', message: 'Please enter zip code' },
+    ];
+
+    requiredFields.forEach((field) => {
+      const value = this.bookingData[field.key];
+      if (!value || (typeof value === 'string' && value.trim() === '')) {
+        errors.push(field.message);
+        isValid = false;
       }
-    );
+    });
+
+    // Check if a bus is selected
+    if (!this.selectedBus) {
+      errors.push('Please select one special unit');
+      isValid = false;
+    }
+
+    // Show toast errors if form is invalid
+    if (!isValid) {
+      errors.forEach((error) => {
+        this.toastr.error(error, 'Error');
+      });
+    }
+
+    return isValid;
+  }
+
+  submitBooking(): void {
+    if (this.formIsValid()) {
+      this.spinnerService.show();
+      this.bookingService.createBooking(this.bookingData).subscribe(
+        (response: any) => {
+          this.spinnerService.hide();
+          if (response && response._id) {
+            this.toastr.success(response.message, 'Booking Successful!');
+            this.clearForm();
+            this.openBookingModal(response._id);
+          } else {
+            this.toastr.error(response.message || 'Booking Failed!', 'Error');
+          }
+        },
+        (error) => {
+          this.spinnerService.hide();
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage, 'Error');
+          console.error('Backend Error:', error);
+        }
+      );
+    }
   }
 
   clearForm() {
     this.bookingData = {
       name: '',
+      unitType: '',
       fromTime: '',
       toTime: '',
       cityName: '',
@@ -118,6 +172,8 @@ export class SpecialComponent {
       zipCode: '',
       additionalLabour: null,
       image: '',
+      date: '',
     };
+    this.selectedBus = null;
   }
 }

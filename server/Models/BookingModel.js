@@ -26,11 +26,16 @@ const bookingSchema = new mongoose.Schema({
   address: { type: String },
   zipCode: { type: String },
   bookingId: { type: String, unique: true, default: uuidv4 },
+  bookingStatus: {
+    type: String,
+    enum: ["Yet to start", "Running", "Completed"],
+    default: "Yet to start",
+  },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
   paymentStatus: {
     type: String,
-    enum: ["pending", "halfPaid", "paid", "completed"],
-    default: "pending",
+    enum: ["Pending", "HalfPaid", "Paid", "Completed"],
+    default: "Pending",
   },
   paymentAmount: { type: Number, default: 0 },
   remainingBalance: { type: Number, default: 0 },

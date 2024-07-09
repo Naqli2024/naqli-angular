@@ -327,8 +327,9 @@ export class BookingComponent implements OnInit {
     this.checkout.makePayment(stripeToken).subscribe((data: any) => {
       if (data.success && this.bookingId) {
         this.toastr.success(data.message);
+        console.log(status)
         this.updateBookingPaymentStatus(this.bookingId, status, amount, partnerId);
-        if (status === 'completed' || 'halfPaid') {
+        if (status === 'Completed' || 'HalfPaid') {
           this.router.navigate(['/home/user/dashboard/booking-history']);
         }
       } else {
@@ -368,7 +369,7 @@ export class BookingComponent implements OnInit {
     bookingId: string,
     status: string,
     amount: number,
-    partnerId: string
+    partnerId: string,
   ) {
     if (!bookingId || typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid input for payment update');

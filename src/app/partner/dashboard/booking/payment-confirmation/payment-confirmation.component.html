@@ -3,30 +3,30 @@
     <div class="col-md-7 left-div">
       <div class="left-div-title">
         <img src="assets/images/delivery-truck.svg" />
-        <p>Booking Id ##########</p>
+        <p>Booking Id {{bookingDetails?._id}}</p>
       </div>
     </div>
     <div class="col-md-5 right-div">
       <div class="input-container">
         <div class="partner-field">
           <label>User name</label>
-          <p>Muzan</p>
+          <p>{{ (user$ | async)?.firstName }} {{ (user$ | async)?.lastName }}</p>
         </div>
         <div class="partner-field">
           <label>User id</label>
-          <p>#456789142</p>
+          <p>#{{ (user$ | async)?._id }}</p>
         </div>
         <div class="partner-field">
           <label>Mode</label>
-          <p>Box truck</p>
+          <p>{{bookingDetails?.name}}</p>
         </div>
         <div class="partner-field">
           <label>No.of units</label>
-          <p>2</p>
+          <p></p>
         </div>
         <div class="partner-field">
           <label>Booking status</label>
-          <p>Running</p>
+          <p>{{bookingDetails?.bookingStatus}}</p>
         </div>
         <div class="partner-field" style="border-bottom: none !important">
           <label>Additional Charges</label>
@@ -39,7 +39,7 @@
         />
         <div class="partner-field-last">
           <p>Pending Amount</p>
-          <p style="color: #914f9d">XXXXX SAR</p>
+          <p style="color: #914f9d">{{bookingDetails?.remainingBalance}}</p>
         </div>
         <div class="modal-footer cancel-booking-btns">
           <button type="button" class="btn btn-pay-advance">

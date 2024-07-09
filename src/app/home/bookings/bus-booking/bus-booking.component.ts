@@ -95,26 +95,68 @@ export class BusBookingComponent implements OnInit {
     modalRef.componentInstance.bookingId = bookingId;
   }
 
-  submitBooking(): void {
-    this.spinnerService.show();
-    this.bookingService.createBooking(this.bookingData).subscribe(
-      (response) => {
-        this.spinnerService.hide();
-        if (response && response._id) {
-          this.toastr.success(response.message, 'Booking Successful!');
-          this.clearForm();
-          this.openBookingModal(response._id);
-        } else {
-          this.toastr.error(response.message, 'Booking Failed!');
+  formIsValid(): boolean {
+    const requiredFields = [
+      { key: 'time', message: 'Please select a time' },
+      { key: 'date', message: 'Please select a date' },
+      { key: 'productValue', message: 'Please enter the product value' },
+      { key: 'pickup', message: 'Please enter a pickup location' },
+    ];
+
+    for (let field of requiredFields) {
+      const keys = field.key.split('.');
+      let value = this.bookingData;
+
+      for (let key of keys) {
+        if (value === undefined || value === null) {
+          this.toastr.error(field.message);
+          return false;
         }
-      },
-      (error) => {
-        this.spinnerService.hide();
-        const errorMessage = error.error?.message || 'An error occurred';
-        this.toastr.error(errorMessage, 'Error');
-        console.log('Backend Error:', error);
+        value = value[key];
       }
-    );
+
+      if (!value) {
+        this.toastr.error(field.message);
+        return false;
+      }
+    }
+
+    if (!this.bookingData.dropPoints.some(dropPoint => dropPoint.trim())) {
+      this.toastr.error('Please enter at least one drop point');
+      return false;
+    }
+
+    const atLeastOneBusSelected = !!this.selectedBus;
+    if (!atLeastOneBusSelected) {
+      this.toastr.error('Please select an option for at least one bus');
+      return false;
+    }
+
+    return true;
+  }
+
+  submitBooking(): void {
+    if(this.formIsValid()) {
+      this.spinnerService.show();
+      this.bookingService.createBooking(this.bookingData).subscribe(
+        (response) => {
+          this.spinnerService.hide();
+          if (response && response._id) {
+            this.toastr.success(response.message, 'Booking Successful!');
+            this.clearForm();
+            this.openBookingModal(response._id);
+          } else {
+            this.toastr.error(response.message, 'Booking Failed!');
+          }
+        },
+        (error) => {
+          this.spinnerService.hide();
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage, 'Error');
+          console.log('Backend Error:', error);
+        }
+      );
+    }
   }
 
   clearForm() {

@@ -53,6 +53,7 @@
                 type="time"
                 class="form-control"
                 [(ngModel)]="bookingData.time"
+                required
               />
             </div>
             <div class="col-md-6">
@@ -60,6 +61,7 @@
                 type="date"
                 class="form-control"
                 [(ngModel)]="bookingData.date"
+                required
               />
             </div>
           </div>
@@ -70,6 +72,7 @@
                 class="form-control"
                 [(ngModel)]="bookingData.productValue"
                 placeholder="Value of the product"
+                required
               />
             </div>
             <div class="col-md-6">
@@ -77,7 +80,8 @@
                 class="form-select"
                 [ngModel]="bookingData.type[0]?.typeOfLoad"
                 (ngModelChange)="bookingData.type[0].typeOfLoad = $event"
-              >
+                required
+                >
                 <option value="" disabled selected>Load Type</option>
                 <option
                   *ngFor="let load of filteredLoads[selectedVehicleName]"
@@ -142,6 +146,7 @@
               type="text"
               placeholder="Pick Up"
               [(ngModel)]="bookingData.pickup"
+              required
               style="margin-bottom: 8px"
             />
           </div>
@@ -158,6 +163,7 @@
               type="text"
               [placeholder]="'Drop Point ' + (i + 1)"
               [(ngModel)]="bookingData.dropPoints[i]"
+              required
             />
             <div
               class="circle"

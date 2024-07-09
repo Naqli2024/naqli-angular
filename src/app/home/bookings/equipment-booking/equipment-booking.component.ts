@@ -11,6 +11,19 @@ import { SpinnerService } from '../../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { MapComponent } from '../../../map/map.component';
 
+interface BookingData {
+  name: string;
+  unitType: string;
+  type: EquipmentType[];
+  date: string;
+  fromTime: string;
+  toTime: string;
+  cityName: string;
+  address: string;
+  zipCode: string;
+  additionalLabour: number | null;
+}
+
 @Component({
   selector: 'app-equipment-booking',
   standalone: true,
@@ -30,8 +43,9 @@ export class EquipmentBookingComponent {
   optionsVisible: { [key: string]: boolean } = {};
   selectedOptions: { [key: string]: EquipmentType | null } = {};
   selectedEquipmentName: string = '';
+  isFormSubmitted: boolean = false;
 
-  bookingData: any = {
+  bookingData: BookingData = {
     name: '',
     unitType: '',
     type: [{ typeName: '', typeImage: '' }],
@@ -56,7 +70,7 @@ export class EquipmentBookingComponent {
     this.equipmentService.getEquipment().subscribe((data: Equipment[]) => {
       this.equipment = data;
       if (this.equipment.length > 0) {
-        this.bookingData.unitType = this.equipment[0].unitType; 
+        this.bookingData.unitType = this.equipment[0].unitType;
       }
     });
   }
@@ -144,31 +158,74 @@ export class EquipmentBookingComponent {
     modalRef.componentInstance.bookingId = bookingId;
   }
 
+  formIsValid(): boolean {
+    let isValid = true;
+  const errors: string[] = [];
+
+  // Define required fields and their error messages
+  const requiredFields: { key: keyof BookingData; message: string }[] = [
+    { key: 'date', message: 'Please select a date' },
+    { key: 'fromTime', message: 'Please select a from time' },
+    { key: 'toTime', message: 'Please select a to time' },
+    { key: 'cityName', message: 'Please enter city name' },
+    { key: 'address', message: 'Please enter address' },
+    { key: 'zipCode', message: 'Please enter zip code' },
+    { key: 'unitType', message: 'Please select a unit type' },
+  ];
+
+  // Check if at least one type is selected
+  if (this.bookingData.type.length === 0 || !this.bookingData.type[0].typeName.trim()) {
+    errors.push('Please select at least one equipment type');
+    isValid = false;
+  }
+
+  requiredFields.forEach((field) => {
+    const value = this.bookingData[field.key];
+    if (!value || (typeof value === 'string' && value.trim() === '')) {
+      errors.push(field.message);
+      isValid = false;
+    }
+  });
+
+  // Show toast errors if form is invalid
+  if (!isValid) {
+    errors.forEach((error) => {
+      this.toastr.error(error);
+    });
+  }
+
+  return isValid;
+  }
+
   submitBooking(): void {
-    this.spinnerService.show();
-    this.bookingService.createBooking(this.bookingData).subscribe(
-      (response: any) => {
-        this.spinnerService.hide();
-        if (response && response._id) {
-          this.toastr.success(response.message, 'Booking Successful!');
-          this.clearForm();
-          this.openBookingModal(response._id);
-        } else {
-          this.toastr.error(response.message || 'Booking Failed!', 'Error');
+    this.isFormSubmitted = true;
+    if (this.formIsValid()) {
+      this.spinnerService.show();
+      this.bookingService.createBooking(this.bookingData).subscribe(
+        (response: any) => {
+          this.spinnerService.hide();
+          if (response && response._id) {
+            this.toastr.success(response.message, 'Booking Successful!');
+            this.clearForm();
+            this.openBookingModal(response._id);
+          } else {
+            this.toastr.error(response.message || 'Booking Failed!', 'Error');
+          }
+        },
+        (error) => {
+          this.spinnerService.hide();
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage, 'Error');
+          console.error('Backend Error:', error);
         }
-      },
-      (error) => {
-        this.spinnerService.hide();
-        const errorMessage = error.error?.message || 'An error occurred';
-        this.toastr.error(errorMessage, 'Error');
-        console.error('Backend Error:', error);
-      }
-    );
+      );
+    }
   }
 
   clearForm() {
     this.bookingData = {
       name: '',
+      unitType: '',
       type: [{ typeName: '', typeImage: '' }],
       fromTime: '',
       toTime: '',
