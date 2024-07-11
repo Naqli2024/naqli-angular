@@ -60,11 +60,11 @@ export class PartnerBookingComponent implements OnInit {
             (acc: any[], operator: any) => {
               if (operator.bookingRequest && operator.bookingRequest.length) {
                 operator.bookingRequest.forEach((booking: any) => {
-                  if(booking.bookingId) {
+                  if (booking.bookingId) {
                     acc.push(booking.bookingId);
                     this.quotePrice.push({
                       bookingId: booking.bookingId.toString(),
-                      quotePrice: booking.quotePrice
+                      quotePrice: booking.quotePrice,
                     });
                   }
                 });
@@ -85,7 +85,7 @@ export class PartnerBookingComponent implements OnInit {
   }
 
   getBookingsByBookingId() {
-    const bookingObservables = this.bookingRequests.map((bookingId: string) => 
+    const bookingObservables = this.bookingRequests.map((bookingId: string) =>
       this.bookingService.getBookingsByBookingId(bookingId)
     );
 
@@ -96,7 +96,7 @@ export class PartnerBookingComponent implements OnInit {
         this.bookings = responses.map((response) => response.data);
         this.bookings = this.bookings.flat();
         this.fetchUsers();
-        console.log(this.bookings)
+        console.log(this.bookings);
       },
       (error) => {
         this.spinnerService.hide();
@@ -133,10 +133,18 @@ export class PartnerBookingComponent implements OnInit {
     }
   }
 
-  navigateToConfirmPayment(bookingId: string):void{
-    this.router.navigate(['/home/partner/dashboard/booking/confirm-payment'], {
-      queryParams: { bookingId }
-    });
+  navigateToConfirmPayment(bookingId: string): void {
+    const booking = this.bookings.find(b => b._id === bookingId);
+    if (booking && (booking.paymentStatus === 'HalfPaid' || booking.paymentStatus === 'Completed')){
+      this.router.navigate(
+        ['/home/partner/dashboard/booking/confirm-payment'],
+        {
+          queryParams: { bookingId },
+        }
+      );
+    } else {
+      this.toastr.error('User payment status not updated. Please wait!!');
+    }
   }
 
   openPaymentConfirmation(
@@ -195,7 +203,9 @@ export class PartnerBookingComponent implements OnInit {
         this.spinnerService.hide();
         this.toastr.success(response.message);
         // Optionally, remove the booking from the local bookings array
-      this.bookings = this.bookings.filter(booking => booking._id !== bookingId);
+        this.bookings = this.bookings.filter(
+          (booking) => booking._id !== bookingId
+        );
       },
       (error) => {
         this.spinnerService.hide();

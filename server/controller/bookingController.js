@@ -219,6 +219,37 @@ const getAllBookings = async(req,res) => {
   }
 }
 
+const addAdditionalCharges = async (req, res) => {
+  const { bookingId } = req.params;
+  const { additionalCharges, reason } = req.body;
+
+  try {
+    // Find the booking by ID
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ success: false, message: "Booking not found" });
+    }
+
+    // Add additional charges and reason
+    booking.additionalCharges += additionalCharges;
+    booking.additionalChargesReason = reason;
+    booking.remainingBalance += additionalCharges;
+
+    const updatedBooking = await booking.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Additional charges added successfully",
+      booking: updatedBooking,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to add additional charges",
+    });
+  }
+};
+
 module.exports = {
   createBooking,
   cancelBooking,
@@ -226,5 +257,6 @@ module.exports = {
   bookingCompleted,
   getBookingsById,
   getAllBookings,
-  getBookingsByBookingId
+  getBookingsByBookingId,
+  addAdditionalCharges
 };

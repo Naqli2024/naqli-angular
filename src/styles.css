@@ -1997,3 +1997,20 @@ background: none !important;
 .unit-map {
   margin: 20px 10px 20px 10px !important;
 }
+
+/***************additional Charges***************/
+.additional-charges {
+  border-bottom: 1px solid #ddd !important;
+  border: none;
+  width: 100px;
+  text-align: right;
+}
+.additional-charges:focus {
+  outline: none !important;
+  border-bottom: 1px solid #b4b4b4 !important;
+}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

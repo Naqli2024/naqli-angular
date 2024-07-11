@@ -30,8 +30,8 @@ export class BookingService {
   updateBookingPaymentStatus(
     bookingId: string,
     status: string,
-    amount: number, 
-    partnerId: string,
+    amount: number,
+    partnerId: string
   ): Observable<any> {
     let originalAmount: number;
     let remainingBalance: number;
@@ -93,6 +93,17 @@ export class BookingService {
 
     return this.http.get<any>(
       `${this.apiUrl}/getBookingsByBookingId/${bookingId}`,
+      { headers }
+    );
+  }
+
+  addAdditionalCharges(bookingId: string, payload: any): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.post(
+      `${this.apiUrl}/bookings/${bookingId}/additional-charges`,
+      payload,
       { headers }
     );
   }

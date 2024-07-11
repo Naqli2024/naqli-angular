@@ -18,6 +18,8 @@ export interface Booking {
     cityName: string;
     fromTime: string;
     toTime: string;
+    unitType: string;
+    partner: string
   }
 
   

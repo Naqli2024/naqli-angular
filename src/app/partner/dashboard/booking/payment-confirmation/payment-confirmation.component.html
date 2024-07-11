@@ -3,14 +3,16 @@
     <div class="col-md-7 left-div">
       <div class="left-div-title">
         <img src="assets/images/delivery-truck.svg" />
-        <p>Booking Id {{bookingDetails?._id}}</p>
+        <p>Booking Id {{ bookingDetails?._id }}</p>
       </div>
     </div>
     <div class="col-md-5 right-div">
       <div class="input-container">
         <div class="partner-field">
           <label>User name</label>
-          <p>{{ (user$ | async)?.firstName }} {{ (user$ | async)?.lastName }}</p>
+          <p>
+            {{ (user$ | async)?.firstName }} {{ (user$ | async)?.lastName }}
+          </p>
         </div>
         <div class="partner-field">
           <label>User id</label>
@@ -18,7 +20,7 @@
         </div>
         <div class="partner-field">
           <label>Mode</label>
-          <p>{{bookingDetails?.name}}</p>
+          <p>{{ bookingDetails?.name }}</p>
         </div>
         <div class="partner-field">
           <label>No.of units</label>
@@ -26,29 +28,44 @@
         </div>
         <div class="partner-field">
           <label>Booking status</label>
-          <p>{{bookingDetails?.bookingStatus}}</p>
+          <p>{{ bookingDetails?.bookingStatus }}</p>
         </div>
         <div class="partner-field" style="border-bottom: none !important">
           <label>Additional Charges</label>
-          <p style="border-bottom: 1px solid #ddd">xxx</p>
+          <input
+            type="number"
+            [(ngModel)]="additionalCharges"
+            class="additional-charges"
+          />
         </div>
         <input
           type="text"
+          [(ngModel)]="additionalChargesReason"
           placeholder="Reason"
-          style="border: 1px solid #ddd; margin: 5px 20px; padding: 5px 10px"
+          style="
+            border: 1px solid #ddd;
+            margin: 5px 20px;
+            padding: 5px 10px;
+            outline: none;
+          "
         />
         <div class="partner-field-last">
           <p>Pending Amount</p>
-          <p style="color: #914f9d">{{bookingDetails?.remainingBalance}}</p>
+          <p style="color: #914f9d">{{ bookingDetails?.remainingBalance }}</p>
         </div>
         <div class="modal-footer cancel-booking-btns">
-          <button type="button" class="btn btn-pay-advance">
+          <button
+            type="button"
+            class="btn btn-pay-advance"
+            (click)="requestPayment()"
+          >
             Request Payment
           </button>
           <button
             type="button"
             class="btn btn-pay"
             style="background-color: #6f181c !important"
+            (click)="removeBooking(partnerId, bookingDetails?._id)"
           >
             Terminate
           </button>

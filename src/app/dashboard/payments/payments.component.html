@@ -20,6 +20,7 @@
               type="button"
               class="btn btn-balance"
               style="margin-top: 5px; padding: 5px 50px !important"
+              (click)="makePayment($event, booking.remainingBalance || 0, 'Completed', booking.partner)"
             >
               {{ booking.remainingBalance }}
             </button></span
