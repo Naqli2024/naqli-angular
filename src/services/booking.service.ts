@@ -31,40 +31,43 @@ export class BookingService {
     bookingId: string,
     status: string,
     amount: number,
-    partnerId: string
+    partnerId: string,
+    totalAmount: number
+
   ): Observable<any> {
     let originalAmount: number;
     let remainingBalance: number;
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    if (status === 'HalfPaid') {
-      // Calculate original amount and remaining balance for halfPaid
-      originalAmount = amount * 2;
-      remainingBalance = originalAmount / 2;
-    } else if (status === 'Completed') {
-      // For completed, original amount is the amount paid and remaining balance is 0
-      originalAmount = amount;
-      remainingBalance = 0;
-    } else {
-      throw new Error('Invalid payment status');
-    }
+    // if (status === 'HalfPaid') {
+    //   // Calculate original amount and remaining balance for halfPaid
+    //   originalAmount = amount * 2;
+    //   remainingBalance = originalAmount / 2;
+    // } else if (status === 'Completed') {
+    //   // For completed, original amount is the amount paid and remaining balance is 0
+    //   originalAmount = amount;
+    //   remainingBalance = 0;
+    // } else {
+    //   throw new Error('Invalid payment status');
+    // }
 
     // Prepare the data to send to the backend
     const payload = {
       status: status,
       amount: amount,
-      originalAmount: originalAmount,
-      remainingBalance: remainingBalance,
+      // originalAmount: originalAmount,
+      // remainingBalance: remainingBalance,
       partnerId: partnerId,
+      totalAmount: totalAmount
     };
-    console.log(amount, status);
     return this.http.put(
       `${this.apiUrl}/bookings/${bookingId}/payment`,
       payload,
       { headers }
     );
   }
+
 
   getCompletedBookingsByUser(userId: string): Observable<any> {
     const token = localStorage.getItem('authToken');

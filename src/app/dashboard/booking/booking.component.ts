@@ -40,6 +40,7 @@ export class BookingComponent implements OnInit {
   unitClassification: string = '';
   subClassification: string = '';
   polling = true;
+  totalAmount: number = 0;
 
   constructor(
     private modalService: NgbModal,
@@ -376,8 +377,13 @@ export class BookingComponent implements OnInit {
       return;
     }
     this.spinnerService.show();
+    if(status == 'HalfPaid') {
+      this.totalAmount = amount*2;
+    } else {
+      this.totalAmount = amount;
+    }
     this.bookingService
-      .updateBookingPaymentStatus(bookingId, status, amount, partnerId)
+      .updateBookingPaymentStatus(bookingId, status, amount, partnerId, this.totalAmount)
       .subscribe(
         (response) => {
           this.spinnerService.hide();

@@ -20,6 +20,7 @@ export class PaymentsComponent implements OnInit{
   bookings: Booking[] = [];
   paymentHandler: any = null;
   bookingId: any;
+  totalAmount: number = 0;
 
   constructor(
     private bookingService: BookingService,
@@ -60,44 +61,35 @@ export class PaymentsComponent implements OnInit{
     }
   }
 
-  makePayment(event: Event, amount: number, status: string, partnerId: string) {
+  makePayment(event: Event, remainingBalance: number, status: string, partnerId: string, bookingId: string) {
     event.preventDefault();
-
-    console.log(
-      'Clicked "Pay" button with amount:',
-      amount,
-      'and status:',
-      status,
-    );
-
-    if (typeof amount !== 'number' || amount <= 0 || !status) {
+  
+    if (typeof remainingBalance !== 'number' || remainingBalance <= 0 || !status) {
       this.toastr.error('Invalid payment amount or status');
-      console.error('Invalid payment amount or status:', amount, status);
       return;
     }
-
+  
     const paymentHandler = (<any>window).StripeCheckout.configure({
       key: environment.stripePublicKey,
       locale: 'auto',
       token: (stripeToken: any) => {
-        this.processPayment(stripeToken, amount, status, partnerId);
+        this.processPayment(stripeToken, remainingBalance, status, partnerId, bookingId);
       },
     });
-
+  
     paymentHandler.open({
       name: 'Naqli',
       description: 'Naqli Transportation',
-      amount: amount * 100,
+      amount: remainingBalance * 100,
     });
   }
 
-  processPayment(stripeToken: any, amount: number, status: string, partnerId: string) {
+  processPayment(stripeToken: any, remainingBalance: number, status: string, partnerId: string, bookingId: string) {
     this.checkout.makePayment(stripeToken).subscribe((data: any) => {
-      if (data.success && this.bookingId) {
+      if (data.success && bookingId) {
         this.toastr.success(data.message);
-        console.log(status)
-        this.updateBookingPaymentStatus(this.bookingId, status, amount, partnerId);
-        if (status === 'Completed' || 'HalfPaid') {
+        this.updateBookingPaymentStatus(bookingId, status, remainingBalance, partnerId);
+        if (status === 'Completed' || status === 'HalfPaid') {
           this.router.navigate(['/home/user/dashboard/booking-history']);
         }
       } else {
@@ -133,32 +125,21 @@ export class PaymentsComponent implements OnInit{
     }
   }
 
-  private updateBookingPaymentStatus(
-    bookingId: string,
-    status: string,
-    amount: number,
-    partnerId: string,
-  ) {
-    if (!bookingId || typeof amount !== 'number' || amount <= 0 || !status) {
-      this.toastr.error('Invalid input for payment update');
-      return;
+  updateBookingPaymentStatus(bookingId: string, status: string, amount: number, partnerId: string) {
+    console.log(this.totalAmount)
+    if(status == 'HalfPaid') {
+      this.totalAmount = amount*2;
+    } else {
+      this.totalAmount = amount;
     }
-    this.spinnerService.show();
-    this.bookingService
-      .updateBookingPaymentStatus(bookingId, status, amount, partnerId)
-      .subscribe(
-        (response) => {
-          this.spinnerService.hide();
-          console.log('Booking payment status updated successfully:', response);
-        },
-        (error) => {
-          console.error('Error updating booking payment status:', error);
-          this.spinnerService.hide();
-          this.toastr.error(
-            error.error?.message || 'Failed to update booking payment status',
-            'Error'
-          );
-        }
-      );
+    this.bookingService.updateBookingPaymentStatus(bookingId, status, amount, partnerId, this.totalAmount).subscribe(
+      (response) => {
+        console.log('Booking payment status updated successfully:', response);
+      },
+      (error) => {
+        console.error('Error updating booking payment status:', error);
+        this.toastr.error(error.error?.message || 'Failed to update booking payment status', 'Error');
+      }
+    );
   }
 }

@@ -25,9 +25,10 @@ export class PaymentConfirmationComponent implements OnInit {
   bookingDetails: any;
   user$!: Observable<User>;
   additionalCharges: number | null = null;
-  additionalChargesReason: string | null = null;
+  additionalChargesReason = [];
   bookings: Booking[] = [];
   partnerId: string = '';
+  isPaymentSuccessful:Boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -86,6 +87,9 @@ export class PaymentConfirmationComponent implements OnInit {
           this.additionalCharges = this.bookingDetails.additionalCharges;
           this.additionalChargesReason =
             this.bookingDetails.additionalChargesReason;
+            if(this.bookingDetails.remainingBalance == 0) {
+              this.isPaymentSuccessful = true
+            }
           this.openPartnerRequestPayment(this.bookingId);
         } else {
           this.toastr.error(response.message);

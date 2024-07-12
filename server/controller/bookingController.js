@@ -106,51 +106,68 @@ const deleteBooking = async(bookingId) => {
 
 const updateBookingPaymentStatus = async (req, res) => {
   const { bookingId } = req.params;
-  const { status, amount, originalAmount, remainingBalance, partnerId } = req.body;
- 
+  const { amount, status, partnerId, totalAmount } = req.body;
+
   try {
     // Find the booking by ID
     const booking = await Booking.findById(bookingId);
     if (!booking) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Booking not found" });
+      return res.status(404).json({ success: false, message: "Booking not found" });
     }
 
-    // Update payment status and amount
-    booking.paymentAmount = amount;
+    // Initialize remainingBalance if not already set
+    if (booking.remainingBalance === 0) {
+      booking.remainingBalance = totalAmount; 
+    }
+
+    // Calculate updated amounts
+    let updatedPaymentAmount = booking.paymentAmount + amount;
+    let updatedRemainingBalance = booking.remainingBalance - amount;
+
+    if (updatedRemainingBalance < 0) {
+      return res.status(400).json({ success: false, message: "Amount exceeds remaining balance" });
+    }
+
+    if (status === 'Completed' || status === 'Paid') {
+      updatedRemainingBalance = 0;
+    }
+
+    // Update booking details
+    booking.paymentAmount = updatedPaymentAmount;
     booking.paymentStatus = status;
-    booking.originalAmount = originalAmount;
-    booking.remainingBalance = remainingBalance;
+    booking.remainingBalance = updatedRemainingBalance;
     booking.partner = partnerId;
 
-    // Update booking status based on payment status
+    // Update booking status if payment status is 'HalfPaid', 'Completed', or 'Paid'
     if (status === 'HalfPaid' || status === 'Completed' || status === 'Paid') {
       booking.bookingStatus = 'Running';
     }
 
+    // Save the updated booking
     const updatedBooking = await booking.save();
 
-     // Update partner's operators' booking requests
-     const partner = await Partner.findById(partnerId);
-     if (!partner) {
-       return res
-         .status(404)
-         .json({ success: false, message: "Partner not found" });
-     }
- 
-     // Update booking request in operators array
-     partner.operators.forEach(operator => {
-       operator.bookingRequest.forEach(request => {
-         if (request.bookingId.equals(booking._id)) {
-           request.paymentStatus = status; // Update payment status
-         }
-       });
-     });
- 
-    await partner.save();
-    deleteBooking(bookingId)
+    // Find the partner by ID
+    const partner = await Partner.findById(partnerId);
+    if (!partner) {
+      return res.status(404).json({ success: false, message: "Partner not found" });
+    }
 
+    // Update the payment status in partner's booking requests
+    partner.operators.forEach(operator => {
+      operator.bookingRequest.forEach(request => {
+        if (request.bookingId.equals(booking._id)) {
+          request.paymentStatus = status;
+        }
+      });
+    });
+
+    // Save the updated partner
+    await partner.save();
+
+    // Optionally delete the booking if needed
+    deleteBooking(bookingId);
+
+    // Respond with success
     return res.status(200).json({
       success: true,
       message: "Booking payment status updated successfully",
@@ -164,6 +181,7 @@ const updateBookingPaymentStatus = async (req, res) => {
     });
   }
 };
+
 
 const bookingCompleted = async (req, res) => {
   const { userId } = req.params;
@@ -230,10 +248,29 @@ const addAdditionalCharges = async (req, res) => {
       return res.status(404).json({ success: false, message: "Booking not found" });
     }
 
+    // Ensure additionalCharges is a number
+    if (typeof additionalCharges !== 'number') {
+      return res.status(400).json({ success: false, message: "Invalid additional charges amount" });
+    }
+
+    // Log current booking details for debugging
+    console.log('Current booking details:', booking);
+
+    // Ensure booking.remainingBalance and booking.additionalCharges are numbers
+    if (typeof booking.remainingBalance !== 'number') {
+      booking.remainingBalance = 0;
+    }
+    if (typeof booking.additionalCharges !== 'number') {
+      booking.additionalCharges = 0;
+    }
+
     // Add additional charges and reason
     booking.additionalCharges += additionalCharges;
-    booking.additionalChargesReason = reason;
     booking.remainingBalance += additionalCharges;
+    booking.paymentStatus = 'HalfPaid';
+
+    // Add reason to the additionalChargesReasons array
+    booking.additionalChargesReason.push(reason);
 
     const updatedBooking = await booking.save();
 
@@ -243,6 +280,7 @@ const addAdditionalCharges = async (req, res) => {
       booking: updatedBooking,
     });
   } catch (error) {
+    console.error('Error adding additional charges:', error);
     return res.status(500).json({
       success: false,
       message: "Failed to add additional charges",

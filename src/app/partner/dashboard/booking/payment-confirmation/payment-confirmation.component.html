@@ -53,7 +53,10 @@
           <p>Pending Amount</p>
           <p style="color: #914f9d">{{ bookingDetails?.remainingBalance }}</p>
         </div>
-        <div class="modal-footer cancel-booking-btns">
+        <div
+          class="modal-footer cancel-booking-btns"
+          *ngIf="isPaymentSuccessful"
+        >
           <button
             type="button"
             class="btn btn-pay-advance"
@@ -69,6 +72,17 @@
           >
             Terminate
           </button>
+        </div>
+        <div *ngIf="!isPaymentSuccessful">
+          <p
+            style="
+              color: rgb(11, 153, 11);
+              text-align: center;
+              margin-top: 20px;
+            "
+          >
+            Payment Successful!!
+          </p>
         </div>
       </div>
     </div>
