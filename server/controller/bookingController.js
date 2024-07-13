@@ -120,6 +120,10 @@ const updateBookingPaymentStatus = async (req, res) => {
       booking.remainingBalance = totalAmount; 
     }
 
+     // Calculate admin commission and payout
+     const adminCommission = amount * 0.15;
+     const payout = amount * 0.85;
+
     // Calculate updated amounts
     let updatedPaymentAmount = booking.paymentAmount + amount;
     let updatedRemainingBalance = booking.remainingBalance - amount;
@@ -137,6 +141,8 @@ const updateBookingPaymentStatus = async (req, res) => {
     booking.paymentStatus = status;
     booking.remainingBalance = updatedRemainingBalance;
     booking.partner = partnerId;
+    booking.adminCommission = (booking.adminCommission || 0) + adminCommission;
+    booking.payout = (booking.payout || 0) + payout;
 
     // Update booking status if payment status is 'HalfPaid', 'Completed', or 'Paid'
     if (status === 'HalfPaid' || status === 'Completed' || status === 'Paid') {

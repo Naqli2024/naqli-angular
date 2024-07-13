@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Partner } from '../../models/partnerData.model';
 
 @Injectable({
   providedIn: 'root',
@@ -55,5 +56,9 @@ export class PartnerService {
 
   getTopPartners(requestBody: any) {
     return this.http.post<any>(`${this.baseUrl}/filtered-vendors`, requestBody);
+  }
+
+  getAllPartners(): Observable<Partner[]> {
+    return this.http.get<Partner[]>(this.baseUrl);
   }
 }

@@ -55,7 +55,6 @@
         </div>
         <div
           class="modal-footer cancel-booking-btns"
-          *ngIf="isPaymentSuccessful"
         >
           <button
             type="button"
@@ -73,14 +72,12 @@
             Terminate
           </button>
         </div>
-        <div *ngIf="!isPaymentSuccessful">
+        <div *ngIf="isPaymentSuccessful && bookingDetails?.remainingBalance === 0">
           <p
             style="
               color: rgb(11, 153, 11);
               text-align: center;
-              margin-top: 20px;
-            "
-          >
+            ">
             Payment Successful!!
           </p>
         </div>

@@ -296,6 +296,20 @@ const handleBookingPaymentStatusUpdate = async (bookingId, newPaymentStatus) => 
 };
 
 
+const getAllPartners = async (req, res) => {
+  try {
+    const partners = await partner.find({});
+    res.status(200).json({
+      success: true,
+      data: partners
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
 
 
 /*****************************************
@@ -447,3 +461,4 @@ exports.updateQuotePrice = updateQuotePrice;
 exports.deletedBookingRequest = deletedBookingRequest;
 exports.getTopPartners = getTopPartners;
 exports.handleBookingPaymentStatusUpdate = handleBookingPaymentStatusUpdate;
+exports.getAllPartners = getAllPartners;

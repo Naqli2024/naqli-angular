@@ -28,7 +28,7 @@ export class PaymentConfirmationComponent implements OnInit {
   additionalChargesReason = [];
   bookings: Booking[] = [];
   partnerId: string = '';
-  isPaymentSuccessful:Boolean = false;
+  isPaymentSuccessful:boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -66,6 +66,15 @@ export class PaymentConfirmationComponent implements OnInit {
     this.partnerId = this.getPartnerId();
   }
 
+  checkPaymentStaus() {
+    const paymentSuccessful =
+    this.bookingDetails.paymentStatus === 'Completed' &&
+    this.bookingDetails.remainingBalance === 0;
+    if(paymentSuccessful) {
+      this.isPaymentSuccessful == true;
+    }
+  }
+
   getPartnerId(): string {
     return localStorage.getItem('partnerId') || '';
   }
@@ -86,11 +95,9 @@ export class PaymentConfirmationComponent implements OnInit {
           // Update additional charges and reason
           this.additionalCharges = this.bookingDetails.additionalCharges;
           this.additionalChargesReason =
-            this.bookingDetails.additionalChargesReason;
-            if(this.bookingDetails.remainingBalance == 0) {
-              this.isPaymentSuccessful = true
-            }
+          this.bookingDetails.additionalChargesReason;
           this.openPartnerRequestPayment(this.bookingId);
+          this.checkPaymentStaus();
         } else {
           this.toastr.error(response.message);
         }

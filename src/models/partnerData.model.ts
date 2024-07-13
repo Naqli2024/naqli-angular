@@ -1,3 +1,5 @@
+import { Operator } from './operator.model';
+
 export interface PartnerResponse {
     partner: {
       type: string;
@@ -12,4 +14,17 @@ export interface PartnerResponse {
       operators: any[]; 
       _id: string;
     };
+}
+
+export interface Partner {
+  _id: string;
+  type: string;
+  partnerName: string;
+  mobileNo: string;
+  email: string;
+  isAdmin: boolean;
+  isVerified: boolean;
+  operators: Operator[];
+  createdAt: string;
+  updatedAt: string;
 }

@@ -1,8 +1,8 @@
 const user = require("../Models/userModel");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
-require('dotenv').config();
-const twilio = require('twilio');
+require("dotenv").config();
+const twilio = require("twilio");
 
 /*****************************************
             User registration
@@ -38,7 +38,10 @@ const userRegister = async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     req.body.password = hashedPassword;
-    const hashedConfirmPassword = await bcrypt.hash(req.body.confirmPassword, 10);
+    const hashedConfirmPassword = await bcrypt.hash(
+      req.body.confirmPassword,
+      10
+    );
     req.body.confirmPassword = hashedConfirmPassword;
 
     // Generate OTP
@@ -61,8 +64,8 @@ const userRegister = async (req, res) => {
         success: true,
         data: {
           otpResponse: otpResponse.data,
-          user: newUser
-        }
+          user: newUser,
+        },
       });
     } catch (otpError) {
       res.status(500).json({
@@ -81,16 +84,18 @@ const userRegister = async (req, res) => {
   }
 };
 
-
 /*****************************************
             Send OTP 
  *****************************************/
 // Initialize Twilio client
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 
 // Function to send OTP to the user's contact number using Twilio
 const sendOTP = async (contactNumber, otp) => {
-  const from = '+12086469792'; // Replace with your Twilio phone number
+  const from = "+12086469792"; // Replace with your Twilio phone number
   const to = `+ ${contactNumber}`;
   const text = `Your verification code is ${otp}`;
 
@@ -98,29 +103,26 @@ const sendOTP = async (contactNumber, otp) => {
     const message = await client.messages.create({
       body: text,
       from: from,
-      to: to
+      to: to,
     });
 
-    console.log('Message sent successfully');
+    console.log("Message sent successfully");
     console.log(message);
 
     return {
       message: `OTP sent to ${contactNumber}`,
       success: true,
-      data: { messageId: message.sid }
+      data: { messageId: message.sid },
     };
   } catch (error) {
-    console.error('Error sending OTP:', error);
+    console.error("Error sending OTP:", error);
     return {
-      message: 'Error sending OTP',
+      message: "Error sending OTP",
       success: false,
-      data: null
+      data: null,
     };
   }
 };
-
-
-
 
 /********************************************
           Resend OTP
@@ -130,7 +132,7 @@ const resendOTP = async (req, res) => {
     const { emailAddress } = req.body; // Assuming you pass userId to identify the user
 
     // Find the user by userId
-    const existUser = await user.findOne({emailAddress});
+    const existUser = await user.findOne({ emailAddress });
 
     if (!existUser) {
       return res.status(400).json({
@@ -156,7 +158,7 @@ const resendOTP = async (req, res) => {
       return res.status(200).json({
         message: "New OTP sent successfully",
         success: true,
-        data: { messageId: otpResponse.data.messageId } // Optionally, you can include message ID or other data
+        data: { messageId: otpResponse.data.messageId }, // Optionally, you can include message ID or other data
       });
     } else {
       return res.status(500).json({
@@ -174,7 +176,6 @@ const resendOTP = async (req, res) => {
     });
   }
 };
-
 
 /********************************************
               Verify OTP
@@ -212,7 +213,7 @@ const verifyOTP = async (req, res) => {
     res.status(200).json({
       message: "OTP verified successfully",
       success: true,
-      data: null  // You can include additional data if needed
+      data: null, // You can include additional data if needed
     });
   } catch (error) {
     console.error("Error during OTP verification:", error.message);
@@ -224,21 +225,30 @@ const verifyOTP = async (req, res) => {
   }
 };
 
-const getUserById = async(req, res) => {
+const getUserById = async (req, res) => {
   try {
     const User = await user.findById(req.params.id);
     if (!User) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
     res.status(200).json(User);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await user.find();
+    res.status(200).json({ success: true, data: users });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users", error });
+  }
+};
 
 exports.userRegister = userRegister;
 exports.verifyOTP = verifyOTP;
 exports.resendOTP = resendOTP;
 exports.sendOTP = sendOTP;
 exports.getUserById = getUserById;
+exports.getAllUsers = getAllUsers;

@@ -20,38 +20,43 @@
               type="button"
               class="btn btn-balance"
               style="margin-top: 5px; padding: 5px 50px !important"
-              (click)="makePayment($event, booking.remainingBalance || 0, 'Completed', booking.partner, booking._id)"
+              (click)="
+                makePayment(
+                  $event,
+                  booking.remainingBalance || 0,
+                  'Completed',
+                  booking.partner,
+                  booking._id
+                )
+              "
             >
               {{ booking.remainingBalance }}
             </button></span
           >
         </p>
       </div>
-      <div
-        class="table-container"
-        *ngIf="booking && booking.remainingBalance == 0"
-      >
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Booking ID</th>
-              <th>Date</th>
-              <th>Unit Type</th>
-              <th>Payment</th>
-              <th>Payment Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{ booking._id }}</td>
-              <td>{{ booking.date }}</td>
-              <td>{{ booking.name }}</td>
-              <td>{{ booking.paymentAmount }}</td>
-              <td>{{ booking.paymentStatus }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    </div>
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Booking ID</th>
+            <th>Date</th>
+            <th>Unit Type</th>
+            <th>Payment</th>
+            <th>Payment Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of bookings">
+            <td>{{ booking._id }}</td>
+            <td>{{ booking.date }}</td>
+            <td>{{ booking.name }}</td>
+            <td>{{ booking.paymentAmount }}</td>
+            <td>{{ booking.paymentStatus }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

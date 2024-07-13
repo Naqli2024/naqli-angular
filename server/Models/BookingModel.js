@@ -41,6 +41,8 @@ const bookingSchema = new mongoose.Schema({
   remainingBalance: { type: Number, default: 0 },
   additionalCharges: { type: Number, default: 0 },
   additionalChargesReason: [{ type: String }],
+  adminCommission: { type: Number, deafult: 0 },
+  payout: { type: Number, default: 0 },
   partner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "partner",

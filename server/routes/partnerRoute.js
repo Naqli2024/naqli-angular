@@ -36,5 +36,6 @@ router.post('/verify-otp-update-password', forgotPassword.verifyOTPAndUpdatePass
 router.post("/update-quote", partnerController.updateQuotePrice);
 router.delete("/:partnerId/booking-request/:bookingId", protect, partnerController.deletedBookingRequest);
 router.post("/filtered-vendors", partnerController.getTopPartners);
+router.get('/', partnerController.getAllPartners);
 
 module.exports = router;

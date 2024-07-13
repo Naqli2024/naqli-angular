@@ -31,6 +31,14 @@ import { PartnerReportComponent } from './partner/dashboard/report/report.compon
 import { PartnerHelpComponent } from './partner/dashboard/help/help.component';
 import { PaymentConfirmationComponent } from './partner/dashboard/booking/payment-confirmation/payment-confirmation.component';
 import { AuthGuard } from './guards/auth.guard';
+import { OverviewComponent } from './admin/overview/overview.component';
+import { SupportTicketsComponent } from './admin/support-tickets/support-tickets.component';
+import { PartnerAdminComponent } from './admin/partner-admin/partner-admin.component';
+import { AdminPaymentComponent } from './admin/admin-payment/admin-payment.component';
+import { PayoutComponent } from './admin/payout/payout.component';
+import { AdminNotificationManagementComponent } from './admin/admin-notification-management/admin-notification-management.component';
+import { AdminUserComponent } from './admin/admin-user/admin-user.component';
+import { NaqleeUserComponent } from './admin/naqlee-user/naqlee-user.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -39,11 +47,31 @@ export const routes: Routes = [
     path: 'home/user',
     component: HomeComponent,
   },
-  { path: 'home/user/vehicle', component: VehicleBookingComponent, canActivate: [AuthGuard] },
-  { path: 'home/user/bus', component: BusBookingComponent, canActivate: [AuthGuard] },
-  { path: 'home/user/equipment', component: EquipmentBookingComponent, canActivate: [AuthGuard] },
-  { path: 'home/user/special', component: SpecialComponent, canActivate: [AuthGuard] },
-  { path: 'home/user/others', component: OthersComponent, canActivate: [AuthGuard] },
+  {
+    path: 'home/user/vehicle',
+    component: VehicleBookingComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'home/user/bus',
+    component: BusBookingComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'home/user/equipment',
+    component: EquipmentBookingComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'home/user/special',
+    component: SpecialComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'home/user/others',
+    component: OthersComponent,
+    canActivate: [AuthGuard],
+  },
   { path: 'home/user/vehicle-estimate', component: VechileEstimateComponent },
   { path: 'home/user/bus-estimate', component: BusEstimateComponent },
   {
@@ -63,6 +91,17 @@ export const routes: Routes = [
       { path: 'payments', component: PaymentsComponent },
       { path: 'report', component: ReportComponent },
       { path: 'help', component: HelpComponent },
+      { path: 'admin/overview', component: OverviewComponent },
+      { path: 'admin/tickets', component: SupportTicketsComponent },
+      { path: 'admin/user', component: AdminUserComponent },
+      { path: 'admin/partner', component: PartnerAdminComponent },
+      { path: 'admin/payments', component: AdminPaymentComponent },
+      { path: 'admin/payout', component: PayoutComponent },
+      {
+        path: 'admin/notification-management',
+        component: AdminNotificationManagementComponent,
+      },
+      { path: 'admin/naqlee-user', component: NaqleeUserComponent },
     ],
   },
   { path: 'home/partner', component: PartnerComponent },
@@ -80,7 +119,10 @@ export const routes: Routes = [
       { path: 'payments', component: PartnerPaymentComponent },
       { path: 'report', component: PartnerReportComponent },
       { path: 'help', component: PartnerHelpComponent },
-      { path: 'booking/confirm-payment', component: PaymentConfirmationComponent },
+      {
+        path: 'booking/confirm-payment',
+        component: PaymentConfirmationComponent,
+      },
     ],
   },
 ];
