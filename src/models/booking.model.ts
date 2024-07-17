@@ -1,7 +1,9 @@
+import { NumberLiteralType } from "typescript";
+
 export interface Booking {
     _id: string;
     name: string;
-    type: any[]; 
+    type: { typeName: string }; 
     image: string;
     pickup: string;
     dropPoints: string[];
@@ -19,7 +21,9 @@ export interface Booking {
     fromTime: string;
     toTime: string;
     unitType: string;
-    partner: string
+    partner: string;
+    adminCommission: number;
+    payout: number;
   }
 
   

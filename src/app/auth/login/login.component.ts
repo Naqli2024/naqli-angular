@@ -8,6 +8,8 @@ import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { SpinnerService } from '../../../services/spinner.service';
 import { OtpVerificationComponent } from '../otp-verification/otp-verification.component';
 import { UserService } from '../../../services/user.service';
+import { Router } from '@angular/router';
+import { User } from '../../../models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -38,6 +40,7 @@ export class LoginComponent {
     password: '',
   };
   userDetails: any = {};
+  isAdmin: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -45,7 +48,8 @@ export class LoginComponent {
     private authService: AuthService,
     private toastr: ToastrService,
     private spinnerService: SpinnerService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {}
 
   login() {
@@ -53,15 +57,30 @@ export class LoginComponent {
     this.authService.login(this.loginData).subscribe(
       (response: any) => {
         this.spinnerService.hide();
-        if (response.success == true) {
+        if (response.success === true) {
           this.toastr.success(response.message, 'Success');
           this.clearForm();
           this.activeModal.dismiss();
-          window.location.reload();
-          // Example usage in the component
-        const token = localStorage.getItem('authToken');
-        const firstName = localStorage.getItem('firstName');
-        const lastName = localStorage.getItem('lastName');
+          
+          const userId = localStorage.getItem('userId');
+          if (userId) {
+            this.userService.getUserById(userId).subscribe((user: User) => {
+              this.isAdmin = user.isAdmin;
+              
+              // Dynamically redirect based on the isAdmin status
+              if (this.isAdmin) {
+                this.router.navigate(['/home/user/dashboard/admin/overview']);
+              } else {
+                window.location.reload();
+              }
+            }, (error) => {
+              // Handle error if getUserById fails
+              this.toastr.error('Failed to retrieve user information', 'Error');
+              window.location.reload();
+            });
+          } else {
+            window.location.reload();
+          }
         } else {
           if (response.message === 'User not verified') {
             this.toastr.error(response.message, 'Error');

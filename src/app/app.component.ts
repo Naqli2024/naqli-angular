@@ -16,6 +16,12 @@ import { MakePaymentComponent } from './dashboard/booking/make-payment/make-paym
 import { SpinnerComponent } from './spinner/spinner.component';
 import { RegisterComponent } from './partner/auth/register/register.component';
 import { MapComponent } from './map/map.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-root',
@@ -38,7 +44,13 @@ import { MapComponent } from './map/map.component';
     MakePaymentComponent, 
     SpinnerComponent,
     RegisterComponent, 
-    MapComponent
+    MapComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    FontAwesomeModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

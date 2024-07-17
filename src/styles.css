@@ -1,3 +1,4 @@
+
 * {
   margin: 0;
   padding: 0;
@@ -2013,4 +2014,171 @@ input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+/***************add user button***************/
+.add-user-button {
+  display: flex;
+  justify-content: right !important;
+  margin: 40px 0px !important;
+}
+.add-user-button button {
+  border: none;
+  border-radius: 10px;
+  padding: 5px 15px;
+  color: #000;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background: none !important;
+}
+.add-user-form {
+  margin: 20px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
+  border-radius: 20px !important;
+  height: 50vh;
+}
+
+.add-user-form .form-group {
+  margin-bottom: 10px;
+}
+
+.label-input {
+  display: flex;
+  align-items: center;
+  margin: 15px 0px !important;
+  font-size: 13px !important;
+}
+
+.flex-label {
+  flex: 0 0 30%;
+  max-width: 30%;
+  margin-bottom: 0;
+}
+
+.flex-input {
+  flex: 1;
+}
+
+.submit-button-container {
+  display: flex !important;
+  justify-content: right !important;
+  margin-top: 20px;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.form-row .form-group {
+  flex: 0 0 calc(50% - 10px); 
+}
+
+.full-width .form-group {
+  flex: 0 0 100%;
+}
+
+.add-user-btn {
+  background-color: #6269FE !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  padding: 5px 15px !important;
+  border: none;
+  border-radius: 10px !important;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+}
+
+.input-group .custom-select {
+  border: 1px solid #b8b8b8 !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  padding: 0px 8px !important;
+}
+
+.input-group .btn-outline-secondary,
+.input-group .btn-outline-danger {
+  border: 1px solid #ddd;
+  border-radius: 10px !important;
+}
+
+.input-group-append {
+  margin-left: 8px; 
+}
+.form-control .custom-input {
+  border-color: #ddd !important; 
+}
+.form-control .flex-input .custom-input:focus {
+  border-color: #7e7e7e !important
+}
+#dropdownMenuButton {
+  background-color: transparent !important;
+  border: 1px solid #b5b5b5 !important;
+  font-size: 15px !important;
+}
+.dropdown-item {
+  font-size: 13px !important;
+}
+.add-user-form .form-control:focus {
+  border-color: #7e7e7e !important;
+  box-shadow: none !important;
+}
+.icon:hover {
+  cursor: pointer;
+}
+@media (max-width: 576px) {
+  .add-user-form {
+    padding: 10px 15px;
+  }
+  .add-user-btn {
+    font-size: 12px !important;
+    padding: 5px 10px !important;
+  }
+  .flex-label {
+    font-size: 14px;
+  }
+  .flex-input {
+    font-size: 14px;
+  }
+  .add-user-form {
+    margin:5px 5px !important;
+    box-shadow: none !important;
+    padding: 5px 5px !important;
+    border-radius: 20px !important;
+  }
+  .form-row {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .label-input {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: start !important;
+    align-items: baseline !important;
+  } 
+  .flex-label {
+    max-width: 100% !important;
+  }
+  .input-group .custom-select {
+    padding: 10px 8px !important;
+  }
+  .input-group-append {
+    margin-left: 0px !important;
+    margin-top: 5px !important;
+  }
+  .submit-button-container {
+    display: flex !important;
+    justify-content: center !important;
+  }
+  @media (max-width: 768px) {
+    .add-user-form {
+      height: auto; 
+    }
+  }
 }
