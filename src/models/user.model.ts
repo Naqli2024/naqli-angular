@@ -1,3 +1,5 @@
+import { Notification } from './notification.model';
+
 export interface User {
     _id: string;
     firstName: string;
@@ -15,6 +17,7 @@ export interface User {
     otpExpiry?: Date;
     isAdmin: boolean;
     isVerified: boolean;
+    lastNotification:  Notification | null;
     createdAt: string;
     updatedAt: string;
   }

@@ -67,6 +67,22 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     isVerified: { type: Boolean, default: false },
+    notifications: [
+      {
+        messageTitle: {
+          type: String,
+          required: true,
+        },
+        messageBody: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

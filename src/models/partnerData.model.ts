@@ -1,4 +1,5 @@
 import { Operator } from './operator.model';
+import { Notification } from './notification.model';
 
 export interface PartnerResponse {
     partner: {
@@ -25,6 +26,8 @@ export interface Partner {
   isAdmin: boolean;
   isVerified: boolean;
   operators: Operator[];
+  notifications: Notification[];
+  lastNotification: Notification | null;
   createdAt: string;
   updatedAt: string;
 }

@@ -127,6 +127,22 @@ const partnerSchema = new mongoose.Schema(
     },
     isVerified: { type: Boolean, default: false },
     operators: [operatorSchema],
+    notifications: [
+      {
+        messageTitle: {
+          type: String,
+          required: true,
+        },
+        messageBody: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ], 
   },
   {
     timestamps: true,
