@@ -17,6 +17,7 @@ export interface User {
     otpExpiry?: Date;
     isAdmin: boolean;
     isVerified: boolean;
+    notifications: Notification[];
     lastNotification:  Notification | null;
     createdAt: string;
     updatedAt: string;

@@ -6,7 +6,7 @@ const {
 } = require("../controller/admin/naqleeUserController");
 const { v4: uuidv4 } = require("uuid");
 const { updateNaqleeUser } = require("../controller/admin/naqleeUserUpdate");
-const addNotificationController = require("../controller/admin/addNotificationController");
+const notificationController = require("../controller/admin/addNotificationController");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -62,7 +62,9 @@ router.put('/updateNaqleeUser/:id', upload.single('userPhoto'), async(req, res) 
   }
 })
 
-router.post('/add-notification', addNotificationController.addNotification);
-router.post('/getLastNotification', addNotificationController.getLastNotification);
+router.post('/add-notification', notificationController.addNotification);
+router.get('/all-notifications', notificationController.getAllNotifications);
+router.put('/update/:notificationId', notificationController.updateNotification);
+router.delete('/delete/:notificationId', notificationController.deleteNotification);
 
 module.exports = router;

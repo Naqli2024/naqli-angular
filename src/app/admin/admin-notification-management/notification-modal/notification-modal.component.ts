@@ -19,6 +19,7 @@ export class NotificationModalComponent implements OnInit{
   @Input() isSelectedUser: boolean = true;
   @Input() users: User[] = [];
   @Input() partners: Partner[] = [];
+  @Input() notification: any = null;
   messageTitle: string = '';
   messageBody: string = '';
   messageTitleCount: string = '0/50';
@@ -34,6 +35,12 @@ export class NotificationModalComponent implements OnInit{
 
   ngOnInit(): void {
     this.extractIds();
+    if (this.notification) {
+      this.messageTitle = this.notification.messageTitle;
+      this.messageBody = this.notification.messageBody;
+      this.updateMessageTitleCount();
+      this.updateMessageBodyCount();
+    }
   }
 
   sendNotificationToAdmin() {
@@ -43,22 +50,40 @@ export class NotificationModalComponent implements OnInit{
       partnerId: this.isSelectedUser ? [] : this.ids, 
       userId: this.isSelectedUser ? this.ids : undefined
     };
-    console.log(notificationData)
-    this.spinnerService.show();
-    this.notificationService.sendNotification(notificationData)
-      .subscribe(
-        (response) => {
-          this.spinnerService.hide();
-          this.toastr.success(response.message);
-          this.activeModal.close('success');
-        },
-        (error) => {
-          this.spinnerService.hide();
-          const errorMessage = error.error?.message || 'An error occurred';
-          this.toastr.error(errorMessage);
-        }
-      );
+    if (this.notification) {
+      // Updating existing notification
+      this.spinnerService.show();
+      this.notificationService.updateNotification(this.notification.notificationId, notificationData)
+        .subscribe(
+          (response) => {
+            this.spinnerService.hide();
+            this.toastr.success(response.message);
+            this.activeModal.close('success');
+          },
+          (error) => {
+            this.spinnerService.hide();
+            const errorMessage = error.error?.message || 'An error occurred';
+            this.toastr.error(errorMessage);
+          }
+        );
+    } else {
+      this.spinnerService.show();
+      this.notificationService.sendNotification(notificationData)
+        .subscribe(
+          (response) => {
+            this.spinnerService.hide();
+            this.toastr.success(response.message);
+            this.activeModal.close('success');
+          },
+          (error) => {
+            this.spinnerService.hide();
+            const errorMessage = error.error?.message || 'An error occurred';
+            this.toastr.error(errorMessage);
+          }
+        );
+    }  
   }
+
 
   extractIds() {
     if (this.isSelectedUser) {

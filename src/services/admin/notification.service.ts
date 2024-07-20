@@ -15,8 +15,15 @@ export class NotificationService {
     return this.http.post<any>(`${this.apiUrl}/add-notification`, notificationData);
   }
 
-  getLastNotification(id: string): Observable<any> {
-    const url = `${this.apiUrl}/last-notification`;
-    return this.http.post<any>(url, { id });
+  getAllNotification():Observable<{ allNotifications: any[] }> {
+    return this.http.get<{ allNotifications: any[] }>(`${this.apiUrl}/all-notifications`);
+  }
+
+  updateNotification(notificationId: string, notificationData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/update/${notificationId}`, notificationData);
+  }
+
+  deleteNotification(notificationId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/delete/${notificationId}`);
   }
 }
