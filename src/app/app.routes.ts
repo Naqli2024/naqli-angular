@@ -91,7 +91,11 @@ export const routes: Routes = [
       { path: 'payments', component: PaymentsComponent },
       { path: 'report', component: ReportComponent },
       { path: 'help', component: HelpComponent },
-      { path: 'admin/overview', component: OverviewComponent },
+      {
+        path: 'admin/overview',
+        component: OverviewComponent,
+        canActivate: [AuthGuard],
+      },
       { path: 'admin/tickets', component: SupportTicketsComponent },
       { path: 'admin/user', component: AdminUserComponent },
       { path: 'admin/partner', component: PartnerAdminComponent },

@@ -36,6 +36,7 @@
     "@types/node": "^20.14.2",
     "angular-material-fileupload": "^3.0.2",
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.3",
     "font-awesome": "^4.7.0",
     "leaflet": "^1.9.4",
     "leaflet-control-geocoder": "^2.4.0",

@@ -1,5 +1,3 @@
-import { NumberLiteralType } from "typescript";
-
 export interface Booking {
     _id: string;
     name: string;
@@ -11,6 +9,7 @@ export interface Booking {
     date: string;
     time: string;
     additionalLabour: number;
+    bookingStatus: String;
     user: string; 
     paymentAmount: number;
     paymentStatus: string;

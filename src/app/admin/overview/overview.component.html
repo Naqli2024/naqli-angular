@@ -1,1 +1,67 @@
-<p>overview works!</p>
+<div class="admin-overview">
+  <div class="order-statistics">
+    <div class="head-element">
+      <h2>Order Statistics</h2>
+    </div>
+    <div class="boxes-container">
+      <div class="box">
+        <p style="font-weight: bold; font-size: 20px">
+          {{ runningBookingsCount }}
+        </p>
+        <p>Ongoing Bookings</p>
+      </div>
+      <div class="box">
+        <p style="font-weight: bold; font-size: 20px">
+          {{ bookingStatusCompletedCount }}
+        </p>
+        <p>Completed</p>
+      </div>
+      <div class="box">
+        <p style="font-weight: bold; font-size: 20px">
+          {{ pendingPaymentsCount }}
+        </p>
+        <p>Pending Payment</p>
+      </div>
+      <div class="box">
+        <p style="font-weight: bold; font-size: 20px">
+          {{ pendingPayoutCount }}
+        </p>
+        <p>Pending Payout</p>
+      </div>
+    </div>
+  </div>
+  <div class="overview-chart">
+    <div class="for-customers">
+      <h2>Orders</h2>
+      <div class="dropdown-filter">
+        <select (change)="onCustomerOptionChange($event)" class="form-select">
+          <option
+            *ngFor="let option of options"
+            [value]="option"
+            [selected]="option === selectedCustomerOption"
+          >
+            {{ option }}
+          </option>
+        </select>
+      </div>
+      <div
+        style="width: 250px; height: 250px"
+      >
+        <canvas id="doughnutchart"></canvas>
+      </div>
+    </div>
+    <div class="for-orders">
+      <div class="dropdown-filter">
+        <select (change)="onOrderOptionChange($event)" class="form-select">
+          <option
+            *ngFor="let option of options"
+            [value]="option"
+            [selected]="option === selectedOrderOption"
+          >
+            {{ option }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,24 +1,54 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  Router,
+} from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { LoginComponent } from '../auth/login/login.component';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user.model';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  
-  constructor(private modalService: NgbModal, private router: Router) {}
+  constructor(
+    private modalService: NgbModal,
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): boolean {
+  ): Observable<boolean> | Promise<boolean> | boolean {
     const authToken = localStorage.getItem('authToken');
+    const userId = localStorage.getItem('userId');
 
-    if (authToken) {
-      return true;
+    if (authToken && userId) {
+      return this.userService.getUserById(userId).pipe(
+        map((user: User) => {
+          if (user.isAdmin) {
+            // If the user is admin, redirect to admin overview
+            if (state.url !== '/home/user/dashboard/admin/overview') {
+              this.router.navigate(['/home/user/dashboard/admin/overview']);
+              return false;
+            }
+            return true;
+          } else {
+            // Allow access to non-admin users
+            return true;
+          }
+        }),
+        catchError(() => {
+          this.openLoginModal();
+          return of(false);
+        })
+      );
     } else {
       this.openLoginModal();
       return false;
@@ -26,15 +56,12 @@ export class AuthGuard implements CanActivate {
   }
 
   openLoginModal(): void {
-    const currentRoute = this.router.url;
-    if (currentRoute.includes('/home/user')) {
-      const modalRef = this.modalService.open(LoginComponent, {
-        size: 'xl',
-        centered: true,
-        backdrop: true,
-        scrollable: true,
-        windowClass: 'no-background',
-      });
-    }
+    this.modalService.open(LoginComponent, {
+      size: 'xl',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
   }
 }
