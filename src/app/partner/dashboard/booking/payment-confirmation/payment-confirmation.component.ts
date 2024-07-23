@@ -44,12 +44,10 @@ export class PaymentConfirmationComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       this.bookingId = params['bookingId'];
-
       this.bookingService.getBookingsByBookingId(this.bookingId).subscribe(
         (data) => {
-          data.data.map(
-            (bookingDetails: any) => (this.bookingDetails = bookingDetails)
-          );
+          this.bookingDetails = data.data;
+          console.log(this.bookingDetails)
 
           if (this.bookingDetails.user) {
             // Call service method to fetch user details

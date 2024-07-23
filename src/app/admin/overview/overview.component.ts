@@ -4,6 +4,7 @@ import { BookingService } from '../../../services/booking.service';
 import { Booking } from '../../../models/booking.model';
 import { CommonModule } from '@angular/common';
 Chart.register(...registerables);
+import { format, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, endOfYear, isWithinInterval } from 'date-fns';
 
 @Component({
   selector: 'app-overview',
@@ -18,9 +19,8 @@ export class OverviewComponent implements OnInit {
   bookingStatusCompletedCount: number = 0;
   pendingPaymentsCount: number = 0;
   pendingPayoutCount: number = 0;
-  options: string[] = ['This Month', 'This Year', 'This Week', 'All Time'];
+  options: string[] = ['All Time', 'This Week','This Month','This Year'];
   selectedCustomerOption: string = this.options[0];
-  selectedOrderOption: string = this.options[0];
   bookingData: any[] = [];
   labeldata: any[] = [];
   realdata: any[] = [];
@@ -31,42 +31,43 @@ export class OverviewComponent implements OnInit {
   ngOnInit(): void {
     this.bookingService.getAllBookings().subscribe((response) => {
       this.bookings = response;
-      this.countBookings();
+      this.filterBookingsAndCount();
     });
-  }
-
-  onCustomerOptionChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    this.selectedCustomerOption = selectElement.value;
   }
 
   onOrderOptionChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
-    this.selectedOrderOption = selectElement.value;
+    this.selectedCustomerOption = selectElement.value;
+    this.filterBookingsAndCount();
   }
-  countBookings(): void {
-    this.runningBookingsCount = this.bookings.filter(
+
+  filterBookingsAndCount(): void {
+    const filteredBookings = this.filterBookingsByTimePeriod(this.selectedCustomerOption);
+
+    this.runningBookingsCount = filteredBookings.filter(
       (booking) => booking.bookingStatus === 'Running'
     ).length;
 
-    this.bookingStatusCompletedCount = this.bookings.filter(
+    this.bookingStatusCompletedCount = filteredBookings.filter(
       (booking) => booking.bookingStatus === 'Completed'
     ).length;
 
-    // Combine counts for 'Pending' and 'HalfPaid'
-    this.pendingPaymentsCount = this.bookings.filter(
+    this.pendingPaymentsCount = filteredBookings.filter(
       (booking) =>
         booking.paymentStatus === 'Pending' ||
         booking.paymentStatus === 'HalfPaid'
     ).length;
 
-    // Count bookings where payout is not equal to 0
-    this.pendingPayoutCount = this.bookings.filter(
+    this.pendingPayoutCount = filteredBookings.filter(
       (booking) => booking.payout !== 0
     ).length;
 
-    // Set bookingData after calculating counts
     this.bookingData = [
+      {
+        label: 'All orders',
+        amount: filteredBookings.length,
+        colorcode: 'black'
+      },
       {
         label: 'Active',
         amount: this.runningBookingsCount,
@@ -75,7 +76,7 @@ export class OverviewComponent implements OnInit {
       {
         label: 'Pending',
         amount: this.pendingPaymentsCount,
-        colorcode: 'yellow',
+        colorcode: 'orange',
       },
       {
         label: 'Finished',
@@ -88,25 +89,47 @@ export class OverviewComponent implements OnInit {
     this.loadChartData();
   }
 
+  filterBookingsByTimePeriod(option: string): Booking[] {
+    const now = new Date();
+    switch (option) {
+      case 'This Week':
+        return this.bookings.filter(booking =>
+          isWithinInterval(new Date(booking.createdAt), {
+            start: startOfWeek(now),
+            end: endOfWeek(now),
+          })
+        );
+      case 'This Month':
+        return this.bookings.filter(booking =>
+          isWithinInterval(new Date(booking.createdAt), {
+            start: startOfMonth(now),
+            end: endOfMonth(now),
+          })
+        );
+      case 'This Year':
+        return this.bookings.filter(booking =>
+          isWithinInterval(new Date(booking.createdAt), {
+            start: startOfYear(now),
+            end: endOfYear(now),
+          })
+        );
+      case 'All Time':
+      default:
+        return this.bookings;
+    }
+  }
+
   loadChartData() {
     if (this.bookingData != null) {
-      this.bookingData.map((b) => {
-        this.labeldata.push(b.label);
-        this.realdata.push(b.amount);
-        this.colordata.push(b.colorcode);
-      });
+      this.labeldata = this.bookingData.map(b => b.label);
+      this.realdata = this.bookingData.map(b => b.amount);
+      this.colordata = this.bookingData.map(b => b.colorcode);
       this.RenderbarChart(this.labeldata, this.realdata, this.colordata);
     }
   }
 
   RenderbarChart(labeldata: any, valuedata: any, colordata: any) {
-    this.RenderChart(
-      labeldata,
-      valuedata,
-      colordata,
-      'doughnutchart',
-      'doughnut'
-    );
+    this.RenderChart(labeldata, valuedata, colordata, 'doughnutchart', 'doughnut');
   }
 
   RenderChart(
@@ -116,29 +139,83 @@ export class OverviewComponent implements OnInit {
     chartid: string,
     charttype: any
   ) {
-    const mychar = new Chart(chartid, {
+    const chartElement = document.getElementById(chartid) as HTMLCanvasElement;
+    const annotationsElement = document.getElementById('chart-annotations');
+  
+    if (!chartElement || !annotationsElement) {
+      console.error(`Chart element with id ${chartid} or annotations element not found`);
+      return;
+    }
+  
+    // Clear previous annotations
+    annotationsElement.innerHTML = '';
+  
+    // Render the chart
+    new Chart(chartElement, {
       type: charttype,
       data: {
-        labels: labeldata,
+        // labels: labeldata,
         datasets: [
           {
-            label: 'Orders',
             data: valuedata,
             backgroundColor: colordata,
           },
         ],
       },
       options: {
-        tooltips: {
-          callbacks: {
-            label: function(tooltipItem: any, data: any) {
-              const label = data.labels[tooltipItem.index];
-              const value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-              return `${label}: ${value}`;
-            }
-          }
-        }
-      }
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (tooltipItem: any) {
+                const label = tooltipItem.label;
+                const value = tooltipItem.raw;
+                return `${label}: ${value}`;
+              },
+            },
+          },
+        },
+      },
+    });
+  
+    // Insert labels and values into annotations
+    labeldata.forEach((label: string, index: number) => {
+      const value = valuedata[index];
+      const color = colordata[index];
+  
+      const annotationDiv = document.createElement('div');
+      annotationDiv.innerHTML = `
+        <div class="circle-forData" style="background-color:${color}";></div>
+        <div class="annotation-label">${label}</div>
+        <div class="annotation-value">${value}</div>
+      `;
+      annotationsElement.appendChild(annotationDiv);
     });
   }
 }
+
+const alignLabelsAndValuesPlugin = {
+  id: 'alignLabelsAndValues',
+  afterDraw(chart: any) {
+    const ctx = chart.ctx;
+    const { labels } = chart.data;
+    const values = chart.data.datasets[0].data;
+    const { top, bottom, left, right, width, height } = chart.chartArea;
+    const middleY = (top + bottom) / 2;
+    const middleX = (left + right) / 2;
+
+    ctx.save();
+    ctx.textAlign = 'left';
+    ctx.font = '14px Arial';
+
+    labels.forEach((label: string, index: number) => {
+      const value = values[index];
+      const color = chart.data.datasets[0].backgroundColor[index];
+
+      ctx.fillStyle = color;
+      ctx.fillText(label, middleX - 50, top + 20 + (index * 20));
+      ctx.fillText(value, middleX + 50, top + 20 + (index * 20));
+    });
+
+    ctx.restore();
+  }
+};

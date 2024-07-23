@@ -217,10 +217,15 @@ const getTopPartners = async (req, res) => {
       );
 
       matchingOperators.forEach(operator => {
-        // Filter bookingRequest for the given bookingId
-        operator.bookingRequest = operator.bookingRequest.filter(booking =>
-          booking.bookingId.toString() === bookingId.toString() // Ensure bookingId comparison
-        );
+        // Check if operator.bookingRequest is an array and filter for the given bookingId
+        if (Array.isArray(operator.bookingRequest)) {
+          operator.bookingRequest = operator.bookingRequest.filter(booking => {
+            // Ensure bookingId is not null and valid before comparison
+            const bookingIdValid = bookingId && bookingId.toString();
+            const bookingIdMatch = booking.bookingId && booking.bookingId.toString();
+            return bookingIdValid && bookingIdMatch && bookingIdValid === bookingIdMatch;
+          });
+        }
       });
 
       // Check if any matching operators with valid bookingRequest

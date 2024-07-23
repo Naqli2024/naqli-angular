@@ -15,7 +15,10 @@ export class BookingModalComponent {
   constructor(public activeModal: NgbActiveModal, public router: Router) {}
 
   closeModalAndNavigate(): void {
+    console.log(this.bookingId)
     this.activeModal.dismiss();
-    this.router.navigate(['/home/user/dashboard'],{ queryParams: { bookingId: this.bookingId } });
+    this.router.navigate(['/home/user/dashboard'], {
+      queryParams: { bookingId: this.bookingId },
+    });
   }
 }

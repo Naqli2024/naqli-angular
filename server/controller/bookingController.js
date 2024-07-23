@@ -1,6 +1,7 @@
 const Booking = require("../Models/BookingModel");
 const updateOperatorsWithNewBooking = require("./partner/updateOperatorWithNewBooking");
 const Partner = require("../Models/partner/partnerModel");
+const mongoose = require('mongoose');
 
 const createBooking = async (req, res) => {
   const {
@@ -206,11 +207,18 @@ const bookingCompleted = async (req, res) => {
   }
 };
 
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
 const getBookingsById = async (req, res) => {
   const { userId } = req.params;
+
+  if (!isValidObjectId(userId)) {
+    return res.status(400).json({ message: "Invalid user ID format" });
+  }
+
   try {
     const booking = await Booking.find({ user: userId });
-    if (!booking) {
+    if (!booking.length) {
       return res.status(404).json({ message: "Booking not found" });
     }
     res.status(200).json({ success: true, data: booking });
@@ -222,8 +230,11 @@ const getBookingsById = async (req, res) => {
 
 const getBookingsByBookingId = async(req, res) => {
   const { bookingId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(bookingId)) {
+    return res.status(400).json({ message: "Invalid booking ID format" });
+  }
   try {
-    const booking = await Booking.find({ _id: bookingId });
+    const booking = await Booking.findById(bookingId);
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }

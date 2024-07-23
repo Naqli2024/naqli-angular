@@ -4,7 +4,7 @@ import { Vehicle, VehicleType } from '../../../../models/vehicle-booking';
 import { VehicleService } from '../../../../services/vehicle.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { BookingModalComponent } from '../bus-booking/booking-modal/booking-modal.component';
 import { BookingService } from '../../../../services/booking.service';
 import { SpinnerService } from '../../../../services/spinner.service';
@@ -116,7 +116,7 @@ export class VehicleBookingComponent implements OnInit {
   }
 
   openBookingModal(bookingId: string): void {
-    const modalRef = this.modalService.open(BookingModalComponent, {
+    const modalRef: NgbModalRef = this.modalService.open(BookingModalComponent, {
       size: 'xl',
       centered: true,
       backdrop: true,

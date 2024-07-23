@@ -23,6 +23,7 @@ export interface Booking {
     partner: string;
     adminCommission: number;
     payout: number;
+    createdAt: string;
   }
 
   

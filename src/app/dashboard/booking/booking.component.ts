@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, TemplateRef, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, ViewChild, TemplateRef, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { BookingService } from '../../../services/booking.service';
 import { SpinnerService } from '../../../services/spinner.service';
@@ -11,7 +11,6 @@ import { MapComponent } from '../../map/map.component';
 import { AuthService } from '../../../services/auth.service';
 import { Booking } from '../../../models/booking.model';
 import { PartnerService } from '../../../services/partner/partner.service';
-
 
 interface Vendor {
   name: string;
@@ -29,7 +28,7 @@ interface Vendor {
 export class BookingComponent implements OnInit {
   @ViewChild('payAdvanceModal') payAdvanceModal?: TemplateRef<any>;
   vendors: Vendor[] = [];
-  bookingId: any;
+  bookingId!: any;
   @ViewChild('cancelBookingModal', { static: true }) cancelBookingModal: any;
   private modalRef: NgbModalRef | null = null;
   selectedVendor: any;
@@ -56,8 +55,8 @@ export class BookingComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this.bookingId = params['bookingId'] || null;
-    });
+      this.bookingId = params['bookingId'];
+    })
     this.invokeStripe();
     this.fetchBookings();
     this.getTopPartners();
@@ -69,8 +68,7 @@ export class BookingComponent implements OnInit {
       (response) => {
         if (response.success) {
           this.spinnerService.hide();
-          const bookingData = response.data[0];
-
+          const bookingData = response.data;
           this.unitType = bookingData.unitType;
           this.unitClassification = bookingData.name;
           this.subClassification = bookingData.type?.[0]?.typeName || '';

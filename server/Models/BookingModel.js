@@ -47,6 +47,9 @@ const bookingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "partner",
   },
+},
+{
+  timestamps: true,
 });
 
 bookingSchema.post("remove", async function (doc) {
