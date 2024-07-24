@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, TemplateRef, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { Component, ViewChild, TemplateRef, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { BookingService } from '../../../services/booking.service';
 import { SpinnerService } from '../../../services/spinner.service';
-import { ToastrService, ActiveToast, IndividualConfig  } from 'ngx-toastr';
+import { ToastrService, ActiveToast, IndividualConfig } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
 import { checkoutService } from '../../../services/checkout.service';
 import { MapComponent } from '../../map/map.component';
@@ -28,7 +28,7 @@ interface Vendor {
 export class BookingComponent implements OnInit {
   @ViewChild('payAdvanceModal') payAdvanceModal?: TemplateRef<any>;
   vendors: Vendor[] = [];
-  bookingId!: any;
+  bookingId!: string;
   @ViewChild('cancelBookingModal', { static: true }) cancelBookingModal: any;
   private modalRef: NgbModalRef | null = null;
   selectedVendor: any;
@@ -54,15 +54,25 @@ export class BookingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      this.bookingId = params['bookingId'];
-    })
-    this.invokeStripe();
-    this.fetchBookings();
-    this.getTopPartners();
+    const params = this.route.snapshot.queryParams;
+    this.bookingId = params['bookingId'];
+    console.log('Booking ID:', this.bookingId);
+
+    if (this.bookingId) {
+      this.invokeStripe();
+      this.fetchBookings();
+      this.getTopPartners();
+    } else {
+      this.toastr.error('Booking ID is missing');
+    }
   }
 
   getTopPartners() {
+    if (!this.bookingId) {
+      console.error('Booking ID is not available.');
+      return;
+    }
+
     this.spinnerService.show();
     this.bookingService.getBookingsByBookingId(this.bookingId).subscribe(
       (response) => {
@@ -77,7 +87,7 @@ export class BookingComponent implements OnInit {
             unitType: this.unitType,
             unitClassification: this.unitClassification,
             subClassification: this.subClassification,
-            bookingId: this.bookingId
+            bookingId: this.bookingId,
           };
           this.pollForQuotePrices(requestBody);
           this.showFindingOperatorsMessage();
@@ -85,14 +95,14 @@ export class BookingComponent implements OnInit {
           this.partnerService.getTopPartners(requestBody).subscribe(
             (response) => {
               if (response.success) {
-                console.log(response.data)
+                console.log(response.data);
                 this.vendors = response.data
-                .filter((vendor: any) => vendor.bookingId === this.bookingId)
-                .map((vendor: any) => ({
-                  name: vendor.partnerName,
-                  price: vendor.quotePrice,
-                  partnerId: vendor.partnerId
-                }));
+                  .filter((vendor: any) => vendor.bookingId === this.bookingId)
+                  .map((vendor: any) => ({
+                    name: vendor.partnerName,
+                    price: vendor.quotePrice,
+                    partnerId: vendor.partnerId,
+                  }));
               } else {
                 this.toastr.info('No filtered vendors found.');
               }
@@ -114,97 +124,106 @@ export class BookingComponent implements OnInit {
   }
 
   showFindingOperatorsMessage() {
-    return this.toastr.info('Wait for a while... Finding operators', 'Message', {
-      timeOut: 5000,
-      progressBar: true,
-      progressAnimation: 'increasing',
-      onHidden: () => {
-        if (this.polling) {
-          this.toastr.info('Still searching for vendors...', 'Message', {
-            disableTimeOut: true, // Keep the message displayed
-            progressBar: true,
-            progressAnimation: 'increasing'
-          });
-        } 
-      }
-    }as Partial<IndividualConfig<any>>);
+    return this.toastr.info(
+      'Wait for a while... Finding operators',
+      'Message',
+      {
+        timeOut: 5000,
+        progressBar: true,
+        progressAnimation: 'increasing',
+        onHidden: () => {
+          if (this.polling) {
+            this.toastr.info('Still searching for vendors...', 'Message', {
+              disableTimeOut: true, // Keep the message displayed
+              progressBar: true,
+              progressAnimation: 'increasing',
+            });
+          }
+        },
+      } as Partial<IndividualConfig<any>>
+    );
   }
 
   pollForQuotePrices(requestBody: any) {
-  const pollInterval = 5000; // Poll every 5 seconds
-  let numVendorsNeeded = 3; // Number of vendors needed
-  let numVendorsFetched = 0; // Number of vendors with prices fetched
-  let toastrRef: ActiveToast<any> | undefined; // Store the ActiveToast reference
-  let successToastShown = false; // To keep track if success message was shown
+    const pollInterval = 5000; // Poll every 5 seconds
+    let numVendorsNeeded = 3; // Number of vendors needed
+    let numVendorsFetched = 0; // Number of vendors with prices fetched
+    let toastrRef: ActiveToast<any> | undefined; // Store the ActiveToast reference
+    let successToastShown = false; // To keep track if success message was shown
 
-  const poll = () => {
-    if (this.polling) {
-      if (!toastrRef && !successToastShown) {
-        // Show initial Toastr message if not already shown and success message has not been shown
-        toastrRef = this.showFindingOperatorsMessage();
-      } else if (numVendorsFetched > 0 && toastrRef) {
-        // Update the Toastr message with the number of vendors fetched
-        this.toastr.clear(toastrRef.toastId);
-        toastrRef = this.toastr.info(`Found ${numVendorsFetched} out of ${numVendorsNeeded} vendors. Continuing to search...Wait for a while...`, 'Message', {
-          disableTimeOut: true, // Keep the message displayed
-          progressBar: true,
-          progressAnimation: 'increasing'
-        });
-      }
+    const poll = () => {
+      if (this.polling) {
+        if (!toastrRef && !successToastShown) {
+          // Show initial Toastr message if not already shown and success message has not been shown
+          toastrRef = this.showFindingOperatorsMessage();
+        } else if (numVendorsFetched > 0 && toastrRef) {
+          // Update the Toastr message with the number of vendors fetched
+          this.toastr.clear(toastrRef.toastId);
+          toastrRef = this.toastr.info(
+            `Found ${numVendorsFetched} out of ${numVendorsNeeded} vendors. Continuing to search...Wait for a while...`,
+            'Message',
+            {
+              disableTimeOut: true, // Keep the message displayed
+              progressBar: true,
+              progressAnimation: 'increasing',
+            }
+          );
+        }
 
-      this.spinnerService.show(); // Show loading spinner
+        this.spinnerService.show(); // Show loading spinner
 
-      this.partnerService.getTopPartners(requestBody).subscribe(
-        (response) => {
-          this.spinnerService.hide(); // Hide loading spinner
+        this.partnerService.getTopPartners(requestBody).subscribe(
+          (response) => {
+            this.spinnerService.hide(); // Hide loading spinner
 
-          if (response.success) {
-            const vendorsWithPrices = response.data.filter((vendor: any) => vendor.quotePrice !== null);
-            if (vendorsWithPrices.length > 0) {
-              this.vendors = vendorsWithPrices.map((vendor: any) => ({
-                name: vendor.partnerName,
-                price: vendor.quotePrice,
-                partnerId: vendor.partnerId
-              }));
+            if (response.success) {
+              const vendorsWithPrices = response.data.filter(
+                (vendor: any) => vendor.quotePrice !== null
+              );
+              if (vendorsWithPrices.length > 0) {
+                this.vendors = vendorsWithPrices.map((vendor: any) => ({
+                  name: vendor.partnerName,
+                  price: vendor.quotePrice,
+                  partnerId: vendor.partnerId,
+                }));
 
-              // Count how many vendors with prices have been fetched
-              numVendorsFetched = this.vendors.length;
+                // Count how many vendors with prices have been fetched
+                numVendorsFetched = this.vendors.length;
 
-              // Check if we have fetched enough vendors
-              if (numVendorsFetched >= numVendorsNeeded) {
-                this.polling = false; // Stop polling
-                this.fetchedVendors = true;
-                if (toastrRef) {
-                  this.toastr.clear(toastrRef.toastId); // Clear the Toastr message
+                // Check if we have fetched enough vendors
+                if (numVendorsFetched >= numVendorsNeeded) {
+                  this.polling = false; // Stop polling
+                  this.fetchedVendors = true;
+                  if (toastrRef) {
+                    this.toastr.clear(toastrRef.toastId); // Clear the Toastr message
+                  }
+                  this.toastr.success('Select your vendor and make a payment');
+                  successToastShown = true; // Set the flag indicating success message was shown
+                } else {
+                  setTimeout(poll, pollInterval); // Continue polling
                 }
-                this.toastr.success('Select your vendor and make a payment');
-                successToastShown = true; // Set the flag indicating success message was shown
               } else {
-                setTimeout(poll, pollInterval); // Continue polling
+                setTimeout(poll, pollInterval); // No vendors found, continue polling
               }
             } else {
-              setTimeout(poll, pollInterval); // No vendors found, continue polling
+              this.toastr.info('No filtered vendors found.');
+              setTimeout(poll, pollInterval); // Response not successful, continue polling
             }
-          } else {
-            this.toastr.info('No filtered vendors found.');
-            setTimeout(poll, pollInterval); // Response not successful, continue polling
+          },
+          (error) => {
+            this.spinnerService.hide(); // Hide loading spinner on error
+            if (toastrRef) {
+              this.toastr.clear(toastrRef.toastId); // Clear the Toastr message on error
+            }
+            this.toastr.error('Failed to fetch top partners', error);
+            this.polling = false; // Stop polling on error
           }
-        },
-        (error) => {
-          this.spinnerService.hide(); // Hide loading spinner on error
-          if (toastrRef) {
-            this.toastr.clear(toastrRef.toastId); // Clear the Toastr message on error
-          }
-          this.toastr.error('Failed to fetch top partners', error);
-          this.polling = false; // Stop polling on error
-        }
-      );
-    }
-  };
+        );
+      }
+    };
 
-  poll(); // Start polling initially
+    poll(); // Start polling initially
   }
-
 
   fetchBookings() {
     this.spinnerService.show();
@@ -226,14 +245,15 @@ export class BookingComponent implements OnInit {
         }
       );
     } else {
+      this.spinnerService.hide();
       this.toastr.error('User ID not available');
     }
   }
 
   onSelect(vendor: any) {
-    if(this.fetchedVendors) {
-    this.selectedVendor = vendor;
-    console.log('Selected vendor:', vendor);
+    if (this.fetchedVendors) {
+      this.selectedVendor = vendor;
+      console.log('Selected vendor:', vendor);
     }
   }
 
@@ -322,12 +342,22 @@ export class BookingComponent implements OnInit {
     });
   }
 
-  processPayment(stripeToken: any, amount: number, status: string, partnerId: string) {
+  processPayment(
+    stripeToken: any,
+    amount: number,
+    status: string,
+    partnerId: string
+  ) {
     this.checkout.makePayment(stripeToken).subscribe((data: any) => {
       if (data.success && this.bookingId) {
         this.toastr.success(data.message);
-        console.log(status)
-        this.updateBookingPaymentStatus(this.bookingId, status, amount, partnerId);
+        console.log(status);
+        this.updateBookingPaymentStatus(
+          this.bookingId,
+          status,
+          amount,
+          partnerId
+        );
         if (status === 'Completed' || 'HalfPaid') {
           this.router.navigate(['/home/user/dashboard/booking-history']);
         }
@@ -368,20 +398,26 @@ export class BookingComponent implements OnInit {
     bookingId: string,
     status: string,
     amount: number,
-    partnerId: string,
+    partnerId: string
   ) {
     if (!bookingId || typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid input for payment update');
       return;
     }
     this.spinnerService.show();
-    if(status == 'HalfPaid') {
-      this.totalAmount = amount*2;
+    if (status == 'HalfPaid') {
+      this.totalAmount = amount * 2;
     } else {
       this.totalAmount = amount;
     }
     this.bookingService
-      .updateBookingPaymentStatus(bookingId, status, amount, partnerId, this.totalAmount)
+      .updateBookingPaymentStatus(
+        bookingId,
+        status,
+        amount,
+        partnerId,
+        this.totalAmount
+      )
       .subscribe(
         (response) => {
           this.spinnerService.hide();

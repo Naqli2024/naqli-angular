@@ -39,12 +39,6 @@ export class DashboardComponent{
       this.userService.getUserById(userId).subscribe((user: User) => {
         this.isAdmin = user.isAdmin;
         this.setMenuItems();
-        // Dynamically redirect based on the isAdmin status
-        if (this.isAdmin) {
-          this.router.navigate(['/home/user/dashboard/admin/overview']);
-        } else {
-          this.router.navigate(['/home/user/dashboard/booking']);
-        }
       });
     } else {
       this.setMenuItems();

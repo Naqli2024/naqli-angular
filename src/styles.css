@@ -2186,6 +2186,7 @@ input[type=number]::-webkit-inner-spin-button {
 /******************Notification management*******************/
 .notification-bar {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 10px;
@@ -2283,6 +2284,26 @@ input[type=number]::-webkit-inner-spin-button {
   max-height: 500px !important; 
   overflow-y: auto !important;
 }
+@media (max-width: 768px) {
+  .notification-bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+  .search-bar {
+    width: 100%;
+    padding: 10px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  .custom-modal-width .modal-dialog {
+    max-width: 100% !important;
+  }
+}
 
 /*******************Admin overview page******************/
 .order-statistics {
@@ -2290,8 +2311,8 @@ input[type=number]::-webkit-inner-spin-button {
   background-color: #f8f8f8; 
   padding: 20px; 
   border-radius: 8px; 
-  width: 50%;
-  margin: 0px 20px;
+  width: 40%;
+  margin: 20px 20px !important; 
 }
 h2 {
   margin-bottom: 20px;
@@ -2316,19 +2337,25 @@ h2 {
   display: flex;
   flex-direction: row;
   justify-content: start;
-  align-items: center;
+  align-items: center !important;
   margin: 30px 0px;
+  height: 60vh;
 }
 .overview-chart {
-  width: 50%;
-  margin: 0px 20px; 
+  width: 60%;
+  margin: 0px 5px; 
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
 }
 .for-customers, .for-orders {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
   background-color: #fff; 
   padding: 20px;
-  margin: 20px 0px;
+  margin: 0px 0px;
   border-radius: 8px;
+  height: fit-content !important;
+  width: 100%;
 }
 .dropdown-filter {
   width: 120px;
@@ -2339,20 +2366,19 @@ h2 {
 }
 .chart-container {
   display: flex !important;
-  flex-direction: row !important;
+  flex-direction: column !important;
   justify-content: space-between !important;
   align-items: center !important;
-  /* width: 250px; */
-  height: 180px;
-  margin: 20px 60px;
+  margin: 20px 20px;
 }
-.chart-annotations {
+.annotations-container {
   display: flex;
   flex-direction: column;
   justify-content: center !important;
   margin-top: 20px;
+  position: relative;
 }
-.chart-annotations div {
+.annotations-container div {
   display: flex;
   flex-direction: row;
   align-items: center !important;
@@ -2376,16 +2402,19 @@ h2 {
 .annotation-value {
   margin-left: 30px;
 }
-
+#doughnutchart {
+  height: 180px !important;
+  width: 180px !important;
+}
 @media (max-width: 1024px) {
   .chart-container {
     flex-direction: row !important; 
     margin: 20px 30px;
   }
-  .chart-annotations {
+  .annotations-container {
     margin-top: 20px; 
   }
- .chart-annotations div {
+ .annotations-container div {
     flex-direction: row; 
     padding: 5px 0; 
   }
@@ -2405,7 +2434,7 @@ h2 {
     padding: 10px; 
     border-radius: 8px; 
     width: 100%;
-    margin: 0px 10px;
+    margin: 20px 10px;
   }
   .admin-overview {
     display: flex;
@@ -2413,6 +2442,7 @@ h2 {
     justify-content: center;
     align-items: center;
     margin: 30px 0px;
+    height: auto;
   }
   .boxes-container {
     display: flex;
@@ -2428,6 +2458,8 @@ h2 {
   .overview-chart {
     width: 100%;
     margin: 0px 20px; 
+    display: flex;
+    flex-direction: column;
   }
   .for-orders-head {
     display: flex;
@@ -2441,12 +2473,12 @@ h2 {
     align-items: center !important;
     margin: 120px 0px !important; 
   }
-  .chart-annotations {
+  .annotations-container {
     margin-top: 10px; 
     display: flex;
     flex-direction: column;
   }
-  .chart-annotations div {
+  .annotations-container div {
     flex-direction: row !important; 
     align-items: flex-start; 
     justify-content: flex-start; 
@@ -2470,10 +2502,10 @@ h2 {
     margin: 20px 5px;
     flex-direction: column !important;  
   }
-  .chart-annotations {
+  .annotations-container {
     margin-top: 5px; 
   }
-  .chart-annotations div {
+  .annotations-container div {
     flex-direction: column; 
     align-items: flex-start; 
     padding: 3px 0; 

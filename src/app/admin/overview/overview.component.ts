@@ -13,18 +13,20 @@ import { format, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, 
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css',
 })
+
 export class OverviewComponent implements OnInit {
   bookings: Booking[] = [];
   runningBookingsCount: number = 0;
   bookingStatusCompletedCount: number = 0;
   pendingPaymentsCount: number = 0;
   pendingPayoutCount: number = 0;
-  options: string[] = ['All Time', 'This Week','This Month','This Year'];
+  options: string[] = ['All Time', 'This Week', 'This Month', 'This Year'];
   selectedCustomerOption: string = this.options[0];
   bookingData: any[] = [];
-  labeldata: any[] = [];
-  realdata: any[] = [];
-  colordata: any[] = [];
+  labeldata: string[] = [];
+  realdata: number[] = [];
+  colordata: string[] = [];
+  chart: Chart<'doughnut', number[], string> | undefined;
 
   constructor(private bookingService: BookingService) {}
 
@@ -43,6 +45,7 @@ export class OverviewComponent implements OnInit {
 
   filterBookingsAndCount(): void {
     const filteredBookings = this.filterBookingsByTimePeriod(this.selectedCustomerOption);
+    console.log('Filtered Bookings:', filteredBookings);  // Log filtered bookings
 
     this.runningBookingsCount = filteredBookings.filter(
       (booking) => booking.bookingStatus === 'Running'
@@ -86,6 +89,8 @@ export class OverviewComponent implements OnInit {
       { label: 'Cancelled', amount: 0, colorcode: 'red' },
     ];
 
+    console.log('Booking Data:', this.bookingData);  // Log booking data
+
     this.loadChartData();
   }
 
@@ -124,35 +129,16 @@ export class OverviewComponent implements OnInit {
       this.labeldata = this.bookingData.map(b => b.label);
       this.realdata = this.bookingData.map(b => b.amount);
       this.colordata = this.bookingData.map(b => b.colorcode);
-      this.RenderbarChart(this.labeldata, this.realdata, this.colordata);
+      this.renderChart(this.labeldata, this.realdata, this.colordata);
     }
   }
 
-  RenderbarChart(labeldata: any, valuedata: any, colordata: any) {
-    this.RenderChart(labeldata, valuedata, colordata, 'doughnutchart', 'doughnut');
-  }
-
-  RenderChart(
-    labeldata: any,
-    valuedata: any,
-    colordata: any,
-    chartid: string,
-    charttype: any
-  ) {
-    const chartElement = document.getElementById(chartid) as HTMLCanvasElement;
-    const annotationsElement = document.getElementById('chart-annotations');
-  
-    if (!chartElement || !annotationsElement) {
-      console.error(`Chart element with id ${chartid} or annotations element not found`);
-      return;
+  renderChart(labeldata: string[], valuedata: number[], colordata: string[]) {
+    if (this.chart) {
+      this.chart.destroy();
     }
-  
-    // Clear previous annotations
-    annotationsElement.innerHTML = '';
-  
-    // Render the chart
-    new Chart(chartElement, {
-      type: charttype,
+    this.chart = new Chart('doughnutchart', {
+      type: 'doughnut',
       data: {
         // labels: labeldata,
         datasets: [
@@ -176,15 +162,28 @@ export class OverviewComponent implements OnInit {
         },
       },
     });
-  
-    // Insert labels and values into annotations
-    labeldata.forEach((label: string, index: number) => {
-      const value = valuedata[index];
-      const color = colordata[index];
-  
+
+    this.renderAnnotations(labeldata, valuedata, colordata);
+  }
+
+  renderAnnotations(labels: string[], values: number[], colors: string[]) {
+    const annotationsElement = document.getElementById('chart-annotations');
+    if (!annotationsElement) {
+      console.error('Annotations element not found');
+      return;
+    }
+
+    // Clear previous annotations
+    annotationsElement.innerHTML = '';
+
+    labels.forEach((label: string, index: number) => {
+      const value = values[index];
+      const color = colors[index];
+
       const annotationDiv = document.createElement('div');
+      annotationDiv.classList.add('annotation');
       annotationDiv.innerHTML = `
-        <div class="circle-forData" style="background-color:${color}";></div>
+        <div class="circle-forData" style="background-color:${color};"></div>
         <div class="annotation-label">${label}</div>
         <div class="annotation-value">${value}</div>
       `;
@@ -192,30 +191,3 @@ export class OverviewComponent implements OnInit {
     });
   }
 }
-
-const alignLabelsAndValuesPlugin = {
-  id: 'alignLabelsAndValues',
-  afterDraw(chart: any) {
-    const ctx = chart.ctx;
-    const { labels } = chart.data;
-    const values = chart.data.datasets[0].data;
-    const { top, bottom, left, right, width, height } = chart.chartArea;
-    const middleY = (top + bottom) / 2;
-    const middleX = (left + right) / 2;
-
-    ctx.save();
-    ctx.textAlign = 'left';
-    ctx.font = '14px Arial';
-
-    labels.forEach((label: string, index: number) => {
-      const value = values[index];
-      const color = chart.data.datasets[0].backgroundColor[index];
-
-      ctx.fillStyle = color;
-      ctx.fillText(label, middleX - 50, top + 20 + (index * 20));
-      ctx.fillText(value, middleX + 50, top + 20 + (index * 20));
-    });
-
-    ctx.restore();
-  }
-};
