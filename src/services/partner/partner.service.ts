@@ -61,4 +61,8 @@ export class PartnerService {
   getAllPartners(): Observable<Partner[]> {
     return this.http.get<Partner[]>(this.baseUrl);
   }
+
+  updatePartnerStatus(partnerId: string, status: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/partners/${partnerId}/status`, status);
+  }
 }

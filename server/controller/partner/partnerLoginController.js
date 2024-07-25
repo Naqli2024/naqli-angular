@@ -28,6 +28,14 @@ const partnerLogin = async (req, res) => {
         });
       }
 
+      if(existPartner.isBlocked) {
+        return res.status(400).send({
+          message: "Your account is blocked",
+          success: false,
+          data: null
+        })
+      }
+
       // Check if the partner is verified
       if (!existPartner.isVerified) {
         return res.status(403).send({

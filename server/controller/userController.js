@@ -246,9 +246,27 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const updateUserStatus = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { isBlocked, isSuspended } = req.body;
+
+    const userStatus = await user.findByIdAndUpdate(userId, { isBlocked, isSuspended }, { new: true });
+
+    if (!userStatus) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ success: true, data: userStatus });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating user status', error: error.message });
+  }
+};
+
 exports.userRegister = userRegister;
 exports.verifyOTP = verifyOTP;
 exports.resendOTP = resendOTP;
 exports.sendOTP = sendOTP;
 exports.getUserById = getUserById;
 exports.getAllUsers = getAllUsers;
+exports.updateUserStatus = updateUserStatus;

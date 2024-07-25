@@ -121,6 +121,14 @@ const updateQuotePrice = async (req, res) => {
         .json({ message: "Partner not found", success: false });
     }
 
+    // Check if the partner is blocked or suspended
+    if (partnerUpdate.isBlocked || partnerUpdate.isSuspended) {
+      return res.status(400).json({
+        message: "Your account has been suspended or blocked! Please contact your admin.",
+        success: false
+      });
+    }
+
     // Ensure operators array exists and is not empty
     partnerUpdate.operators = partnerUpdate.operators || [];
 
@@ -317,6 +325,24 @@ const getAllPartners = async (req, res) => {
 };
 
 
+const updatePartnerStatus = async (req, res) => {
+  try {
+    const partnerId = req.params.id;
+    const { isBlocked, isSuspended } = req.body;
+
+    const partnerStatus = await partner.findByIdAndUpdate(partnerId, { isBlocked, isSuspended }, { new: true });
+
+    if (!partnerStatus) {
+      return res.status(404).json({ message: 'Partner not found' });
+    }
+
+    res.status(200).json({ success: true, data: partnerStatus });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating partner status', error: error.message });
+  }
+};
+
+
 /*****************************************
             Send OTP 
  *****************************************/
@@ -467,3 +493,4 @@ exports.deletedBookingRequest = deletedBookingRequest;
 exports.getTopPartners = getTopPartners;
 exports.handleBookingPaymentStatusUpdate = handleBookingPaymentStatusUpdate;
 exports.getAllPartners = getAllPartners;
+exports.updatePartnerStatus = updatePartnerStatus;

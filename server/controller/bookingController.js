@@ -2,6 +2,7 @@ const Booking = require("../Models/BookingModel");
 const updateOperatorsWithNewBooking = require("./partner/updateOperatorWithNewBooking");
 const Partner = require("../Models/partner/partnerModel");
 const mongoose = require('mongoose');
+const User = require("../Models/userModel");
 
 const createBooking = async (req, res) => {
   const {
@@ -23,6 +24,18 @@ const createBooking = async (req, res) => {
   } = req.body;
 
   try {
+    // Check if the user is suspended
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.isSuspended || user.isBlocked) {
+      return res.status(403).json({
+        message: "Your account has been suspended. Please contact your admin.",
+      });
+    }
+
     const booking = new Booking({
       unitType,
       name,

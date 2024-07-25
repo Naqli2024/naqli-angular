@@ -23,6 +23,15 @@ const userLogin = async (req, res) => {
         });
       }
 
+       // Check if the user is blocked
+    if (existEmail.isBlocked) {
+      return res.status(400).send({
+        message: "Your account is blocked",
+        success: false,
+        data: null,
+      });
+    }
+
          // Check if the user is verified
     if (!existEmail.isVerified) {
       return res.status(403).send({

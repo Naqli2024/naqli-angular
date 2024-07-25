@@ -37,5 +37,6 @@ router.post("/update-quote", partnerController.updateQuotePrice);
 router.delete("/:partnerId/booking-request/:bookingId", protect, partnerController.deletedBookingRequest);
 router.post("/filtered-vendors", partnerController.getTopPartners);
 router.get('/', partnerController.getAllPartners);
+router.put('/partners/:id/status', partnerController.updatePartnerStatus);
 
 module.exports = router;

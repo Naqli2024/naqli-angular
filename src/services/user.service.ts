@@ -32,4 +32,8 @@ export class UserService {
   getAllUsers():Observable<User[]> {
     return this.http.get<{ success: boolean, data: User[] }>(`${this.apiUrl}/users`).pipe(map(response => response.data));
   }
+
+  updateUserStatus(userId: string, status: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/users/${userId}/status`, status);
+  }
 }

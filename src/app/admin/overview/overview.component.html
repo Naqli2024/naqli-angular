@@ -53,25 +53,7 @@
       </div>
     </div>
     <div class="for-customers">
-      <div class="for-orders-head">
-        <h2>Customers</h2>
-        <div class="dropdown-filter">
-          <select (change)="onOrderOptionChange($event)" class="form-select">
-            <option
-              *ngFor="let option of options"
-              [value]="option"
-            >
-              {{ option }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="chart-container">
-        <canvas id="doughnutchart"></canvas>
-        <div id="chart-annotations" class="annotations-container">
-          
-        </div>
-      </div>
+      <app-customer-chart></app-customer-chart>
     </div>
   </div>
 </div>

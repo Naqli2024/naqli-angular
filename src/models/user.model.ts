@@ -16,9 +16,12 @@ export interface User {
     resetOTP?: string;
     otpExpiry?: Date;
     isAdmin: boolean;
+    isBlocked: boolean;
+    isSuspended: boolean;
     isVerified: boolean;
     notifications: Notification[];
     lastNotification:  Notification | null;
     createdAt: string;
     updatedAt: string;
+    selected?:boolean
   }

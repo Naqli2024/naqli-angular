@@ -161,13 +161,17 @@ export class PartnerBookingComponent implements OnInit {
       .updateQuotePrice(partnerId, bookingId, quotePrice)
       .subscribe(
         (response) => {
-          this.spinnerService.hide();
-          this.toastr.success(response.message);
+          if(response.success) {
+            this.spinnerService.hide();
+            this.toastr.success(response.message);
+          } else {
+            this.toastr.error(response.message);
+          }
         },
         (error) => {
           this.spinnerService.hide();
-          this.toastr.error('Failed to update quote price');
-          console.error('Error updating quote price', error);
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage, 'Error');
         }
       );
   }

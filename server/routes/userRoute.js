@@ -15,5 +15,6 @@ router.post('/forgot-password', forgotPasswordValidation, forgotPassword.forgotP
 router.post('/verify-otp-update-password', forgotPassword.verifyOTPAndUpdatePassword);
 router.get('/users/:id', userController.getUserById);
 router.get('/users', userController.getAllUsers);
+router.put('/users/:id/status', userController.updateUserStatus);
 
 module.exports = router;

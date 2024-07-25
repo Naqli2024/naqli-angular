@@ -25,9 +25,12 @@ export interface Partner {
   email: string;
   isAdmin: boolean;
   isVerified: boolean;
+  isBlocked: boolean;
+  isSuspended: boolean;
   operators: Operator[];
   notifications: Notification[];
   lastNotification: Notification | null;
   createdAt: string;
   updatedAt: string;
+  selected?:boolean
 }

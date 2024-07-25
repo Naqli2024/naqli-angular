@@ -1,27 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
-import { BookingService } from '../../../services/booking.service';
-import { Booking } from '../../../models/booking.model';
-import { CommonModule } from '@angular/common';
+import { Booking } from '../../../../models/booking.model';
 Chart.register(...registerables);
-import { format, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, endOfYear, isWithinInterval } from 'date-fns';
-import { CustomerChartComponent } from './customer-chart/customer-chart.component';
+import {
+  format,
+  startOfDay, 
+  endOfDay,
+  startOfWeek,
+  startOfMonth,
+  startOfYear,
+  endOfWeek,
+  endOfMonth,
+  endOfYear,
+  isWithinInterval,
+  parseISO,
+} from 'date-fns';
+import { BookingService } from '../../../../services/booking.service';
+import { UserService } from '../../../../services/user.service';
+import { User } from '../../../../models/user.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-overview',
+  selector: 'app-customer-chart',
   standalone: true,
-  imports: [CommonModule, CustomerChartComponent],
-  templateUrl: './overview.component.html',
-  styleUrl: './overview.component.css',
+  imports: [CommonModule],
+  templateUrl: './customer-chart.component.html',
+  styleUrl: './customer-chart.component.css',
 })
-
-export class OverviewComponent implements OnInit {
+export class CustomerChartComponent {
   bookings: Booking[] = [];
-  runningBookingsCount: number = 0;
-  bookingStatusCompletedCount: number = 0;
-  pendingPaymentsCount: number = 0;
-  pendingPayoutCount: number = 0;
-  options: string[] = ['All Time', 'This Week', 'This Month', 'This Year'];
+  users: User[] = [];
+  options: string[] = ['All Time', 'This Week', 'This Month', 'This Year', 'Today'];
   selectedCustomerOption: string = this.options[0];
   bookingData: any[] = [];
   labeldata: string[] = [];
@@ -29,65 +38,65 @@ export class OverviewComponent implements OnInit {
   colordata: string[] = [];
   chart: Chart<'doughnut', number[], string> | undefined;
 
-  constructor(private bookingService: BookingService) {}
+  constructor(private bookingService: BookingService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.bookingService.getAllBookings().subscribe((response) => {
       this.bookings = response;
       this.filterBookingsAndCount();
     });
+    this.userService.getAllUsers().subscribe((response) => {
+      this.users = response;
+    })
   }
 
-  onOrderOptionChange(event: Event): void {
+  onCustomerOptionChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     this.selectedCustomerOption = selectElement.value;
     this.filterBookingsAndCount();
   }
 
   filterBookingsAndCount(): void {
-    const filteredBookings = this.filterBookingsByTimePeriod(this.selectedCustomerOption);
-    console.log('Filtered Bookings:', filteredBookings);  // Log filtered bookings
+    const filteredBookings = this.filterBookingsByDate(this.bookings, this.selectedCustomerOption);
 
-    this.runningBookingsCount = filteredBookings.filter(
-      (booking) => booking.bookingStatus === 'Running'
-    ).length;
+    const userBookingCount = this.users.reduce((acc, user) => {
+      acc[user._id] = 0;
+      return acc;
+    }, {} as Record<string, number>);
 
-    this.bookingStatusCompletedCount = filteredBookings.filter(
-      (booking) => booking.bookingStatus === 'Completed'
-    ).length;
+    filteredBookings.forEach(booking => {
+      if (userBookingCount[booking.user]) {
+        userBookingCount[booking.user]++;
+      } else {
+        userBookingCount[booking.user] = 1;
+      }
+    });
 
-    this.pendingPaymentsCount = filteredBookings.filter(
-      (booking) =>
-        booking.paymentStatus === 'Pending' ||
-        booking.paymentStatus === 'HalfPaid'
-    ).length;
-
-    this.pendingPayoutCount = filteredBookings.filter(
-      (booking) => booking.payout !== 0
-    ).length;
+    const newUsers = this.users.filter(user => userBookingCount[user._id] === 0).length;
+    const constantUsers = this.users.filter(user => userBookingCount[user._id] > 1).length;
+    const otherUsers = this.users.filter(user => userBookingCount[user._id] === 1).length;
 
     this.bookingData = [
       {
-        label: 'All orders',
-        amount: filteredBookings.length,
+        label: 'All customers',
+        amount: this.users.length,
         colorcode: 'black'
       },
       {
-        label: 'Active',
-        amount: this.runningBookingsCount,
+        label: 'New',
+        amount: newUsers,
         colorcode: 'green',
       },
       {
-        label: 'Pending',
-        amount: this.pendingPaymentsCount,
+        label: 'Constant',
+        amount: constantUsers,
         colorcode: 'orange',
       },
       {
-        label: 'Finished',
-        amount: this.bookingStatusCompletedCount,
+        label: 'Other',
+        amount: otherUsers,
         colorcode: '#7F6AFF',
       },
-      { label: 'Cancelled', amount: 0, colorcode: 'red' },
     ];
 
     console.log('Booking Data:', this.bookingData);  // Log booking data
@@ -95,34 +104,37 @@ export class OverviewComponent implements OnInit {
     this.loadChartData();
   }
 
-  filterBookingsByTimePeriod(option: string): Booking[] {
+  filterBookingsByDate(bookings: Booking[], option: string): Booking[] {
     const now = new Date();
+    let startDate: Date;
+    let endDate: Date;
+
     switch (option) {
+      case 'Today':
+        startDate = startOfDay(now);
+        endDate = endOfDay(now);
+        break;
       case 'This Week':
-        return this.bookings.filter(booking =>
-          isWithinInterval(new Date(booking.createdAt), {
-            start: startOfWeek(now),
-            end: endOfWeek(now),
-          })
-        );
+        startDate = startOfWeek(now);
+        endDate = endOfWeek(now);
+        break;
       case 'This Month':
-        return this.bookings.filter(booking =>
-          isWithinInterval(new Date(booking.createdAt), {
-            start: startOfMonth(now),
-            end: endOfMonth(now),
-          })
-        );
+        startDate = startOfMonth(now);
+        endDate = endOfMonth(now);
+        break;
       case 'This Year':
-        return this.bookings.filter(booking =>
-          isWithinInterval(new Date(booking.createdAt), {
-            start: startOfYear(now),
-            end: endOfYear(now),
-          })
-        );
+        startDate = startOfYear(now);
+        endDate = endOfYear(now);
+        break;
       case 'All Time':
       default:
-        return this.bookings;
+        return bookings;
     }
+
+    return bookings.filter(booking => {
+      const bookingDate = parseISO(booking.createdAt);
+      return isWithinInterval(bookingDate, { start: startDate, end: endDate });
+    });
   }
 
   loadChartData() {
@@ -138,7 +150,7 @@ export class OverviewComponent implements OnInit {
     if (this.chart) {
       this.chart.destroy();
     }
-    this.chart = new Chart('doughnutchart', {
+    this.chart = new Chart('customerChart', {
       type: 'doughnut',
       data: {
         // labels: labeldata,
@@ -168,7 +180,7 @@ export class OverviewComponent implements OnInit {
   }
 
   renderAnnotations(labels: string[], values: number[], colors: string[]) {
-    const annotationsElement = document.getElementById('chart-annotations');
+    const annotationsElement = document.getElementById('customer-chart-annotations');
     if (!annotationsElement) {
       console.error('Annotations element not found');
       return;
@@ -182,7 +194,7 @@ export class OverviewComponent implements OnInit {
       const color = colors[index];
 
       const annotationDiv = document.createElement('div');
-      annotationDiv.classList.add('annotation');
+      annotationDiv.classList.add('customer-chart-annotation');
       annotationDiv.innerHTML = `
         <div class="circle-forData" style="background-color:${color};"></div>
         <div class="annotation-label">${label}</div>
