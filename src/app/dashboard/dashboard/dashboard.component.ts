@@ -27,11 +27,11 @@ import { User } from '../../../models/user.model';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
-export class DashboardComponent{
+export class DashboardComponent {
   menuItems: { name: string; route: string }[] = [];
   isAdmin: boolean = false; // Initial value
 
-  constructor(private userService: UserService,  private router: Router) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {
     const userId = localStorage.getItem('userId');
@@ -42,7 +42,7 @@ export class DashboardComponent{
       });
     } else {
       this.setMenuItems();
-      this.router.navigate(['/home/user/dashboard/booking']);  
+      this.router.navigate(['/home/user/dashboard/booking']);
     }
   }
 
@@ -55,8 +55,12 @@ export class DashboardComponent{
         { name: 'Partner', route: 'admin/partner' },
         { name: 'Payments', route: 'admin/payments' },
         { name: 'Payout', route: 'admin/payout' },
-        { name: 'Notification Management', route: 'admin/notification-management' },
+        {
+          name: 'Notification Management',
+          route: 'admin/notification-management',
+        },
         { name: 'Naqlee User', route: 'admin/naqlee-user' },
+        { name: 'Commission', route: 'admin/commission' },
       ];
     } else {
       this.menuItems = [

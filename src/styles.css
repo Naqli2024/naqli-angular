@@ -2549,3 +2549,18 @@ h2 {
     position: static;
   }
 }
+/**************commission*************/
+.commission-table input.form-control{
+  width: 50%; 
+  text-align: center !important; 
+  box-shadow: none;
+  box-sizing: border-box; 
+}
+.commission-table input.form-control:focus {
+  border-color: transparent;
+  outline: none; 
+}
+.commission-table td {
+  text-align: center; 
+  vertical-align: middle;
+}

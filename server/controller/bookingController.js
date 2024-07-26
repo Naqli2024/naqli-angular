@@ -137,6 +137,8 @@ const updateBookingPaymentStatus = async (req, res) => {
      // Calculate admin commission and payout
      const adminCommission = amount * 0.15;
      const payout = amount * 0.85;
+     const initialPayout = payout / 2;
+     const finalPayout = payout - initialPayout;
 
     // Calculate updated amounts
     let updatedPaymentAmount = booking.paymentAmount + amount;
@@ -157,6 +159,8 @@ const updateBookingPaymentStatus = async (req, res) => {
     booking.partner = partnerId;
     booking.adminCommission = (booking.adminCommission || 0) + adminCommission;
     booking.payout = (booking.payout || 0) + payout;
+    booking.initialPayout = (booking.initialPayout || 0) + initialPayout;
+    booking.finalPayout = (booking.finalPayout || 0) + finalPayout;
 
     // Update booking status if payment status is 'HalfPaid', 'Completed', or 'Paid'
     if (status === 'HalfPaid' || status === 'Completed' || status === 'Paid') {
@@ -282,9 +286,6 @@ const addAdditionalCharges = async (req, res) => {
     if (typeof additionalCharges !== 'number') {
       return res.status(400).json({ success: false, message: "Invalid additional charges amount" });
     }
-
-    // Log current booking details for debugging
-    console.log('Current booking details:', booking);
 
     // Ensure booking.remainingBalance and booking.additionalCharges are numbers
     if (typeof booking.remainingBalance !== 'number') {

@@ -7,6 +7,7 @@ const {
 const { v4: uuidv4 } = require("uuid");
 const { updateNaqleeUser } = require("../controller/admin/naqleeUserUpdate");
 const notificationController = require("../controller/admin/addNotificationController");
+const commissionController = require("../controller/admin/commissionController");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -66,5 +67,8 @@ router.post('/add-notification', notificationController.addNotification);
 router.get('/all-notifications', notificationController.getAllNotifications);
 router.put('/update/:notificationId', notificationController.updateNotification);
 router.delete('/delete/:notificationId', notificationController.deleteNotification);
+router.post('/add-commission', commissionController.addCommission);
+router.put('/update-commission/:userType', commissionController.updateCommission);
+router.get('/commissions', commissionController.getCommissions);
 
 module.exports = router;

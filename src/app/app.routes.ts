@@ -39,6 +39,7 @@ import { PayoutComponent } from './admin/payout/payout.component';
 import { AdminNotificationManagementComponent } from './admin/admin-notification-management/admin-notification-management.component';
 import { AdminUserComponent } from './admin/admin-user/admin-user.component';
 import { NaqleeUserComponent } from './admin/naqlee-user/naqlee-user.component';
+import { CommissionComponent } from './admin/commission/commission.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -106,6 +107,7 @@ export const routes: Routes = [
         component: AdminNotificationManagementComponent,
       },
       { path: 'admin/naqlee-user', component: NaqleeUserComponent },
+      { path: 'admin/commission', component: CommissionComponent },
     ],
   },
   { path: 'home/partner', component: PartnerComponent },
