@@ -12,12 +12,12 @@ const bookingRequestSchema = new mongoose.Schema({
   },
   paymentStatus: {
     type: String,
-    required: false
+    required: false,
   },
   bookingStatus: {
     type: String,
-    required: false
-  }
+    required: false,
+  },
 });
 
 const operatorSchema = new mongoose.Schema({
@@ -94,7 +94,12 @@ const partnerSchema = new mongoose.Schema(
     type: {
       type: String,
       required: true,
-      enum: ["enterprise", "multipleUnits", "singleUnit + operator", "operator"],
+      enum: [
+        "enterprise",
+        "multipleUnits",
+        "singleUnit + operator",
+        "operator",
+      ],
     },
     partnerName: {
       type: String,
@@ -127,11 +132,11 @@ const partnerSchema = new mongoose.Schema(
     },
     isBlocked: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isSuspended: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isVerified: { type: Boolean, default: false },
     operators: [operatorSchema],
@@ -150,7 +155,19 @@ const partnerSchema = new mongoose.Schema(
           default: Date.now,
         },
       },
-    ], 
+    ],
+    reportRequest: [
+      {
+        reportMessage: {
+          type: String,
+          required: true,
+        },
+        pictureOfTheReport: {
+          data: { type: Buffer },
+          contentType: { type: String, required: false },
+        },
+      },
+    ],
   },
   {
     timestamps: true,

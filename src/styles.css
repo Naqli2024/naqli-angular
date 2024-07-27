@@ -2564,3 +2564,106 @@ h2 {
   text-align: center; 
   vertical-align: middle;
 }
+/****************partner report*************/
+.report-container {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 60px 180px !important;
+}
+.report-container p {
+  text-align: center;
+  margin: 10px 0px !important;
+  font-size: 15px;
+}
+.report-container span {
+  color: rgb(7, 88, 237);
+}
+.report-container button {
+  margin: 30px 0px !important;
+}
+.report-container-footer {
+  margin-top: 130px;
+  text-align: center;
+  padding: 0px 40px;
+  font-size: 15px;
+  border-top: 1px solid #ddd;
+}
+.report-container-footer h2{
+  margin: 15px 0px;
+}
+.report-container-footer p {
+  font-size: 15px !important;
+}
+.report-container-footer span {
+  color: rgb(7, 88, 237);
+}
+.request-support-body {
+  padding: 30px;
+  margin: 0px 70px !important;
+}
+.request-support-body h2 {
+  text-align: center;
+}
+.drag-drop-zone {
+  width: 100%;
+  max-width: 300px;
+  height: 50px;
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+}
+.drag-drop-zone p {
+  margin-top: 12px !important;
+}
+.drag-drop-zone.dragover {
+  border-color: #3f51b5;
+}
+.request-support-body-p p{
+  padding: 10px 0px;
+  font-size: 14px;
+}
+.request-support-body-p span {
+  color: rgb(7, 88, 237);
+}
+.request-support-input {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.request-support-input label {
+  margin: 5px 0px;
+  font-size: 14px;
+}
+.request-support-input .form-control {
+  width: 100% !important;
+}
+.request-support-input input.form-control:focus{
+  border-color: #ddd;
+  box-shadow: none;
+}
+.report-textarea {
+  margin-top: 30px;
+}
+.report-textarea p {
+  font-size: 14px;
+}
+.drag-drop {
+  margin-top: 30px;
+}
+.drag-drop p {
+  font-size: 14px;
+}
+@media (max-width: 768px) {
+  .report-container {
+    margin: 50px 30px !important;
+  }
+  .report-container h2,p {
+    text-align: center;
+  }
+}

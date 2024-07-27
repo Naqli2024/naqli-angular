@@ -91,6 +91,18 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    reportRequest: [
+      {
+        reportMessage: {
+          type: String,
+          required: true,
+        },
+        pictureOfTheReport: {
+          data: { type: Buffer },
+          contentType: { type: String, required: false },
+        },
+      },
+    ],
   },
   {
     timestamps: true,
