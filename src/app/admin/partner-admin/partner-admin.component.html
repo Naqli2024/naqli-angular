@@ -15,7 +15,7 @@
         <thead>
           <tr>
             <th>
-              <input type="checkbox" (change)="toggleSelectAll($event)" />
+              <input type="checkbox" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
             </th>
             <th>Partner Name</th>
             <th>Partner ID</th>
@@ -27,7 +27,7 @@
         <tbody>
           <tr *ngFor="let partner of partners" [class.disabled]="partner.isBlocked || partner.isSuspended">
             <td>
-              <input type="checkbox" [(ngModel)]="partner.selected" />
+              <input type="checkbox" [(ngModel)]="partner.selected" (change)="updateSelectAllState()" />
             </td>
             <td>{{ partner.partnerName }}</td>
             <td>{{ partner._id }}</td>

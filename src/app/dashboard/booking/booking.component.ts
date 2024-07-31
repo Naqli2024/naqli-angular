@@ -16,6 +16,7 @@ interface Vendor {
   name: string;
   price: number | null;
   partnerid: string;
+  oldQuotePrice: number | null;
 }
 
 @Component({
@@ -102,6 +103,7 @@ export class BookingComponent implements OnInit {
                     name: vendor.partnerName,
                     price: vendor.quotePrice,
                     partnerId: vendor.partnerId,
+                    oldQuotePrice: vendor.oldQuotePrice
                   }));
               } else {
                 this.toastr.info('No filtered vendors found.');
@@ -185,6 +187,7 @@ export class BookingComponent implements OnInit {
                   name: vendor.partnerName,
                   price: vendor.quotePrice,
                   partnerId: vendor.partnerId,
+                  oldQuotePrice: vendor.oldQuotePrice
                 }));
 
                 // Count how many vendors with prices have been fetched
@@ -311,7 +314,7 @@ export class BookingComponent implements OnInit {
     }
   }
 
-  makePayment(event: Event, amount: number, status: string, partnerId: string) {
+  makePayment(event: Event, amount: number, status: string, partnerId: string, oldQuotePrice: number) {
     event.preventDefault();
 
     console.log(
@@ -331,7 +334,7 @@ export class BookingComponent implements OnInit {
       key: environment.stripePublicKey,
       locale: 'auto',
       token: (stripeToken: any) => {
-        this.processPayment(stripeToken, amount, status, partnerId);
+        this.processPayment(stripeToken, amount, status, partnerId, oldQuotePrice);
       },
     });
 
@@ -346,7 +349,8 @@ export class BookingComponent implements OnInit {
     stripeToken: any,
     amount: number,
     status: string,
-    partnerId: string
+    partnerId: string,
+    oldQuotePrice: number
   ) {
     this.checkout.makePayment(stripeToken).subscribe((data: any) => {
       if (data.success && this.bookingId) {
@@ -356,7 +360,8 @@ export class BookingComponent implements OnInit {
           this.bookingId,
           status,
           amount,
-          partnerId
+          partnerId,
+          oldQuotePrice
         );
         if (status === 'Completed' || 'HalfPaid') {
           this.router.navigate(['/home/user/dashboard/booking-history']);
@@ -398,7 +403,8 @@ export class BookingComponent implements OnInit {
     bookingId: string,
     status: string,
     amount: number,
-    partnerId: string
+    partnerId: string,
+    oldQuotePrice: number
   ) {
     if (!bookingId || typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid input for payment update');
@@ -416,7 +422,8 @@ export class BookingComponent implements OnInit {
         status,
         amount,
         partnerId,
-        this.totalAmount
+        this.totalAmount,
+        oldQuotePrice
       )
       .subscribe(
         (response) => {

@@ -48,7 +48,7 @@
             </div>
           </div>
           <div class="row" style="margin: 20px 0px">
-            <div class="col-md-6">
+            <div class="col-md-6 booking-inputs">
               <input
                 type="time"
                 class="form-control"
@@ -56,7 +56,7 @@
                 required
               />
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 booking-inputs">
               <input
                 type="date"
                 class="form-control"
@@ -66,7 +66,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 booking-inputs">
               <input
                 type="text"
                 class="form-control"
@@ -75,7 +75,7 @@
                 required
               />
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 booking-inputs">
               <select
                 class="form-select"
                 [ngModel]="bookingData.type[0]?.typeOfLoad"
@@ -177,9 +177,7 @@
             </div>
           </div>
         </div>
-        <div class="unit-map">
-          <app-map></app-map>
-        </div>
+        <div id="mapContainer" class="google-map-style"></div>
         <div class="buttons">
           <button
             type="submit"

@@ -46,7 +46,6 @@ export class OverviewComponent implements OnInit {
 
   filterBookingsAndCount(): void {
     const filteredBookings = this.filterBookingsByTimePeriod(this.selectedCustomerOption);
-    console.log('Filtered Bookings:', filteredBookings);  // Log filtered bookings
 
     this.runningBookingsCount = filteredBookings.filter(
       (booking) => booking.bookingStatus === 'Running'
@@ -89,9 +88,6 @@ export class OverviewComponent implements OnInit {
       },
       { label: 'Cancelled', amount: 0, colorcode: 'red' },
     ];
-
-    console.log('Booking Data:', this.bookingData);  // Log booking data
-
     this.loadChartData();
   }
 

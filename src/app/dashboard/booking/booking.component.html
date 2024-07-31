@@ -21,7 +21,7 @@
               [class.selected]="vendor === selectedVendor"
             >
               <span>{{ vendor.name }}</span>
-              <span class="vendor-price">$ {{ vendor.price }}</span>
+              <span class="vendor-price">{{ vendor.price }} SAR</span>
             </div>
           </label>
         </div>
@@ -36,17 +36,17 @@
             type="button"
             class="btn btn-pay-advance"
             (click)="
-              makePayment($event, (selectedVendor.price || 0) / 2, 'HalfPaid', selectedVendor.partnerId)
+              makePayment($event, (selectedVendor.price || 0) / 2, 'HalfPaid', selectedVendor.partnerId, selectedVendor.oldQuotePrice)
             "
           >
-            Pay Advance: {{ (selectedVendor.price || 0) / 2 }}
+            Pay Advance: {{ (selectedVendor.price || 0) / 2 }} SAR
           </button>
           <button
             type="button"
             class="btn btn-pay"
-            (click)="makePayment($event, selectedVendor.price, 'Completed', selectedVendor.partnerId)"
+            (click)="makePayment($event, selectedVendor.price, 'Paid', selectedVendor.partnerId, selectedVendor.oldQuotePrice)"
           >
-            Pay: {{ selectedVendor.price || 0 }}
+            Pay: {{ selectedVendor.price || 0 }} SAR
           </button>
         </div>
       </div>

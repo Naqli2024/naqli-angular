@@ -15,7 +15,7 @@
         <thead>
           <tr>
             <th>
-              <input type="checkbox" (change)="toggleSelectAll($event)" />
+              <input type="checkbox" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
             </th>
             <th>User name</th>
             <th>User id</th>
@@ -31,7 +31,7 @@
             [class.disabled]="user.isBlocked || user.isSuspended"
           >
             <td>
-              <input type="checkbox" [(ngModel)]="user.selected" />
+              <input type="checkbox" [(ngModel)]="user.selected" (change)="updateSelectAllState()" />
             </td>
             <td>{{ user.firstName }} {{ user.lastName }}</td>
             <td>{{ user._id }}</td>

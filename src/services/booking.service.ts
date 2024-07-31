@@ -32,7 +32,8 @@ export class BookingService {
     status: string,
     amount: number,
     partnerId: string,
-    totalAmount: number
+    totalAmount: number,
+    oldQuotePrice: number
 
   ): Observable<any> {
     let originalAmount: number;
@@ -59,8 +60,10 @@ export class BookingService {
       // originalAmount: originalAmount,
       // remainingBalance: remainingBalance,
       partnerId: partnerId,
-      totalAmount: totalAmount
+      totalAmount: totalAmount,
+      oldQuotePrice: oldQuotePrice
     };
+    console.log(payload)
     return this.http.put(
       `${this.apiUrl}/bookings/${bookingId}/payment`,
       payload,

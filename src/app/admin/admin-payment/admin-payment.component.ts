@@ -28,7 +28,6 @@ export class AdminPaymentComponent {
   ngOnInit(): void {
     this.getBookingsWithDetails().subscribe(data => {
       this.bookingsWithDetails = data;
-      console.log('Bookings with details:', this.bookingsWithDetails); // Ensure data structure
     });
   }
 

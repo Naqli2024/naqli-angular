@@ -99,8 +99,6 @@ export class CustomerChartComponent {
       },
     ];
 
-    console.log('Booking Data:', this.bookingData);  // Log booking data
-
     this.loadChartData();
   }
 

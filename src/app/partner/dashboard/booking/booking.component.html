@@ -76,7 +76,7 @@
                       getQuotePrice(booking._id)
                     )
                   "
-                  [disabled]="booking.paymentStatus === 'HalfPaid' || booking.paymentStatus === 'Completed'"
+                  [disabled]="booking.paymentStatus === 'HalfPaid' || booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid'"
                 >
                   Send
                 </button>

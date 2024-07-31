@@ -1,4 +1,7 @@
 const partner = require("../../Models/partner/partnerModel");
+const Booking = require("../../Models/BookingModel");
+const User = require("../../Models/userModel");
+const Commission = require("../../Models/commissionModel")
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const twilio = require("twilio");
@@ -205,6 +208,7 @@ const deletedBookingRequest = async (req, res) => {
 };
 
 
+
 const getTopPartners = async (req, res) => {
   const { unitType, unitClassification, subClassification, bookingId } = req.body;
 
@@ -249,19 +253,52 @@ const getTopPartners = async (req, res) => {
     }, []);
 
     // Flatten the results into the desired format
-    const results = filteredPartners.flatMap(partner =>
-      partner.operators.flatMap(operator =>
-        operator.bookingRequest.map(booking => ({
-          partnerId: partner.partnerId,
-          partnerName: partner.partnerName,
-          quotePrice: booking.quotePrice,
-          unitType: operator.unitType,
-          unitClassification: operator.unitClassification,
-          subClassification: operator.subClassification,
-          bookingId: booking.bookingId,
-        }))
-      )
-    );
+    const results = [];
+    for (const partner of filteredPartners) {
+      for (const operator of partner.operators) {
+        for (const booking of operator.bookingRequest) {
+          // Fetch user details from booking collection
+          const bookingDetails = await Booking.findById(booking.bookingId);
+          if (!bookingDetails) {
+            throw new Error('Booking not found');
+          }
+          const userId = bookingDetails.user;
+          
+          // Fetch user details from User collection
+          const user = await User.findById(userId);
+          if (!user) {
+            throw new Error('User not found');
+          }
+
+          const accountType = user.accountType;
+
+          // Fetch commission rate from Commission collection
+          const commission = await Commission.findOne({ userType: accountType });
+          if (!commission) {
+            throw new Error('Commission rate not found');
+          }
+
+          // Convert commission rate percentage to a decimal
+          const commissionRate = commission.commissionRate / 100;
+          const quotePrice = booking.quotePrice;
+          const quotePriceWithCommission = quotePrice * commissionRate;
+
+          // Calculate the final quote price with commission if quotePrice is not null
+          const finalQuotePrice = quotePrice != null ? (quotePrice + quotePriceWithCommission) : quotePrice;
+
+          results.push({
+            partnerId: partner.partnerId,
+            partnerName: partner.partnerName,
+            quotePrice: finalQuotePrice,
+            unitType: operator.unitType,
+            unitClassification: operator.unitClassification,
+            subClassification: operator.subClassification,
+            bookingId: booking.bookingId,
+            oldQuotePrice: quotePrice
+          });
+        }
+      }
+    }
 
     // Sort results by quotePrice in ascending order and take the top 3
     const topResults = results.sort((a, b) => a.quotePrice - b.quotePrice).slice(0, 3);
@@ -280,6 +317,7 @@ const getTopPartners = async (req, res) => {
     });
   }
 };
+
 
 
 

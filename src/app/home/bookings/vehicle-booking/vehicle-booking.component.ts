@@ -10,6 +10,7 @@ import { BookingService } from '../../../../services/booking.service';
 import { SpinnerService } from '../../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { MapComponent } from '../../../map/map.component';
+import { MapService } from '../../../../services/map.service';
 
 @Component({
   selector: 'app-vehicle-booking',
@@ -51,7 +52,8 @@ export class VehicleBookingComponent implements OnInit {
     private modalService: NgbModal,
     private bookingService: BookingService,
     private spinnerService: SpinnerService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private mapService: MapService
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +68,20 @@ export class VehicleBookingComponent implements OnInit {
         this.selectedOptions[vehicle.name] = null;
       });
     });
+    // Initialize the map in a specific container
+    this.mapService.initializeMapInContainer('mapContainer');
+    // Listen to changes and recalculate route
+    this.updateRoute();
+  }
+
+  updateRoute(): void {
+    // Check if pickup and at least one drop point are set
+    if (this.bookingData.pickup && this.bookingData.dropPoints.length > 0) {
+      const start = this.bookingData.pickup;
+      const waypoints = this.bookingData.dropPoints.slice(0, -1); // All except the last one
+      const end = this.bookingData.dropPoints[this.bookingData.dropPoints.length - 1]; // Last drop point
+      this.mapService.calculateRoute(start, waypoints, end);
+    }
   }
 
   toggleOptions(vehicleName: string): void {
@@ -202,11 +218,13 @@ export class VehicleBookingComponent implements OnInit {
 
   addInputField(): void {
     this.bookingData.dropPoints.push('');
+    this.updateRoute(); // Recalculate route on adding a new drop point
   }
 
   removeInputField(index: number): void {
     if (this.bookingData.dropPoints.length > 1) {
       this.bookingData.dropPoints.splice(index, 1);
+      this.updateRoute(); // Recalculate route on removing a drop point
     }
   }
 

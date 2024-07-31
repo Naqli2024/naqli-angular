@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 export class PartnerAdminComponent {
   partners: Partner[] = [];
   options: string[] = ['More Options', 'Block Partner', 'Suspend Partner', 'Reactivate Partner'];
+  isAllSelected: boolean = false; // Track the "Select All" checkbox state
 
   constructor(private partnerService: PartnerService, private toastr: ToastrService) {}
 
@@ -27,6 +28,7 @@ export class PartnerAdminComponent {
     this.partnerService.getAllPartners().subscribe((response: any) => {
       if (response && response.data) {
         this.partners = response.data;
+        this.updateSelectAllState(); // Update "Select All" checkbox state after loading partners
       } else {
         console.error('Invalid response format from backend');
       }
@@ -76,5 +78,10 @@ export class PartnerAdminComponent {
   toggleSelectAll(event: any): void {
     const isChecked = event.target.checked;
     this.partners.forEach(partner => partner.selected = isChecked);
+    this.isAllSelected = isChecked;
+  }
+
+  updateSelectAllState(): void {
+    this.isAllSelected = this.partners.length > 0 && this.partners.every(partner => partner.selected);
   }
 }

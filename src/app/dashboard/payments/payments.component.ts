@@ -14,17 +14,18 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './payments.component.html',
-  styleUrl: './payments.component.css'
+  styleUrl: './payments.component.css',
 })
-export class PaymentsComponent implements OnInit{
+export class PaymentsComponent implements OnInit {
   bookings: Booking[] = [];
   paymentHandler: any = null;
   bookingId: any;
   totalAmount: number = 0;
+  oldQuotePrice: number = 0;
 
   constructor(
     private bookingService: BookingService,
-    private toastr: ToastrService, 
+    private toastr: ToastrService,
     private authService: AuthService,
     private spinnerService: SpinnerService,
     private checkout: checkoutService,
@@ -61,22 +62,38 @@ export class PaymentsComponent implements OnInit{
     }
   }
 
-  makePayment(event: Event, remainingBalance: number, status: string, partnerId: string, bookingId: string) {
+  makePayment(
+    event: Event,
+    remainingBalance: number,
+    status: string,
+    partnerId: string,
+    bookingId: string
+  ) {
     event.preventDefault();
-  
-    if (typeof remainingBalance !== 'number' || remainingBalance <= 0 || !status) {
+
+    if (
+      typeof remainingBalance !== 'number' ||
+      remainingBalance <= 0 ||
+      !status
+    ) {
       this.toastr.error('Invalid payment amount or status');
       return;
     }
-  
+
     const paymentHandler = (<any>window).StripeCheckout.configure({
       key: environment.stripePublicKey,
       locale: 'auto',
       token: (stripeToken: any) => {
-        this.processPayment(stripeToken, remainingBalance, status, partnerId, bookingId);
+        this.processPayment(
+          stripeToken,
+          remainingBalance,
+          status,
+          partnerId,
+          bookingId
+        );
       },
     });
-  
+
     paymentHandler.open({
       name: 'Naqli',
       description: 'Naqli Transportation',
@@ -84,11 +101,22 @@ export class PaymentsComponent implements OnInit{
     });
   }
 
-  processPayment(stripeToken: any, remainingBalance: number, status: string, partnerId: string, bookingId: string) {
+  processPayment(
+    stripeToken: any,
+    remainingBalance: number,
+    status: string,
+    partnerId: string,
+    bookingId: string
+  ) {
     this.checkout.makePayment(stripeToken).subscribe((data: any) => {
       if (data.success && bookingId) {
         this.toastr.success(data.message);
-        this.updateBookingPaymentStatus(bookingId, status, remainingBalance, partnerId);
+        this.updateBookingPaymentStatus(
+          bookingId,
+          status,
+          remainingBalance,
+          partnerId
+        );
         if (status === 'Completed' || status === 'HalfPaid') {
           this.router.navigate(['/home/user/dashboard/booking-history']);
         }
@@ -125,21 +153,38 @@ export class PaymentsComponent implements OnInit{
     }
   }
 
-  updateBookingPaymentStatus(bookingId: string, status: string, amount: number, partnerId: string) {
-    console.log(this.totalAmount)
-    if(status == 'HalfPaid') {
-      this.totalAmount = amount*2;
+  updateBookingPaymentStatus(
+    bookingId: string,
+    status: string,
+    amount: number,
+    partnerId: string
+  ) {
+    console.log(this.totalAmount);
+    if (status == 'HalfPaid') {
+      this.totalAmount = amount * 2;
     } else {
       this.totalAmount = amount;
     }
-    this.bookingService.updateBookingPaymentStatus(bookingId, status, amount, partnerId, this.totalAmount).subscribe(
-      (response) => {
-        console.log('Booking payment status updated successfully:', response);
-      },
-      (error) => {
-        console.error('Error updating booking payment status:', error);
-        this.toastr.error(error.error?.message || 'Failed to update booking payment status', 'Error');
-      }
-    );
+    this.bookingService
+      .updateBookingPaymentStatus(
+        bookingId,
+        status,
+        amount,
+        partnerId,
+        this.totalAmount,
+        this.oldQuotePrice
+      )
+      .subscribe(
+        (response) => {
+          console.log('Booking payment status updated successfully:', response);
+        },
+        (error) => {
+          console.error('Error updating booking payment status:', error);
+          this.toastr.error(
+            error.error?.message || 'Failed to update booking payment status',
+            'Error'
+          );
+        }
+      );
   }
 }

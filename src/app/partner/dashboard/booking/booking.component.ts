@@ -135,7 +135,7 @@ export class PartnerBookingComponent implements OnInit {
 
   navigateToConfirmPayment(bookingId: string): void {
     const booking = this.bookings.find(b => b._id === bookingId);
-    if (booking && (booking.paymentStatus === 'HalfPaid' || booking.paymentStatus === 'Completed')){
+    if (booking && (booking.paymentStatus === 'HalfPaid' || booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid')){
       this.router.navigate(
         ['/home/partner/dashboard/booking/confirm-payment'],
         {
