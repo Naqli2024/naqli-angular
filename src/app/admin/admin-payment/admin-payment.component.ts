@@ -8,6 +8,8 @@ import { Partner } from '../../../models/partnerData.model';
 import { forkJoin, Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UserDetailsComponent } from './user-details/user-details.component';
 
 @Component({
   selector: 'app-admin-payment',
@@ -22,7 +24,8 @@ export class AdminPaymentComponent {
   constructor(
     private bookingService: BookingService,
     private userService: UserService,
-    private partnerService: PartnerService
+    private partnerService: PartnerService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -51,5 +54,16 @@ export class AdminPaymentComponent {
         );
       })
     );
+  }
+
+  userBookingDetails(bookingId: string): void {
+    const modalRef = this.modalService.open(UserDetailsComponent, {
+      size: 'xl',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
+    modalRef.componentInstance.bookingId = bookingId;
   }
 }

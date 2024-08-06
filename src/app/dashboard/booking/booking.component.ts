@@ -17,6 +17,12 @@ interface Vendor {
   price: number | null;
   partnerid: string;
   oldQuotePrice: number | null;
+  unitName: string;
+  unitClassificationName: string;
+  unitSubClassificationName: string;
+  operatorFirstName: string;
+  operatorLastName: string;
+  operatorMobileNo: string;
 }
 
 @Component({
@@ -29,7 +35,7 @@ interface Vendor {
 export class BookingComponent implements OnInit {
   @ViewChild('payAdvanceModal') payAdvanceModal?: TemplateRef<any>;
   vendors: Vendor[] = [];
-  bookingId!: string;
+  bookingId!: string | null;
   @ViewChild('cancelBookingModal', { static: true }) cancelBookingModal: any;
   private modalRef: NgbModalRef | null = null;
   selectedVendor: any;
@@ -41,6 +47,10 @@ export class BookingComponent implements OnInit {
   subClassification: string = '';
   polling = true;
   totalAmount: number = 0;
+  bookingInformation: boolean = false;
+  bookingDetails: any = null;
+  partnerDetails: any = null;;
+  combinedDetails: any = null;
 
   constructor(
     private modalService: NgbModal,
@@ -55,14 +65,14 @@ export class BookingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const params = this.route.snapshot.queryParams;
-    this.bookingId = params['bookingId'];
+    this.bookingId = localStorage.getItem('bookingId');
     console.log('Booking ID:', this.bookingId);
 
     if (this.bookingId) {
       this.invokeStripe();
       this.fetchBookings();
       this.getTopPartners();
+      this.getBookings(this.bookingId)
     } else {
       this.toastr.error('Booking ID is missing');
     }
@@ -90,8 +100,18 @@ export class BookingComponent implements OnInit {
             subClassification: this.subClassification,
             bookingId: this.bookingId,
           };
-          this.pollForQuotePrices(requestBody);
-          this.showFindingOperatorsMessage();
+
+          if (
+            bookingData.paymentStatus === 'HalfPaid' ||
+            bookingData.paymentStatus === 'Completed' ||
+            bookingData.paymentStatus === 'Paid'
+          ) {
+            this.bookingInformation = true;
+            return;
+          } else {
+            this.pollForQuotePrices(requestBody);
+            this.showFindingOperatorsMessage();
+          }
 
           this.partnerService.getTopPartners(requestBody).subscribe(
             (response) => {
@@ -103,7 +123,7 @@ export class BookingComponent implements OnInit {
                     name: vendor.partnerName,
                     price: vendor.quotePrice,
                     partnerId: vendor.partnerId,
-                    oldQuotePrice: vendor.oldQuotePrice
+                    oldQuotePrice: vendor.oldQuotePrice,
                   }));
               } else {
                 this.toastr.info('No filtered vendors found.');
@@ -148,6 +168,7 @@ export class BookingComponent implements OnInit {
 
   pollForQuotePrices(requestBody: any) {
     const pollInterval = 5000; // Poll every 5 seconds
+    const pollTimeout = 3 * 60 * 1000; // 3 minutes in milliseconds
     let numVendorsNeeded = 3; // Number of vendors needed
     let numVendorsFetched = 0; // Number of vendors with prices fetched
     let toastrRef: ActiveToast<any> | undefined; // Store the ActiveToast reference
@@ -187,7 +208,7 @@ export class BookingComponent implements OnInit {
                   name: vendor.partnerName,
                   price: vendor.quotePrice,
                   partnerId: vendor.partnerId,
-                  oldQuotePrice: vendor.oldQuotePrice
+                  oldQuotePrice: vendor.oldQuotePrice,
                 }));
 
                 // Count how many vendors with prices have been fetched
@@ -225,6 +246,17 @@ export class BookingComponent implements OnInit {
       }
     };
 
+    // Set a timeout to stop polling after 3 minutes
+    setTimeout(() => {
+      this.polling = false; // Stop polling
+      if (toastrRef) {
+        this.toastr.clear(toastrRef.toastId); // Clear the Toastr message
+      }
+      this.fetchedVendors = true;
+      this.toastr.info('Now these vendors are only available. You can select.');
+    }, pollTimeout);
+
+    this.polling = true; // Start polling
     poll(); // Start polling initially
   }
 
@@ -314,7 +346,13 @@ export class BookingComponent implements OnInit {
     }
   }
 
-  makePayment(event: Event, amount: number, status: string, partnerId: string, oldQuotePrice: number) {
+  makePayment(
+    event: Event,
+    amount: number,
+    status: string,
+    partnerId: string,
+    oldQuotePrice: number
+  ) {
     event.preventDefault();
 
     console.log(
@@ -334,7 +372,13 @@ export class BookingComponent implements OnInit {
       key: environment.stripePublicKey,
       locale: 'auto',
       token: (stripeToken: any) => {
-        this.processPayment(stripeToken, amount, status, partnerId, oldQuotePrice);
+        this.processPayment(
+          stripeToken,
+          amount,
+          status,
+          partnerId,
+          oldQuotePrice
+        );
       },
     });
 
@@ -364,7 +408,8 @@ export class BookingComponent implements OnInit {
           oldQuotePrice
         );
         if (status === 'Completed' || 'HalfPaid') {
-          this.router.navigate(['/home/user/dashboard/booking-history']);
+          this.bookingInformation = true;
+          window.location.reload();
         }
       } else {
         this.toastr.error(data.message);
@@ -428,6 +473,7 @@ export class BookingComponent implements OnInit {
       .subscribe(
         (response) => {
           this.spinnerService.hide();
+          this.bookingInformation = true;
           console.log('Booking payment status updated successfully:', response);
         },
         (error) => {
@@ -440,4 +486,64 @@ export class BookingComponent implements OnInit {
         }
       );
   }
+
+  getBookings(bookingId: string): void {
+    // this.spinnerService.show();
+    this.bookingService.getBookingsByBookingId(bookingId).subscribe(
+      (response) => {
+        if (response.success) {
+          this.bookingDetails = response.data;
+          this.getPartnerDetails(this.bookingDetails.partner);
+        } else {
+          this.spinnerService.hide();
+          this.toastr.error('Failed to fetch bookings');
+        }
+      },
+      (error) => {
+        this.spinnerService.hide();
+        this.toastr.error('Failed to fetch bookings', error);
+      }
+    );
+  }
+
+  getPartnerDetails(partnerId: string): void {
+    this.partnerService.getPartnerDetails(partnerId).subscribe(
+      (response) => {
+        if (response.success) {
+          this.partnerDetails = response.data;
+          this.combineBookingAndPartnerDetails();
+          this.spinnerService.hide();
+        } else {
+          this.spinnerService.hide();
+          this.toastr.error('Failed to fetch partner details');
+        }
+      },
+      (error) => {
+        this.spinnerService.hide();
+      }
+    );
+  }
+
+  combineBookingAndPartnerDetails(): void {
+    if (this.partnerDetails.operators && this.partnerDetails.operators.length > 0) {
+      const operator = this.partnerDetails.operators[0]; // Assuming you want the first operator
+      this.combinedDetails = {
+        booking: this.bookingDetails,
+        partner: {
+          ...this.partnerDetails,
+          operatorFirstName: operator.firstName,
+          operatorLastName: operator.lastName,
+          operatorMobileNo: operator.mobileNo,
+          unitClassificationName: operator.unitClassification,
+          unitSubClassificationName: operator.subClassification,
+        },
+      };
+    } else {
+      this.combinedDetails = {
+        booking: this.bookingDetails,
+        partner: this.partnerDetails,
+      };
+    }
+  }
+
 }

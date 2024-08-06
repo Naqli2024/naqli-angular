@@ -24,6 +24,8 @@ export interface Booking {
     adminCommission: number;
     payout: number;
     initialPayout: number;
+    additionalCharges: number;
+    additionalChargesReason: string[];
     finalPayout: number;
     createdAt: string;
   }

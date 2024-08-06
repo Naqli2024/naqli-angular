@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="col-md-5 right-div">
-      <div class="input-container">
+      <div class="input-container" *ngIf="!bookingInformation">
         <div class="input-field" *ngFor="let vendor of vendors">
           <label>
             <input type="radio" name="vendor" (change)="onSelect(vendor)" />
@@ -31,12 +31,21 @@
           (click)="openBookingCancelModal($event)"
           >Cancel Request</a
         >
-        <div class="modal-footer cancel-booking-btns" *ngIf="selectedVendor && fetchedVendors">
+        <div
+          class="modal-footer cancel-booking-btns"
+          *ngIf="selectedVendor && fetchedVendors"
+        >
           <button
             type="button"
             class="btn btn-pay-advance"
             (click)="
-              makePayment($event, (selectedVendor.price || 0) / 2, 'HalfPaid', selectedVendor.partnerId, selectedVendor.oldQuotePrice)
+              makePayment(
+                $event,
+                (selectedVendor.price || 0) / 2,
+                'HalfPaid',
+                selectedVendor.partnerId,
+                selectedVendor.oldQuotePrice
+              )
             "
           >
             Pay Advance: {{ (selectedVendor.price || 0) / 2 }} SAR
@@ -44,10 +53,59 @@
           <button
             type="button"
             class="btn btn-pay"
-            (click)="makePayment($event, selectedVendor.price, 'Paid', selectedVendor.partnerId, selectedVendor.oldQuotePrice)"
+            (click)="
+              makePayment(
+                $event,
+                selectedVendor.price,
+                'Paid',
+                selectedVendor.partnerId,
+                selectedVendor.oldQuotePrice
+              )
+            "
           >
             Pay: {{ selectedVendor.price || 0 }} SAR
           </button>
+        </div>
+      </div>
+      <div *ngIf="bookingInformation">
+        <div class="input-container">
+          <div class="vendor-info">
+            <p>
+              Vendor Name <span>{{ combinedDetails.partner?.partnerName }}</span>
+            </p>
+
+            <p>
+              Operator Name
+              <span
+                >{{ combinedDetails.partner?.operatorFirstName }}
+                {{ combinedDetails.partner?.operatorLastName }}
+                </span
+              >
+            </p>
+            <p>
+              Operator Mobile <span>{{ combinedDetails.partner?.operatorMobileNo }}</span>
+            </p>
+            <p>
+              Unit<span
+                >{{
+                  combinedDetails.partner?.unitClassificationName
+                }}-{{
+                  combinedDetails.partner?.unitSubClassificationName
+                }}</span
+              >
+            </p>
+            <p>
+              Booking Status <span>{{ combinedDetails.booking?.bookingStatus }}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="vendor-info-last" *ngFor="let booking of combinedDetails.booking.bookings">
+          <h2>Pending Amount</h2>
+          <p>{{ booking.remainingBalance }}</p>
+        </div>
+        <div class="modal-footer cancel-booking-btns">
+          <p style="color: forestgreen">Booking Successful!</p>
         </div>
       </div>
     </div>

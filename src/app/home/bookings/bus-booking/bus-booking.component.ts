@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SpinnerService } from '../../../../services/spinner.service';
 import { BookingService } from '../../../../services/booking.service';
 import { MapComponent } from '../../../map/map.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-bus-booking',
@@ -45,7 +46,8 @@ export class BusBookingComponent implements OnInit {
     private modalService: NgbModal,
     private spinnerService: SpinnerService,
     private toastr: ToastrService,
-    private bookingService: BookingService
+    private bookingService: BookingService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -144,6 +146,17 @@ export class BusBookingComponent implements OnInit {
           if (response && response._id) {
             this.toastr.success(response.message, 'Booking Successful!');
             this.clearForm();
+            // Check if there is an existing bookingId in localStorage
+            const existingBookingId = localStorage.getItem('bookingId');
+            if (existingBookingId) {
+              console.log(
+                `Replacing existing bookingId: ${existingBookingId} with new bookingId: ${response._id}`
+              );
+            }
+
+            // Set the new bookingId in localStorage, replacing the old one
+            localStorage.setItem('bookingId', response._id);
+            this.router.navigate(['/home/user/dashboard/booking']);
             this.openBookingModal(response._id);
           } else {
             this.toastr.error(response.message, 'Booking Failed!');

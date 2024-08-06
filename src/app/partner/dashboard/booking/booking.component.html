@@ -9,6 +9,7 @@
           <tr>
             <th>Booked</th>
             <th>Booking No</th>
+            <th>Additional Labour</th>
             <th>Quote Price</th>
             <th>Date</th>
             <th>Time</th>
@@ -25,11 +26,12 @@
                 {{ users[booking.user]?.lastName }}
               </td>
               <td
-                class="align-middle"
+                class="align-middle bookingId"
                 (click)="navigateToConfirmPayment(booking._id)"
               >
                 <a style="cursor: pointer">{{ booking._id }}</a>
               </td>
+              <td>{{ booking.additionalLabour }}</td>
               <td class="align-middle">
                 <input
                   type="text"

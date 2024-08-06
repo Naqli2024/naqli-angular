@@ -21,7 +21,7 @@
           <tbody>
             <tr *ngFor="let item of bookingsWithDetails">
                 <td>{{ item.user.firstName }} {{ item.user.lastName }}</td>
-                <td>{{ item.booking._id }}</td>
+                <td class="bookingId" (click)="userBookingDetails(item.booking._id)">{{ item.booking._id }}</td>
                 <td>{{ item.booking.name }}</td>
                 <td>{{ item.booking.type[0]?.typeName }}</td>
                 <td>{{ item.partner.data.partnerName }}</td>

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { type } = require("os");
 
 const userSchema = new mongoose.Schema(
   {
@@ -97,10 +98,27 @@ const userSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
+        responseMessage: {
+          type: String,
+          required: false,
+        },
         pictureOfTheReport: {
           data: { type: Buffer },
           contentType: { type: String, required: false },
+          fileName: { type: String, required: false },
         },
+        isOpen: {
+          type: Boolean,
+          default: false
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+        name: {
+          type: String,
+          required: true,
+        }
       },
     ],
   },

@@ -177,7 +177,7 @@ const updateBookingPaymentStatus = async (req, res) => {
     } else if (status === "Completed") {
       netAmount = amount; // No need to deduct admin commission again
       booking.remainingBalance = 0;
-      booking.finalPayout = netAmount; // Store the final payout
+      booking.finalPayout += netAmount; // Store the final payout
     } else if (status === "Paid"){
       netAmount = totalAmount - booking.adminCommission;
       booking.remainingBalance = 0;

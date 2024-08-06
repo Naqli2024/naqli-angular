@@ -66,8 +66,22 @@ body {
   align-items: center;
 }
 
-.notification-icon .fa-bell {
+.notification-icon {
   font-size: 20px !important;
+  display: inline-block !important;
+  position: relative !important;
+}
+.notification-icon .badge {
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  border-radius: 50%;
+  margin-left: -18px;
+  margin-top: 3px;
+}
+.notification-icon:hover {
+  cursor: pointer;
 }
 
 .hamburger {
@@ -136,6 +150,38 @@ body {
 .dropdown.show .dropdown-content {
   display: block;
 }
+.parent-container {
+  display: flex !important;
+  justify-content: center !important;  
+  align-items: center !important;
+}
+.notifications-dropdown {
+  display: none;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 450px; /* Adjust width as needed */
+  margin-top: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.notifications-dropdown.show {
+  display: block;
+}
+
+.notification-item {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
 
 @media (max-width: 768px) {
   .navbar {
@@ -144,6 +190,14 @@ body {
 
   .centered-links {
     display: none;
+  }
+  .hamburger-centered-links {
+    display: flex !important;
+    margin: 0px auto !important;
+  }
+  .hamburger-sub-links {
+    display: flex;
+    margin: 0px auto;
   }
 
   .right-side-elements {
@@ -163,6 +217,20 @@ body {
   .hamburger-menu .notification-icon {
     width: auto;
     padding: 0.5rem;
+  }
+
+  .notification-icon .badge {
+    font-size: 9px;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    border-radius: 50%;
+    margin-left: -8px;
+    margin-top: 11px;
+  }
+  .notifications-dropdown {
+    width: 250px;
+    margin-top: 10px;
   }
 }
 /**********Login Page***********/
@@ -1879,6 +1947,12 @@ input[type="checkbox"] {
   overflow-x: auto;
 }
 
+.bookingId {
+  text-decoration: underline;
+  color: #7B0864 !important;
+  cursor: pointer;
+}
+
 .table th,
 .table td {
   white-space: nowrap;
@@ -2660,5 +2734,151 @@ h2 {
   .report-container h2,
   p {
     text-align: center;
+  }
+}
+
+/***********************Support tickets********************/
+.status-button {
+  border: none;
+  padding: 5px 25px;
+  border-radius: 3px;
+  color: white;
+  font-size: 13px
+}
+.status-button.open {
+  background-color: #07A236;
+}
+.status-button.closed {
+  background-color: #C10909;
+}
+.ticket-icon {
+  color: #727272; 
+  padding: 3px 4px; 
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1); 
+  border-radius: 3px;
+  margin: 0px 5px;
+  cursor: pointer;
+}
+.ticket-form {
+  padding: 10px 60px !important;
+  border-radius: 5px;
+  box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 20px 0px;
+  overflow-y: auto;
+  width: 100%;
+}
+.ticket-form-row {
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+.ticket-form-row input {
+  border: 1px solid #ddd !important;
+}
+.ticket-form-row input:focus {
+  border-color: #7e7e7e !important;
+  box-shadow: none !important;
+}
+.ticket-form-row-head {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row !important;
+}
+.ticket-form-row:last-child {
+  border-bottom: none;
+}
+.ticket-form-row label {
+  font-weight: 600;
+}
+.ticket-form-row-p {
+  text-align: end;
+  font-size: 12px;
+  margin-top: -12px;
+}
+.status-open {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 3px;
+  background-color: #07A236;;
+  color: white;
+}
+.status-closed {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 3px;
+  background-color: #C10909;
+  color: white;
+}
+.back-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  margin: 50px 0px;
+}
+.btn-open {
+  background-color: #07A236;;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 25%;
+  margin: 30px 0px;
+}
+.btn-closed {
+  background-color: #C10909;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 25%;
+  margin: 30px 0px;
+}
+.open {
+  color: #07A236;;
+}
+.closed {
+  color: #C10909;
+}
+.delete-modal-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0px;
+}
+.delete-modal-body p {
+  margin: 20px 0px;
+  color: #000;
+}
+@media (max-width: 768px) {
+  .ticket-form {
+    padding: 10px 10px !important;
+    margin: 5px;
+  }
+  .ticket-form-row {
+    margin: 5px 0;
+    padding: 5px 0;
+  }
+  .ticket-form-row input {
+    margin-bottom: 5px;
+    width: 100%;
+  }
+  .ticket-form-row-head {
+    flex-direction: column;
+  }
+  .btn-open, .btn-closed {
+    width: 100%;
+    margin: 10px 0;
+  }
+  .back-button {
+    font-size: 14px;
+    margin: 10px 0;
   }
 }

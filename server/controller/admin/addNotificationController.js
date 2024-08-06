@@ -264,7 +264,50 @@ const getAllNotifications = async (req, res) => {
   }
 };
 
+const getNotificationById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if the ID belongs to a user
+    const user = await User.findOne({ _id: id });
+    if (user) {
+      const userNotifications = user.notifications.map((notification) => ({
+        messageTitle: notification.messageTitle,
+        messageBody: notification.messageBody,
+        notificationId: notification._id,
+        createdAt: notification.createdAt,
+        userId: user._id,
+        userName: `${user.firstName} ${user.lastName}`,
+      }));
+
+      return res.status(200).json({ success: true, data: userNotifications });
+    }
+
+    // Check if the ID belongs to a partner
+    const partner = await Partner.findOne({ _id: id });
+    if (partner) {
+      const partnerNotifications = partner.notifications.map((notification) => ({
+        messageTitle: notification.messageTitle,
+        messageBody: notification.messageBody,
+        notificationId: notification._id,
+        createdAt: notification.createdAt,
+        partnerId: partner._id,
+        partnerName: partner.partnerName,
+      }));
+
+      return res.status(200).json({ success: true, data: partnerNotifications });
+    }
+
+    // If neither a user nor a partner is found, return 404
+    return res.status(404).json({ message: "User or Partner not found" });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server Error', error: error.message });
+  }
+};
+
 exports.addNotification = addNotification;
 exports.getAllNotifications = getAllNotifications;
 exports.updateNotification = updateNotification;
 exports.deleteNotification = deleteNotification;
+exports.getNotificationById = getNotificationById;

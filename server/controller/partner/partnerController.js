@@ -294,7 +294,10 @@ const getTopPartners = async (req, res) => {
             unitClassification: operator.unitClassification,
             subClassification: operator.subClassification,
             bookingId: booking.bookingId,
-            oldQuotePrice: quotePrice
+            oldQuotePrice: quotePrice,
+            operatorFirstName: operator.firstName,
+            operatorLastName: operator.lastName,
+            operatorMobileNo: operator.mobileNo,
           });
         }
       }

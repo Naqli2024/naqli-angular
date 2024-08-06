@@ -11,6 +11,7 @@ import { SpinnerService } from '../../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { MapComponent } from '../../../map/map.component';
 import { MapService } from '../../../../services/map.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-vehicle-booking',
@@ -53,7 +54,8 @@ export class VehicleBookingComponent implements OnInit {
     private bookingService: BookingService,
     private spinnerService: SpinnerService,
     private toastr: ToastrService,
-    private mapService: MapService
+    private mapService: MapService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -79,7 +81,8 @@ export class VehicleBookingComponent implements OnInit {
     if (this.bookingData.pickup && this.bookingData.dropPoints.length > 0) {
       const start = this.bookingData.pickup;
       const waypoints = this.bookingData.dropPoints.slice(0, -1); // All except the last one
-      const end = this.bookingData.dropPoints[this.bookingData.dropPoints.length - 1]; // Last drop point
+      const end =
+        this.bookingData.dropPoints[this.bookingData.dropPoints.length - 1]; // Last drop point
       this.mapService.calculateRoute(start, waypoints, end);
     }
   }
@@ -132,13 +135,16 @@ export class VehicleBookingComponent implements OnInit {
   }
 
   openBookingModal(bookingId: string): void {
-    const modalRef: NgbModalRef = this.modalService.open(BookingModalComponent, {
-      size: 'xl',
-      centered: true,
-      backdrop: true,
-      scrollable: true,
-      windowClass: 'no-background',
-    });
+    const modalRef: NgbModalRef = this.modalService.open(
+      BookingModalComponent,
+      {
+        size: 'xl',
+        centered: true,
+        backdrop: true,
+        scrollable: true,
+        windowClass: 'no-background',
+      }
+    );
     modalRef.componentInstance.bookingId = bookingId;
   }
 
@@ -168,13 +174,16 @@ export class VehicleBookingComponent implements OnInit {
       }
     }
 
-    if (!this.bookingData.dropPoints.some(dropPoint => dropPoint.trim())) {
+    if (!this.bookingData.dropPoints.some((dropPoint) => dropPoint.trim())) {
       this.toastr.error('Please enter at least one drop point');
       return false;
     }
 
     if (this.bookingData.type && this.bookingData.type.length > 0) {
-      if (this.filteredLoads[this.selectedVehicleName] && this.filteredLoads[this.selectedVehicleName].length > 0) {
+      if (
+        this.filteredLoads[this.selectedVehicleName] &&
+        this.filteredLoads[this.selectedVehicleName].length > 0
+      ) {
         if (!this.bookingData.type[0].typeOfLoad) {
           this.toastr.error('Please select a load type');
           return false;
@@ -182,7 +191,9 @@ export class VehicleBookingComponent implements OnInit {
       }
     }
 
-    const atLeastOneVehicleSelected = Object.keys(this.selectedOptions).some(key => !!this.selectedOptions[key]);
+    const atLeastOneVehicleSelected = Object.keys(this.selectedOptions).some(
+      (key) => !!this.selectedOptions[key]
+    );
     if (!atLeastOneVehicleSelected) {
       this.toastr.error('Please select an option for at least one vehicle');
       return false;
@@ -201,6 +212,17 @@ export class VehicleBookingComponent implements OnInit {
           if (response && response._id) {
             this.toastr.success(response.message, 'Booking Successful!');
             this.clearForm();
+            // Check if there is an existing bookingId in localStorage
+            const existingBookingId = localStorage.getItem('bookingId');
+            if (existingBookingId) {
+              console.log(
+                `Replacing existing bookingId: ${existingBookingId} with new bookingId: ${response._id}`
+              );
+            }
+
+            // Set the new bookingId in localStorage, replacing the old one
+            localStorage.setItem('bookingId', response._id);
+            this.router.navigate(['/home/user/dashboard/booking']);
             this.openBookingModal(response._id);
           } else {
             this.toastr.error(response.message, 'Booking Failed!');

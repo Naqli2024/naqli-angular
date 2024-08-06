@@ -17,8 +17,6 @@ export class BookingModalComponent {
   closeModalAndNavigate(): void {
     console.log(this.bookingId)
     this.activeModal.dismiss();
-    this.router.navigate(['/home/user/dashboard/booking'], {
-      queryParams: { bookingId: this.bookingId },
-    });
+    this.router.navigate(['/home/user/dashboard/booking'])
   }
 }
