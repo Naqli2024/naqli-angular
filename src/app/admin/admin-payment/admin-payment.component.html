@@ -20,20 +20,20 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of bookingsWithDetails">
-                <td>{{ item.user.firstName }} {{ item.user.lastName }}</td>
+                <td>{{ item.user?.firstName }} {{ item.user?.lastName }}</td>
                 <td class="bookingId" (click)="userBookingDetails(item.booking._id)">{{ item.booking._id }}</td>
                 <td>{{ item.booking.name }}</td>
                 <td>{{ item.booking.type[0]?.typeName }}</td>
-                <td>{{ item.partner.data.partnerName }}</td>
+                <td>{{ item.partner?.data?.partnerName }}</td>
                 <td>{{ item.booking.paymentAmount }}</td>
-                <td [ngStyle]="{'color': item.booking.remainingBalance === 0 ? 'forestgreen' : 'red'}">
-                    {{ item.booking.remainingBalance === 0 ? 'Paid' : item.booking.remainingBalance }}
-                  </td>
+                <td [ngStyle]="{'color': (item.booking.paymentStatus === 'Paid' || item.booking.paymentStatus === 'Completed') ? 'forestgreen' : 'red'}">
+                  {{ (item.booking.paymentStatus === 'Paid' || item.booking.paymentStatus === 'Completed') ? item.booking.paymentStatus : item.booking.remainingBalance }}
+                </td>
                 <td>{{ item.booking.adminCommission }}</td>
                 <td>
                   <i
-                    [ngClass]="item.booking.paymentStatus === 'Completed' ? 'fa fa-check' : 'fa fa-times'"
-                    [ngStyle]="{'color': item.booking.paymentStatus === 'Completed' ? 'forestgreen' : 'red'}"
+                    [ngClass]="(item.booking.paymentStatus === 'Completed' || item.booking.paymentStatus === 'Paid') ? 'fa fa-check' : 'fa fa-times'"
+                    [ngStyle]="{'color': (item.booking.paymentStatus === 'Completed' || item.booking.paymentStatus === 'Paid') ? 'forestgreen' : 'red'}"
                   ></i>
                 </td>
               </tr>

@@ -2857,6 +2857,10 @@ h2 {
   margin: 20px 0px;
   color: #000;
 }
+.disabled {
+  color: gray;
+  pointer-events: none;
+}
 @media (max-width: 768px) {
   .ticket-form {
     padding: 10px 10px !important;

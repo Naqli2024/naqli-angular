@@ -85,6 +85,7 @@
                 <span
                   class="close-icon"
                   (click)="removeBooking(partnerId, booking._id)"
+                  [class.disabled]="booking.paymentStatus === 'HalfPaid' || booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid'"
                 >
                   <i class="fas fa-times"></i>
                 </span>

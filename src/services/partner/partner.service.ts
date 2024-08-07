@@ -14,7 +14,7 @@ export class PartnerService {
 
   getPartnerDetails(partnerId: string): Observable<any> {
     const url = `${this.baseUrl}/${partnerId}`;
-    return this.http.get(url);
+    return this.http.get<Partner>(url);
   }
 
   updatePartnerName(partnerId: string, partnerName: string): Observable<any> {

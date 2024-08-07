@@ -5,7 +5,7 @@ import { PartnerService } from '../../../services/partner/partner.service';
 import { Booking } from '../../../models/booking.model';
 import { User } from '../../../models/user.model';
 import { Partner } from '../../../models/partnerData.model';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -37,8 +37,12 @@ export class AdminPaymentComponent {
   getBookingsWithDetails(): Observable<any[]> {
     return this.bookingService.getAllBookings().pipe(
       switchMap((bookings: any[]) => {
-        const userRequests = bookings.map(booking => this.userService.getUserById(booking.user));
-        const partnerRequests = bookings.map(booking => this.partnerService.getPartnerDetails(booking.partner));
+        const userRequests = bookings.map(booking => 
+          booking.user ? this.userService.getUserById(booking.user) : of(null)
+        );
+        const partnerRequests = bookings.map(booking => 
+          booking.partner ? this.partnerService.getPartnerDetails(booking.partner) : of(null)
+        );
 
         return forkJoin([...userRequests, ...partnerRequests]).pipe(
           map(results => {
