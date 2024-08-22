@@ -1,0 +1,73 @@
+<div class="dashboard-booking-container">
+  <div class="row">
+    <div class="modal-close">
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="closeModalAndNavigate()"
+        style="margin-right: 10px"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div
+      class="col-md-7 left-div"
+      style="padding: 30px 0px; margin-bottom: 40px"
+    >
+      <div>
+        <div class="left-div-title">
+          <img src="assets/images/delivery-truck.svg" />
+          <p>Booking Id {{ bookingId }}</p>
+        </div>
+        <button
+          type="submit"
+          class="btn create-booking get-route-btn"
+          (click)="updateRoute()"
+        >
+          Show Route
+        </button>
+        <div id="mapContainer" class="google-map-style map-partner-page"></div>
+      </div>
+    </div>
+    <div
+      class="col-md-5 right-div"
+      style="padding: 30px 0px; margin-bottom: 40px"
+    >
+      <div class="input-container">
+        <div class="vendor-info">
+          <p>
+            Vendor Name <span>{{ combinedDetails.partner?.partnerName }}</span>
+          </p>
+
+          <p>
+            Operator Name
+            <span
+              >{{ combinedDetails.partner?.operatorFirstName }}
+              {{ combinedDetails.partner?.operatorLastName }}
+            </span>
+          </p>
+          <p>
+            Operator Mobile
+            <span>{{ combinedDetails.partner?.operatorMobileNo }}</span>
+          </p>
+          <p>
+            Unit<span
+              >{{ combinedDetails.partner?.unitClassificationName }}-{{
+                combinedDetails.partner?.unitSubClassificationName
+              }}</span
+            >
+          </p>
+          <p>
+            Booking Status
+            <span>{{ combinedDetails.booking?.bookingStatus }}</span>
+          </p>
+        </div>
+        <div class="vendor-info-last">
+          <h2>Pending Amount</h2>
+          <p>{{ combinedDetails.booking?.remainingBalance }} SAR</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

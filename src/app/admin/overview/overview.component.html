@@ -1,0 +1,59 @@
+<div class="admin-overview">
+  <div class="order-statistics">
+    <div class="head-element">
+      <h2>Order Statistics</h2>
+    </div>
+    <div class="boxes-container">
+      <div class="box">
+        <p style="font-weight: bold; font-size: 20px">
+          {{ runningBookingsCount }}
+        </p>
+        <p>Ongoing Bookings</p>
+      </div>
+      <div class="box">
+        <p style="font-weight: bold; font-size: 20px">
+          {{ bookingStatusCompletedCount }}
+        </p>
+        <p>Completed</p>
+      </div>
+      <div class="box">
+        <p style="font-weight: bold; font-size: 20px">
+          {{ pendingPaymentsCount }}
+        </p>
+        <p>Pending Payment</p>
+      </div>
+      <div class="box">
+        <p style="font-weight: bold; font-size: 20px">
+          {{ pendingPayoutCount }}
+        </p>
+        <p>Pending Payout</p>
+      </div>
+    </div>
+  </div>
+  <div class="overview-chart">
+    <div class="for-orders">
+      <div class="for-orders-head">
+        <h2>Orders</h2>
+        <div class="dropdown-filter">
+          <select (change)="onOrderOptionChange($event)" class="form-select">
+            <option
+              *ngFor="let option of options"
+              [value]="option"
+            >
+              {{ option }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="doughnutchart"></canvas>
+        <div id="chart-annotations" class="annotations-container">
+          <!-- Annotations will be injected here -->
+        </div>
+      </div>
+    </div>
+    <div class="for-customers">
+      <app-customer-chart></app-customer-chart>
+    </div>
+  </div>
+</div>

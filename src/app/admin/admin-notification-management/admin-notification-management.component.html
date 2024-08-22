@@ -1,0 +1,149 @@
+<div class="row">
+  <div class="col-md-12 booking-history">
+    <div class="head-element">
+      <h2>Notification Management</h2>
+    </div>
+    <div class="notification-bar">
+      <input
+        type="text"
+        placeholder="Search here"
+        class="search-bar"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchTermChange()"
+      />
+      <button class="create-button" (click)="toggleNotificationState()">
+        {{ buttonText }}
+      </button>
+    </div>
+    <div *ngIf="isPushNotificationMode" style="margin-top: 20px">
+      <div class="tab-buttons">
+        <button
+          class="tab-button"
+          [class.active]="isUserTab"
+          (click)="selectTab('user')"
+        >
+          User
+        </button>
+        <button
+          class="tab-button"
+          [class.active]="!isUserTab"
+          (click)="selectTab('partner')"
+        >
+          Partner
+        </button>
+      </div>
+      <div class="table-container">
+        <table class="table" style="margin: 0px 0px !important">
+          <thead>
+            <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  (change)="isUserTab ? toggleAllUsers() : toggleAllPartners()"
+                  [checked]="isUserTab ? allUsersSelected : allPartnersSelected"
+                />
+              </th>
+              <ng-container *ngIf="isUserTab">
+                <th>User Name</th>
+                <th>User ID</th>
+              </ng-container>
+              <ng-container *ngIf="!isUserTab">
+                <th>Partner Name</th>
+                <th>Partner ID</th>
+              </ng-container>
+              <th>Email ID</th>
+              <th>Phone No</th>
+              <th>Last Notification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="isUserTab; else partnerRows">
+              <tr *ngFor="let user of filteredUsers">
+                <td>
+                  <input
+                    type="checkbox"
+                    (change)="selectUser(user, $event)"
+                    [checked]="selectedUsers.includes(user)"
+                  />
+                </td>
+                <td>{{ user.firstName }} {{ user.lastName }}</td>
+                <td>{{ user._id }}</td>
+                <td>{{ user.emailAddress }}</td>
+                <td>{{ user.contactNumber }}</td>
+                <ng-container *ngIf="user.lastNotification">
+                  <td>{{ user.lastNotification.messageTitle }}</td>
+                </ng-container>
+              </tr>
+            </ng-container>
+            <ng-template #partnerRows>
+              <tr *ngFor="let partner of filteredPartners">
+                <td>
+                  <input
+                    type="checkbox"
+                    (change)="selectPartner(partner, $event)"
+                    [checked]="selectedPartners.includes(partner)"
+                  />
+                </td>
+                <td>{{ partner.partnerName }}</td>
+                <td>{{ partner._id }}</td>
+                <td>{{ partner.email }}</td>
+                <td>{{ partner.mobileNo }}</td>
+                <ng-container *ngIf="partner.lastNotification">
+                  <td>{{ partner.lastNotification.messageTitle }}</td>
+                </ng-container>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="table-container" *ngIf="!isPushNotificationMode" >
+      <div class="notification-table" *ngIf="filteredNotifications.length > 0; else noNotifications">
+        <!-- Create New Notification Table -->
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Notification ID</th>
+              <th>Notification Title</th>
+              <th>Notification Content</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let notification of filteredNotifications">
+              <td>
+                {{
+                  notification.userId
+                    ? notification.userName
+                    : notification.partnerName
+                }}
+              </td>
+              <!-- <td>{{ notification.userId ? notification.userId : notification.partnerId }}</td> -->
+               <td>{{ notification.notificationId }}</td>
+              <td>{{ notification.messageTitle }}</td>
+              <td>{{ notification.messageBody }}</td>
+              <td>
+                <fa-icon
+                  [icon]="faEdit"
+                  class="icon"
+                  style="color: #727272; padding: 0px 5px"
+                  (click)="openEditNotificationModal(notification)"
+                ></fa-icon>
+                <fa-icon
+                  [icon]="faTrashAlt"
+                  class="icon"
+                  style="color: #727272; padding: 0px 5px"
+                  (click)="deleteNotification(notification.notificationId)"
+                ></fa-icon>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noNotifications>
+        <p style="text-align: center; margin-top: 50px;">No notifications available.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

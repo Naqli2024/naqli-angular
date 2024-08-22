@@ -1,0 +1,19 @@
+<div class="for-orders-head">
+    <h2>Customers</h2>
+    <div class="dropdown-filter">
+      <select (change)="onCustomerOptionChange($event)" class="form-select">
+        <option
+          *ngFor="let option of options"           
+          [value]="option"
+        >
+          {{ option }}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="chart-container">
+    <canvas id="customerChart"></canvas>
+    <div id="customer-chart-annotations" class="annotations-container">
+      
+    </div>
+  </div>

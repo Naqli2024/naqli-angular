@@ -1,0 +1,132 @@
+<div *ngIf="showForm; else ticketList">
+  <!-- Ticket Details Form -->
+  <div class="form-container ticket-form">
+    <button class="back-button" (click)="goBackToList()">
+      <fa-icon [icon]="faArrowLeft"></fa-icon>&nbsp; Back to Ticket
+    </button>
+    <div class="form-row ticket-form-row ticket-form-row-head">
+      <p>Ticket ID: {{ selectedTicket?.id }}</p>
+      <p [ngClass]="selectedTicket.isOpen ? 'open' : 'closed'">
+        {{ selectedTicket?.isOpen ? "Open" : "Closed" }}
+      </p>
+    </div>
+    <div class="form-row ticket-form-row">
+      <label>Requests:</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="selectedTicket.title"
+      />
+      <p class="ticket-form-row-p">{{ selectedTicket.date }}</p>
+    </div>
+    <div class="form-row ticket-form-row">
+      <label>Add Reply</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="selectedTicket.responseMessage"
+      />
+      <p class="ticket-form-row-p"></p>
+    </div>
+    <div class="form-row ticket-form-row">
+      <button
+        [ngClass]="selectedTicket.isOpen ? 'btn-closed' : 'btn-open'"
+        (click)="onSubmitReply()"
+      >
+        {{
+          selectedTicket.responseMessage
+            ? "Update"
+            : selectedTicket.isOpen
+            ? "Close ticket"
+            : "Open ticket"
+        }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #ticketList>
+  <!-- Ticket List -->
+  <div class="row">
+    <div class="col-md-12 booking-history">
+      <div class="head-element">
+        <h2>Support Tickets</h2>
+      </div>
+      <div class="notification-bar">
+        <input
+          type="text"
+          placeholder="Search here"
+          class="search-bar"
+          [(ngModel)]="searchQuery"
+          (input)="onSearch()"
+        />
+      </div>
+      <div style="margin-top: 20px">
+        <div class="tab-buttons">
+          <button
+            class="tab-button"
+            [class.active]="currentTab === 'All'"
+            (click)="setTab('All')"
+          >
+            All Tickets
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="currentTab === 'Open'"
+            (click)="setTab('Open')"
+          >
+            Open Tickets
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="currentTab === 'Closed'"
+            (click)="setTab('Closed')"
+          >
+            Closed Tickets
+          </button>
+        </div>
+        <div class="table-container">
+          <table class="table" style="margin: 0px 0px !important">
+            <thead>
+              <tr>
+                <th>Ticket Id</th>
+                <th>Title</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ticket of filteredTickets">
+                <td>{{ ticket.id }}</td>
+                <td
+                  (click)="viewTicketDetails(ticket)"
+                  style="cursor: pointer; color: #7b0864"
+                >
+                  {{ ticket.title }}
+                </td>
+                <td>{{ ticket.customer }}</td>
+                <td>
+                  <span
+                    [ngClass]="ticket.isOpen ? 'status-open' : 'status-closed'"
+                    class="status"
+                  >
+                    {{ ticket.isOpen ? "Open" : "Closed" }}
+                  </span>
+                </td>
+                <td>{{ ticket.date }}</td>
+                <td>
+                  <fa-icon [icon]="faEdit" class="ticket-icon"></fa-icon>
+                  <fa-icon [icon]="faTrashAlt" class="ticket-icon" (click)="openTicketModal(ticket.id)"></fa-icon>
+                  <fa-icon [icon]="faFile" class="ticket-icon"></fa-icon>
+                  <fa-icon [icon]="faFileExcel" class="ticket-icon"></fa-icon>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

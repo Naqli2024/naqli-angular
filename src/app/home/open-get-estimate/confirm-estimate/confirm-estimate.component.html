@@ -1,0 +1,36 @@
+<div class="home-container">
+    <div class="custom-slider"></div>
+    <div class="container booking-container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="vehicle-cols" style="display: flex; flex-direction: column; align-items: center;">
+            <div class="row">
+              <div class="bus-container confirm-estimate" *ngIf="estimate">
+                <img *ngIf="estimate.unitTypeImage" [src]="estimate.unitTypeImage" alt="{{ estimate.unitTypeName }}" class="bus-image" />
+                <p *ngIf="estimate.unitTypeName" class="estimate-unit-name">{{ estimate.unitTypeName }}</p>
+                <p *ngIf="estimate.loadType">Load: {{ estimate.loadType }}</p>
+                <p *ngIf="estimate.productValue" class="estimate-product-value">Product Value: {{ estimate.productValue }}</p>
+              </div>
+            </div>
+            <div class="buttons" style="display: flex; justify-content: center; width: 100%;">
+              <button type="submit" class="btn confirm-booking">
+                Confirm Booking
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 text-center">
+          <div class="row-container" *ngIf="estimate">
+            <div class="input-field">
+              <div class="pick-up"></div>
+              <input type="text" [value]="estimate.pickup" placeholder="Pick Up" style="margin-bottom: 8px" />
+            </div>
+            <div class="input-field">
+              <div class="drop-point"></div>
+              <input type="text" [value]="estimate.dropPoints.join(',')" placeholder="Drop Point" style="margin-bottom: 8px" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

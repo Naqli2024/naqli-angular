@@ -1,0 +1,154 @@
+<nav class="navbar">
+  <div class="container">
+    <!-- Brand/logo -->
+    <a class="navbar-brand" href="#">
+      <img src="assets/images/naqlee-logo.svg" />
+    </a>
+
+    <!-- Centered Links -->
+    <div class="centered-links" (click)="logout()">
+      <a [routerLink]="'/home/user'" routerLinkActive="active" class="nav-link"
+        >User</a
+      >
+      <span class="vertical-line"></span>
+      <a
+        [routerLink]="'/home/partner'"
+        routerLinkActive="active"
+        class="nav-link"
+        >Partner</a
+      >
+    </div>
+
+    <!-- Navbar right-side elements -->
+    <div class="right-side-elements">
+      <div class="dropdown">
+        <button class="dropbtn" (click)="toggleDropdown()">
+          {{ selectedLanguage }} ▼
+        </button>
+        <div class="dropdown-content" [class.show]="isDropdownOpen">
+          <a href="#" class="dropdown-item" (click)="selectLanguage('English')"
+            >English</a
+          >
+          <a href="#" class="dropdown-item" (click)="selectLanguage('Tamil')"
+            >Tamil</a
+          >
+        </div>
+      </div>
+      <button
+        *ngIf="!isAuthenticated"
+        type="button"
+        class="btn"
+        (click)="openLoginModal()"
+      >
+        Login
+      </button>
+      <button *ngIf="isAuthenticated" type="button" class="btn">
+        {{ firstName }} {{ lastName }} {{ partnerName }}
+      </button>
+      <div class="notification-icon" (click)="toggleNotificationDropdown()">
+        <i class="fa fa-bell" aria-hidden="true"></i>
+        <span
+          class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle"
+          *ngIf="notificationCount > 0"
+        >
+          {{ notificationCount }}
+        </span>
+        <div class="notifications-dropdown" [class.show]="isNotificationsDropdownOpen">
+          <div *ngIf="notifications.length > 0; else noNotifications">
+            <div *ngFor="let notification of notifications" class="notification-item">
+              <b>{{ notification.messageTitle }}</b>: &nbsp;<span>{{ notification.messageBody }}</span>
+            </div>
+          </div>
+          <ng-template #noNotifications>
+            <div class="notification-item">No notifications</div>
+          </ng-template>
+        </div>
+      </div>
+      <button
+        *ngIf="isAuthenticated"
+        type="button"
+        class="btn"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+    </div>
+
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger" (click)="toggleMenu()">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+  </div>
+
+  <!-- Hamburger menu content -->
+  <div class="hamburger-menu" [class.active]="isMenuOpen">
+    <div class="hamburger-centered-links">
+      <a [routerLink]="'/home/user'" routerLinkActive="active" class="nav-link"
+        >User</a
+      >
+      <span class="vertical-line"></span>
+      <a
+        [routerLink]="'/home/partner'"
+        routerLinkActive="active"
+        class="nav-link"
+        >Partner</a
+      >
+    </div>
+
+    <div class="hamburger-sub-links">
+      <div class="dropdown">
+        <button class="dropbtn" (click)="toggleDropdown()">
+          {{ selectedLanguage }} ▼
+        </button>
+        <div class="dropdown-content" [class.show]="isDropdownOpen">
+          <a href="#" class="dropdown-item" (click)="selectLanguage('English')"
+            >English</a
+          >
+          <a href="#" class="dropdown-item" (click)="selectLanguage('Tamil')"
+            >Tamil</a
+          >
+        </div>
+      </div>
+      <button
+        *ngIf="!isAuthenticated"
+        type="button"
+        class="btn"
+        (click)="openLoginModal()"
+      >
+        Login
+      </button>
+      <button *ngIf="isAuthenticated" type="button" class="btn">
+        {{ partnerName }} {{ firstName }} {{ lastName }}
+      </button>
+      <div class="notification-icon" (click)="toggleNotificationDropdown()">
+        <i class="fa fa-bell" aria-hidden="true"></i>
+        <span
+          class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle"
+          *ngIf="notificationCount > 0"
+        >
+          {{ notificationCount }}
+        </span>
+        <div class="notifications-dropdown" [class.show]="isNotificationsDropdownOpen">
+          <div *ngIf="notifications.length > 0; else noNotifications">
+            <div *ngFor="let notification of notifications" class="notification-item">
+              <b>{{ notification.messageTitle }}</b>: &nbsp;<p>{{ notification.messageBody }}</p>
+            </div>
+          </div>
+          <ng-template #noNotifications>
+            <div class="notification-item">No notifications</div>
+          </ng-template>
+        </div>
+      </div>
+      <button
+        *ngIf="isAuthenticated"
+        type="button"
+        class="btn"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+    </div>
+  </div>
+</nav>

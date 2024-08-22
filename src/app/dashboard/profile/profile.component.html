@@ -1,0 +1,10 @@
+<div class="profile-container">
+  <div class="profile-photo">
+    <label for="upload-photo">
+      <img [src]="profilePhoto" alt="Profile Photo" id="profile-img" />
+    </label>
+    <input type="file" id="upload-photo" accept="image/*" />
+  </div>
+  <div class="username">{{ firstName }} {{ lastName }}</div>
+  <div class="edit-profile"><i class="fas fa-edit"></i> Edit Profile</div>
+</div>

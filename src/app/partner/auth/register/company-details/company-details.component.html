@@ -1,0 +1,155 @@
+<div class="company-details-form">
+  <div class="custom-slider"></div>
+  <div class="container booking-container company-details-form-2">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="text-center mb-3" style="color: #6a66d1">Multiple Units</h2>
+        <form (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-6 col-form-label-1">
+              <input
+                type="text"
+                class="form-control"
+                name="companyName"
+                placeholder="Company Name"
+                [(ngModel)]="companyDetails.companyName"
+              />
+            </div>
+            <div class="col-md-6 col-form-label-1">
+              <input
+                type="text"
+                class="form-control"
+                name="legalName"
+                placeholder="Legal Name"
+                [(ngModel)]="companyDetails.legalName"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-form-label-1">
+              <input
+                type="text"
+                class="form-control"
+                name="phoneNumber"
+                placeholder="Phone number"
+                [(ngModel)]="companyDetails.phoneNumber"
+              />
+            </div>
+            <div class="col-md-6 col-form-label-1">
+              <input
+                type="text"
+                class="form-control"
+                name="alternativePhoneNumber"
+                placeholder="Alternative Phone number"
+                [(ngModel)]="companyDetails.alternativePhoneNumber"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-form-label-1">
+              <input
+                type="text"
+                class="form-control"
+                name="address"
+                placeholder="Address"
+                [(ngModel)]="companyDetails.address"
+              />
+            </div>
+            <div class="col-md-3 col-form-label-1">
+              <input
+                type="text"
+                class="form-control"
+                name="city"
+                placeholder="City"
+                [(ngModel)]="companyDetails.city"
+              />
+            </div>
+            <div class="col-md-3 col-form-label-1">
+              <input
+                type="text"
+                class="form-control"
+                name="zipCode"
+                placeholder="Zipcode"
+                [(ngModel)]="companyDetails.zipCode"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 col-form-label-1">
+              <select
+                class="form-select"
+                name="companyType"
+                [(ngModel)]="companyDetails.companyType"
+              >
+                <option value="">Select</option>
+                <option value="logistics">Logistics</option>
+                <option value="transportation">Transportation</option>
+              </select>
+            </div>
+            <div class="col-md-6 col-form-label-1">
+              <input
+                type="text"
+                class="form-control"
+                name="companyIdNo"
+                placeholder="Company Id no"
+                [(ngModel)]="companyDetails.companyIdNo"
+              />
+            </div>
+          </div>
+
+          <div class="row col-form-label-1">
+            <div class="col-md-12">
+              <label class="col-form-label" style="font-size: 14px">
+                Partner Name/ID
+              </label>
+              <div
+                class="input-group create-operator"
+                style="gap: 0px !important"
+              >
+                <input
+                  type="text"
+                  class="form-control"
+                  name="partnerName"
+                  [(ngModel)]="companyDetails.partnerName"
+                  [readonly]="!isEditing"
+                />
+                <button
+                  type="button"
+                  (click)="toggleEditMode()"
+                  style="
+                    border-bottom-right-radius: 5px;
+                    border-top-right-radius: 5px;
+                  "
+                >
+                  <fa-icon [icon]="isEditing ? faTimes : faEdit"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-12 text-center company-details-btn">
+              <button
+                type="submit"
+                class="btn custom-register-btn company-details-btn-1"
+              >
+                Create Account
+              </button>
+              <button
+                type="button"
+                (click)="resetForm()"
+                class="btn custom-register-btn company-details-btn-1"
+                style="background: #707070 !important"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

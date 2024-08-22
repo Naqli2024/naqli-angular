@@ -1,0 +1,155 @@
+<div class="home-container">
+  <div class="custom-slider">
+    <h2 class="booking-container-head">Available Special / Others Units</h2>
+  </div>
+  <div class="container booking-container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="vehicle-cols">
+          <div class="row">
+            <h2 class="text-center">Special / Others</h2>
+            <div
+              class="bus-container special"
+              *ngFor="let bus of buses"
+              (click)="selectBus(bus)"
+              [class.selected]="selectedBus === bus"
+            >
+              <img
+                *ngIf="bus.image"
+                [src]="bus.image"
+                alt="{{ bus.name }}"
+                class="bus-image"
+              />
+              <p class="bus-name">{{ bus.name }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <input
+                type="time"
+                class="form-control"
+                [(ngModel)]="bookingData.fromTime"
+                placeholder="from time"
+                style="margin-bottom: 10px;"
+              />
+            </div>
+            <div class="col-md-6">
+              <input
+                type="time"
+                class="form-control"
+                [(ngModel)]="bookingData.toTime"
+                placeholder="to time"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="bookingData.date"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 bottom-checkbox">
+              <div class="checkbox-container">
+                <input
+                  type="checkbox"
+                  id="additionalLabourCheckbox"
+                  (change)="toggleAdditionalLabour($event)"
+                  [(ngModel)]="bookingData.additionalLabour"
+                />
+                <label for="additionalLabourCheckbox"
+                  >Need any additional labour</label
+                >
+              </div>
+
+              <div class="radio-container" *ngIf="additionalLabourEnabled">
+                <input
+                  type="radio"
+                  id="radio1"
+                  name="radios"
+                  value="1"
+                  (change)="logRadioValue($event)"
+                  [checked]="bookingData.additionalLabour === 1"
+                />
+                <label for="radio1">1</label>
+
+                <input
+                  type="radio"
+                  id="radio2"
+                  name="radios"
+                  value="2"
+                  (change)="logRadioValue($event)"
+                  [checked]="bookingData.additionalLabour === 2"
+                />
+                <label for="radio2">2</label>
+
+                <input
+                  type="radio"
+                  id="radio3"
+                  name="radios"
+                  value="3"
+                  (change)="logRadioValue($event)"
+                  [checked]="bookingData.additionalLabour === 3"
+                />
+                <label for="radio3">3</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 text-center">
+        <div class="row-container">
+          <div class="input-field design">
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              placeholder="Enter city name"
+              [(ngModel)]="bookingData.cityName"
+              style="margin-bottom: 8px"
+            />
+          </div>
+          <div class="input-field design">
+            <i class="fas fa-map-marker-alt"></i>
+            <input
+              type="text"
+              placeholder="Enter your address"
+              [(ngModel)]="bookingData.address"
+              style="margin-bottom: 8px"
+            />
+          </div>
+          <div class="input-field design">
+            <i class="fas fa-mail-bulk"></i>
+            <input
+              type="text"
+              placeholder="Zip code for construction site"
+              [(ngModel)]="bookingData.zipCode"
+              style="margin-bottom: 8px"
+            />
+          </div>
+        </div>
+        <div class="buttons">
+          <button
+            type="submit"
+            class="btn create-booking"
+            (click)="getLocation()"
+          >
+            Get Location
+          </button>
+        </div>
+        <div id="mapContainer" class="google-map-style"></div>
+        <div class="buttons">
+          <button
+            type="submit"
+            class="btn create-booking"
+            (click)="submitBooking()"
+          >
+            Create Booking
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

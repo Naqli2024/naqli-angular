@@ -1,0 +1,99 @@
+<div class="row">
+  <div class="col-md-12 booking-history">
+    <div class="head-element">
+      <h2>Booking</h2>
+    </div>
+    <div class="table-container partner-booking-page">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Booked</th>
+            <th>Booking No</th>
+            <th>Additional Labour</th>
+            <th>Quote Price</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Mode</th>
+            <th>Location</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="bookings.length > 0">
+          <ng-container *ngFor="let booking of bookings; let i = index">
+            <tr *ngIf="users[booking.user]">
+              <td class="align-middle">
+                {{ users[booking.user]?.firstName }}
+                {{ users[booking.user]?.lastName }}
+              </td>
+              <td
+                class="align-middle bookingId"
+                (click)="navigateToConfirmPayment(booking._id)"
+              >
+                <a style="cursor: pointer">{{ booking._id }}</a>
+              </td>
+              <td>{{ booking.additionalLabour }}</td>
+              <td class="align-middle">
+                <input
+                  type="text"
+                  class="form-control quote-price"
+                  [ngModel]="getQuotePrice(booking._id)"
+                  (ngModelChange)="setQuotePrice($event, booking._id)"
+                />
+              </td>
+              <td class="align-middle">{{ booking.date }}</td>
+              <td class="align-middle">
+                {{ booking.time }}
+              </td>
+              <td class="align-middle">{{ booking.name }}</td>
+              <td class="location-cell">
+                <div class="location-item" *ngIf="booking.pickup">
+                  <div class="pick-up"></div>
+                  <p>{{ booking.pickup }}</p>
+                </div>
+                <div
+                  class="location-item"
+                  *ngIf="booking.dropPoints && booking.dropPoints.length > 0"
+                >
+                  <div class="drop-point"></div>
+                  <p>{{ booking.dropPoints.join(", ") }}</p>
+                </div>
+                <div
+                  class="location-item"
+                  *ngIf="
+                    !booking.pickup &&
+                    (!booking.dropPoints || booking.dropPoints.length === 0)
+                  "
+                >
+                  <i class="fas fa-map-marker-alt"></i>
+                  <p>{{ booking.address }}</p>
+                </div>
+              </td>
+              <td class="action-cell align-middle">
+                <button
+                  class="btn btn-success send-btn"
+                  (click)="
+                    openPaymentConfirmation(
+                      partnerId,
+                      booking._id,
+                      getQuotePrice(booking._id)
+                    )
+                  "
+                  [disabled]="booking.paymentStatus === 'HalfPaid' || booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid'"
+                >
+                  Send
+                </button>
+                <span
+                  class="close-icon"
+                  (click)="removeBooking(partnerId, booking._id)"
+                  [class.disabled]="booking.paymentStatus === 'HalfPaid' || booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid'"
+                >
+                  <i class="fas fa-times"></i>
+                </span>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

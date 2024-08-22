@@ -1,0 +1,29 @@
+<div class="full-height-container">
+  <div class="container">
+    <div class="row w-100">
+      <div class="col-md-12">
+        <div class="modal-close">
+          <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="activeModal.dismiss()"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="mb-3 text-center verified-user-container">
+          <div class="verified-user">
+            <img src="assets/images/verified-user.png" />
+            <h2>Account Verified</h2>
+          </div>
+          <div class="otp-verify-inputs" style="color: #262626;">
+            <label class="form-label" style="color:#6a66d1">{{ userDetails.firstName }} {{ userDetails.lastName }}</label>
+            <label class="form-label">{{ userDetails.contactNumber }}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="row">
+  <div class="col-md-12 booking-history">
+    <div class="head-element">
+      <h2>Payment</h2>
+    </div>
+    <div *ngFor="let booking of bookings">
+      <div
+        class="payment-status"
+        *ngIf="booking && booking.remainingBalance !== 0"
+      >
+        <p>
+          Booking ID: <span>{{ booking._id }}</span>
+        </p>
+        <p>
+          Paid: <span>{{ booking.paymentAmount }}</span>
+        </p>
+        <p class="text-center">
+          Balance<span
+            ><button
+              type="button"
+              class="btn btn-balance"
+              style="margin-top: 5px; padding: 5px 50px !important"
+              (click)="
+                makePayment(
+                  $event,
+                  booking.remainingBalance || 0,
+                  'Completed',
+                  booking.partner,
+                  booking._id
+                )
+              "
+            >
+              {{ booking.remainingBalance }}
+            </button></span
+          >
+        </p>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Booking ID</th>
+            <th>Date</th>
+            <th>Unit Type</th>
+            <th>Payment</th>
+            <th>Payment Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of bookings">
+            <td>{{ booking._id }}</td>
+            <td>{{ booking.date }}</td>
+            <td>{{ booking.name }}</td>
+            <td>{{ booking.paymentAmount }}</td>
+            <td>{{ booking.paymentStatus }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

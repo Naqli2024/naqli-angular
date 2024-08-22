@@ -1,0 +1,237 @@
+<div class="row">
+  <div class="col-md-12 booking-history" *ngIf="!showNewUnitForm">
+    <div class="head-element" style="position: relative">
+      <h2>Operator Management</h2>
+    </div>
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Mobile No</th>
+            <th>Email Id</th>
+            <th>Iqama No/Id</th>
+            <th>NationalId</th>
+            <th>Driving License</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+              <button class="btn notification-modal-btn add-operator">
+                View
+              </button>
+            </td>
+            <td>
+              <button class="btn notification-modal-btn add-operator">
+                View
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button
+      class="btn notification-modal-btn add-operator-btn1"
+      (click)="toggleNewUnitForm()"
+    >
+      Add
+    </button>
+  </div>
+</div>
+
+<div class="new-unit" *ngIf="showNewUnitForm">
+  <p (click)="toggleNewUnitForm()" style="margin: 10px 0px !important">
+    <i class="fas fa-arrow-left"></i> Back
+  </p>
+  <div class="row">
+    <div
+      class="col-md-12 booking-history operator-form-unit"
+      *ngFor="let data of formData; let i = index"
+    >
+      <div
+        class="head-element"
+        *ngIf="i === 0"
+        style="position: relative; margin: 0px -12px !important"
+      >
+        <h2>New Operator</h2>
+      </div>
+      <form (ngSubmit)="handleSubmit(i)" style="margin: 20px">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="col-form-label" style="font-size: 14px"
+              >First Name</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="data.firstName"
+              name="firstName{{ i }}"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="col-form-label" style="font-size: 14px"
+              >Last Name</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="data.lastName"
+              name="lastName{{ i }}"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <label class="col-form-label" style="font-size: 14px"
+              >Email ID</label
+            >
+            <input
+              type="email"
+              class="form-control"
+              [(ngModel)]="data.email"
+              name="email{{ i }}"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <label class="col-form-label" style="font-size: 14px"
+              >Mobile No</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="data.mobileNo"
+              name="mobileNo{{ i }}"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="col-form-label" style="font-size: 14px"
+              >Iqama No</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="data.iqamaNo"
+              name="iqamaNo{{ i }}"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <label class="col-form-label" style="font-size: 14px"
+              >Date of Birth</label
+            >
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="data.dateOfBirth"
+              name="dateOfBirth{{ i }}"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="col-form-label" style="font-size: 14px"
+              >Panel Information</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="data.panelInformation"
+              name="panelInformation{{ i }}"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label class="col-form-label" style="font-size: 14px"
+              >Driving License</label
+            >
+            <input
+              type="file"
+              class="form-control operator-file"
+              (change)="handleFileInput($event, 'drivingLicense', i)"
+              name="drivingLicense{{ i }}"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="col-form-label" style="font-size: 14px"
+              >Aramco License</label
+            >
+            <input
+              type="file"
+              class="form-control"
+              (change)="handleFileInput($event, 'aramcoLicense', i)"
+              name="aramcoLicense{{ i }}"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="col-form-label" style="font-size: 14px"
+              >National ID</label
+            >
+            <input
+              type="file"
+              class="form-control"
+              (change)="handleFileInput($event, 'nationalID', i)"
+              name="nationalID{{ i }}"
+            />
+          </div>
+        </div>
+
+        <div class="row col-md-3">
+          <div class="form-group label-input">
+            <label for="accessTo" class="flex-label">Access to</label>
+            <div class="dropdown">
+              <button
+                class="btn dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                style="font-size: 13px !important"
+              >
+                {{ getSelectedItemsText() || "Select access options" }}
+              </button>
+              <div
+                class="dropdown-menu dropdown-menu-left"
+                aria-labelledby="dropdownMenuButton"
+              >
+                <div class="dropdown-item" *ngFor="let item of dropdownList">
+                  <input
+                    type="checkbox"
+                    [value]="item.id"
+                    (change)="toggleSelection(item.id)"
+                    [checked]="isSelected(item.id)"
+                  />
+                  {{ item.itemName }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-12 text-center">
+            <button
+              type="submit"
+              (click)="handleClick()"
+              class="btn custom-register-btn"
+              *ngIf="i === formData.length - 1"
+            >
+              Create Operator
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

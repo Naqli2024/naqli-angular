@@ -1,0 +1,170 @@
+<div class="dashboard-booking-container">
+  <div class="row">
+    <div class="col-md-7 left-div">
+      <div class="">
+        <div class="left-div-title">
+          <img src="assets/images/delivery-truck.svg" />
+          <p>Booking Id {{ bookingId }}</p>
+        </div>
+          <button
+            type="submit"
+            class="btn create-booking get-route-btn"
+            (click)="updateRoute()"
+          >
+            Show Route
+          </button>
+        <div id="mapContainer" class="google-map-style"></div>
+      </div>
+    </div>
+    <div class="col-md-5 right-div">
+      <div class="input-container" *ngIf="!bookingInformation">
+        <div class="input-field" *ngFor="let vendor of vendors">
+          <label>
+            <input type="radio" name="vendor" (change)="onSelect(vendor)" />
+            <div
+              class="vendor-details"
+              [class.selected]="vendor === selectedVendor"
+            >
+              <span>{{ vendor.name }}</span>
+              <span class="vendor-price">{{ vendor.price }} SAR</span>
+            </div>
+          </label>
+        </div>
+        <a
+          href=""
+          class="cancel-request"
+          (click)="openBookingCancelModal($event)"
+          >Cancel Request</a
+        >
+        <div
+          class="modal-footer cancel-booking-btns"
+          *ngIf="selectedVendor && fetchedVendors"
+        >
+          <button
+            type="button"
+            class="btn btn-pay-advance"
+            (click)="
+              makePayment(
+                $event,
+                (selectedVendor.price || 0) / 2,
+                'HalfPaid',
+                selectedVendor.partnerId,
+                selectedVendor.oldQuotePrice
+              )
+            "
+          >
+            Pay Advance: {{ (selectedVendor.price || 0) / 2 }} SAR
+          </button>
+          <button
+            type="button"
+            class="btn btn-pay"
+            (click)="
+              makePayment(
+                $event,
+                selectedVendor.price,
+                'Paid',
+                selectedVendor.partnerId,
+                selectedVendor.oldQuotePrice
+              )
+            "
+          >
+            Pay: {{ selectedVendor.price || 0 }} SAR
+          </button>
+        </div>
+      </div>
+      <div *ngIf="bookingInformation">
+        <div class="input-container">
+          <div class="vendor-info">
+            <p>
+              Vendor Name <span>{{ combinedDetails.partner?.partnerName }}</span>
+            </p>
+
+            <p>
+              Operator Name
+              <span
+                >{{ combinedDetails.partner?.operatorFirstName }}
+                {{ combinedDetails.partner?.operatorLastName }}
+                </span
+              >
+            </p>
+            <p>
+              Operator Mobile <span>{{ combinedDetails.partner?.operatorMobileNo }}</span>
+            </p>
+            <p>
+              Unit<span
+                >{{
+                  combinedDetails.partner?.unitClassificationName
+                }}-{{
+                  combinedDetails.partner?.unitSubClassificationName
+                }}</span
+              >
+            </p>
+            <p>
+              Booking Status <span>{{ combinedDetails.booking?.bookingStatus }}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="vendor-info-last" *ngFor="let booking of combinedDetails.booking.bookings">
+          <h2>Pending Amount</h2>
+          <p>{{ booking.remainingBalance }}</p>
+        </div>
+        <div class="modal-footer cancel-booking-btns">
+          <p style="color: forestgreen">Booking Successful!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cancel Request Modal Template -->
+<ng-template #cancelBookingModal let-modal>
+  <div class="" role="document">
+    <div class="modal-content custom-modal-content">
+      <div class="modal-body cancel-booking">
+        Are you sure want to cancel this booking?
+      </div>
+      <div class="modal-footer cancel-booking-btns">
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="confirmCancelBooking(modal, 'confirm')"
+        >
+          Yes
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="confirmCancelBooking(modal, 'cancel')"
+        >
+          No
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Pay Advance Modal Template -->
+<ng-template #payAdvanceModal let-modal>
+  <div class="">
+    <div class="modal-content custom-modal-content">
+      <div class="modal-header custom-modal-header">
+        <h5 class="modal-title">Booking Confirmation</h5>
+        <button
+          type="button"
+          class="close"
+          aria-label="Close"
+          (click)="modal.dismiss('Cross click')"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body custom-modal-body" style="padding: 50px">
+        <p>
+          Pay the advance amount of {{ (selectedVendor.price || 0) / 2 }} to
+          proceed with your booking.
+        </p>
+      </div>
+    </div>
+  </div>
+</ng-template>

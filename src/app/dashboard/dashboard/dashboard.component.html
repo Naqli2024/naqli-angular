@@ -1,0 +1,17 @@
+<div class="layout-container">
+  <div class="sidebar bg-light">
+    <app-profile></app-profile>
+    <ul class="nav flex-column">
+      <li class="nav-item" *ngFor="let item of menuItems">
+        <a
+          class="nav-link"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+        >{{ item.name }}</a>
+      </li>
+    </ul>
+  </div>
+  <div class="mainbar">
+    <router-outlet></router-outlet>
+  </div>
+</div>

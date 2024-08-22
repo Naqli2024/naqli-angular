@@ -1,0 +1,61 @@
+<div class="row">
+  <div class="col-md-12 booking-history">
+    <div class="head-element">
+      <h2>Booking</h2>
+    </div>
+    <div class="table-container partner-booking-page">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Booked</th>
+            <th>Booking No</th>
+            <th>Additional Labour</th>
+            <th>Quote Price</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Mode</th>
+            <th>Location</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container>
+            <tr>
+              <td class="align-middle">Name</td>
+              <td class="align-middle bookingId">
+                <a style="cursor: pointer">bookingId</a>
+              </td>
+              <td>booking.additionalLabour</td>
+              <td class="align-middle">
+                <input type="text" class="form-control quote-price" />
+              </td>
+              <td class="align-middle">booking.date</td>
+              <td class="align-middle">booking.time</td>
+              <td class="align-middle">booking.name</td>
+              <td class="location-cell">
+                <div class="location-item">
+                  <div class="pick-up"></div>
+                  <p>booking.pickup</p>
+                </div>
+                <div class="location-item">
+                  <div class="drop-point"></div>
+                  <p>booking.dropPoints.join(", ")</p>
+                </div>
+                <div class="location-item">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <p>booking.address</p>
+                </div>
+              </td>
+              <td class="action-cell align-middle">
+                <button class="btn btn-success send-btn">Send</button>
+                <span class="close-icon">
+                  <i class="fas fa-times"></i>
+                </span>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

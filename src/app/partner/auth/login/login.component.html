@@ -1,0 +1,61 @@
+<div class="home-container">
+  <div class="custom-slider">
+    <!-- Content for the custom-slider -->
+  </div>
+
+  <div class="container login-container partner-login">
+    <div class="row w-100 custom-row">
+      <div class="col-md-6 col-sm-12 text-center left-logo">
+        <img src="assets/images/logo.png" alt="naqli-logo" />
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <div class="login-form">
+          <h2>Login</h2>
+          <form (ngSubmit)="login()">
+            <div class="mb-3">
+              <label for="emailOrMobile" class="form-label"
+                >Mobile No / Email</label
+              >
+              <input
+                type="email"
+                class="form-control"
+                id="emailOrMobile"
+                required
+                [(ngModel)]="loginData.emailOrMobile"
+                name="emailOrMobile"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                required
+                [(ngModel)]="loginData.password"
+                name="password"
+              />
+            </div>
+            <div class="buttons">
+              <button type="submit" class="btn btn-primary">Login</button>
+              <a
+                href="#"
+                class="forgot-password"
+                (click)="openForgetPasswordModal($event)"
+                >Forgot Password?</a
+              >
+            </div>
+            <div class="mt-3 form-label">
+              <p>
+                Don't have an account?
+                <a href="#" (click)="toggleForm($event)" style="color: #6a66d1"
+                  >Create One!</a
+                >
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

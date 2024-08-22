@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-md-12 booking-history">
+    <div class="head-element">
+      <h2>Commission</h2>
+    </div>
+    <div class="table-container">
+      <table class="table commission-table">
+        <thead>
+          <tr>
+            <th>User Type</th>
+            <th>Commission Rate(%)</th>
+            <th>Effective Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let commission of commissions">
+            <td>{{ commission.userType }}</td>
+            <td>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="commission.commissionRate"
+                required
+                style="margin: 0px auto"
+              />
+            </td>
+            <td>
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="commission.effectiveDate"
+                required
+                style="margin: 0px auto"
+              />
+            </td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-balance"
+                style="margin: 0px 10px; padding: 3px 20px !important"
+                (click)="saveCommission(commission)"
+              >
+                Save
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

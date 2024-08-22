@@ -1,0 +1,93 @@
+<div class="dashboard-booking-container">
+  <div class="row">
+    <div class="col-md-7 left-div">
+      <div>
+        <div class="left-div-title">
+          <img src="assets/images/delivery-truck.svg" />
+          <p>Booking Id {{ bookingDetails?._id }}</p>
+        </div>
+        <button
+          type="submit"
+          class="btn create-booking get-route-btn"
+          (click)="updateRoute()"
+        >
+          Show Route
+        </button>
+        <div id="mapContainer" class="google-map-style map-partner-page"></div>
+      </div>
+    </div>
+    <div class="col-md-5 right-div">
+      <div class="input-container">
+        <div class="partner-field">
+          <label>User name</label>
+          <p>
+            {{ (user$ | async)?.firstName }} {{ (user$ | async)?.lastName }}
+          </p>
+        </div>
+        <div class="partner-field">
+          <label>User id</label>
+          <p>#{{ (user$ | async)?._id }}</p>
+        </div>
+        <div class="partner-field">
+          <label>Mode</label>
+          <p>{{ bookingDetails?.name }}</p>
+        </div>
+        <div class="partner-field">
+          <label>No.of units</label>
+          <p></p>
+        </div>
+        <div class="partner-field">
+          <label>Booking status</label>
+          <p>{{ bookingDetails?.bookingStatus }}</p>
+        </div>
+        <div class="partner-field" style="border-bottom: none !important">
+          <label>Additional Charges</label>
+          <input
+            type="number"
+            [(ngModel)]="additionalCharges"
+            class="additional-charges"
+          />
+        </div>
+        <input
+          type="text"
+          [(ngModel)]="additionalChargesReason"
+          placeholder="Reason"
+          style="
+            border: 1px solid #ddd;
+            margin: 5px 20px;
+            padding: 5px 10px;
+            outline: none;
+          "
+        />
+        <div class="partner-field-last">
+          <p>Pending Amount</p>
+          <p style="color: #914f9d">{{ bookingDetails?.remainingBalance }}</p>
+        </div>
+        <div class="modal-footer cancel-booking-btns">
+          <button
+            type="button"
+            class="btn btn-pay-advance"
+            (click)="requestPayment()"
+          >
+            Request Payment
+          </button>
+          <button
+            type="button"
+            class="btn btn-pay"
+            style="background-color: #6f181c !important"
+            (click)="removeBooking(partnerId, bookingDetails?._id)"
+          >
+            Terminate
+          </button>
+        </div>
+        <div
+          *ngIf="isPaymentSuccessful && bookingDetails?.remainingBalance === 0"
+        >
+          <p style="color: rgb(11, 153, 11); text-align: center">
+            Payment Successful!!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

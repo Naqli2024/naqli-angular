@@ -1,0 +1,119 @@
+<div class="row">
+  <div class="col-md-12 booking-history">
+    <div class="head-element">
+      <h2>Payout</h2>
+    </div>
+    <div style="margin-top: 20px">
+      <div class="tab-buttons">
+        <button
+          class="tab-button"
+          [class.active]="isInitialPayoutTab"
+          (click)="selectTab('initialPayout')"
+        >
+          Initial Payout
+        </button>
+        <button
+          class="tab-button"
+          [class.active]="!isInitialPayoutTab"
+          (click)="selectTab('finalPayout')"
+        >
+          Final Payout
+        </button>
+      </div>
+      <div class="table-container">
+        <table class="table" style="margin: 0px 0px !important">
+          <thead>
+            <tr>
+              <ng-container *ngIf="isInitialPayoutTab">
+                <th>User Name</th>
+                <th>Booking ID</th>
+                <th>Date</th>
+                <th>Total Payout</th>
+                <th>Initial Payout</th>
+                <th>Partner Name</th>
+                <th>Action</th>
+              </ng-container>
+              <ng-container *ngIf="!isInitialPayoutTab">
+                <th>Partner Name</th>
+                <th>Pending Amount</th>
+                <th>Extra Charges</th>
+                <th>Refunds</th>
+                <th>Commission</th>
+                <th>Final Payout</th>
+                <th>Action</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let booking of bookings">
+              <ng-container *ngIf="isInitialPayoutTab">
+                <td>
+                  {{ users[booking.user]?.firstName }}
+                  {{ users[booking.user]?.lastName }}
+                </td>
+                <td>{{ booking._id }}</td>
+                <td>{{ booking.date }}</td>
+                <td>{{ booking.payout }} SAR</td>
+                <td>{{ booking.initialPayout }} SAR</td>
+                <td>{{ partners[booking.partner]?.partnerName }}</td>
+                <td>
+                  <!-- <fa-icon
+                    [icon]="faEdit"
+                    class="icon"
+                    style="color: #727272; padding: 0px 5px"
+                  ></fa-icon> -->
+                  <button
+                    type="button"
+                    class="btn btn-balance"
+                    style="
+                      margin: 0px 10px;
+                      padding: 3px 20px !important;
+                      font-size: 13px;
+                    "
+                  >
+                    Pay: {{ booking.initialPayout }} SAR
+                  </button>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="!isInitialPayoutTab">
+                <td>{{ partners[booking.partner]?.partnerName }}</td>
+                <td>{{ booking.remainingBalance }} SAR</td>
+                <td>
+                  {{ booking.additionalCharges }} SAR 
+                  <span *ngIf="booking.additionalChargesReason.length > 0">
+                    (Reasons: 
+                    <ng-container *ngFor="let reason of booking.additionalChargesReason; let isLast = last">
+                      {{ reason }}<span *ngIf="!isLast">, </span>
+                    </ng-container>
+                    )
+                  </span>
+                </td>
+                <td></td>
+                <td>{{ booking.adminCommission }} SAR</td>
+                <td>{{ booking.finalPayout }} SAR</td>
+                <td>
+                  <!-- <fa-icon
+                    [icon]="faEdit"
+                    class="icon"
+                    style="color: #727272; padding: 0px 5px"
+                  ></fa-icon> -->
+                  <button
+                    type="button"
+                    class="btn btn-balance"
+                    style="
+                      margin: 0px 10px;
+                      padding: 3px 20px !important;
+                      font-size: 13px;
+                    "
+                  >
+                  Pay: {{ booking.finalPayout }} SAR
+                  </button>
+                </td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

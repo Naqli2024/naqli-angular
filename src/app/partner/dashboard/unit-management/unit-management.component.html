@@ -1,0 +1,330 @@
+<div class="row">
+  <div class="col-md-12 booking-history" *ngIf="!showNewUnitForm">
+    <div class="head-element" style="position: relative">
+      <h2>Unit Management</h2>
+    </div>
+    <div class="dropdown-container">
+      <select class="form-select">
+        <option *ngFor="let option of options" [value]="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Unit ID</th>
+            <th>Unit Type</th>
+            <th>Unit</th>
+            <th>Unit Classification</th>
+            <th>Operator</th>
+            <th>Status</th>
+            <th>Vehicle detail/Doc</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button
+      class="btn notification-modal-btn add-unit"
+      (click)="toggleNewUnitForm()"
+    >
+      New Unit
+    </button>
+  </div>
+</div>
+
+<div class="new-unit" *ngIf="showNewUnitForm">
+  <p (click)="toggleNewUnitForm()" style="margin: 10px 0px !important">
+    <i class="fas fa-arrow-left"></i> Back
+  </p>
+  <div class="row">
+    <div
+      class="col-md-12 booking-history operator-form-unit"
+      *ngFor="let data of formData; let i = index"
+    >
+      <div
+        class="head-element"
+        *ngIf="i === 0"
+        style="position: relative; margin: 0px -12px !important"
+      >
+        <h2>New Unit</h2>
+      </div>
+      <form (ngSubmit)="handleSubmit(i)" style="margin: 20px">
+        <div *ngIf="i === 0">
+          <label
+            class="col-form-label"
+            style="font-size: 14px; margin-right: 30px"
+            >Unit</label
+          >
+
+          <div
+            class="form-check form-check-inline"
+            *ngFor="let option of options.slice(1)"
+          >
+            <input
+              class="form-check-input"
+              type="radio"
+              name="'unitType' + i"
+              [(ngModel)]="data.unitType"
+              value="option.toLowerCase()"
+              (change)="onUnitTypeChange(i, option.toLowerCase())"
+            />
+            <label class="form-check-label">{{ option }}</label>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Unit Classification</label
+              >
+              <select
+                class="form-select"
+                [(ngModel)]="data.unitClassification"
+                [name]="'unitClassification' + i"
+                (change)="onClassificationChange(i, $event)"
+              >
+                <option value="">Select Classification</option>
+                <option
+                  *ngFor="let classification of classifications"
+                  [value]="classification.name"
+                >
+                  {{ classification.name }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Sub Classification</label
+              >
+              <select
+                class="form-select"
+                [(ngModel)]="data.subClassification"
+                [name]="'subClassification' + i"
+              >
+                <option value="">Select Sub Classification</option>
+                <option
+                  *ngFor="let subClassification of subClassifications"
+                  [value]="subClassification.typeName"
+                >
+                  {{ subClassification.typeName }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Plate Information</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="data.plateInformation"
+                name="plateInformation"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Istimara No</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="data.istimaraNo"
+                name="istimaraNo"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Istimara Card</label
+              >
+              <input
+                type="file"
+                class="form-control"
+                (change)="handleFileInput($event, 'istimaraCard', i)"
+                name="istimaraCard{{ i }}"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Picture of Vehicle</label
+              >
+              <input
+                type="file"
+                class="form-control"
+                (change)="handleFileInput($event, 'pictureOfVehicle', i)"
+                name="pictureOfVehicle{{ i }}"
+              />
+            </div>
+          </div>
+          <div class="unit-management-operator-details-br"></div>
+        </div>
+
+        <div style="margin: 20px 0px">
+          <div class="row">
+            <div class="col-md-12">
+              <h6>Operator Details</h6>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >First Name</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="data.firstName"
+                name="firstName{{ i }}"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Last Name</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="data.lastName"
+                name="lastName{{ i }}"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <label class="col-form-label" style="font-size: 14px"
+                >Email ID</label
+              >
+              <input
+                type="email"
+                class="form-control"
+                [(ngModel)]="data.email"
+                name="email{{ i }}"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Mobile No</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="data.mobileNo"
+                name="mobileNo{{ i }}"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Iqama No</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="data.iqamaNo"
+                name="iqamaNo{{ i }}"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Date of Birth</label
+              >
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="data.dateOfBirth"
+                name="dateOfBirth{{ i }}"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Panel Information</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="data.panelInformation"
+                name="panelInformation{{ i }}"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <label class="col-form-label" style="font-size: 14px"
+                >Driving License</label
+              >
+              <input
+                type="file"
+                class="form-control operator-file"
+                (change)="handleFileInput($event, 'drivingLicense', i)"
+                name="drivingLicense{{ i }}"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="col-form-label" style="font-size: 14px"
+                >Aramco License</label
+              >
+              <input
+                type="file"
+                class="form-control"
+                (change)="handleFileInput($event, 'aramcoLicense', i)"
+                name="aramcoLicense{{ i }}"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="col-form-label" style="font-size: 14px"
+                >National ID</label
+              >
+              <input
+                type="file"
+                class="form-control"
+                (change)="handleFileInput($event, 'nationalID', i)"
+                name="nationalID{{ i }}"
+              />
+            </div>
+            <div class="col-md-2" *ngIf="i === formData.length - 1">
+              <button class="btn add-operator-btn" (click)="addNewForm()">
+                + Add Operator
+              </button>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-12 text-center">
+              <button
+                type="submit"
+                class="btn custom-register-btn"
+                *ngIf="i === formData.length - 1"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

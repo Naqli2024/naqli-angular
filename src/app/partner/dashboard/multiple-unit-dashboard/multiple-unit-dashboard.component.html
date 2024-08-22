@@ -1,0 +1,58 @@
+<div class="container multiple-unit-dashboard-container">
+  <div class="col-md-10">
+    <div class="multiple-unit-dashboard">
+      <div class="multiple-unit-dashboard-head" *ngFor="let item of items">
+        <div
+          class="multiple-unit-dashboard-head-left"
+          [ngStyle]="{ 'background-color': item.color }"
+        >
+          <img [src]="item.imgSrc" alit="" />
+        </div>
+        <div class="multiple-unit-dashboard-head-right">
+          <p>{{ item.count }}</p>
+          <p class="dashboard-text">{{ item.text }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="row chart-table-container">
+      <div class="col-md-5">
+        <div class="chart-container">
+          <canvas id="doughnutchart"></canvas>
+          <div id="chart-annotations" class="annotations-container">
+            <!-- Annotations will be injected here -->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="head-element">
+          <h2 style="font-size: 18px; padding: 10px 0px; margin-left: -20px">
+            Operators
+          </h2>
+        </div>
+        <div class="operator-list row" *ngFor="let item of items">
+          <div class="operator-list-div-1 col-md-3">
+            <h6>{{ item.text }}</h6>
+            <p>{{ item.text }}</p>
+          </div>
+          <div class="col-md-3">
+            <p>{{ item.count }}</p>
+          </div>
+          <div class="col-md-3">
+            <button
+              class="btn"
+              style="
+                background: #f5f3ff;
+                border: 1px solid #ddd;
+                padding: 0px 25px;
+                font-size: 13px;
+                margin-top: -15px;
+              "
+            >
+              View
+            </button>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</div>

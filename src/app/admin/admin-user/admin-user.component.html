@@ -1,0 +1,56 @@
+<div class="row">
+  <div class="col-md-12 booking-history">
+    <div class="head-element" style="position: relative">
+      <h2>Users</h2>
+    </div>
+    <div class="dropdown-container">
+      <select class="form-select" (change)="onActionSelected($event)">
+        <option *ngFor="let option of options" [value]="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              <input
+                type="checkbox"
+                [checked]="isAllSelected"
+                (change)="toggleSelectAll($event)"
+              />
+            </th>
+            <th>User name</th>
+            <th>User id</th>
+            <th>Email id</th>
+            <th>Last sign-in</th>
+            <th>Contact no</th>
+            <th>Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let user of users"
+            [class.disabled]="user.isBlocked || user.isSuspended"
+            class="make-disable"
+          >
+            <td>
+              <input
+                type="checkbox"
+                [(ngModel)]="user.selected"
+                (change)="updateSelectAllState()"
+              />
+            </td>
+            <td>{{ user.firstName }} {{ user.lastName }}</td>
+            <td>{{ user._id }}</td>
+            <td>{{ user.emailAddress }}</td>
+            <td>{{ user.updatedAt | date : "short" }}</td>
+            <td>{{ user.contactNumber }}</td>
+            <td>{{ user.address1 }}, {{ user.city }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

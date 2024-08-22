@@ -1,0 +1,584 @@
+{
+  "vehicles": [
+    {
+      "name": "Tralia",
+      "type": [
+        {
+          "typeName": "Short slides",
+          "scale": "(12m to 13.5m)",
+          "typeImage": "assets/images/short-sides.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "Other"
+            }
+          ]
+        },
+        {
+          "typeName": "Curtain",
+          "scale": "(12m to 13.5m)",
+          "typeImage": "assets/images/curtain.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "Other"
+            }
+          ]
+        },
+        {
+          "typeName": "Refrigerator",
+          "scale": "(12m to 13.5m)",
+          "typeImage": "assets/images/refrigerator.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Perfumes and Cosmetics"
+            },
+            {
+              "load": "Others"
+            }
+          ]
+        },
+        {
+          "typeName": "Faltbed",
+          "scale": "(12m to 13.5m)",
+          "typeImage": "assets/images/flatbed.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "Fodder"
+            },
+            {
+              "load": "Container 20"
+            },
+            {
+              "load": "Others"
+            }
+          ]
+        },
+        {
+          "typeName": "High Slides",
+          "scale": "(12m to 13.5m)",
+          "typeImage": "assets/images/high-sides.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "other"
+            }
+          ]
+        },
+        {
+          "typeName": "Freezer",
+          "scale": "(12m to 13.5m)",
+          "typeImage": "assets/images/freezer.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Perfumes and Cosmetics"
+            },
+            {
+              "load": "Medicinal products"
+            },
+            {
+              "load": "Others"
+            }
+          ]
+        }
+      ],
+      "id": "cc76"
+    },
+    {
+      "name": "six",
+      "type": [
+        {
+          "typeName": "Slide",
+          "scale": "(6.5m to 7m)",
+          "typeImage": "assets/images/Six-Sides.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "Other"
+            }
+          ]
+        },
+        {
+          "typeName": "Refrigerator",
+          "scale": "(6.5m to 7m)",
+          "typeImage": "assets/images/six-refrigerator.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Perfumes and Cosmetics"
+            },
+            {
+              "load": "medicinal products"
+            },
+            {
+              "load": "Others"
+            }
+          ]
+        }
+      ],
+      "id": "fc31"
+    },
+    {
+      "name": "Lorry 7 metres",
+      "type": [
+        {
+          "typeName": "Slide",
+          "scale": "(7m to 7.5m)",
+          "typeImage": "assets/images/lorry 7 meters-sides.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "Other"
+            }
+          ]
+        }
+      ],
+      "id": "f479"
+    },
+    {
+      "name": "Lorry",
+      "type": [
+        {
+          "typeName": "Slide(6m to 6.5m)",
+          "scale": "(6m to 6.5m)",
+          "typeImage": "assets/images/lorry-sides.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "Other"
+            }
+          ]
+        },
+        {
+          "typeName": "closed",
+          "scale": "(6m to 6.5m)",
+          "typeImage": "assets/images/lorry-closed.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "Other"
+            }
+          ]
+        },
+        {
+          "typeName": "Refrigerator",
+          "scale": "(6m to 6.5m)",
+          "typeImage": "assets/images/lorry-Refrigerator.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Perfumes and Cosmetics"
+            },
+            {
+              "load": "medicinal products"
+            },
+            {
+              "load": "Others"
+            }
+          ]
+        },
+        {
+          "typeName": "Crane 5 TON",
+          "scale": "(6m to 6.5m)",
+          "typeImage": "assets/images/lorry-Crane 5 ton.svg",
+          "typeOfLoad": [
+            {
+              "load": "Scrap"
+            },
+            {
+              "load": "Steel"
+            },
+            {
+              "load": "Others"
+            }
+          ]
+        },
+        {
+          "typeName": "Crane 7 TON",
+          "scale": "(6m to 6.5m)",
+          "typeImage": "assets/images/lorry-Crane 7 ton.svg",
+          "typeOfLoad": [
+            {
+              "load": "Scrap"
+            },
+            {
+              "load": "Steel"
+            },
+            {
+              "load": "Others"
+            }
+          ]
+        },
+        {
+          "typeName": "Freezer",
+          "scale": "(6m to 6.5m)",
+          "typeImage": "assets/images/lorry-freezer.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Perfumes and Cosmetics"
+            },
+            {
+              "load": "medicinal products"
+            },
+            {
+              "load": "Others"
+            }
+          ]
+        }
+      ],
+      "id": "f3f3"
+    },
+    {
+      "name": "Diana",
+      "type": [
+        {
+          "typeName": "Closed",
+          "scale": "(4m to 4.5m)",
+          "typeImage": "assets/images/Closed.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "Other"
+            }
+          ]
+        },
+        {
+          "typeName": "Crane",
+          "scale": "(4m to 4.5m)",
+          "typeImage": "assets/images/Crane.svg",
+          "typeOfLoad": [
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "Other"
+            }
+          ]
+        },
+        {
+          "typeName": "Refrigerator",
+          "scale": "(4m to 4.5m)",
+          "typeImage": "assets/images/Diana-Refrigerator.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Perfumes and Cosmetics"
+            },
+            {
+              "load": "medicinal products"
+            },
+            {
+              "load": "Others"
+            }
+          ]
+        },
+        {
+          "typeName": "Slides",
+          "scale": "(4m to 4.5m)",
+          "typeImage": "assets/images/Diana-Sides.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Building Materials"
+            },
+            {
+              "load": "Auto parts"
+            },
+            {
+              "load": "Tools and Equipment's"
+            },
+            {
+              "load": "Other"
+            }
+          ]
+        },
+        {
+          "typeName": "Freezer",
+          "scale": "(4m to 4.5m)",
+          "typeImage": "assets/images/Diana-Freezer.svg",
+          "typeOfLoad": [
+            {
+              "load": "Food"
+            },
+            {
+              "load": "Perfumes and Cosmetics"
+            },
+            {
+              "load": "medicinal products"
+            },
+            {
+              "load": "Others"
+            }
+          ]
+        }
+      ],
+      "id": "738e"
+    },
+    {
+      "name": "Pick Up",
+      "type": [
+        {
+          "typeName": "Pick Up",
+          "scale": "(1m to 1.5m)",
+          "typeImage": "assets/images/pick up.svg"
+        }
+      ],
+      "id": "eabe"
+    },
+    {
+      "name": "Tow Truck",
+      "type": [
+        {
+          "typeName": "Regular",
+          "typeImage": "assets/images/regular.svg"
+        },
+        {
+          "typeName": "hydraulic",
+          "typeImage": "assets/images/hydraulic.svg"
+        }
+      ],
+      "id": "fff2"
+    }
+  ],
+  "bus": [
+    {
+      "name": "<15 Pax",
+      "image": "assets/images/bus 15 pax.svg",
+      "id": "fd82"
+    },
+    {
+      "name": "15 - 30 Pax",
+      "image": "assets/images/bus 15 - 30 pax.svg",
+      "id": "2cf4"
+    },
+    {
+      "name": "+30 Pax",
+      "image": "assets/images/bus +30 pax.svg",
+      "id": "da2a"
+    }
+  ],
+  "equipment": [
+    {
+      "name": "Excavator",
+      "type": [
+        {
+          "typeName": "Excavator",
+          "typeImage": "assets/images/excavator.svg"
+        }
+      ],
+      "id": "339a"
+    },
+    {
+      "name": "Loaders",
+      "type": [
+        {
+          "typeName": "Back hoe",
+          "typeImage": "assets/images/backhoe.svg"
+        },
+        {
+          "typeName": "Front hoe",
+          "typeImage": "assets/images/front hoe.svg"
+        },
+        {
+          "typeName": "Skid steer",
+          "typeImage": "assets/images/skid steer.svg"
+        }
+      ],
+      "id": "9f4f"
+    },
+    {
+      "name": "Cranes",
+      "type": [
+        {
+          "typeName": "Crawler crane",
+          "typeImage": "assets/images/crawler crane.svg"
+        },
+        {
+          "typeName": "Mobile crane",
+          "typeImage": "assets/images/mobile crane.svg"
+        }
+      ],
+      "id": "6d1c"
+    },
+    {
+      "name": "Others",
+      "type": [
+        {
+          "typeName": "Compactors",
+          "typeImage": "assets/images/compactors.svg"
+        },
+        {
+          "typeName": "Bulldozers",
+          "typeImage": "assets/images/bull dozers.svg"
+        },
+        {
+          "typeName": "Graders",
+          "typeImage": "assets/images/graders.svg"
+        },
+        {
+          "typeName": "Dump truck",
+          "typeImage": "assets/images/dump truck.svg"
+        },
+        {
+          "typeName": "Forklift",
+          "typeImage": "assets/images/fork lift.svg"
+        },
+        {
+          "typeName": "Scissorlift",
+          "typeImage": "assets/images/scissor lift.svg"
+        }
+      ],
+      "id": "8af2"
+    }
+  ],
+  "special": [
+    {
+      "name": "Fuel Truck",
+      "image": "assets/images/fuel truck.svg",
+      "id": "3dac"
+    },
+    {
+      "name": "Concrete Mixer",
+      "image": "assets/images/concrete mixer.svg",
+      "id": "94a8"
+    },
+    {
+      "name": "Concrete Pump Truck",
+      "image": "assets/images/concrete pump truck.svg",
+      "id": "4195"
+    },
+    {
+      "name": "Lorry Crane",
+      "image": "assets/images/lorry crane.svg",
+      "id": "56bd"
+    },
+    {
+      "name": "Power Generators",
+      "image": "assets/images/power generators.svg",
+      "id": "08d3"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+<div class="home-container">
+  <div class="custom-slider">
+    <!-- Content for the custom-slider -->
+  </div>
+  <div class="home-body">
+    <div *ngFor="let item of items" class="item">
+      <a [routerLink]="getRoute(item.name)">
+        <img [src]="item.image" alt="{{ item.name }}" />
+        <hr class="line" />
+        <!-- Horizontal line -->
+        <p class="item-name">{{ item.name }}</p>
+      </a>
+    </div>
+    <div
+      class="estimate-container"
+      style="background-color: #6a66d1"
+      (click)="openGetEstimateModal($event)"
+    >
+      <div class="estimate-text">Get an Estimate</div>
+      <div class="arrow-icon">
+        <img src="assets/images/arrow_circle_right.png" alt="" />
+      </div>
+    </div>
+  </div>
+</div>
