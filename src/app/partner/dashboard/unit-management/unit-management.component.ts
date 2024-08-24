@@ -10,6 +10,10 @@ import { OperatorService } from '../../../../services/partner/operator.service';
 import { PartnerService } from '../../../../services/partner/partner.service';
 import { ToastrService } from 'ngx-toastr';
 import { SpinnerService } from '../../../../services/spinner.service';
+import { faEdit, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { Partner } from '../../../../models/partnerData.model';
+import { FileService } from '../../../../services/file.service';
 
 interface FormData {
   type: string;
@@ -38,20 +42,27 @@ interface FormData {
 @Component({
   selector: 'app-unit-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './unit-management.component.html',
   styleUrl: './unit-management.component.css',
 })
-
-export class UnitManagementComponent implements OnInit{
+export class UnitManagementComponent implements OnInit {
   showNewUnitForm = false;
-  options: string[] = ['Select', 'Vehicle', 'Bus', 'Equipment', 'Special'];
-  formData: FormData[] = [this.initializeFormData()];
+  options: string[] = ['All', 'vehicle', 'bus', 'equipment', 'special'];
+  formData: FormData = this.initializeFormData();
   classifications: any[] = [];
   subClassifications: any[] = [];
   allData: any[] = [];
+  filteredOperators: any[] = [];
   isEditing: boolean = false;
   isSubmitEnabled: boolean = false;
+  faEdit = faEdit;
+  faTimes = faTimes;
+  faCheck = faCheck;
+  clickedAddOperator: boolean = false;
+  clickedAdd: boolean = false;
+  partnerDetails: Partner | null = null;
+  selectedUnitType: string = '';
 
   constructor(
     private router: Router,
@@ -63,67 +74,115 @@ export class UnitManagementComponent implements OnInit{
     private partnerService: PartnerService,
     private toastr: ToastrService,
     private spinnerService: SpinnerService,
+    private fileService: FileService
   ) {}
+
+  toggleEditMode() {
+    this.isEditing = !this.isEditing;
+  }
 
   toggleNewUnitForm() {
     this.showNewUnitForm = !this.showNewUnitForm;
+  }
+
+  openFile(fileName: string) {
+    const fileUrl = this.fileService.getFileUrl(fileName);
+    window.open(fileUrl, '_blank');
   }
 
   ngOnInit(): void {
     const partnerId: string | null = localStorage.getItem('partnerId');
     if (partnerId) {
       this.partnerService.getPartnerDetails(partnerId).subscribe(
-        partnerDetails => {
-          this.formData[0].partnerName = partnerDetails.data.partnerName;
-          this.formData[0].partnerId = partnerDetails.data._id;
-          this.enableSubmitButton();
+        (partnerDetails) => {
+          this.partnerDetails = partnerDetails.data;
+          this.formData.partnerName = partnerDetails.data.partnerName;
+          this.formData.partnerId = partnerDetails.data._id;
+          this.filteredOperators = this.partnerDetails?.operators || []; // Initialize filteredOperators
         },
-        error => {
+        (error) => {
           console.error('Error fetching partner details:', error);
         }
       );
     }
   }
 
-  addNewForm() {
-    this.formData.push(this.initializeFormData());
+  resetOperatorDetails() {
+    this.clickedAddOperator = !this.clickedAddOperator;
+    this.clickedAdd = false;
+    this.toastr.success('You can add more operators for this unit');
   }
 
-  enableSubmitButton() {
-    this.isSubmitEnabled = this.formData.every(data =>
-      data.unitType &&
-      data.unitClassification &&
-      data.plateInformation &&
-      data.istimaraNo &&
-      data.firstName &&
-      data.lastName &&
-      data.email &&
-      data.mobileNo &&
-      data.iqamaNo &&
-      data.dateOfBirth &&
-      data.panelInformation &&
-      data.drivingLicense &&
-      data.aramcoLicense &&
-      data.nationalID
-    );
+  resetAll() {
+    this.clickedAdd = !this.clickedAdd;
+    this.clickedAddOperator = false;
   }
 
-  handleSubmit(formIndex: number) {
+  getStatusColor(bookingRequests: any[] = []): string {
+    return Array.isArray(bookingRequests) && bookingRequests.some((request) => request.paymentStatus)
+      ? 'red'
+      : 'green';
+  }
+  
+  getStatusText(bookingRequests: any[] = []): string {
+    return Array.isArray(bookingRequests) && bookingRequests.some((request) => request.paymentStatus)
+      ? 'Not Available'
+      : 'Available';
+  }
+
+  handleSubmit() {
+    if (
+      !this.formData.unitType ||
+      !this.formData.unitClassification ||
+      (this.subClassifications && !this.formData.subClassification) ||
+      !this.formData.plateInformation ||
+      !this.formData.istimaraNo ||
+      !this.formData.istimaraCard ||
+      !this.formData.pictureOfVehicle ||
+      !this.formData.firstName ||
+      !this.formData.lastName ||
+      !this.formData.email ||
+      !this.formData.mobileNo ||
+      !this.formData.iqamaNo ||
+      !this.formData.dateOfBirth ||
+      !this.formData.panelInformation ||
+      !this.formData.drivingLicense ||
+      !this.formData.aramcoLicense ||
+      !this.formData.nationalID
+    ) {
+      this.toastr.error(
+        'Please fill in all required fields.',
+        'Validation Error'
+      );
+      return;
+    }
+
     const formData = new FormData();
-    Object.entries(this.formData[formIndex]).forEach(([key, value]) => {
+    Object.entries(this.formData).forEach(([key, value]) => {
       if (value instanceof File) {
         formData.append(key, value);
       } else {
         formData.append(key, value as string);
       }
     });
-    // Convert FormData to a JSON object to view in console
-  const formDataObject: any = {};
-  formData.forEach((value, key) => {
-    formDataObject[key] = value;
-  });
 
-  console.log('Submitted form data:', formDataObject);
+    this.spinnerService.show();
+    this.operatorService.addOperator(formData).subscribe(
+      (response) => {
+        this.spinnerService.hide();
+        this.toastr.success(response.message, 'Success');
+        if (this.clickedAddOperator) {
+          this.resetOperatorForm();
+        } else if (this.clickedAdd) {
+          this.resetForm();
+        }
+      },
+      (error) => {
+        this.spinnerService.hide();
+        const errorMessage = error.error?.message || 'An error occurred';
+        this.toastr.error(errorMessage, 'Error');
+      }
+    );
   }
 
   initializeFormData(): FormData {
@@ -148,66 +207,144 @@ export class UnitManagementComponent implements OnInit{
       panelInformation: '',
       drivingLicense: null,
       aramcoLicense: null,
-      nationalID: null
+      nationalID: null,
     };
   }
 
-  onUnitTypeChange(formIndex: number, unitType: string): void {
-    this.formData[formIndex].unitType = unitType;
+ 
+  onUnitTypeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const selectedUnitType = target.value;
+    
+    this.selectedUnitType = selectedUnitType;
+    this.formData.unitType = selectedUnitType;
     this.classifications = [];
     this.subClassifications = [];
     this.allData = [];
-
-    // Reset isEditing flag when changing unitType
-    this.isEditing = false;
-
-    switch (unitType) {
+    
+    // Handle the case where 'All' is selected
+    if (selectedUnitType === 'All') {
+      // Show all data without filtering
+      this.filteredOperators = this.partnerDetails?.operators || [];
+      return; 
+    }
+  
+    // Otherwise, handle specific unit types
+    switch (selectedUnitType) {
       case 'vehicle':
-        this.vehicleService.getVehicles().subscribe((data: any) => {
+        this.vehicleService.getVehicles().subscribe((data: any[]) => {
           this.classifications = data;
           this.allData = data;
-          this.enableSubmitButton();
+          this.filterOperators(selectedUnitType);
         });
         break;
       case 'bus':
-        this.busService.getBuses().subscribe((data: any) => {
+        this.busService.getBuses().subscribe((data: any[]) => {
           this.classifications = data;
           this.allData = data;
-          this.enableSubmitButton();
+          this.filterOperators(selectedUnitType);
         });
         break;
       case 'equipment':
-        this.equipmentService.getEquipment().subscribe((data: any) => {
+        this.equipmentService.getEquipment().subscribe((data: any[]) => {
           this.classifications = data;
           this.allData = data;
-          this.enableSubmitButton();
+          this.filterOperators(selectedUnitType);
         });
         break;
       case 'special':
-        this.specialService.getSpecialUnits().subscribe((data: any) => {
+        this.specialService.getSpecialUnits().subscribe((data: any[]) => {
           this.classifications = data;
           this.allData = data;
-          this.enableSubmitButton();
+          this.filterOperators(selectedUnitType);
         });
         break;
+      default:
+        this.filteredOperators = [];
     }
+    this.isEditing = false;
   }
 
-  onClassificationChange(formIndex: number, event: Event): void {
+  
+
+  onClassificationChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
     const classificationId = target.value;
-    this.formData[formIndex].unitClassification = classificationId;
-    const selectedClassification = this.allData.find(item => item.name === classificationId);
-    this.subClassifications = selectedClassification ? selectedClassification.type : [];
-    this.enableSubmitButton();
+    this.formData.unitClassification = classificationId;
+    const selectedClassification = this.allData.find(
+      (item) => item.name === classificationId
+    );
+    this.subClassifications = selectedClassification
+      ? selectedClassification.type
+      : [];
   }
 
-  handleFileInput(event: Event, field: string, formIndex: number) {
+  handleFileInput(event: Event, field: string) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.formData[formIndex][field] = input.files[0];
-      this.enableSubmitButton();
+      this.formData[field] = input.files[0];
     }
   }
 
+  filterOperators(unitType: string) {
+    if (this.partnerDetails?.operators) {
+      this.filteredOperators = this.partnerDetails.operators.filter(
+        (operator) => operator.unitType === unitType
+      );
+    }
+  }
+
+  resetForm() {
+    const { partnerName, partnerId } = this.formData;
+
+    this.formData = this.initializeFormData();
+
+    // Restore partnerName and partnerId
+    this.formData.partnerName = partnerName;
+    this.formData.partnerId = partnerId;
+
+    // Manually reset file input elements
+    const fileInputs = [
+      'istimaraCard',
+      'pictureOfVehicle',
+      'drivingLicense',
+      'aramcoLicense',
+      'nationalID',
+    ];
+
+    fileInputs.forEach((field) => {
+      const input = document.querySelector(
+        `input[name=${field}]`
+      ) as HTMLInputElement;
+      if (input) {
+        input.value = ''; // Clear the file input value
+      }
+    });
+    this.showNewUnitForm = !this.showNewUnitForm;
+  }
+
+  resetOperatorForm() {
+    this.formData.firstName = '';
+    this.formData.lastName = '';
+    this.formData.email = '';
+    this.formData.mobileNo = '';
+    this.formData.iqamaNo = '';
+    this.formData.dateOfBirth = '';
+    this.formData.panelInformation = '';
+    this.formData.drivingLicense = null;
+    this.formData.aramcoLicense = null;
+    this.formData.nationalID = null;
+
+    // Manually reset file input elements
+    const fileInputs = ['drivingLicense', 'aramcoLicense', 'nationalID'];
+
+    fileInputs.forEach((field) => {
+      const input = document.querySelector(
+        `input[name=${field}]`
+      ) as HTMLInputElement;
+      if (input) {
+        input.value = ''; // Clear the file input value
+      }
+    });
+  }
 }

@@ -20,6 +20,53 @@ const bookingRequestSchema = new mongoose.Schema({
   },
 });
 
+const operatorDetailSchema = new mongoose.Schema({
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  mobileNo: {
+    type: String,
+    required: true,
+  },
+  iqamaNo: {
+    type: String,
+    required: true,
+  },
+  dateOfBirth: {
+    type: Date,
+    required: true,
+  },
+  panelInformation: {
+    type: String,
+    required: true
+  },
+  drivingLicense: {
+    data: { type: Buffer },
+    contentType: { type: String, required: true },
+    fileName: String
+  },
+  aramcoLicense: {
+    data: { type: Buffer },
+    contentType: { type: String, required: true },
+    fileName: String
+  },
+  nationalID: {
+    data: { type: Buffer },          
+    contentType: { type: String, required: true },
+    fileName: String
+  }
+});
+
+
 const operatorSchema = new mongoose.Schema({
   unitType: {
     type: String,
@@ -52,45 +99,7 @@ const operatorSchema = new mongoose.Schema({
     contentType: { type: String, required: true },
     fileName: String
   },
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  mobileNo: {
-    type: String,
-    required: true,
-  },
-  iqamaNo: {
-    type: String,
-    required: true,
-  },
-  dateOfBirth: {
-    type: Date,
-    required: true,
-  },
-  drivingLicense: {
-    data: { type: Buffer },
-    contentType: { type: String, required: true },
-    fileName: String
-  },
-  aramcoLicense: {
-    data: { type: Buffer },
-    contentType: { type: String, required: true },
-    fileName: String
-  },
-  nationalID: {
-    data: { type: Buffer },          
-    contentType: { type: String, required: true },
-    fileName: String
-  },
+  operatorsDetail: [operatorDetailSchema],
   bookingRequest: [bookingRequestSchema],
 });
 

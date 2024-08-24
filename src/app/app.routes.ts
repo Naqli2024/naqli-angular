@@ -133,10 +133,9 @@ export const routes: Routes = [
       { path: 'report', component: PartnerReportComponent },
       { path: 'help', component: PartnerHelpComponent },
       { path: 'multiple-unit-dashboard', component: MultipleUnitDashboardComponent },
-      { path: 'bookings', component: BookingsComponent },
+      { path: 'bookings', component: PartnerBookingComponent },
       { path: 'booking-management', component: BookingManagementComponent },
       { path: 'contract', component: ContractComponent },
-      { path: 'bookings', component: BookingsComponent },
       {
         path: 'booking/confirm-payment',
         component: PaymentConfirmationComponent,
