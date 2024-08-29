@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { type } = require("os");
 
 const bookingRequestSchema = new mongoose.Schema({
   bookingId: {
@@ -101,6 +102,68 @@ const operatorSchema = new mongoose.Schema({
   },
   operatorsDetail: [operatorDetailSchema],
   bookingRequest: [bookingRequestSchema],
+});
+
+// Define the possible values for unitType
+const unitTypeEnum = ['vehicle', 'bus', 'equipment', 'special', 'others'];
+
+const extraOperatorSchema = new mongoose.Schema({
+  unitType: {
+    type: String,
+    required: false,
+    enum: unitTypeEnum
+  },
+  unitClassification: {
+    type: String,
+    required: false,
+  },
+  subClassification: {
+    type: String,
+    required: false,
+  },
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  mobileNo: {
+    type: String,
+    required: true,
+  },
+  iqamaNo: {
+    type: String,
+    required: true
+  },
+  dateOfBirth: {
+    type: Date,
+    required: true
+  },
+  panelInformation: {
+    type: String,
+    required: true
+  },
+  drivingLicense: {
+    data: { type: Buffer },
+    contentType: { type: String, required: true },
+    fileName: String
+  },
+  aramcoLicense: {
+    data: { type: Buffer },
+    contentType: { type: String, required: true },
+    fileName: String
+  },
+  nationalID: {
+    data: { type: Buffer },          
+    contentType: { type: String, required: true },
+    fileName: String
+  }
 });
 
 const partnerSchema = new mongoose.Schema(
@@ -211,7 +274,8 @@ const partnerSchema = new mongoose.Schema(
         companyType: { type: String, required: true },
         companyIdNo: { type: Number, required: true },
       }
-    ]
+    ],
+    extraOperators: [extraOperatorSchema]
   },
   {
     timestamps: true,

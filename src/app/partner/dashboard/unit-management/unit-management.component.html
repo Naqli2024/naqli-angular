@@ -93,7 +93,7 @@
             name="unitType"
             [(ngModel)]="formData.unitType"
             value="vehicle"
-            (change)="onUnitTypeChange('vehicle')"
+            (change)="onUnitTypeChange($event)"
           />
           <label class="form-check-label">Vehicle</label>
         </div>
@@ -104,7 +104,7 @@
             name="unitType"
             [(ngModel)]="formData.unitType"
             value="bus"
-            (change)="onUnitTypeChange('bus')"
+            (change)="onUnitTypeChange($event)"
           />
           <label class="form-check-label">Bus</label>
         </div>
@@ -115,7 +115,7 @@
             name="unitType"
             [(ngModel)]="formData.unitType"
             value="equipment"
-            (change)="onUnitTypeChange('equipment')"
+            (change)="onUnitTypeChange($event)"
           />
           <label class="form-check-label">Equipment</label>
         </div>
@@ -126,7 +126,7 @@
             name="unitType"
             [(ngModel)]="formData.unitType"
             value="special"
-            (change)="onUnitTypeChange('special')"
+            (change)="onUnitTypeChange($event)"
           />
           <label class="form-check-label">Special</label>
         </div>

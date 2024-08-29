@@ -15,12 +15,37 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+          <tr *ngFor="let booking of bookings">
+            <td *ngIf="users[booking.user]">
+              {{ users[booking.user]?.firstName }}
+              {{ users[booking.user]?.lastName }}
+            </td>
+            <td>{{ booking._id }}</td>
+            <td>
+              {{ booking.unitType }} - {{ booking.name }}
+              <span *ngIf="booking.type[0]?.typeName"
+                >- {{ booking.type[0]?.typeName }}</span
+              >
+            </td>
+            <td>
+              <select class="form-select">
+                <option>
+                  select
+                </option>
+              </select>
+            </td>
+            <td>
+              <fa-icon
+                [icon]="faEdit"
+                class="icon"
+                style="color: #727272; padding: 0px 5px"
+              ></fa-icon>
+              <fa-icon
+                [icon]="faTrashAlt"
+                class="icon"
+                style="color: #727272; padding: 0px 5px"
+              ></fa-icon>
+            </td>
           </tr>
         </tbody>
       </table>

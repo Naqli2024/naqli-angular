@@ -64,14 +64,14 @@ export class ResetPasswordComponent {
 
   resendOtp() {
     this.spinnerService.show();
-    const emailAddress = localStorage.getItem('emailAddress');
+    const emailAddress = localStorage.getItem('email');
 
     this.authService.resendOtp(emailAddress).subscribe(
       (response) => {
         this.spinnerService.hide();
         if (response.success) {
           this.toastr.success(response.message, 'Success');
-          localStorage.removeItem('emailAddress');
+          localStorage.removeItem('email');
         } else {
           this.toastr.error(
             response.message || 'Failed to resend OTP',

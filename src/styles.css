@@ -3127,3 +3127,7 @@ table .make-disable.disabled td:not(:first-child) {
   float: right !important;
   border-radius: 8px !important;
 }
+.operator-form-unit input.form-control:focus {
+  border-color: #7e7e7e !important;
+  box-shadow: none !important;
+}

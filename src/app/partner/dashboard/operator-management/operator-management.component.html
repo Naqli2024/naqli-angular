@@ -16,20 +16,38 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+          <tr *ngFor="let operator of extraOperators">
+            <td>{{ operator.firstName }} {{ operator.lastName }}</td>
+            <td>{{ operator.mobileNo }}</td>
+            <td>{{ operator.email }}</td>
+            <td>{{ operator.iqamaNo }}</td>
             <td>
-              <button class="btn notification-modal-btn add-operator">
-                View
-              </button>
+              <p
+                style="
+                  color: #914f9d;
+                  text-decoration: underline;
+                  cursor: pointer;
+                  margin-bottom: 0px !important;
+                "
+                *ngIf="operator.nationalID?.fileName"
+                (click)="openFile(operator.nationalID.fileName)"
+              >
+                view
+              </p>
             </td>
             <td>
-              <button class="btn notification-modal-btn add-operator">
-                View
-              </button>
+              <p
+                style="
+                  color: #914f9d;
+                  text-decoration: underline;
+                  cursor: pointer;
+                  margin-bottom: 0px !important;
+                "
+                *ngIf="operator.drivingLicense?.fileName"
+                (click)="openFile(operator.drivingLicense.fileName)"
+              >
+                view
+              </p>
             </td>
           </tr>
         </tbody>
@@ -49,18 +67,14 @@
     <i class="fas fa-arrow-left"></i> Back
   </p>
   <div class="row">
-    <div
-      class="col-md-12 booking-history operator-form-unit"
-      *ngFor="let data of formData; let i = index"
-    >
+    <div class="col-md-12 booking-history operator-form-unit">
       <div
         class="head-element"
-        *ngIf="i === 0"
         style="position: relative; margin: 0px -12px !important"
       >
         <h2>New Operator</h2>
       </div>
-      <form (ngSubmit)="handleSubmit(i)" style="margin: 20px">
+      <form (ngSubmit)="handleSubmit()">
         <div class="row">
           <div class="col-md-6">
             <label class="col-form-label" style="font-size: 14px"
@@ -69,8 +83,9 @@
             <input
               type="text"
               class="form-control"
-              [(ngModel)]="data.firstName"
-              name="firstName{{ i }}"
+              [(ngModel)]="formData.firstName"
+              name="firstName"
+              required
             />
           </div>
           <div class="col-md-6">
@@ -80,8 +95,9 @@
             <input
               type="text"
               class="form-control"
-              [(ngModel)]="data.lastName"
-              name="lastName{{ i }}"
+              [(ngModel)]="formData.lastName"
+              name="lastName"
+              required
             />
           </div>
         </div>
@@ -94,8 +110,9 @@
             <input
               type="email"
               class="form-control"
-              [(ngModel)]="data.email"
-              name="email{{ i }}"
+              [(ngModel)]="formData.email"
+              name="email"
+              required
             />
           </div>
         </div>
@@ -108,8 +125,9 @@
             <input
               type="text"
               class="form-control"
-              [(ngModel)]="data.mobileNo"
-              name="mobileNo{{ i }}"
+              [(ngModel)]="formData.mobileNo"
+              name="mobileNo"
+              required
             />
           </div>
           <div class="col-md-6">
@@ -119,8 +137,9 @@
             <input
               type="text"
               class="form-control"
-              [(ngModel)]="data.iqamaNo"
-              name="iqamaNo{{ i }}"
+              [(ngModel)]="formData.iqamaNo"
+              name="iqamaNo"
+              required
             />
           </div>
         </div>
@@ -133,8 +152,9 @@
             <input
               type="date"
               class="form-control"
-              [(ngModel)]="data.dateOfBirth"
-              name="dateOfBirth{{ i }}"
+              [(ngModel)]="formData.dateOfBirth"
+              name="dateOfBirth"
+              required
             />
           </div>
           <div class="col-md-6">
@@ -144,8 +164,9 @@
             <input
               type="text"
               class="form-control"
-              [(ngModel)]="data.panelInformation"
-              name="panelInformation{{ i }}"
+              [(ngModel)]="formData.panelInformation"
+              name="panelInformation"
+              required
             />
           </div>
         </div>
@@ -158,8 +179,9 @@
             <input
               type="file"
               class="form-control operator-file"
-              (change)="handleFileInput($event, 'drivingLicense', i)"
-              name="drivingLicense{{ i }}"
+              (change)="handleFileInput($event, 'drivingLicense')"
+              name="drivingLicense"
+              required
             />
           </div>
           <div class="col-md-4">
@@ -169,8 +191,9 @@
             <input
               type="file"
               class="form-control"
-              (change)="handleFileInput($event, 'aramcoLicense', i)"
-              name="aramcoLicense{{ i }}"
+              (change)="handleFileInput($event, 'aramcoLicense')"
+              name="aramcoLicense"
+              required
             />
           </div>
           <div class="col-md-4">
@@ -180,55 +203,158 @@
             <input
               type="file"
               class="form-control"
-              (change)="handleFileInput($event, 'nationalID', i)"
-              name="nationalID{{ i }}"
+              (change)="handleFileInput($event, 'nationalID')"
+              name="nationalID"
+              required
             />
           </div>
         </div>
 
-        <div class="row col-md-3">
-          <div class="form-group label-input">
-            <label for="accessTo" class="flex-label">Access to</label>
-            <div class="dropdown">
+        <div class="row">
+          <div class="col-md-12">
+            <label class="col-form-label" style="font-size: 14px"
+              >Partner Name/ID</label
+            >
+            <div class="input-group create-operator">
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="formData.partnerName"
+                [disabled]="!isEditing"
+                name="partnerId"
+              />
               <button
-                class="btn dropdown-toggle"
                 type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-                style="font-size: 13px !important"
+                (click)="toggleEditMode()"
+                style="
+                  border-bottom-right-radius: 5px;
+                  border-top-right-radius: 5px;
+                "
               >
-                {{ getSelectedItemsText() || "Select access options" }}
+                <fa-icon [icon]="isEditing ? faTimes : faEdit"></fa-icon>
               </button>
-              <div
-                class="dropdown-menu dropdown-menu-left"
-                aria-labelledby="dropdownMenuButton"
+            </div>
+          </div>
+        </div>
+
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="assignUnit"
+            [(ngModel)]="showAdditionalFields"
+            [disabled]="isFormDisabled"
+            name="assignUnit"
+          />
+          <label class="form-check-label" for="assignUnit"> Assign Unit </label>
+        </div>
+
+        <div *ngIf="showAdditionalFields">
+          <label
+            class="col-form-label"
+            style="font-size: 14px; margin-right: 30px"
+            >Unit</label
+          >
+
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="unitType"
+              [(ngModel)]="formData.unitType"
+              value="vehicle"
+              (change)="onUnitTypeChange('vehicle')"
+            />
+            <label class="form-check-label">Vehicle</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="unitType"
+              [(ngModel)]="formData.unitType"
+              value="bus"
+              (change)="onUnitTypeChange('bus')"
+            />
+            <label class="form-check-label">Bus</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="unitType"
+              [(ngModel)]="formData.unitType"
+              value="equipment"
+              (change)="onUnitTypeChange('equipment')"
+            />
+            <label class="form-check-label">Equipment</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="unitType"
+              [(ngModel)]="formData.unitType"
+              value="special"
+              (change)="onUnitTypeChange('special')"
+            />
+            <label class="form-check-label">Special</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="unitType"
+              [(ngModel)]="formData.unitType"
+              value="others"
+            />
+            <label class="form-check-label">Others</label>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Unit Classification</label
               >
-                <div class="dropdown-item" *ngFor="let item of dropdownList">
-                  <input
-                    type="checkbox"
-                    [value]="item.id"
-                    (change)="toggleSelection(item.id)"
-                    [checked]="isSelected(item.id)"
-                  />
-                  {{ item.itemName }}
-                </div>
-              </div>
+              <select
+                class="form-select"
+                [(ngModel)]="formData.unitClassification"
+                name="unitClassification"
+                (change)="onClassificationChange($event)"
+              >
+                <option value="">Select Classification</option>
+                <option
+                  *ngFor="let classification of classifications"
+                  [value]="classification.name"
+                >
+                  {{ classification.name }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Sub Classification</label
+              >
+              <select
+                class="form-select"
+                [(ngModel)]="formData.subClassification"
+                name="subClassification"
+              >
+                <option value="">Select Sub Classification</option>
+                <option
+                  *ngFor="let subClassification of subClassifications"
+                  [value]="subClassification.typeName"
+                >
+                  {{ subClassification.typeName }}
+                </option>
+              </select>
             </div>
           </div>
         </div>
 
         <div class="row mt-3">
           <div class="col-md-12 text-center">
-            <button
-              type="submit"
-              (click)="handleClick()"
-              class="btn custom-register-btn"
-              *ngIf="i === formData.length - 1"
-            >
-              Create Operator
-            </button>
+            <button type="submit" class="btn custom-register-btn">Add</button>
           </div>
         </div>
       </form>
