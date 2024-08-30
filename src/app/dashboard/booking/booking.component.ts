@@ -70,7 +70,6 @@ export class BookingComponent implements OnInit {
 
   ngOnInit(): void {
     this.bookingId = localStorage.getItem('bookingId');
-    console.log('Booking ID:', this.bookingId);
 
     if (this.bookingId) {
       this.invokeStripe();
@@ -518,7 +517,6 @@ export class BookingComponent implements OnInit {
       (response) => {
         if (response.success) {
           this.bookingDetails = response.data;
-          console.log(this.bookingDetails)
           this.getPartnerDetails(this.bookingDetails.partner);
         } else {
           this.spinnerService.hide();

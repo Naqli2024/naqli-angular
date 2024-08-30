@@ -21,6 +21,7 @@
               [(ngModel)]="formData.unitType"
               value="vehicle"
               (change)="onUnitTypeChange('vehicle')"
+              required
             />
             <label class="form-check-label">Vehicle</label>
           </div>
@@ -32,6 +33,7 @@
               [(ngModel)]="formData.unitType"
               value="bus"
               (change)="onUnitTypeChange('bus')"
+              required
             />
             <label class="form-check-label">Bus</label>
           </div>
@@ -43,6 +45,7 @@
               [(ngModel)]="formData.unitType"
               value="equipment"
               (change)="onUnitTypeChange('equipment')"
+              required
             />
             <label class="form-check-label">Equipment</label>
           </div>
@@ -54,6 +57,7 @@
               [(ngModel)]="formData.unitType"
               value="special"
               (change)="onUnitTypeChange('special')"
+              required
             />
             <label class="form-check-label">Special</label>
           </div>
@@ -64,6 +68,7 @@
               name="unitType"
               [(ngModel)]="formData.unitType"
               value="others"
+              required
             />
             <label class="form-check-label">Others</label>
           </div>
@@ -78,6 +83,7 @@
                 [(ngModel)]="formData.unitClassification"
                 name="unitClassification"
                 (change)="onClassificationChange($event)"
+                required
               >
                 <option value="">Select Classification</option>
                 <option
@@ -96,6 +102,7 @@
                 class="form-select"
                 [(ngModel)]="formData.subClassification"
                 name="subClassification"
+                required
               >
                 <option value="">Select Sub Classification</option>
                 <option
@@ -118,6 +125,7 @@
                 class="form-control"
                 [(ngModel)]="formData.plateInformation"
                 name="plateInformation"
+                required
               />
             </div>
             <div class="col-md-6">
@@ -129,6 +137,7 @@
                 class="form-control"
                 [(ngModel)]="formData.istimaraNo"
                 name="istimaraNo"
+                required
               />
             </div>
           </div>
@@ -143,6 +152,7 @@
                 class="form-control"
                 (change)="handleFileInput($event, 'istimaraCard')"
                 name="istimaraCard"
+                required
               />
             </div>
             <div class="col-md-6">
@@ -154,6 +164,7 @@
                 class="form-control"
                 (change)="handleFileInput($event, 'pictureOfVehicle')"
                 name="pictureOfVehicle"
+                required
               />
             </div>
           </div>
@@ -168,6 +179,7 @@
                 class="form-control"
                 [(ngModel)]="formData.firstName"
                 name="firstName"
+                required
               />
             </div>
             <div class="col-md-6">
@@ -179,6 +191,7 @@
                 class="form-control"
                 [(ngModel)]="formData.lastName"
                 name="lastName"
+                required
               />
             </div>
           </div>
@@ -193,6 +206,7 @@
                 class="form-control"
                 [(ngModel)]="formData.email"
                 name="email"
+                required
               />
             </div>
           </div>
@@ -207,6 +221,7 @@
                 class="form-control"
                 [(ngModel)]="formData.mobileNo"
                 name="mobileNo"
+                required
               />
             </div>
             <div class="col-md-6">
@@ -218,6 +233,7 @@
                 class="form-control"
                 [(ngModel)]="formData.iqamaNo"
                 name="iqamaNo"
+                required
               />
             </div>
           </div>
@@ -232,6 +248,7 @@
                 class="form-control"
                 [(ngModel)]="formData.dateOfBirth"
                 name="dateOfBirth"
+                required
               />
             </div>
             <div class="col-md-6">
@@ -243,6 +260,7 @@
                 class="form-control"
                 [(ngModel)]="formData.panelInformation"
                 name="panelInformation"
+                required
               />
             </div>
           </div>
@@ -257,6 +275,7 @@
                 class="form-control operator-file"
                 (change)="handleFileInput($event, 'drivingLicense')"
                 name="drivingLicense"
+                required
               />
             </div>
             <div class="col-md-4">
@@ -268,6 +287,7 @@
                 class="form-control"
                 (change)="handleFileInput($event, 'aramcoLicense')"
                 name="aramcoLicense"
+                required
               />
             </div>
             <div class="col-md-4">
@@ -279,6 +299,7 @@
                 class="form-control"
                 (change)="handleFileInput($event, 'nationalID')"
                 name="nationalID"
+                required
               />
             </div>
           </div>

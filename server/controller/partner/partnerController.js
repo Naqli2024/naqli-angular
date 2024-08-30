@@ -111,45 +111,42 @@ const updateQuotePrice = async (req, res) => {
   try {
     // Validate inputs
     if (!partnerId || !bookingId || !quotePrice) {
-      return res
-        .status(400)
-        .json({ message: "Missing required fields", success: false });
+      return res.status(400).json({
+        message: "Missing required fields",
+        success: false,
+      });
     }
 
     // Find the partner by ID
     const partnerUpdate = await partner.findById(partnerId);
     if (!partnerUpdate) {
-      return res
-        .status(404)
-        .json({ message: "Partner not found", success: false });
+      return res.status(404).json({
+        message: "Partner not found",
+        success: false,
+      });
     }
 
     // Check if the partner is blocked or suspended
     if (partnerUpdate.isBlocked || partnerUpdate.isSuspended) {
       return res.status(400).json({
         message: "Your account has been suspended or blocked! Please contact your admin.",
-        success: false
+        success: false,
       });
     }
 
-    // Ensure operators array exists and is not empty
-    partnerUpdate.operators = partnerUpdate.operators || [];
+    // Ensure bookingRequest array exists
+    partnerUpdate.bookingRequest = partnerUpdate.bookingRequest || [];
 
-    let bookingFound = false;
+    // Check if the bookingId exists in the bookingRequest array
+    const booking = partnerUpdate.bookingRequest.find(
+      (b) => b.bookingId.toString() === bookingId
+    );
 
-    // Iterate through operators and their booking requests
-    partnerUpdate.operators.forEach((operator) => {
-      operator.bookingRequest.forEach((booking) => {
-        // Check if bookingId matches
-        if (booking && booking.bookingId.toString() === bookingId) {
-          booking.quotePrice = quotePrice; // Update quotePrice for the booking
-          bookingFound = true;
-        }
-      });
-    });
-
-    // If bookingId was not found, return error
-    if (!bookingFound) {
+    if (booking) {
+      // Update quotePrice for the found booking
+      booking.quotePrice = quotePrice;
+    } else {
+      // If bookingId was not found, return an error
       return res.status(404).json({
         message: "Booking ID not found for this partner",
         success: false,
@@ -209,6 +206,7 @@ const deletedBookingRequest = async (req, res) => {
 
 
 
+
 const getTopPartners = async (req, res) => {
   const { unitType, unitClassification, subClassification, bookingId } = req.body;
 
@@ -218,7 +216,9 @@ const getTopPartners = async (req, res) => {
       "operators.unitType": unitType,
       "operators.unitClassification": unitClassification,
       ...(subClassification && { "operators.subClassification": subClassification })
-    }).populate('operators.bookingRequest');
+    });
+
+    console.log('Partners found:', partners);
 
     // Prepare filtered results
     const filteredPartners = partners.reduce((filtered, partner) => {
@@ -228,85 +228,81 @@ const getTopPartners = async (req, res) => {
         (!subClassification || operator.subClassification === subClassification)
       );
 
-      matchingOperators.forEach(operator => {
-        // Check if operator.bookingRequest is an array and filter for the given bookingId
-        if (Array.isArray(operator.bookingRequest)) {
-          operator.bookingRequest = operator.bookingRequest.filter(booking => {
-            // Ensure bookingId is not null and valid before comparison
-            const bookingIdValid = bookingId && bookingId.toString();
-            const bookingIdMatch = booking.bookingId && booking.bookingId.toString();
-            return bookingIdValid && bookingIdMatch && bookingIdValid === bookingIdMatch;
-          });
-        }
+      console.log('Matching operators:', matchingOperators);
+
+      // Filter bookingRequests at the partner level
+      const filteredBookingRequests = partner.bookingRequest.filter(booking => {
+        const bookingIdValid = bookingId && bookingId.toString();
+        const bookingIdMatch = booking.bookingId && booking.bookingId.toString();
+        return bookingIdValid && bookingIdMatch && bookingIdValid === bookingIdMatch;
       });
 
-      // Check if any matching operators with valid bookingRequest
+      console.log('Filtered booking request:', filteredBookingRequests);
+
       if (matchingOperators.length > 0) {
         filtered.push({
           partnerId: partner._id,
           partnerName: partner.partnerName,
-          operators: matchingOperators
+          operators: matchingOperators,
+          bookingRequests: filteredBookingRequests
         });
       }
 
       return filtered;
     }, []);
 
+    console.log('Filtered partners:', filteredPartners);
+
     // Flatten the results into the desired format
     const results = [];
     for (const partner of filteredPartners) {
-      for (const operator of partner.operators) {
-        for (const booking of operator.bookingRequest) {
-          // Fetch user details from booking collection
-          const bookingDetails = await Booking.findById(booking.bookingId);
-          if (!bookingDetails) {
-            throw new Error('Booking not found');
-          }
-          const userId = bookingDetails.user;
-          
-          // Fetch user details from User collection
-          const user = await User.findById(userId);
-          if (!user) {
-            throw new Error('User not found');
-          }
-
-          const accountType = user.accountType;
-
-          // Fetch commission rate from Commission collection
-          const commission = await Commission.findOne({ userType: accountType });
-          if (!commission) {
-            throw new Error('Commission rate not found');
-          }
-
-          // Convert commission rate percentage to a decimal
-          const commissionRate = commission.commissionRate / 100;
-          const quotePrice = booking.quotePrice;
-          const quotePriceWithCommission = quotePrice * commissionRate;
-
-          // Calculate the final quote price with commission if quotePrice is not null
-          const finalQuotePrice = quotePrice != null ? (quotePrice + quotePriceWithCommission) : quotePrice;
-
-          results.push({
-            partnerId: partner.partnerId,
-            partnerName: partner.partnerName,
-            quotePrice: finalQuotePrice,
-            unitType: operator.unitType,
-            unitClassification: operator.unitClassification,
-            subClassification: operator.subClassification,
-            bookingId: booking.bookingId,
-            oldQuotePrice: quotePrice,
-            operatorFirstName: operator.firstName,
-            operatorLastName: operator.lastName,
-            operatorMobileNo: operator.mobileNo,
-          });
+      for (const booking of partner.bookingRequests) {
+        // Fetch user details from booking collection
+        const bookingDetails = await Booking.findById(booking.bookingId);
+        if (!bookingDetails) {
+          console.log('Booking not found for ID:', booking.bookingId);
+          continue;
         }
+        const userId = bookingDetails.user;
+
+        const user = await User.findById(userId);
+        if (!user) {
+          console.log('User not found for ID:', userId);
+          continue;
+        }
+
+        const accountType = user.accountType;
+
+        const commission = await Commission.findOne({ userType: accountType });
+        if (!commission) {
+          console.log('Commission rate not found for account type:', accountType);
+          continue;
+        }
+
+        const commissionRate = commission.commissionRate / 100;
+        const quotePrice = booking.quotePrice;
+        const finalQuotePrice = quotePrice != null ? (quotePrice * (1 + commissionRate)) : quotePrice;
+
+        results.push({
+          partnerId: partner._id,
+          partnerName: partner.partnerName,
+          quotePrice: finalQuotePrice,
+          unitType: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).unitType,
+          unitClassification: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).unitClassification,
+          subClassification: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).subClassification,
+          bookingId: booking.bookingId,
+          oldQuotePrice: quotePrice,
+          operatorFirstName: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).firstName,
+          operatorLastName: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).lastName,
+          operatorMobileNo: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).mobileNo,
+        });
       }
     }
 
-    // Sort results by quotePrice in ascending order and take the top 3
+    console.log('Final results:', results);
+
     const topResults = results.sort((a, b) => a.quotePrice - b.quotePrice).slice(0, 3);
 
-    // Return the final results
     res.status(200).json({
       success: true,
       data: topResults,
@@ -320,6 +316,8 @@ const getTopPartners = async (req, res) => {
     });
   }
 };
+
+
 
 
 

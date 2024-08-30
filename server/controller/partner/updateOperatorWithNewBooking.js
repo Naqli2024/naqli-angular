@@ -1,29 +1,25 @@
 const partner = require("../../Models/partner/partnerModel");
 
-const updateOperatorsWithNewBooking = async (booking, isCanceled=false) => {
+const updateOperatorsWithNewBooking = async (booking, isCanceled = false) => {
   try {
     const { type, name } = booking;
     const subClassification = type && type.length > 0 ? type[0].typeName : "";
 
     if (isCanceled) {
-      // If the booking is canceled, remove it from operators' bookingRequest
+      // If the booking is canceled, remove it from the partner's bookingRequest
       await partner.updateMany(
         {
-          'operators.bookingRequest.bookingId': booking._id,
+          'bookingRequest.bookingId': booking._id, // Find the booking in partner's bookingRequest
         },
         {
-          $pull: { 'operators.$[operator].bookingRequest': { bookingId: booking._id } },
-        },
-        {
-          arrayFilters: [{ 'operator.bookingRequest.bookingId': booking._id }],
-          multi: true,
+          $pull: { 'bookingRequest': { bookingId: booking._id } }, // Remove the booking request
         }
       );
     } else {
-      // Find operators that match the booking criteria and add the new booking to bookingRequest
+      // Find partners that match the booking criteria and add the new booking to bookingRequest
       await partner.updateMany(
         {
-          'operators.unitClassification': name,
+          'operators.unitClassification': name, // Match operators by unitClassification
           $or: [
             { 'operators.type': { $exists: false } },
             { 'operators.type': { $size: 0 } },
@@ -31,11 +27,7 @@ const updateOperatorsWithNewBooking = async (booking, isCanceled=false) => {
           ]
         },
         {
-          $push: { 'operators.$[operator].bookingRequest': { bookingId: booking._id, quotePrice: null } },
-        },
-        {
-          arrayFilters: [{ 'operator.unitClassification': name }],
-          multi: true,
+          $push: { 'bookingRequest': { bookingId: booking._id, quotePrice: null } }, // Add booking request at partner level
         }
       );
     }

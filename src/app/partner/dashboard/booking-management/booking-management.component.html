@@ -22,16 +22,38 @@
             </td>
             <td>{{ booking._id }}</td>
             <td>
-              {{ booking.unitType }} - {{ booking.name }}
-              <span *ngIf="booking.type[0]?.typeName"
-                >- {{ booking.type[0]?.typeName }}</span
-              >
+              <select class="form-select">
+                <!-- Static 'Select' option, not selectable -->
+                <option value="" disabled selected>Select Plate Information</option>
+                
+                <!-- Dynamic options for matching operators' plateInformation -->
+                <ng-container *ngFor="let operator of filteredOperators">
+                  <!-- Display the plateInformation for matching operators -->
+                  <option *ngIf="matchesCriteria(booking, operator)" [value]="operator.plateInformation">
+                    {{ operator.plateInformation }}
+                  </option>
+                </ng-container>
+              </select>
             </td>
             <td>
               <select class="form-select">
-                <option>
-                  select
-                </option>
+                <!-- Static 'Select' option, not selectable -->
+                <option value="" disabled selected>Select</option>
+              
+                <!-- Dynamic options for filtered operators -->
+                <ng-container *ngFor="let operator of filteredOperators">
+                  <!-- Handle cases where operator details are directly available -->
+                  <option *ngIf="!operator.operatorsDetail" [value]="operator.email">
+                    {{ operator.firstName }} {{ operator.lastName }}
+                  </option>
+              
+                  <!-- Handle cases where operator details are in operatorsDetail array -->
+                  <ng-container *ngIf="operator.operatorsDetail">
+                    <option *ngFor="let detail of operator.operatorsDetail" [value]="detail.email">
+                      {{ detail.firstName }} {{ detail.lastName }}
+                    </option>
+                  </ng-container>
+                </ng-container>
               </select>
             </td>
             <td>

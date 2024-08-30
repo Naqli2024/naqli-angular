@@ -147,49 +147,6 @@ const createExtraOperator = async (req, res) => {
 };
 
 
-const getOperatorsByCriteria = async (req, res) => {
-    try {
-      const { partnerId, unitType, unitClassification, subClassification } = req.query;
-  
-      console.log('Received parameters:', req.query);
-  
-      if (!partnerId || !unitType || !unitClassification) {
-        return res.status(400).json({ message: 'Please provide all required parameters.' });
-      }
-  
-      if (!mongoose.Types.ObjectId.isValid(partnerId)) {
-        return res.status(400).json({ message: 'Invalid partnerId format.' });
-      }
-  
-      const partner = await Partner.findById(partnerId).exec();
-  
-      if (!partner) {
-        return res.status(404).json({ message: 'Partner not found.' });
-      }
-  
-      const matchedOperators = partner.operators
-        .filter(
-          (operator) =>
-            operator.unitType === unitType &&
-            operator.unitClassification === unitClassification &&
-            (subClassification ? operator.subClassification === subClassification : true)
-        )
-        .flatMap((operator) => operator.operatorsDetail);
-  
-      const allOperators = [...matchedOperators, ...partner.extraOperators];
-  
-      console.log('Matched operators:', matchedOperators);
-      console.log('All operators:', allOperators);
-  
-      res.status(200).json({ operators: allOperators });
-    } catch (error) {
-      console.error('Error fetching partner details:', error.message);
-      console.error(error.stack); // Log stack trace for debugging
-      res.status(500).json({ message: 'Server error' });
-    }
-  };
-
 
 exports.createExtraOperator = createExtraOperator;
 exports.parseFormData = parseFormData;
-exports.getOperatorsByCriteria = getOperatorsByCriteria;

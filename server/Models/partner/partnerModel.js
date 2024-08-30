@@ -6,6 +6,7 @@ const bookingRequestSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "booking",
     required: true,
+    unique: true
   },
   quotePrice: {
     type: Number,
@@ -101,7 +102,6 @@ const operatorSchema = new mongoose.Schema({
     fileName: String
   },
   operatorsDetail: [operatorDetailSchema],
-  bookingRequest: [bookingRequestSchema],
 });
 
 // Define the possible values for unitType
@@ -275,12 +275,27 @@ const partnerSchema = new mongoose.Schema(
         companyIdNo: { type: Number, required: true },
       }
     ],
+    bookingRequest: [bookingRequestSchema],
     extraOperators: [extraOperatorSchema]
   },
   {
     timestamps: true,
   }
 );
+
+// Pre-save hook to prevent duplicate booking requests
+partnerSchema.pre('save', async function (next) {
+  const partner = this;
+  
+  // Check for duplicate bookingId in bookingRequest array
+  const uniqueBookingIds = new Set(partner.bookingRequest.map(br => br.bookingId.toString()));
+  
+  if (uniqueBookingIds.size !== partner.bookingRequest.length) {
+    return next(new Error("Duplicate booking requests are not allowed for the same partner."));
+  }
+  
+  next();
+});
 
 const partner = mongoose.model("partner", partnerSchema);
 

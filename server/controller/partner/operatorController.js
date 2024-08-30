@@ -120,12 +120,13 @@ const createOperator = async (req, res) => {
       }
     }
 
-    // Find if an operator with the same unitType, unitClassification, and subClassification already exists
+    // Find if an operator with the same unitType, unitClassification, subClassification, plateInformation already exists
     const existingOperator = partner.operators.find(
       (operator) =>
         operator.unitType === unitType &&
         operator.unitClassification === unitClassification &&
-        operator.subClassification === subClassification
+        operator.subClassification === subClassification &&
+        operator.plateInformation === plateInformation
     );
 
     if (existingOperator) {

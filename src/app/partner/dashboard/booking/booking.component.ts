@@ -55,25 +55,24 @@ export class PartnerBookingComponent implements OnInit {
       (response) => {
         this.spinnerService.hide();
         this.partner = response.data;
-        if (this.partner && this.partner.operators) {
-          this.bookingRequests = this.partner.operators.reduce(
-            (acc: any[], operator: any) => {
-              if (operator.bookingRequest && operator.bookingRequest.length) {
-                operator.bookingRequest.forEach((booking: any) => {
-                  if (booking.bookingId) {
-                    acc.push(booking.bookingId);
-                    this.quotePrice.push({
-                      bookingId: booking.bookingId.toString(),
-                      quotePrice: booking.quotePrice,
-                    });
-                  }
-                });
-              }
-              return acc;
-            },
-            []
-          );
-          this.getBookingsByBookingId();
+        if (this.partner && this.partner.bookingRequest) {
+          // Process booking requests directly from the partner object
+          this.partner.bookingRequest.forEach((booking: any) => {
+            if (booking.bookingId) {
+              // Collect booking IDs
+              this.bookingRequests.push(booking.bookingId);
+              // Collect quote prices
+              this.quotePrice.push({
+                bookingId: booking.bookingId.toString(),
+                quotePrice: booking.quotePrice,
+              });
+            }
+          });
+  
+          // Proceed to fetch bookings by booking IDs
+          if (this.bookingRequests.length) {
+            this.getBookingsByBookingId();
+          }
         }
       },
       (error) => {

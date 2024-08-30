@@ -227,7 +227,7 @@ const updateBookingPaymentStatus = async (req, res) => {
     }
 
     // Update the payment status in partner's booking requests
-    partner.operators.forEach((operator) => {
+    partner.forEach((operator) => {
       operator.bookingRequest.forEach((request) => {
         if (request.bookingId.equals(booking._id)) {
           request.paymentStatus = status;

@@ -42,9 +42,9 @@ interface FormData {
   standalone: true,
   imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './operator.component.html',
-  styleUrl: './operator.component.css'
+  styleUrl: './operator.component.css',
 })
-export class OperatorComponent implements OnInit{
+export class OperatorComponent implements OnInit {
   formData: FormData = this.initializeFormData();
   classifications: any[] = [];
   subClassifications: any[] = [];
@@ -65,20 +65,20 @@ export class OperatorComponent implements OnInit{
     private operatorService: OperatorService,
     private partnerService: PartnerService,
     private toastr: ToastrService,
-    private spinnerService: SpinnerService,
+    private spinnerService: SpinnerService
   ) {}
 
   ngOnInit(): void {
     const partnerId: string | null = localStorage.getItem('partnerId');
     if (partnerId) {
       this.partnerService.getPartnerDetails(partnerId).subscribe(
-        partnerDetails => {
+        (partnerDetails) => {
           this.formData.partnerName = partnerDetails.data.partnerName;
           this.formData.partnerId = partnerDetails.data._id;
           this.originalPartnerName = partnerDetails.data.partnerName;
           this.enableSubmitButton();
         },
-        error => {
+        (error) => {
           console.error('Error fetching partner details:', error);
         }
       );
@@ -90,7 +90,6 @@ export class OperatorComponent implements OnInit{
   }
 
   enableSubmitButton() {
-    console.log(this.formData)
     this.isSubmitEnabled = !!(
       this.formData.unitType &&
       this.formData.unitClassification &&
@@ -110,6 +109,12 @@ export class OperatorComponent implements OnInit{
   }
 
   handleSubmit() {
+    // Check for required fields
+    if (!this.isFormValid()) {
+      this.toastr.error('All fields are required', 'Error');
+      return;
+    }
+
     const formData = new FormData();
     Object.entries(this.formData).forEach(([key, value]) => {
       if (value instanceof File) {
@@ -121,17 +126,37 @@ export class OperatorComponent implements OnInit{
 
     this.spinnerService.show();
     this.operatorService.addOperator(formData).subscribe(
-      response => {
+      (response) => {
         this.spinnerService.hide();
         this.toastr.success(response.message, 'Success');
         this.router.navigate(['/home/partner/login']);
         this.resetForm();
       },
-      error => {
+      (error) => {
         this.spinnerService.hide();
         const errorMessage = error.error?.message || 'An error occurred';
         this.toastr.error(errorMessage, 'Error');
       }
+    );
+  }
+
+  isFormValid(): boolean {
+    return !!(
+      this.formData.unitType &&
+      this.formData.unitClassification &&
+      this.formData.plateInformation &&
+      this.formData.istimaraNo &&
+      this.formData.firstName &&
+      this.formData.lastName &&
+      this.formData.email &&
+      this.formData.mobileNo &&
+      this.formData.iqamaNo &&
+      this.formData.dateOfBirth &&
+      this.formData.panelInformation &&
+      this.formData.drivingLicense &&
+      this.formData.aramcoLicense &&
+      this.formData.nationalID &&
+      this.formData.pictureOfVehicle
     );
   }
 
@@ -157,7 +182,7 @@ export class OperatorComponent implements OnInit{
       panelInformation: '',
       drivingLicense: null,
       aramcoLicense: null,
-      nationalID: null
+      nationalID: null,
     };
   }
 
@@ -206,8 +231,12 @@ export class OperatorComponent implements OnInit{
     const target = event.target as HTMLSelectElement;
     const classificationId = target.value;
     this.formData.unitClassification = classificationId;
-    const selectedClassification = this.allData.find(item => item.name === classificationId);
-    this.subClassifications = selectedClassification ? selectedClassification.type : [];
+    const selectedClassification = this.allData.find(
+      (item) => item.name === classificationId
+    );
+    this.subClassifications = selectedClassification
+      ? selectedClassification.type
+      : [];
     this.enableSubmitButton();
   }
 
