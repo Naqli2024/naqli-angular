@@ -20,7 +20,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export class BookingManagementComponent {
   bookings: any[] = [];
-  users: any = {}; // To store user details by userId
+  users: { [key: string]: any } = {};
   partnerId: string = '';
   partner: any;
   bookingId: string = '';
@@ -28,6 +28,8 @@ export class BookingManagementComponent {
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   filteredOperators: any[] = [];
+  selectedPlateInformation: { [bookingId: string]: string } = {};
+  selectedOperatorEmail: string = ''; 
 
   constructor(
     private spinnerService: SpinnerService,
@@ -52,9 +54,36 @@ export class BookingManagementComponent {
       (response: any) => {
         this.spinnerService.hide();
         this.partner = response.data;
-        if (this.partner && this.partner.operators) {
-          this.extractBookingRequests();
-          this.getBookingsByBookingId();
+
+        if (this.partner) {
+          this.bookingRequests = this.partner.operators.reduce((acc: string[], operator: any) => {
+            if (operator.operatorsDetail && operator.operatorsDetail.length) {
+              operator.operatorsDetail.forEach((operatorDetail: any) => {
+                if (operatorDetail.bookingRequest && operatorDetail.bookingRequest.length) {
+                  operatorDetail.bookingRequest.forEach((booking: any) => {
+                    if (booking.bookingId) {
+                      acc.push(booking.bookingId);
+                    }
+                  });
+                }
+              });
+            }
+            return acc;
+          }, []);
+
+          if (!this.bookingRequests.length && this.partner.bookingRequest) {
+            this.partner.bookingRequest.forEach((booking: any) => {
+              if (booking.bookingId) {
+                this.bookingRequests.push(booking.bookingId);
+              }
+            });
+          }
+
+          if (this.bookingRequests.length > 0) {
+            this.getBookingsByBookingId();
+          } else {
+            this.toastr.info('No booking requests found for this partner.');
+          }
         }
       },
       (error) => {
@@ -62,22 +91,6 @@ export class BookingManagementComponent {
         this.toastr.error('Failed to fetch partner details');
         console.error('Error fetching partner details', error);
       }
-    );
-  }
-
-  extractBookingRequests() {
-    this.bookingRequests = this.partner.operators.reduce(
-      (acc: any[], operator: any) => {
-        if (operator.bookingRequest && operator.bookingRequest.length) {
-          operator.bookingRequest.forEach((booking: any) => {
-            if (booking.bookingId) {
-              acc.push(booking.bookingId);
-            }
-          });
-        }
-        return acc;
-      },
-      []
     );
   }
 
@@ -113,7 +126,7 @@ export class BookingManagementComponent {
         (users: any[]) => {
           this.spinnerService.hide();
           this.users = this.mapUsersById(users);
-          this.populateDropdown(); // Call the function here
+          this.populateDropdown();
         },
         (error) => {
           this.spinnerService.hide();
@@ -134,22 +147,17 @@ export class BookingManagementComponent {
     return users.reduce((acc, user) => {
       acc[user._id] = user;
       return acc;
-    }, {});
+    }, {} as { [key: string]: any });
   }
 
   populateDropdown() {
     const operators = this.partner.operators || [];
     const extraOperators = this.partner.extraOperators || [];
 
-    console.log('Operators:', operators);
-    console.log('Extra Operators:', extraOperators);
-
     const filteredOperators = this.filterOperatorsByCriteria(this.bookings, operators);
     const filteredExtraOperators = this.filterExtraOperators(extraOperators);
 
     this.filteredOperators = [...filteredOperators, ...filteredExtraOperators];
-
-    console.log('Filtered Operators:', this.filteredOperators);
   }
 
   filterOperatorsByCriteria(bookings: any[], operators: any[]): any[] {
@@ -159,27 +167,7 @@ export class BookingManagementComponent {
   }
 
   filterExtraOperators(extraOperators: any[]): any[] {
-    return extraOperators.flatMap((operator) => {
-      // Check if the operator does not have unitType, unitClassification, or subClassification
-      const hasNoCriteriaFields = !operator.unitType && !operator.unitClassification && !operator.subClassification;
-  
-      if (hasNoCriteriaFields) {
-        // Check if operator is an array before mapping
-        if (Array.isArray(operator)) {
-          return operator.map((detail) => ({
-            ...detail,
-            type: 'extraOperator',
-          }));
-        } else {
-          // If operator is not an array, return it as a single object
-          return [{
-            ...operator,
-            type: 'extraOperator',
-          }];
-        }
-      }
-      return [];
-    });
+    return extraOperators.filter(operator => true); // Include all extra operators regardless of criteria
   }
 
   matchesCriteria(booking: any, operator: any): boolean {
@@ -196,23 +184,31 @@ export class BookingManagementComponent {
     const subClassificationMatch =
       !booking.subClassification || booking.subClassification === operator.subClassification;
 
-    console.log(
-      `Booking Unit Type: ${bookingUnitType}, Operator Unit Type: ${operatorUnitType}`
-    );
-    console.log(
-      `Booking Unit Classification: ${bookingUnitClassification}, Operator Unit Classification: ${operatorUnitClassification}`
-    );
-    console.log(
-      `Booking Sub Classification: ${booking.subClassification}, Operator Sub Classification: ${operator.subClassification}`
-    );
-    console.log(`Unit Type Match: ${unitTypeMatch}`);
-    console.log(`Unit Classification Match: ${unitClassificationMatch}`);
-    console.log(`Sub Classification Match: ${subClassificationMatch}`);
+    return unitTypeMatch && unitClassificationMatch && subClassificationMatch;
+  }
 
-    const isMatch = unitTypeMatch && unitClassificationMatch && subClassificationMatch;
-    console.log(
-      `Checking match for booking ${booking._id} with operator ${operator._id}: ${isMatch}`
+  getFilteredOperators(bookingId: string) {
+    const selectedPlate = this.selectedPlateInformation[bookingId];
+    
+    // Filter main operators based on plateInformation
+    const mainOperators = this.filteredOperators.filter(operator =>
+      operator.plateInformation === selectedPlate
     );
-    return isMatch;
+  
+    // Filter extra operators based on plateInformation
+    const extraOperators = selectedPlate ? this.partner.extraOperators.map(operator => ({
+      ...operator,
+      type: 'extraOperator',
+      label: ' (Extra Driver)'
+    })) : [];
+  
+    // Combine main operators and extra operators
+    return [...mainOperators, ...extraOperators];
+  }
+
+  onPlateInfoChange(bookingId: string, event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const plateInformation = target.value;
+    this.selectedPlateInformation[bookingId] = plateInformation;
   }
 }

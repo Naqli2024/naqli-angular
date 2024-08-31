@@ -47,21 +47,41 @@ export class PartnerPaymentComponent {
       (response: any) => {
         this.spinnerService.hide();
         this.partner = response.data;
-        if (this.partner && this.partner.operators) {
-          this.bookingRequests = this.partner.operators.reduce(
-            (acc: any[], operator: any) => {
-              if (operator.bookingRequest && operator.bookingRequest.length) {
-                operator.bookingRequest.forEach((booking: any) => {
-                  if (booking.bookingId) {
-                    acc.push(booking.bookingId);
-                  }
-                });
+  
+        if (this.partner) {
+          // Ensure the structure of operators is correctly accessed
+          this.bookingRequests = this.partner.operators.reduce((acc: any[], operator: any) => {
+            // Check if 'operatorDetails' exists and has 'bookingRequest'
+            if (operator.operatorsDetail && operator.operatorsDetail.length) {
+              operator.operatorsDetail.forEach((operatorDetail: any) => {
+                if (operatorDetail.bookingRequest && operatorDetail.bookingRequest.length) {
+                  operatorDetail.bookingRequest.forEach((booking: any) => {
+                    if (booking.bookingId) {
+                      acc.push(booking.bookingId);
+                    }
+                  });
+                }
+              });
+            }
+            return acc;
+          }, []);
+  
+          // If the bookingRequests were found at the partner level
+          if (!this.bookingRequests.length && this.partner.bookingRequest) {
+            this.partner.bookingRequest.forEach((booking: any) => {
+              if (booking.bookingId) {
+                this.bookingRequests.push(booking.bookingId);
               }
-              return acc;
-            },
-            []
-          );
-          this.getBookingsByBookingId();
+            });
+          }
+  
+          // If there are any booking IDs, fetch booking details
+          if (this.bookingRequests.length > 0) {
+            this.getBookingsByBookingId();
+          } else {
+            // Handle the case when no booking requests are found
+            this.toastr.info('No booking requests found for this partner.');
+          }
         }
       },
       (error) => {
@@ -84,7 +104,6 @@ export class PartnerPaymentComponent {
         this.bookings = responses.map((response) => response.data);
         this.bookings = this.bookings.flat();
         this.fetchUsers();
-        console.log(this.bookings);
       },
       (error) => {
         this.spinnerService.hide();

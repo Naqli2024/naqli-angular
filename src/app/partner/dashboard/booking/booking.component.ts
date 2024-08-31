@@ -95,7 +95,6 @@ export class PartnerBookingComponent implements OnInit {
         this.bookings = responses.map((response) => response.data);
         this.bookings = this.bookings.flat();
         this.fetchUsers();
-        console.log(this.bookings);
       },
       (error) => {
         this.spinnerService.hide();

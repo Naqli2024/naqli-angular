@@ -16,40 +16,52 @@
         </thead>
         <tbody>
           <tr *ngFor="let booking of bookings">
+            <!-- Display user details -->
             <td *ngIf="users[booking.user]">
-              {{ users[booking.user]?.firstName }}
-              {{ users[booking.user]?.lastName }}
+              {{ users[booking.user]?.firstName }} {{ users[booking.user]?.lastName }}
             </td>
             <td>{{ booking._id }}</td>
             <td>
-              <select class="form-select">
-                <!-- Static 'Select' option, not selectable -->
-                <option value="" disabled selected>Select Plate Information</option>
-                
+              <select
+                class="form-select"
+                [(ngModel)]="selectedPlateInformation[booking._id]"
+                (change)="onPlateInfoChange(booking._id, $event)"
+              >
+                <!-- Static 'Select Plate Information' option -->
+                <option value="" disabled>Select Plate Information</option>
+
                 <!-- Dynamic options for matching operators' plateInformation -->
                 <ng-container *ngFor="let operator of filteredOperators">
-                  <!-- Display the plateInformation for matching operators -->
-                  <option *ngIf="matchesCriteria(booking, operator)" [value]="operator.plateInformation">
+                  <option
+                    *ngIf="matchesCriteria(booking, operator)"
+                    [value]="operator.plateInformation"
+                  >
                     {{ operator.plateInformation }}
                   </option>
                 </ng-container>
               </select>
             </td>
             <td>
-              <select class="form-select">
-                <!-- Static 'Select' option, not selectable -->
-                <option value="" disabled selected>Select</option>
+              <select class="form-select" [(ngModel)]="selectedOperatorEmail">
+                <!-- Static 'Select' option -->
+                <option value="" disabled>Select</option>
               
-                <!-- Dynamic options for filtered operators -->
-                <ng-container *ngFor="let operator of filteredOperators">
+                <!-- Dynamic options for filtered operators and extra operators -->
+                <ng-container *ngFor="let operator of getFilteredOperators(booking._id)">
                   <!-- Handle cases where operator details are directly available -->
-                  <option *ngIf="!operator.operatorsDetail" [value]="operator.email">
-                    {{ operator.firstName }} {{ operator.lastName }}
+                  <option
+                    *ngIf="!operator.operatorsDetail"
+                    [value]="operator.email"
+                  >
+                    {{ operator.firstName }} {{ operator.lastName }}{{ operator.label || '' }}
                   </option>
               
                   <!-- Handle cases where operator details are in operatorsDetail array -->
                   <ng-container *ngIf="operator.operatorsDetail">
-                    <option *ngFor="let detail of operator.operatorsDetail" [value]="detail.email">
+                    <option
+                      *ngFor="let detail of operator.operatorsDetail"
+                      [value]="detail.email"
+                    >
                       {{ detail.firstName }} {{ detail.lastName }}
                     </option>
                   </ng-container>

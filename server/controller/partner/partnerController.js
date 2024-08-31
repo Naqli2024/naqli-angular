@@ -215,91 +215,83 @@ const getTopPartners = async (req, res) => {
     const partners = await partner.find({
       "operators.unitType": unitType,
       "operators.unitClassification": unitClassification,
-      ...(subClassification && { "operators.subClassification": subClassification })
+      ...(subClassification && { "operators.subClassification": subClassification }),
     });
-
-    console.log('Partners found:', partners);
 
     // Prepare filtered results
     const filteredPartners = partners.reduce((filtered, partner) => {
-      const matchingOperators = partner.operators.filter(operator =>
-        operator.unitType === unitType &&
-        operator.unitClassification === unitClassification &&
-        (!subClassification || operator.subClassification === subClassification)
+      const matchingOperators = partner.operators.filter(
+        (operator) =>
+          operator.unitType === unitType &&
+          operator.unitClassification === unitClassification &&
+          (!subClassification || operator.subClassification === subClassification)
       );
 
-      console.log('Matching operators:', matchingOperators);
-
-      // Filter bookingRequests at the partner level
-      const filteredBookingRequests = partner.bookingRequest.filter(booking => {
+      const filteredBookingRequests = partner.bookingRequest.filter((booking) => {
         const bookingIdValid = bookingId && bookingId.toString();
         const bookingIdMatch = booking.bookingId && booking.bookingId.toString();
         return bookingIdValid && bookingIdMatch && bookingIdValid === bookingIdMatch;
       });
 
-      console.log('Filtered booking request:', filteredBookingRequests);
-
       if (matchingOperators.length > 0) {
         filtered.push({
-          partnerId: partner._id,
+          partnerId: partner._id.toString(), // Ensure partnerId is properly set
           partnerName: partner.partnerName,
           operators: matchingOperators,
-          bookingRequests: filteredBookingRequests
+          bookingRequests: filteredBookingRequests,
         });
       }
 
       return filtered;
     }, []);
 
-    console.log('Filtered partners:', filteredPartners);
-
     // Flatten the results into the desired format
     const results = [];
     for (const partner of filteredPartners) {
+      if (!partner.partnerId) continue; // Ensure partnerId is not undefined
+
       for (const booking of partner.bookingRequests) {
         // Fetch user details from booking collection
         const bookingDetails = await Booking.findById(booking.bookingId);
-        if (!bookingDetails) {
-          console.log('Booking not found for ID:', booking.bookingId);
-          continue;
-        }
-        const userId = bookingDetails.user;
+        if (!bookingDetails) continue;
 
+        const userId = bookingDetails.user;
         const user = await User.findById(userId);
-        if (!user) {
-          console.log('User not found for ID:', userId);
-          continue;
-        }
+        if (!user) continue;
 
         const accountType = user.accountType;
-
         const commission = await Commission.findOne({ userType: accountType });
-        if (!commission) {
-          console.log('Commission rate not found for account type:', accountType);
-          continue;
-        }
+        if (!commission) continue;
 
         const commissionRate = commission.commissionRate / 100;
         const quotePrice = booking.quotePrice;
-        const finalQuotePrice = quotePrice != null ? (quotePrice * (1 + commissionRate)) : quotePrice;
+        const finalQuotePrice = quotePrice != null ? quotePrice * (1 + commissionRate) : quotePrice;
+
+        // Find the matching operator details for the current partner
+        const operator = partner.operators.find(
+          (op) =>
+            op.unitType === unitType &&
+            op.unitClassification === unitClassification &&
+            (!subClassification || op.subClassification === subClassification)
+        );
+
+        if (!operator) continue; // Ensure operator is found
 
         results.push({
-          partnerId: partner._id,
+          partnerId: partner.partnerId, // Use the already set partnerId
           partnerName: partner.partnerName,
           quotePrice: finalQuotePrice,
-          unitType: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).unitType,
-          unitClassification: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).unitClassification,
-          subClassification: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).subClassification,
+          unitType: operator.unitType,
+          unitClassification: operator.unitClassification,
+          subClassification: operator.subClassification,
           bookingId: booking.bookingId,
           oldQuotePrice: quotePrice,
-          operatorFirstName: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).firstName,
-          operatorLastName: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).lastName,
-          operatorMobileNo: partner.operators.find(op => op.unitType === unitType && op.unitClassification === unitClassification).mobileNo,
+          operatorFirstName: operator.firstName,
+          operatorLastName: operator.lastName,
+          operatorMobileNo: operator.mobileNo,
         });
       }
     }
-
-    console.log('Final results:', results);
 
     const topResults = results.sort((a, b) => a.quotePrice - b.quotePrice).slice(0, 3);
 

@@ -17,7 +17,7 @@ import { GoogleMapsService } from '../../../services/googlemap.service';
 interface Vendor {
   name: string;
   price: number | null;
-  partnerid: string;
+  partnerId: string;
   oldQuotePrice: number | null;
   unitName: string;
   unitClassificationName: string;
@@ -140,7 +140,6 @@ export class BookingComponent implements OnInit {
           this.partnerService.getTopPartners(requestBody).subscribe(
             (response) => {
               if (response.success) {
-                console.log(response.data);
                 this.vendors = response.data
                   .filter((vendor: any) => vendor.bookingId === this.bookingId)
                   .map((vendor: any) => ({
@@ -379,13 +378,6 @@ export class BookingComponent implements OnInit {
   ) {
     event.preventDefault();
 
-    console.log(
-      'Clicked "Pay" button with amount:',
-      amount,
-      'and status:',
-      status
-    );
-
     if (typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid payment amount or status');
       console.error('Invalid payment amount or status:', amount, status);
@@ -423,7 +415,6 @@ export class BookingComponent implements OnInit {
     this.checkout.makePayment(stripeToken).subscribe((data: any) => {
       if (data.success && this.bookingId) {
         this.toastr.success(data.message);
-        console.log(status);
         this.updateBookingPaymentStatus(
           this.bookingId,
           status,

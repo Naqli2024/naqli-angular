@@ -63,7 +63,6 @@ export class VehicleBookingComponent implements OnInit {
   ngOnInit(): void {
     this.vehicleService.getVehicles().subscribe((data: Vehicle[]) => {
       this.vehicles = data;
-      console.log(this.vehicles[0].unitType)
       if (this.vehicles.length > 0) {
         this.bookingData.unitType = this.vehicles[0].unitType;
       }

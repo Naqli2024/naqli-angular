@@ -109,7 +109,7 @@ const deleteBooking = async (bookingId) => {
       await Partner.updateMany(
         { _id: { $ne: booking.partner } },
         {
-          $pull: { "operators.$[].bookingRequest": { bookingId: booking._id } },
+          $pull: { bookingRequest: { bookingId: booking._id } },
         }
       );
     }
@@ -226,13 +226,11 @@ const updateBookingPaymentStatus = async (req, res) => {
       return res.status(404).json({ success: false, message: "Partner not found" });
     }
 
-    // Update the payment status in partner's booking requests
-    partner.forEach((operator) => {
-      operator.bookingRequest.forEach((request) => {
-        if (request.bookingId.equals(booking._id)) {
-          request.paymentStatus = status;
-        }
-      });
+    // Correctly update the payment status in partner's booking requests
+    partner.bookingRequest.forEach((request) => {
+      if (request.bookingId.equals(booking._id)) {
+        request.paymentStatus = status;
+      }
     });
 
     // Save the updated partner
