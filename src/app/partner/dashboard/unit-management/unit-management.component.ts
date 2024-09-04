@@ -46,6 +46,7 @@ interface FormData {
   templateUrl: './unit-management.component.html',
   styleUrl: './unit-management.component.css',
 })
+
 export class UnitManagementComponent implements OnInit {
   showNewUnitForm = false;
   options: string[] = ['All', 'vehicle', 'bus', 'equipment', 'special'];
@@ -119,15 +120,20 @@ export class UnitManagementComponent implements OnInit {
   }
 
   getStatusColor(bookingRequests: any[] = []): string {
-    return Array.isArray(bookingRequests) && bookingRequests.some((request) => request.paymentStatus)
+    return Array.isArray(bookingRequests) &&
+      bookingRequests.some((request) => request.paymentStatus)
       ? 'red'
       : 'green';
   }
-  
-  getStatusText(bookingRequests: any[] = []): string {
-    return Array.isArray(bookingRequests) && bookingRequests.some((request) => request.paymentStatus)
-      ? 'Not Available'
-      : 'Available';
+
+  getOperatorStatus(operator): string {
+    if (this.partnerDetails?.bookingRequest) {
+      const isOperatorBooked = this.partnerDetails.bookingRequest.some(
+        (request) => request.assignedOperator.unit === operator.plateInformation
+      );
+      return isOperatorBooked ? 'Not available' : 'Available';
+    }
+    return 'N/A';
   }
 
   handleSubmit() {
@@ -211,24 +217,23 @@ export class UnitManagementComponent implements OnInit {
     };
   }
 
- 
   onUnitTypeChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
     const selectedUnitType = target.value;
-    
+
     this.selectedUnitType = selectedUnitType;
     this.formData.unitType = selectedUnitType;
     this.classifications = [];
     this.subClassifications = [];
     this.allData = [];
-    
+
     // Handle the case where 'All' is selected
     if (selectedUnitType === 'All') {
       // Show all data without filtering
       this.filteredOperators = this.partnerDetails?.operators || [];
-      return; 
+      return;
     }
-  
+
     // Otherwise, handle specific unit types
     switch (selectedUnitType) {
       case 'vehicle':
@@ -264,8 +269,6 @@ export class UnitManagementComponent implements OnInit {
     }
     this.isEditing = false;
   }
-
-  
 
   onClassificationChange(event: Event): void {
     const target = event.target as HTMLSelectElement;

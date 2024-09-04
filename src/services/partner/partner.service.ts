@@ -65,4 +65,9 @@ export class PartnerService {
   updatePartnerStatus(partnerId: string, status: any): Observable<any> {
     return this.http.put(`${this.baseUrl}/partners/${partnerId}/status`, status);
   }
+
+  assignOperator(bookingId: string, unit: string, operatorName: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/assign-operator/${bookingId}`, { unit, operatorName });
+  }
+
 }

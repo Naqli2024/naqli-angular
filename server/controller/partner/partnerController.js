@@ -1,7 +1,7 @@
 const partner = require("../../Models/partner/partnerModel");
 const Booking = require("../../Models/BookingModel");
 const User = require("../../Models/userModel");
-const Commission = require("../../Models/commissionModel")
+const Commission = require("../../Models/commissionModel");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const twilio = require("twilio");
@@ -129,7 +129,8 @@ const updateQuotePrice = async (req, res) => {
     // Check if the partner is blocked or suspended
     if (partnerUpdate.isBlocked || partnerUpdate.isSuspended) {
       return res.status(400).json({
-        message: "Your account has been suspended or blocked! Please contact your admin.",
+        message:
+          "Your account has been suspended or blocked! Please contact your admin.",
         success: false,
       });
     }
@@ -204,18 +205,18 @@ const deletedBookingRequest = async (req, res) => {
   }
 };
 
-
-
-
 const getTopPartners = async (req, res) => {
-  const { unitType, unitClassification, subClassification, bookingId } = req.body;
+  const { unitType, unitClassification, subClassification, bookingId } =
+    req.body;
 
   try {
     // Query partners matching criteria
     const partners = await partner.find({
       "operators.unitType": unitType,
       "operators.unitClassification": unitClassification,
-      ...(subClassification && { "operators.subClassification": subClassification }),
+      ...(subClassification && {
+        "operators.subClassification": subClassification,
+      }),
     });
 
     // Prepare filtered results
@@ -224,14 +225,22 @@ const getTopPartners = async (req, res) => {
         (operator) =>
           operator.unitType === unitType &&
           operator.unitClassification === unitClassification &&
-          (!subClassification || operator.subClassification === subClassification)
+          (!subClassification ||
+            operator.subClassification === subClassification)
       );
 
-      const filteredBookingRequests = partner.bookingRequest.filter((booking) => {
-        const bookingIdValid = bookingId && bookingId.toString();
-        const bookingIdMatch = booking.bookingId && booking.bookingId.toString();
-        return bookingIdValid && bookingIdMatch && bookingIdValid === bookingIdMatch;
-      });
+      const filteredBookingRequests = partner.bookingRequest.filter(
+        (booking) => {
+          const bookingIdValid = bookingId && bookingId.toString();
+          const bookingIdMatch =
+            booking.bookingId && booking.bookingId.toString();
+          return (
+            bookingIdValid &&
+            bookingIdMatch &&
+            bookingIdValid === bookingIdMatch
+          );
+        }
+      );
 
       if (matchingOperators.length > 0) {
         filtered.push({
@@ -265,7 +274,8 @@ const getTopPartners = async (req, res) => {
 
         const commissionRate = commission.commissionRate / 100;
         const quotePrice = booking.quotePrice;
-        const finalQuotePrice = quotePrice != null ? quotePrice * (1 + commissionRate) : quotePrice;
+        const finalQuotePrice =
+          quotePrice != null ? quotePrice * (1 + commissionRate) : quotePrice;
 
         // Find the matching operator details for the current partner
         const operator = partner.operators.find(
@@ -293,86 +303,92 @@ const getTopPartners = async (req, res) => {
       }
     }
 
-    const topResults = results.sort((a, b) => a.quotePrice - b.quotePrice).slice(0, 3);
+    const topResults = results
+      .sort((a, b) => a.quotePrice - b.quotePrice)
+      .slice(0, 3);
 
     res.status(200).json({
       success: true,
       data: topResults,
     });
-
   } catch (error) {
-    console.error('Error fetching partners:', error);
+    console.error("Error fetching partners:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error',
+      message: "Server error",
     });
   }
 };
 
-
-
-
-
-
-const handleBookingPaymentStatusUpdate = async (bookingId, newPaymentStatus) => {
+const handleBookingPaymentStatusUpdate = async (
+  bookingId,
+  newPaymentStatus
+) => {
   try {
     // Find all partners that have this bookingId in their operators
     const partnersToUpdate = await partner.find({
       "operators.bookingRequest.bookingId": bookingId,
       // Optionally, filter by paymentStatus if needed
-      "operators.bookingRequest.paymentStatus": newPaymentStatus
+      "operators.bookingRequest.paymentStatus": newPaymentStatus,
     });
 
     // Update each partner's operators to remove the bookingRequest
-    await Promise.all(partnersToUpdate.map(async (partner) => {
-      partner.operators.forEach(operator => {
-        const index = operator.bookingRequest.findIndex(req => req.bookingId === bookingId);
-        if (index !== -1) {
-          operator.bookingRequest.splice(index, 1);
-        }
-      });
-      await partner.save();
-    }));
+    await Promise.all(
+      partnersToUpdate.map(async (partner) => {
+        partner.operators.forEach((operator) => {
+          const index = operator.bookingRequest.findIndex(
+            (req) => req.bookingId === bookingId
+          );
+          if (index !== -1) {
+            operator.bookingRequest.splice(index, 1);
+          }
+        });
+        await partner.save();
+      })
+    );
   } catch (error) {
     console.error("Error handling booking payment status update:", error);
     throw error; // Handle error as needed
   }
 };
 
-
 const getAllPartners = async (req, res) => {
   try {
     const partners = await partner.find({});
     res.status(200).json({
       success: true,
-      data: partners
+      data: partners,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
-
 
 const updatePartnerStatus = async (req, res) => {
   try {
     const partnerId = req.params.id;
     const { isBlocked, isSuspended } = req.body;
 
-    const partnerStatus = await partner.findByIdAndUpdate(partnerId, { isBlocked, isSuspended }, { new: true });
+    const partnerStatus = await partner.findByIdAndUpdate(
+      partnerId,
+      { isBlocked, isSuspended },
+      { new: true }
+    );
 
     if (!partnerStatus) {
-      return res.status(404).json({ message: 'Partner not found' });
+      return res.status(404).json({ message: "Partner not found" });
     }
 
     res.status(200).json({ success: true, data: partnerStatus });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating partner status', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error updating partner status", error: error.message });
   }
 };
-
 
 const addCompanyDetails = async (req, res) => {
   try {
@@ -387,24 +403,26 @@ const addCompanyDetails = async (req, res) => {
       zipCode,
       companyType,
       companyIdNo,
-      partnerName
+      partnerName,
     } = req.body;
 
     // Find the partner by ID
     const partnerDetails = await partner.findById(partnerId);
 
     if (!partnerDetails) {
-      return res.status(404).json({ message: 'Partner not found' });
+      return res.status(404).json({ message: "Partner not found" });
     }
 
     // Check if partner type is "multipleUnits"
     if (partnerDetails.type !== "multipleUnits") {
-      return res.status(400).json({ message: 'Can add companyDetails only for partner type multipleUnits' });
+      return res.status(400).json({
+        message: "Can add companyDetails only for partner type multipleUnits",
+      });
     }
 
     // Check if company details already exist
     if (partnerDetails.companyDetails.length > 0) {
-      return res.status(400).json({ message: 'Company details already exist' });
+      return res.status(400).json({ message: "Company details already exist" });
     }
 
     // Add company details to the partner
@@ -418,7 +436,7 @@ const addCompanyDetails = async (req, res) => {
       zipCode,
       companyType,
       companyIdNo,
-      partnerName
+      partnerName,
     });
 
     // Save the updated partner document
@@ -426,12 +444,84 @@ const addCompanyDetails = async (req, res) => {
     await partnerDetails.save();
 
     res.status(200).json({
-      message: 'Company details added successfully',
-      companyDetails: partnerDetails.companyDetails
+      message: "Company details added successfully",
+      companyDetails: partnerDetails.companyDetails,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+const assignOperator = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const { unit, operatorName } = req.body;
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    const partnerId = booking.partner;
+    const partnerFound = await partner.findById(partnerId);
+    if (!partnerFound) {
+      return res.status(404).json({ message: "Partner not found" });
+    }
+
+    let available = 'available'; // Default value if conditions are not met
+
+    if (partnerFound.type === "multipleUnits") {
+      // Find the booking request object in the partner's bookingRequest array
+      const bookingRequest = partnerFound.bookingRequest.find(
+        (req) => req.bookingId.toString() === booking._id.toString()
+      );
+
+      if (bookingRequest) {
+        // Add assignedOperator to the existing bookingRequest object
+        bookingRequest.assignedOperator = {
+          unit,
+          operatorName,
+          available: 'Not available'
+        };
+      } else {
+        return res.status(404).json({
+          message:
+            "Booking request not found in partner's bookingRequest array",
+        });
+      }
+    } else if (partnerFound.type === "singleUnit + operator") {
+      // Create assignedOperators from partner.operators
+      const assignedOperators = partnerFound.operators.map((operator) => ({
+        unit: operator.plateInformation,
+        operatorName: `${operator.operatorDetail.firstName} ${operator.operatorDetail.lastName}`,
+        available: 'Not available'
+      }));
+
+      partnerFound.bookingRequest.push({
+        bookingId: booking._id,
+        assignedOperators,
+      });
+    } else {
+      // If none of the conditions are met, set available to 'available'
+      available = 'available';
+    }
+
+    // Update available status for any booking requests not handled by the above conditions
+    partnerFound.bookingRequest.forEach(request => {
+      if (!request.assignedOperator) {
+        request.assignedOperator = { available };
+      }
+    });
+
+    await partnerFound.save();
+
+    res
+      .status(200)
+      .json({ message: "Operator assigned successfully", partnerFound });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error", error });
   }
 };
 
@@ -588,3 +678,4 @@ exports.handleBookingPaymentStatusUpdate = handleBookingPaymentStatusUpdate;
 exports.getAllPartners = getAllPartners;
 exports.updatePartnerStatus = updatePartnerStatus;
 exports.addCompanyDetails = addCompanyDetails;
+exports.assignOperator = assignOperator;

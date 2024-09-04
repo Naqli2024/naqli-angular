@@ -16,7 +16,6 @@
         </thead>
         <tbody>
           <tr *ngFor="let booking of bookings">
-            <!-- Display user details -->
             <td *ngIf="users[booking.user]">
               {{ users[booking.user]?.firstName }} {{ users[booking.user]?.lastName }}
             </td>
@@ -26,44 +25,33 @@
                 class="form-select"
                 [(ngModel)]="selectedPlateInformation[booking._id]"
                 (change)="onPlateInfoChange(booking._id, $event)"
+                [disabled]="!editingBooking || editingBooking !== booking._id"
               >
-                <!-- Static 'Select Plate Information' option -->
                 <option value="" disabled>Select Plate Information</option>
-
-                <!-- Dynamic options for matching operators' plateInformation -->
                 <ng-container *ngFor="let operator of filteredOperators">
-                  <option
-                    *ngIf="matchesCriteria(booking, operator)"
-                    [value]="operator.plateInformation"
-                  >
+                  <option *ngIf="matchesCriteria(booking, operator)" [value]="operator.plateInformation">
                     {{ operator.plateInformation }}
                   </option>
                 </ng-container>
               </select>
             </td>
             <td>
-              <select class="form-select" [(ngModel)]="selectedOperatorEmail">
-                <!-- Static 'Select' option -->
+              <select
+                class="form-select"
+                [(ngModel)]="selectedOperatorEmail[booking._id]"
+                [disabled]="!editingBooking || editingBooking !== booking._id"
+              >
                 <option value="" disabled>Select</option>
-              
-                <!-- Dynamic options for filtered operators and extra operators -->
-                <ng-container *ngFor="let operator of getFilteredOperators(booking._id)">
-                  <!-- Handle cases where operator details are directly available -->
-                  <option
-                    *ngIf="!operator.operatorsDetail"
-                    [value]="operator.email"
-                  >
-                    {{ operator.firstName }} {{ operator.lastName }}{{ operator.label || '' }}
+                <ng-container *ngFor="let operator of getFilteredOperators(booking._id); trackBy: trackByOperatorEmail">
+                  <option *ngIf="!operator.operatorsDetail" [value]="operator.email">
+                    {{ operator.firstName }} {{ operator.lastName }}{{ operator.label || "" }}
                   </option>
-              
-                  <!-- Handle cases where operator details are in operatorsDetail array -->
                   <ng-container *ngIf="operator.operatorsDetail">
-                    <option
-                      *ngFor="let detail of operator.operatorsDetail"
-                      [value]="detail.email"
-                    >
-                      {{ detail.firstName }} {{ detail.lastName }}
-                    </option>
+                    <ng-container *ngFor="let detail of operator.operatorsDetail">
+                      <option [value]="detail.email">
+                        {{ detail.firstName }} {{ detail.lastName }}
+                      </option>
+                    </ng-container>
                   </ng-container>
                 </ng-container>
               </select>
@@ -73,17 +61,16 @@
                 [icon]="faEdit"
                 class="icon"
                 style="color: #727272; padding: 0px 5px"
+                (click)="toggleEdit(booking._id)"
               ></fa-icon>
-              <fa-icon
-                [icon]="faTrashAlt"
-                class="icon"
-                style="color: #727272; padding: 0px 5px"
-              ></fa-icon>
+              <fa-icon [icon]="faTrashAlt" class="icon" style="color: #727272; padding: 0px 5px"></fa-icon>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <button class="btn notification-modal-btn add-operator-btn1">Assign</button>
+    <button class="btn notification-modal-btn add-operator-btn1" (click)="assignOperators()">
+      Assign
+    </button>
   </div>
 </div>

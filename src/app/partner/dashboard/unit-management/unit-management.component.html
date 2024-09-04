@@ -38,7 +38,7 @@
               </ng-container>
             </td>
             <td [ngStyle]="{ color: getStatusColor(operator.bookingRequest) }">
-              {{ getStatusText(operator.bookingRequest) }}
+              {{ getOperatorStatus(operator) }}
             </td>
             <td>
               <p

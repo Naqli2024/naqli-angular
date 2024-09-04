@@ -373,6 +373,7 @@ const addAdditionalCharges = async (req, res) => {
   }
 };
 
+
 module.exports = {
   createBooking,
   cancelBooking,

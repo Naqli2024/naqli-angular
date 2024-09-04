@@ -137,7 +137,7 @@
       "id": "cc76"
     },
     {
-      "name": "six",
+      "name": "Six",
       "unitType": "vehicle",
       "type": [
         {
@@ -218,7 +218,7 @@
       "unitType": "vehicle",
       "type": [
         {
-          "typeName": "Slide(6m to 6.5m)",
+          "typeName": "Slide",
           "scale": "(6m to 6.5m)",
           "typeImage": "assets/images/lorry-sides.svg",
           "typeOfLoad": [

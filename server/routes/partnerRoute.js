@@ -39,5 +39,6 @@ router.post("/filtered-vendors", partnerController.getTopPartners);
 router.get('/', partnerController.getAllPartners);
 router.put('/partners/:id/status', partnerController.updatePartnerStatus);
 router.post('/:partnerId/company-details', partnerController.addCompanyDetails);
+router.post('/assign-operator/:bookingId', partnerController.assignOperator);
 
 module.exports = router;

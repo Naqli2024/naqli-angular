@@ -20,6 +20,16 @@ const bookingRequestSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  assignedOperator: {
+    unit: {
+      type: String,
+      required: false
+    },
+    operatorName: {
+      type: String,
+      required: false
+    }
+  }
 });
 
 const operatorDetailSchema = new mongoose.Schema({

@@ -1,5 +1,8 @@
 import { Operator } from './operator.model';
 import { Notification } from './notification.model';
+import { BookingRequest } from './bookingRequest.model';
+import { ExtraOperator } from './extraOperators.model';
+
 
 export interface PartnerResponse {
     partner: {
@@ -32,5 +35,7 @@ export interface Partner {
   lastNotification: Notification | null;
   createdAt: string;
   updatedAt: string;
-  selected?:boolean
+  selected?:boolean;
+  bookingRequest: BookingRequest[];
+  extraOperators: ExtraOperator[]; 
 }
