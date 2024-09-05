@@ -3,50 +3,91 @@
     <div class="head-element">
       <h2>Commission</h2>
     </div>
-    <div class="table-container">
-      <table class="table commission-table">
-        <thead>
-          <tr>
-            <th>User Type</th>
-            <th>Commission Rate(%)</th>
-            <th>Effective Date</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let commission of commissions">
-            <td>{{ commission.userType }}</td>
-            <td>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="commission.commissionRate"
-                required
-                style="margin: 0px auto"
-              />
-            </td>
-            <td>
-              <input
-                type="date"
-                class="form-control"
-                [(ngModel)]="commission.effectiveDate"
-                required
-                style="margin: 0px auto"
-              />
-            </td>
-            <td>
-              <button
-                type="button"
-                class="btn btn-balance"
-                style="margin: 0px 10px; padding: 3px 20px !important"
-                (click)="saveCommission(commission)"
-              >
-                Save
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div style="margin-top: 20px">
+      <div class="tab-buttons">
+        <button 
+          class="tab-button" 
+          [ngClass]="{'active': activeTab === 'singleUser'}" 
+          (click)="switchTab('singleUser')">
+          Single User
+        </button>
+        <button 
+          class="tab-button" 
+          [ngClass]="{'active': activeTab === 'superUser'}" 
+          (click)="switchTab('superUser')">
+          Super User
+        </button>
+        <button 
+          class="tab-button" 
+          [ngClass]="{'active': activeTab === 'enterpriseUser'}" 
+          (click)="switchTab('enterpriseUser')">
+          Enterprise User
+        </button>
+      </div>
+      
+      <div class="table-container">
+        <table class="table Commission-table">
+          <thead>
+            <tr>
+              <th>Slab rate</th>
+              <th>Commission(%)</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Content for Single User Tab -->
+            <tr *ngIf="activeTab === 'singleUser'">
+              <td>
+                <div class="range-input">
+                  <input type="text" [(ngModel)]="singleUserSlabStart" [disabled]="!isSingleUserEditing" class="Commission-input" />
+                  <span class="separator"></span>
+                  <input type="text" [(ngModel)]="singleUserSlabEnd" [disabled]="!isSingleUserEditing" class="Commission-input" />
+                </div>
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="singleUserCommission" [disabled]="!isSingleUserEditing" class="Commission-input" />
+              </td>
+              <td>
+                <button (click)="toggleSingleUserEdit()" class="btn Commission-btn">{{ isSingleUserEditing ? 'Save' : 'Edit' }}</button>
+              </td>
+            </tr>            
+            
+            <!-- Content for Super User Tab -->
+            <tr *ngIf="activeTab === 'superUser'">
+              <td>
+                <div class="range-input">
+                  <input type="text" [(ngModel)]="superUserSlabStart" [disabled]="!isSuperUserEditing" class="Commission-input"/>
+                  <span class="separator"></span>
+                  <input type="text" [(ngModel)]="superUserSlabEnd" [disabled]="!isSuperUserEditing" class="Commission-input"/>
+                </div>
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="superUserCommission" [disabled]="!isSuperUserEditing" class="Commission-input"/>
+              </td>
+              <td>
+                <button (click)="toggleSuperUserEdit()" class="btn Commission-btn">{{ isSuperUserEditing ? 'Save' : 'Edit' }}</button>
+              </td>
+            </tr>
+            
+            <!-- Content for Enterprise User Tab -->
+            <tr *ngIf="activeTab === 'enterpriseUser'">
+              <td>
+                <div class="range-input">
+                  <input type="text" [(ngModel)]="enterpriseUserSlabStart" [disabled]="!isEnterpriseUserEditing" class="Commission-input" />
+                  <span class="separator"></span>
+                  <input type="text" [(ngModel)]="enterpriseUserSlabEnd" [disabled]="!isEnterpriseUserEditing" class="Commission-input" />
+                </div>
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="enterpriseUserCommission" [disabled]="!isEnterpriseUserEditing" class="Commission-input" />
+              </td>
+              <td>
+                <button (click)="toggleEnterpriseUserEdit()" class="btn Commission-btn">{{ isEnterpriseUserEditing ? 'Save' : 'Edit' }}</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

@@ -1,23 +1,32 @@
 const mongoose = require("mongoose");
 
+const slabSchema = new mongoose.Schema({
+  slabRateStart: {
+    type: Number,
+    required: true,
+  },
+  slabRateEnd: {
+    type: Number,
+    required: true,
+  },
+  commissionRate: {
+    type: String,
+    required: true,
+  },
+});
+
 const commissionSchema = new mongoose.Schema(
   {
-    userType: { type: String, required: true, unique: true },
-    commissionRate: {
-      type: Number,
+    userType: {
+      type: String,
+      enum: ["Single User", "Super User", "Enterprise User"],
       required: true,
-      min: 0,
-      max: 100,
-      validate: {
-        validator: Number.isInteger,
-        message: "commissionRate must be an integer between 0 and 100",
-      },
     },
-    effectiveDate: { type: Date, default: Date.now },
+    slabRates: [slabSchema],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-module.exports = mongoose.model("Commission", commissionSchema);
+const Commission = mongoose.model("commission", commissionSchema);
+
+module.exports = Commission;

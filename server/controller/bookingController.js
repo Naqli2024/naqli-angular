@@ -37,6 +37,22 @@ const createBooking = async (req, res) => {
       });
     }
 
+    // Check if the user has an account type of "Single User"
+    if (user.accountType === "Single User") {
+      // Check if the user has any ongoing bookings
+      const ongoingBooking = await Booking.findOne({
+        user: user._id,
+        bookingStatus: { $ne: "Completed" },
+      });
+
+      if (ongoingBooking) {
+        return res.status(403).json({
+          message:
+            "You already have an ongoing booking. Complete your current booking before making another.",
+        });
+      }
+    }
+
     const booking = new Booking({
       unitType,
       name,

@@ -15,49 +15,55 @@ import { formatDateToInput } from '../../../helper/date-helper';
   styleUrl: './commission.component.css',
 })
 export class CommissionComponent {
-  commissions: any[] = [];
-  faEdit = faEdit;
-  faTrashAlt = faTrashAlt;
+  activeTab: string = 'singleUser'; // Default tab
 
-  constructor(
-    private commissionService: CommissionService,
-    private toastr: ToastrService
-  ) {}
+  // Variables for Single User data
+  singleUserSlabStart: string = '1';
+  singleUserSlabEnd: string = '10';
+  singleUserCommission: string = '2%';
+  isSingleUserEditing: boolean = false;
 
-  ngOnInit(): void {
-    this.fetchCommissions();
+  // Variables for Super User data
+  superUserSlabStart: string = '0';
+  superUserSlabEnd: string = '2000';
+  superUserCommission: string = '4%';
+  isSuperUserEditing: boolean = false;
+
+  // Variables for Enterprise User data
+  enterpriseUserSlabStart: string = '500';
+  enterpriseUserSlabEnd: string = '10000';
+  enterpriseUserCommission: string = '6%';
+  isEnterpriseUserEditing: boolean = false;
+
+  // Method to switch tabs
+  switchTab(tab: string) {
+    this.activeTab = tab;
   }
 
-  fetchCommissions(): void {
-    this.commissionService.getCommissions().subscribe({
-      next: (response) => {
-        this.commissions = response.data.map((commission: any) => {
-          return {
-            ...commission,
-            effectiveDate: formatDateToInput(commission.effectiveDate)
-          };
-        });
-      },
-      error: (err) => {
-        console.error('Error fetching commissions:', err);
-      }
-    });
+  // Toggle Single User edit mode
+  toggleSingleUserEdit() {
+    if (this.isSingleUserEditing) {
+      // Save logic here for Single User
+      console.log('Saving Single User changes:', this.singleUserSlabStart, this.singleUserSlabEnd, this.singleUserCommission);
+    }
+    this.isSingleUserEditing = !this.isSingleUserEditing;
   }
 
-  saveCommission(commission: any): void {
-    const updatedData = {
-      commissionRate: Number(commission.commissionRate),
-      effectiveDate: new Date(commission.effectiveDate).toISOString()
-    };
-    console.log(commission.userType, updatedData)
+  // Toggle Super User edit mode
+  toggleSuperUserEdit() {
+    if (this.isSuperUserEditing) {
+      // Save logic here for Super User
+      console.log('Saving Super User changes:', this.superUserSlabStart, this.superUserSlabEnd, this.superUserCommission);
+    }
+    this.isSuperUserEditing = !this.isSuperUserEditing;
+  }
 
-    this.commissionService.updateCommission(commission.userType, updatedData).subscribe({
-      next: (response) => {
-        this.toastr.success(response.message);
-      },
-      error: (err) => {
-        this.toastr.error('Error updating commission:', err);
-      }
-    });
+  // Toggle Enterprise User edit mode
+  toggleEnterpriseUserEdit() {
+    if (this.isEnterpriseUserEditing) {
+      // Save logic here for Enterprise User
+      console.log('Saving Enterprise User changes:', this.enterpriseUserSlabStart, this.enterpriseUserSlabEnd, this.enterpriseUserCommission);
+    }
+    this.isEnterpriseUserEditing = !this.isEnterpriseUserEditing;
   }
 }

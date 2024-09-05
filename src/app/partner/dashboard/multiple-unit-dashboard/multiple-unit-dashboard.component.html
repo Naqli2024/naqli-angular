@@ -29,15 +29,34 @@
             Operators
           </h2>
         </div>
-        <div class="operator-list row" *ngFor="let item of items">
-          <div class="operator-list-div-1 col-md-3">
-            <h6>{{ item.text }}</h6>
-            <p>{{ item.text }}</p>
+        <div
+          class="operator-list row"
+          *ngFor="let operator of partnerOperators"
+        >
+          <div class="operator-list-div-1 col-md-4">
+            <h6>{{ operator.firstName }} {{ operator.lastName }}</h6>
+            <p
+              [ngStyle]="{
+                color:
+                  getOperatorStatus(operator) === 'Available'
+                    ? 'green'
+                    : getOperatorStatus(operator) === 'Not available'
+                    ? 'red'
+                    : 'black'
+              }"
+            >
+              {{ getOperatorStatus(operator) }}
+            </p>
           </div>
-          <div class="col-md-3">
-            <p>{{ item.count }}</p>
+          <div class="col-md-4">
+            <p>
+              {{ operator.unitClassification }}
+              <span *ngIf="operator.subClassification"
+                >({{ operator.subClassification }})</span
+              >
+            </p>
           </div>
-          <div class="col-md-3">
+          <!-- <div class="col-md-3">
             <button
               class="btn"
               style="
@@ -50,8 +69,8 @@
             >
               View
             </button>
-          </div>
-        </div> 
+          </div> -->
+        </div>
       </div>
     </div>
   </div>

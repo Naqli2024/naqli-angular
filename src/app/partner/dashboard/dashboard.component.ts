@@ -69,7 +69,6 @@ export class PartnerDashboardComponent {
             { name: 'Unit Management', route: 'unit-management' },
             { name: 'Operator Management', route: 'operator-management' },
             { name: 'Booking Management', route: 'booking-management' },
-            { name: 'Contract', route: 'contract' },
             { name: 'Payment', route: 'payments' },
             { name: 'Report', route: 'report' },
           ];

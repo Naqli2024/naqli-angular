@@ -15,7 +15,6 @@ Chart.register(...registerables);
   templateUrl: './multiple-unit-dashboard.component.html',
   styleUrl: './multiple-unit-dashboard.component.css',
 })
-
 export class MultipleUnitDashboardComponent implements OnInit {
   labeldata: string[] = [];
   realdata: number[] = [];
@@ -24,6 +23,7 @@ export class MultipleUnitDashboardComponent implements OnInit {
   partnerId: string = '';
   partnerDetails: Partner | null = null;
   partnerUnitCount: number = 0;
+  partnerOperators: any[] = [];
 
   items = [
     {
@@ -82,6 +82,33 @@ export class MultipleUnitDashboardComponent implements OnInit {
         this.partnerDetails = response.data;
 
         if (this.partnerDetails) {
+          // Combine operators and extraOperators into one array
+          const operators = this.partnerDetails.operators || [];
+          const extraOperators = this.partnerDetails.extraOperators || [];
+
+          // Flatten operators and operatorsDetail arrays
+          operators.forEach((operator: any) => {
+            operator.operatorsDetail.forEach((detail: any) => {
+              this.partnerOperators.push({
+                unitClassification: operator.unitClassification,
+                subClassification: operator.subClassification,
+                firstName: detail.firstName,
+                lastName: detail.lastName,
+                plateInformation: operator.plateInformation
+              });
+            });
+          });
+
+          // Add extraOperators to the same array
+          extraOperators.forEach((extraOperator: any) => {
+            this.partnerOperators.push({
+              unitClassification: extraOperator.unitClassification,
+              subClassification: extraOperator.subClassification,
+              firstName: extraOperator.firstName,
+              lastName: extraOperator.lastName,
+            });
+          });
+
           // Calculate the total number of operators details
           const operatorDetailCount = this.partnerDetails.operators.reduce(
             (total, operator) =>
@@ -115,7 +142,6 @@ export class MultipleUnitDashboardComponent implements OnInit {
 
           // Now, fetch completed bookings
           this.getCompletedBookingsCount();
-
         } else {
           this.spinnerService.hide();
           this.toastr.error('No partner details found', 'Error');
@@ -149,11 +175,11 @@ export class MultipleUnitDashboardComponent implements OnInit {
       this.bookingService.getBookingsByBookingId(booking.bookingId).subscribe(
         (bookingResponse) => {
           const bookingStatus = bookingResponse.data.bookingStatus;
-          if (bookingStatus === "Completed") {
+          if (bookingStatus === 'Completed') {
             completedCount++;
-          } else if (bookingStatus === "Running") {
+          } else if (bookingStatus === 'Running') {
             runningCount++;
-          } else if (bookingStatus === "Yet to start") {
+          } else if (bookingStatus === 'Yet to start') {
             awaitingCount++;
           }
 
@@ -161,18 +187,26 @@ export class MultipleUnitDashboardComponent implements OnInit {
 
           // After processing each booking, check if all bookings have been processed
           if (processedCount === bookingRequests.length) {
-            this.updateItemsWithCompletedAndRunningCounts(completedCount, runningCount, awaitingCount);
+            this.updateItemsWithCompletedAndRunningCounts(
+              completedCount,
+              runningCount,
+              awaitingCount
+            );
             this.spinnerService.hide();
           }
         },
         (error) => {
           this.spinnerService.hide();
-          const errorMessage = error.error?.message || "An error occurred";
-          this.toastr.error(errorMessage, "Error");
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage, 'Error');
           processedCount++;
 
           if (processedCount === bookingRequests.length) {
-            this.updateItemsWithCompletedAndRunningCounts(completedCount, runningCount, awaitingCount);
+            this.updateItemsWithCompletedAndRunningCounts(
+              completedCount,
+              runningCount,
+              awaitingCount
+            );
             this.spinnerService.hide();
           }
         }
@@ -180,19 +214,25 @@ export class MultipleUnitDashboardComponent implements OnInit {
     });
   }
 
-  updateItemsWithCompletedAndRunningCounts(completedCount: number, runningCount: number, awaitingCount: number) {
+  updateItemsWithCompletedAndRunningCounts(
+    completedCount: number,
+    runningCount: number,
+    awaitingCount: number
+  ) {
     this.items = this.items.map((item) => {
       if (item.text === 'Completed') {
         return {
           ...item,
           count: completedCount,
         };
-      } else if (item.text === 'Ongoing') {  // Update the Ongoing count
+      } else if (item.text === 'Ongoing') {
+        // Update the Ongoing count
         return {
           ...item,
           count: runningCount,
         };
-      } else if (item.text === 'Awaiting') {  // Update the Awaiting count
+      } else if (item.text === 'Awaiting') {
+        // Update the Awaiting count
         return {
           ...item,
           count: awaitingCount,
@@ -200,8 +240,8 @@ export class MultipleUnitDashboardComponent implements OnInit {
       }
       return item;
     });
-  
-    this.loadChartData();  // Reload chart data after updating items
+
+    this.loadChartData(); // Reload chart data after updating items
   }
 
   loadChartData() {
@@ -268,5 +308,23 @@ export class MultipleUnitDashboardComponent implements OnInit {
       `;
       annotationsElement.appendChild(annotationDiv);
     });
+  }
+
+  getStatusColor(bookingRequests: any[] = []): string {
+    return Array.isArray(bookingRequests) &&
+      bookingRequests.some((request) => request.paymentStatus)
+      ? 'red'
+      : 'green';
+  }
+
+  getOperatorStatus(operator): string {
+    console.log(operator)
+    if (this.partnerDetails?.bookingRequest) {
+      const isOperatorBooked = this.partnerDetails.bookingRequest.some(
+        (request) => request.assignedOperator.unit === operator.plateInformation
+      );
+      return isOperatorBooked ? 'Not available' : 'Available';
+    }
+    return 'N/A';
   }
 }

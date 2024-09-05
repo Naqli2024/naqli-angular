@@ -68,8 +68,6 @@ router.get('/all-notifications', notificationController.getAllNotifications);
 router.put('/update/:notificationId', notificationController.updateNotification);
 router.delete('/delete/:notificationId', notificationController.deleteNotification);
 router.get('/getNotificationById/:id', notificationController.getNotificationById);
-router.post('/add-commission', commissionController.addCommission);
-router.put('/update-commission/:userType', commissionController.updateCommission);
-router.get('/commissions', commissionController.getCommissions);
+router.post('/create-commission', commissionController.createCommission);
 
 module.exports = router;

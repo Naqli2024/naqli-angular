@@ -119,13 +119,6 @@ export class UnitManagementComponent implements OnInit {
     this.clickedAddOperator = false;
   }
 
-  getStatusColor(bookingRequests: any[] = []): string {
-    return Array.isArray(bookingRequests) &&
-      bookingRequests.some((request) => request.paymentStatus)
-      ? 'red'
-      : 'green';
-  }
-
   getOperatorStatus(operator): string {
     if (this.partnerDetails?.bookingRequest) {
       const isOperatorBooked = this.partnerDetails.bookingRequest.some(

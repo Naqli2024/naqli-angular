@@ -2634,20 +2634,44 @@ table .make-disable.disabled td:not(:first-child) {
   }
 }
 /**************commission*************/
-.commission-table input.form-control {
-  width: 50%;
-  text-align: center !important;
-  box-shadow: none;
-  box-sizing: border-box;
+.range-input {
+  display: flex;
+  align-items: center;
+  justify-content: left;
 }
-.commission-table input.form-control:focus {
-  border-color: transparent;
-  outline: none;
-}
-.commission-table td {
+.range-input input {
+  width: 100%; 
+  max-width: 200px !important;
   text-align: center;
-  vertical-align: middle;
 }
+.range-input .separator {
+  margin: 0 4px; 
+  border-bottom: 1.5px dashed #979797; 
+  flex-grow: 0.2; 
+}
+.Commission-input {
+  border: 1px solid #a6a6a6 !important;
+  border-radius: 5px;
+  padding: 5px;
+  text-align: center;
+}
+.Commission-btn {
+  border: none !important;
+  padding: 5px 20px !important;
+  background: #FFA504 !important;
+  color: #fff !important;
+}
+.Commission-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.Commission-table th,td {
+  text-align: left !important;
+}
+.Commission-table th, td {
+  padding: 10px 45px !important;
+}
+
 /****************partner report*************/
 .report-container {
   display: flex !important;

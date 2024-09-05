@@ -37,7 +37,16 @@
                 }}<ng-container *ngIf="!last">, </ng-container>
               </ng-container>
             </td>
-            <td [ngStyle]="{ color: getStatusColor(operator.bookingRequest) }">
+            <td
+              [ngStyle]="{
+                color:
+                  getOperatorStatus(operator) === 'Available'
+                    ? 'green'
+                    : getOperatorStatus(operator) === 'Not available'
+                    ? 'red'
+                    : 'black'
+              }"
+            >
               {{ getOperatorStatus(operator) }}
             </td>
             <td>

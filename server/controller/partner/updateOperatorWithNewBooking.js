@@ -12,27 +12,43 @@ const updateOperatorsWithNewBooking = async (booking, isCanceled = false) => {
           'bookingRequest.bookingId': booking._id, // Find the booking in partner's bookingRequest
         },
         {
-          $pull: { 'bookingRequest': { bookingId: booking._id } }, // Remove the booking request
+          $pull: { bookingRequest: { bookingId: booking._id } }, // Remove the booking request
         }
       );
     } else {
-      // Find partners that match the booking criteria and add the new booking to bookingRequest
-      await partner.updateMany(
-        {
-          'operators.unitClassification': name, // Match operators by unitClassification
-          $or: [
-            { 'operators.type': { $exists: false } },
-            { 'operators.type': { $size: 0 } },
-            { 'operators.type.typeName': subClassification }
-          ]
-        },
-        {
-          $push: { 'bookingRequest': { bookingId: booking._id, quotePrice: null } }, // Add booking request at partner level
+      // Find partners that match the booking criteria
+      const partners = await partner.find({
+        'operators.unitClassification': name, // Match operators by unitClassification
+        $or: [
+          { 'operators.type': { $exists: false } },
+          { 'operators.type': { $size: 0 } },
+          { 'operators.type.typeName': subClassification },
+        ],
+      });
+
+      for (const p of partners) {
+        // If partner's type is 'singleUnit + operator', check for existing bookingRequest
+        if (p.type === 'singleUnit + operator') {
+          const hasActiveBookingRequest = p.bookingRequest.some(
+            (request) => request.bookingStatus !== 'Completed'
+          );
+
+          // If there is already an active bookingRequest, skip this partner
+          if (hasActiveBookingRequest) {
+            console.log(`Partner ${p._id} already has an active bookingRequest`);
+            continue; // Skip to the next partner
+          }
         }
-      );
+
+        // Push the new booking request to the partner
+        await partner.updateOne(
+          { _id: p._id },
+          { $push: { bookingRequest: { bookingId: booking._id, quotePrice: null } } }
+        );
+      }
     }
   } catch (error) {
-    console.error("Error updating operators with new booking:", error);
+    console.error('Error updating operators with new booking:', error);
   }
 };
 
