@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,17 +11,14 @@ export class CommissionService {
   constructor(private http: HttpClient) {}
 
   // Fetch all commissions
+  createCommission(data: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(`${this.baseUrl}/create-commission`, data, { headers });
+  }
+
   getCommissions(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/commissions`);
-  }
-
-  // Add a new commission
-  addCommission(commission: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/add-commission`, commission);
-  }
-
-  // Update an existing commission
-  updateCommission(userType: string, data: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/update-commission/${userType}`, data);
+    return this.http.get<any>(`${this.baseUrl}/getAllCommissions`);
   }
 }

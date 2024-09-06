@@ -3,30 +3,21 @@
     <div class="head-element">
       <h2>Commission</h2>
     </div>
-    <div style="margin-top: 20px">
+    <div style="margin-top: 50px">
       <div class="tab-buttons">
-        <button 
-          class="tab-button" 
-          [ngClass]="{'active': activeTab === 'singleUser'}" 
-          (click)="switchTab('singleUser')">
+        <button class="tab-button" [ngClass]="{'active': activeTab === 'singleUser'}" (click)="switchTab('singleUser')">
           Single User
         </button>
-        <button 
-          class="tab-button" 
-          [ngClass]="{'active': activeTab === 'superUser'}" 
-          (click)="switchTab('superUser')">
+        <button class="tab-button" [ngClass]="{'active': activeTab === 'superUser'}" (click)="switchTab('superUser')">
           Super User
         </button>
-        <button 
-          class="tab-button" 
-          [ngClass]="{'active': activeTab === 'enterpriseUser'}" 
-          (click)="switchTab('enterpriseUser')">
+        <button class="tab-button" [ngClass]="{'active': activeTab === 'enterpriseUser'}" (click)="switchTab('enterpriseUser')">
           Enterprise User
         </button>
       </div>
-      
+
       <div class="table-container">
-        <table class="table Commission-table">
+        <table class="table Commission-table" style="margin: 0px 0px !important">
           <thead>
             <tr>
               <th>Slab rate</th>
@@ -36,55 +27,112 @@
           </thead>
           <tbody>
             <!-- Content for Single User Tab -->
-            <tr *ngIf="activeTab === 'singleUser'">
-              <td>
-                <div class="range-input">
-                  <input type="text" [(ngModel)]="singleUserSlabStart" [disabled]="!isSingleUserEditing" class="Commission-input" />
-                  <span class="separator"></span>
-                  <input type="text" [(ngModel)]="singleUserSlabEnd" [disabled]="!isSingleUserEditing" class="Commission-input" />
-                </div>
-              </td>
-              <td>
-                <input type="text" [(ngModel)]="singleUserCommission" [disabled]="!isSingleUserEditing" class="Commission-input" />
-              </td>
-              <td>
-                <button (click)="toggleSingleUserEdit()" class="btn Commission-btn">{{ isSingleUserEditing ? 'Save' : 'Edit' }}</button>
-              </td>
-            </tr>            
-            
+            <ng-container *ngIf="activeTab === 'singleUser'">
+              <tr *ngFor="let slab of singleUserSlabs; let i = index">
+                <td>
+                  <div class="range-input">
+                    <input type="text" [(ngModel)]="slab.start" [disabled]="!slab.isNew && !isSingleUserEditing" class="Commission-input" />
+                    <span class="separator"></span>
+                    <input type="text" [(ngModel)]="slab.end" [disabled]="!slab.isNew && !isSingleUserEditing" class="Commission-input" />
+                  </div>
+                </td>
+                <td>
+                  <input type="text" [(ngModel)]="slab.commission" [disabled]="!slab.isNew && !isSingleUserEditing" class="Commission-input" />
+                </td>
+                <td>
+                  <button *ngIf="slab.isNew" (click)="saveNewSingleUserSlab(i)" class="btn btn-secondary Commission-btn">
+                    Add
+                  </button>
+                  <button *ngIf="!slab.isNew" (click)="removeSingleUserSlab(i)" class="btn Commission-btn cancel">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon> Remove
+                  </button>
+                  <button *ngIf="!slab.isNew" (click)="toggleSingleUserEdit()" class="btn Commission-btn"
+                          [ngClass]="{'save': isSingleUserEditing, 'edit': !isSingleUserEditing}">
+                    <fa-icon *ngIf="!isSingleUserEditing" [icon]="faEdit"></fa-icon>
+                    {{ isSingleUserEditing ? 'Save' : 'Edit' }}
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <button (click)="addSingleUserSlab()" class="btn Commission-btn add-slab-btn">
+                    <fa-icon [icon]="faPlus"></fa-icon> Add Slab
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+
             <!-- Content for Super User Tab -->
-            <tr *ngIf="activeTab === 'superUser'">
-              <td>
-                <div class="range-input">
-                  <input type="text" [(ngModel)]="superUserSlabStart" [disabled]="!isSuperUserEditing" class="Commission-input"/>
-                  <span class="separator"></span>
-                  <input type="text" [(ngModel)]="superUserSlabEnd" [disabled]="!isSuperUserEditing" class="Commission-input"/>
-                </div>
-              </td>
-              <td>
-                <input type="text" [(ngModel)]="superUserCommission" [disabled]="!isSuperUserEditing" class="Commission-input"/>
-              </td>
-              <td>
-                <button (click)="toggleSuperUserEdit()" class="btn Commission-btn">{{ isSuperUserEditing ? 'Save' : 'Edit' }}</button>
-              </td>
-            </tr>
-            
+            <ng-container *ngIf="activeTab === 'superUser'">
+              <tr *ngFor="let slab of superUserSlabs; let i = index">
+                <td>
+                  <div class="range-input">
+                    <input type="text" [(ngModel)]="slab.start" [disabled]="!slab.isNew && !isSuperUserEditing" class="Commission-input" />
+                    <span class="separator"></span>
+                    <input type="text" [(ngModel)]="slab.end" [disabled]="!slab.isNew && !isSuperUserEditing" class="Commission-input" />
+                  </div>
+                </td>
+                <td>
+                  <input type="text" [(ngModel)]="slab.commission" [disabled]="!slab.isNew && !isSuperUserEditing" class="Commission-input" />
+                </td>
+                <td>
+                  <button *ngIf="slab.isNew" (click)="saveNewSuperUserSlab(i)" class="btn btn-secondary Commission-btn">
+                    Add
+                  </button>
+                  <button *ngIf="!slab.isNew" (click)="removeSuperUserSlab(i)" class="btn Commission-btn cancel">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon> Remove
+                  </button>
+                  <button *ngIf="!slab.isNew" (click)="toggleSuperUserEdit()" class="btn Commission-btn"
+                          [ngClass]="{'save': isSuperUserEditing, 'edit': !isSuperUserEditing}">
+                    <fa-icon *ngIf="!isSuperUserEditing" [icon]="faEdit"></fa-icon>
+                    {{ isSuperUserEditing ? 'Save' : 'Edit' }}
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <button (click)="addSuperUserSlab()" class="btn Commission-btn add-slab-btn">
+                    <fa-icon [icon]="faPlus"></fa-icon> Add Slab
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+
             <!-- Content for Enterprise User Tab -->
-            <tr *ngIf="activeTab === 'enterpriseUser'">
-              <td>
-                <div class="range-input">
-                  <input type="text" [(ngModel)]="enterpriseUserSlabStart" [disabled]="!isEnterpriseUserEditing" class="Commission-input" />
-                  <span class="separator"></span>
-                  <input type="text" [(ngModel)]="enterpriseUserSlabEnd" [disabled]="!isEnterpriseUserEditing" class="Commission-input" />
-                </div>
-              </td>
-              <td>
-                <input type="text" [(ngModel)]="enterpriseUserCommission" [disabled]="!isEnterpriseUserEditing" class="Commission-input" />
-              </td>
-              <td>
-                <button (click)="toggleEnterpriseUserEdit()" class="btn Commission-btn">{{ isEnterpriseUserEditing ? 'Save' : 'Edit' }}</button>
-              </td>
-            </tr>
+            <ng-container *ngIf="activeTab === 'enterpriseUser'">
+              <tr *ngFor="let slab of enterpriseUserSlabs; let i = index">
+                <td>
+                  <div class="range-input">
+                    <input type="text" [(ngModel)]="slab.start" [disabled]="!slab.isNew && !isEnterpriseUserEditing" class="Commission-input" />
+                    <span class="separator"></span>
+                    <input type="text" [(ngModel)]="slab.end" [disabled]="!slab.isNew && !isEnterpriseUserEditing" class="Commission-input" />
+                  </div>
+                </td>
+                <td>
+                  <input type="text" [(ngModel)]="slab.commission" [disabled]="!slab.isNew && !isEnterpriseUserEditing" class="Commission-input" />
+                </td>
+                <td>
+                  <button *ngIf="slab.isNew" (click)="saveNewEnterpriseUserSlab(i)" class="btn btn-secondary Commission-btn">
+                    Add
+                  </button>
+                  <button *ngIf="!slab.isNew" (click)="removeEnterpriseUserSlab(i)" class="btn Commission-btn cancel">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon> Remove
+                  </button>
+                  <button *ngIf="!slab.isNew" (click)="toggleEnterpriseUserEdit()" class="btn Commission-btn"
+                          [ngClass]="{'save': isEnterpriseUserEditing, 'edit': !isEnterpriseUserEditing}">
+                    <fa-icon *ngIf="!isEnterpriseUserEditing" [icon]="faEdit"></fa-icon>
+                    {{ isEnterpriseUserEditing ? 'Save' : 'Edit' }}
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <button (click)="addEnterpriseUserSlab()" class="btn Commission-btn add-slab-btn">
+                    <fa-icon [icon]="faPlus"></fa-icon> Add Slab
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
       </div>

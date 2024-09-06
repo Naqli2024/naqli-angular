@@ -9,39 +9,129 @@ const createCommission = async (req, res) => {
       return res.status(400).json({ message: "Invalid data provided" });
     }
 
-    // Check if commission for this userType already exists
-    const existingCommission = await Commission.findOne({ userType });
-    if (existingCommission) {
-      return res
-        .status(400)
-        .json({ message: "Commission rates for this user type already exist" });
-    }
-
-    // Append 'SAR' to slabRateStart and slabRateEnd
+    // Format the slab rates for comparison and ensure numeric values
     const formattedSlabRates = slabRates.map((rate) => ({
-      slabRateStart: rate.slabRateStart,
-      slabRateEnd: rate.slabRateEnd,
-      commissionRate: rate.commissionRate
+      slabRateStart: Number(rate.slabRateStart),
+      slabRateEnd: Number(rate.slabRateEnd),
+      commissionRate: rate.commissionRate,
     }));
 
-    // Create a new Commission entry
-    const newCommission = new Commission({
-      userType,
-      slabRates: formattedSlabRates,
-    });
+    // Check for duplicate slabRateStart and slabRateEnd values in the new data
+    const slabRateStarts = new Set();
+    const slabRateEnds = new Set();
 
-    await newCommission.save();
+    for (const rate of formattedSlabRates) {
+      if (slabRateStarts.has(rate.slabRateStart)) {
+        return res
+          .status(400)
+          .json({ message: `Duplicate slabRateStart: ${rate.slabRateStart}` });
+      }
+      if (slabRateEnds.has(rate.slabRateEnd)) {
+        return res
+          .status(400)
+          .json({ message: `Duplicate slabRateEnd: ${rate.slabRateEnd}` });
+      }
+      slabRateStarts.add(rate.slabRateStart);
+      slabRateEnds.add(rate.slabRateEnd);
+    }
 
-    res
-      .status(201)
-      .json({
-        message: "Commission rates created successfully",
-        commission: newCommission,
+    // Find the existing commission for the given userType
+    const existingCommission = await Commission.findOne({ userType });
+
+    if (existingCommission) {
+      // Existing slabRates
+      const existingSlabRates = existingCommission.slabRates.map((rate) => ({
+        slabRateStart: Number(rate.slabRateStart),
+        slabRateEnd: Number(rate.slabRateEnd),
+      }));
+
+      // Create sets for existing slabRateStart and slabRateEnd values
+      const existingRateStarts = new Set(
+        existingSlabRates.map((rate) => rate.slabRateStart)
+      );
+      const existingRateEnds = new Set(
+        existingSlabRates.map((rate) => rate.slabRateEnd)
+      );
+
+      // Check if any new slabRateStart or slabRateEnd values already exist
+      for (const rate of formattedSlabRates) {
+        if (existingRateStarts.has(rate.slabRateStart)) {
+          return res
+            .status(400)
+            .json({
+              message: `Duplicate slabRateStart: ${rate.slabRateStart} is already present`,
+            });
+        }
+        if (existingRateEnds.has(rate.slabRateEnd)) {
+          return res
+            .status(400)
+            .json({
+              message: `Duplicate slabRateEnd: ${rate.slabRateEnd} is already present`,
+            });
+        }
+      }
+
+      // Create a set for existing slabRateStart and slabRateEnd combinations
+      const existingRatesSet = new Set(
+        existingSlabRates.map(
+          (rate) => `${rate.slabRateStart}-${rate.slabRateEnd}`
+        )
+      );
+
+      // Filter new slabRates that do not exist in the existing slabRates
+      const newSlabRates = formattedSlabRates.filter((newRate) => {
+        const key = `${newRate.slabRateStart}-${newRate.slabRateEnd}`;
+        return !existingRatesSet.has(key);
       });
+
+      if (newSlabRates.length > 0) {
+        // Append new slabRates to existingSlabRates
+        existingCommission.slabRates.push(...newSlabRates);
+
+        // Save the updated commission
+        await existingCommission.save();
+      }
+
+      // Return the updated slabRates
+      res.status(200).json({
+        message: "Commission rates updated successfully",
+        slabRates: existingCommission.slabRates,
+      });
+    } else {
+      // Create a new Commission entry if no existing commission found
+      const newCommission = new Commission({
+        userType,
+        slabRates: formattedSlabRates,
+      });
+
+      await newCommission.save();
+
+      res.status(201).json({
+        message: "Commission rates created successfully",
+        slabRates: newCommission.slabRates,
+      });
+    }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    // Check for duplicate key error (E11000)
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0]; // Get the field that caused the error
+      return res.status(400).json({
+        message: `Duplicate value for ${field}: ${error.keyValue[field]}`,
+      });
+    }
+
+    res.status(500).json({ message: "Failed to create commission rate" });
+  }
+};
+
+const getAllCommissions = async (req, res) => {
+  try {
+    const commissions = await Commission.find();
+    res.status(200).json({ commissions });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching commission data", error });
   }
 };
 
 exports.createCommission = createCommission;
+exports.getAllCommissions = getAllCommissions;

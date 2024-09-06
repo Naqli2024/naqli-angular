@@ -39,12 +39,12 @@ import { PayoutComponent } from './admin/payout/payout.component';
 import { AdminNotificationManagementComponent } from './admin/admin-notification-management/admin-notification-management.component';
 import { AdminUserComponent } from './admin/admin-user/admin-user.component';
 import { NaqleeUserComponent } from './admin/naqlee-user/naqlee-user.component';
-import { CommissionComponent } from './admin/commission/commission.component';
 import { CompanyDetailsComponent } from './partner/auth/register/company-details/company-details.component';
 import { MultipleUnitDashboardComponent } from './partner/dashboard/multiple-unit-dashboard/multiple-unit-dashboard.component';
 import { BookingsComponent } from './partner/dashboard/bookings/bookings.component';
 import { BookingManagementComponent } from './partner/dashboard/booking-management/booking-management.component';
 import { ContractComponent } from './partner/dashboard/contract/contract.component';
+import { CommissionComponent } from './admin/commission/commission.component';
 
 
 export const routes: Routes = [
