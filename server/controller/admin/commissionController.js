@@ -133,5 +133,70 @@ const getAllCommissions = async (req, res) => {
   }
 };
 
+const editCommission = async (req, res) => {
+  try {
+    const { slabRateId } = req.params;
+    const { slabRateStart, slabRateEnd, commissionRate } = req.body;
+
+    if (
+      slabRateStart === null || slabRateStart === undefined ||
+      slabRateEnd === null || slabRateEnd === undefined ||
+      commissionRate === null || commissionRate === undefined
+    ) {
+      return res.status(400).json({ message: "Invalid data provided" });
+    }
+
+    const updatedCommission = await Commission.findOneAndUpdate(
+      { "slabRates._id": slabRateId }, 
+      {
+        $set: {
+          "slabRates.$.slabRateStart": slabRateStart,
+          "slabRates.$.slabRateEnd": slabRateEnd,
+          "slabRates.$.commissionRate": commissionRate,
+        },
+      },
+      { new: true } 
+    );
+
+    if (!updatedCommission) {
+      return res.status(404).json({ message: "Slab rate not found" });
+    }
+
+    res.status(200).json({
+      message: "Slab rate updated successfully",
+      slabRates: updatedCommission.slabRates, 
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update slab rate" });
+  }
+};
+
+const deleteCommission = async (req, res) => {
+  try {
+    const { slabRateId } = req.params; 
+
+    const updatedCommission = await Commission.findOneAndUpdate(
+      { "slabRates._id": slabRateId }, 
+      {
+        $pull: { slabRates: { _id: slabRateId } }, 
+      },
+      { new: true } 
+    );
+
+    if (!updatedCommission) {
+      return res.status(404).json({ message: "Slab rate not found" });
+    }
+
+    res.status(200).json({
+      message: "Slab rate deleted successfully",
+      slabRates: updatedCommission.slabRates, 
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete slab rate" });
+  }
+};
+
 exports.createCommission = createCommission;
 exports.getAllCommissions = getAllCommissions;
+exports.editCommission = editCommission;
+exports.deleteCommission = deleteCommission;

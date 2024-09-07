@@ -160,13 +160,26 @@ const updateBookingPaymentStatus = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // Get the commission rate based on user's accountType
+    // Fetch the commission slabs based on user's accountType
     const commission = await Commission.findOne({ userType: user.accountType }).exec();
-    if (!commission) {
-      return res.status(404).json({ success: false, message: "Commission rate not found for user type" });
+    if (!commission || !commission.slabRates || commission.slabRates.length === 0) {
+      return res.status(404).json({ success: false, message: "Commission slabs not found for user type" });
     }
 
-    const commissionRate = commission.commissionRate / 100; // Convert to decimal
+    // Determine the applicable slab rate based on the amount
+    let commissionRate = 0;
+    for (const slab of commission.slabRates) {
+      if (amount >= slab.slabRateStart && amount <= slab.slabRateEnd) {
+        commissionRate = parseFloat(slab.commissionRate) / 100; // Convert to decimal
+        console.log(commissionRate)
+        break;
+      }
+    }
+
+    if (commissionRate === 0) {
+      return res.status(400).json({ success: false, message: "Commission rate not applicable for the given amount" });
+    }
+
 
     // Ensure oldQuotePrice is valid
     if (booking.adminCommission === 0 && oldQuotePrice <= 0) {

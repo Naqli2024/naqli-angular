@@ -21,4 +21,12 @@ export class CommissionService {
   getCommissions(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/getAllCommissions`);
   }
+
+  editCommission(slabRateId: string, payload: any): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/editCommission/${slabRateId}`, payload);
+  }
+
+  deleteCommission(slabRateId: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/deleteCommission/${slabRateId}`);
+  }
 }

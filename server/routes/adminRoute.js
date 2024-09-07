@@ -70,5 +70,7 @@ router.delete('/delete/:notificationId', notificationController.deleteNotificati
 router.get('/getNotificationById/:id', notificationController.getNotificationById);
 router.post('/create-commission', commissionController.createCommission);
 router.get('/getAllCommissions', commissionController.getAllCommissions);
+router.put('/editCommission/:slabRateId', commissionController.editCommission);
+router.delete('/deleteCommission/:slabRateId', commissionController.deleteCommission);
 
 module.exports = router;

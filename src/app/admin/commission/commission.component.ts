@@ -58,12 +58,13 @@ export class CommissionComponent implements OnInit {
   processCommissionData(commissions: any[]) {
     commissions.forEach(commission => {
       const slabData = commission.slabRates.map(slab => ({
+        id: slab._id, // Ensure ID is included here
         start: slab.slabRateStart,
         end: slab.slabRateEnd,
         commission: slab.commissionRate.replace('%', ''),
         isNew: false
       }));
-
+  
       if (commission.userType === 'Single User') {
         this.singleUserSlabs = slabData;
       } else if (commission.userType === 'Super User') {
@@ -98,7 +99,7 @@ export class CommissionComponent implements OnInit {
         }
       ]
     };
-    this.saveCommission(payload, 'singleUser', index);
+    this.createCommission(payload, 'singleUser', index);
   }
 
   saveNewSuperUserSlab(index: number) {
@@ -113,7 +114,7 @@ export class CommissionComponent implements OnInit {
         }
       ]
     };
-    this.saveCommission(payload, 'superUser', index);
+    this.createCommission(payload, 'superUser', index);
   }
 
   saveNewEnterpriseUserSlab(index: number) {
@@ -128,10 +129,10 @@ export class CommissionComponent implements OnInit {
         }
       ]
     };
-    this.saveCommission(payload, 'enterpriseUser', index);
+    this.createCommission(payload, 'enterpriseUser', index);
   }
 
-  saveCommission(payload: any, userType: string, index: number) {
+  createCommission(payload: any, userType: string, index: number) {
     this.spinnerService.show();
     this.commissionService.createCommission(payload).subscribe({
       next: (response) => {
@@ -150,7 +151,57 @@ export class CommissionComponent implements OnInit {
         this.spinnerService.hide();
         const errorMessage = error.error?.message || 'Failed to save commission';
         this.toastr.error(errorMessage);
-        console.error('Error response:', error);
+      }
+    });
+  }
+
+  editCommission(slab: any, userType: string, index: number) {
+    const payload = {
+      userType,
+      slabRates: [
+        {
+          slabRateStart: slab.start,
+          slabRateEnd: slab.end,
+          commissionRate: `${slab.commission}%`,
+        }
+      ]
+    };
+    this.spinnerService.show();
+    this.commissionService.editCommission(slab.id, payload).subscribe({
+      next: (response) => {
+        this.spinnerService.hide();
+        this.toastr.success(response.message);
+        this.fetchCommissions(); // Optionally fetch updated commissions
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        const errorMessage = error.error?.message || 'Failed to edit commission';
+        this.toastr.error(errorMessage);
+      }
+    });
+  }
+
+  deleteCommission(userType: string, slab: any, index: number) {
+    console.log('Deleting slab with ID:', slab.id); // Add logging to check the ID
+  
+    this.spinnerService.show();
+    this.commissionService.deleteCommission(slab.id).subscribe({
+      next: (response) => {
+        this.spinnerService.hide();
+        this.toastr.success(response.message);
+        if (userType === 'singleUser') {
+          this.singleUserSlabs.splice(index, 1);
+        } else if (userType === 'superUser') {
+          this.superUserSlabs.splice(index, 1);
+        } else if (userType === 'enterpriseUser') {
+          this.enterpriseUserSlabs.splice(index, 1);
+        }
+        this.fetchCommissions(); // Optionally fetch updated commissions
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        const errorMessage = error.error?.message || 'Failed to delete commission';
+        this.toastr.error(errorMessage);
       }
     });
   }
@@ -167,23 +218,23 @@ export class CommissionComponent implements OnInit {
     this.isEnterpriseUserEditing = !this.isEnterpriseUserEditing;
   }
 
-  removeSingleUserSlab(index: number) {
-    this.singleUserSlabs.splice(index, 1);
-  }
-
-  removeSuperUserSlab(index: number) {
-    this.superUserSlabs.splice(index, 1);
-  }
-
-  removeEnterpriseUserSlab(index: number) {
-    this.enterpriseUserSlabs.splice(index, 1);
-  }
-
   switchTab(tab: string) {
     this.activeTab = tab;
   }
 
   isEditIconVisible(slab: any): boolean {
     return !slab.isNew;
+  }
+
+  removeSingleUserSlab(index: number) {
+    this.deleteCommission('singleUser', this.singleUserSlabs[index], index);
+  }
+
+  removeSuperUserSlab(index: number) {
+    this.deleteCommission('superUser', this.superUserSlabs[index], index);
+  }
+
+  removeEnterpriseUserSlab(index: number) {
+    this.deleteCommission('enterpriseUser', this.enterpriseUserSlabs[index], index);
   }
 }
