@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { formatDateToInput } from '../../../helper/date-helper';
 import { SpinnerService } from '../../../services/spinner.service';
+import { Slab } from '../../../models/slab.model';
 
 @Component({
   selector: 'app-commission',
@@ -18,13 +19,13 @@ import { SpinnerService } from '../../../services/spinner.service';
 
 export class CommissionComponent implements OnInit {
   activeTab: string = 'singleUser';
-  isSingleUserEditing: boolean = false;
-  isSuperUserEditing: boolean = false;
-  isEnterpriseUserEditing: boolean = false;
+  isSingleUserEditing: boolean[] = [];
+  isSuperUserEditing: boolean[] = [];
+  isEnterpriseUserEditing: boolean[] = [];
 
-  singleUserSlabs = [{ start: '', end: '', commission: '', isNew: false }];
-  superUserSlabs = [{ start: '', end: '', commission: '', isNew: false }];
-  enterpriseUserSlabs = [{ start: '', end: '', commission: '', isNew: false }];
+  singleUserSlabs: Slab[] = [{ start: '', end: '', commission: 0, isNew: false }];
+  superUserSlabs: Slab[] = [{ start: '', end: '', commission: 0, isNew: false }];
+  enterpriseUserSlabs: Slab[] = [{ start: '', end: '', commission: 0, isNew: false }];
 
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
@@ -49,42 +50,64 @@ export class CommissionComponent implements OnInit {
       },
       error: (error) => {
         this.spinnerService.hide();
-        const errorMessage = error.error?.message || 'Failed to load commission data';
+        const errorMessage =
+          error.error?.message || 'Failed to load commission data';
         this.toastr.error(errorMessage);
-      }
+      },
     });
   }
 
   processCommissionData(commissions: any[]) {
-    commissions.forEach(commission => {
-      const slabData = commission.slabRates.map(slab => ({
-        id: slab._id, // Ensure ID is included here
+    commissions.forEach((commission) => {
+      const slabData = commission.slabRates.map((slab) => ({
+        id: slab._id,
         start: slab.slabRateStart,
         end: slab.slabRateEnd,
-        commission: slab.commissionRate.replace('%', ''),
-        isNew: false
+        commission: parseFloat(slab.commissionRate), // Convert to number
+        isNew: false,
       }));
-  
+
       if (commission.userType === 'Single User') {
         this.singleUserSlabs = slabData;
+        this.isSingleUserEditing = Array(slabData.length).fill(false);
       } else if (commission.userType === 'Super User') {
         this.superUserSlabs = slabData;
+        this.isSuperUserEditing = Array(slabData.length).fill(false);
       } else if (commission.userType === 'Enterprise User') {
         this.enterpriseUserSlabs = slabData;
+        this.isEnterpriseUserEditing = Array(slabData.length).fill(false);
       }
     });
   }
 
   addSingleUserSlab() {
-    this.singleUserSlabs.push({ start: '', end: '', commission: '', isNew: true });
+    this.singleUserSlabs.push({
+      start: '',
+      end: '',
+      commission: 0,
+      isNew: true,
+    });
+    this.isSingleUserEditing.push(true);
   }
 
   addSuperUserSlab() {
-    this.superUserSlabs.push({ start: '', end: '', commission: '', isNew: true });
+    this.superUserSlabs.push({
+      start: '',
+      end: '',
+      commission: 0,
+      isNew: true,
+    });
+    this.isSuperUserEditing.push(true);
   }
 
   addEnterpriseUserSlab() {
-    this.enterpriseUserSlabs.push({ start: '', end: '', commission: '', isNew: true });
+    this.enterpriseUserSlabs.push({
+      start: '',
+      end: '',
+      commission: 0,
+      isNew: true,
+    });
+    this.isEnterpriseUserEditing.push(true);
   }
 
   saveNewSingleUserSlab(index: number) {
@@ -95,9 +118,9 @@ export class CommissionComponent implements OnInit {
         {
           slabRateStart: newSlab.start,
           slabRateEnd: newSlab.end,
-          commissionRate: `${newSlab.commission}%`
-        }
-      ]
+          commissionRate: newSlab.commission, // Ensure this is a number
+        },
+      ],
     };
     this.createCommission(payload, 'singleUser', index);
   }
@@ -110,9 +133,9 @@ export class CommissionComponent implements OnInit {
         {
           slabRateStart: newSlab.start,
           slabRateEnd: newSlab.end,
-          commissionRate: `${newSlab.commission}%`
-        }
-      ]
+          commissionRate: newSlab.commission // Ensure this is a number
+        },
+      ],
     };
     this.createCommission(payload, 'superUser', index);
   }
@@ -125,9 +148,9 @@ export class CommissionComponent implements OnInit {
         {
           slabRateStart: newSlab.start,
           slabRateEnd: newSlab.end,
-          commissionRate: `${newSlab.commission}%`
-        }
-      ]
+          commissionRate: newSlab.commission // Ensure this is a number
+        },
+      ],
     };
     this.createCommission(payload, 'enterpriseUser', index);
   }
@@ -139,51 +162,47 @@ export class CommissionComponent implements OnInit {
         this.spinnerService.hide();
         this.toastr.success(response.message);
         if (userType === 'singleUser') {
-          this.singleUserSlabs[index].isNew = false;
+          this.isSingleUserEditing[index] = false;
         } else if (userType === 'superUser') {
-          this.superUserSlabs[index].isNew = false;
+          this.isSuperUserEditing[index] = false;
         } else if (userType === 'enterpriseUser') {
-          this.enterpriseUserSlabs[index].isNew = false;
+          this.isEnterpriseUserEditing[index] = false;
         }
         this.fetchCommissions(); // Optionally fetch updated commissions
       },
       error: (error) => {
         this.spinnerService.hide();
-        const errorMessage = error.error?.message || 'Failed to save commission';
+        const errorMessage =
+          error.error?.message || 'Failed to save commission';
         this.toastr.error(errorMessage);
-      }
+      },
     });
   }
 
   editCommission(slab: any, userType: string, index: number) {
     const payload = {
-      userType,
-      slabRates: [
-        {
-          slabRateStart: slab.start,
-          slabRateEnd: slab.end,
-          commissionRate: `${slab.commission}%`,
-        }
-      ]
+      slabRateStart: slab.start,
+      slabRateEnd: slab.end,
+      commissionRate: Number(slab.commission) 
     };
+
     this.spinnerService.show();
     this.commissionService.editCommission(slab.id, payload).subscribe({
       next: (response) => {
         this.spinnerService.hide();
         this.toastr.success(response.message);
-        this.fetchCommissions(); // Optionally fetch updated commissions
+        this.fetchCommissions();
       },
       error: (error) => {
         this.spinnerService.hide();
+        console.error('Edit Commission Error:', error);
         const errorMessage = error.error?.message || 'Failed to edit commission';
         this.toastr.error(errorMessage);
-      }
+      },
     });
   }
-
-  deleteCommission(userType: string, slab: any, index: number) {
-    console.log('Deleting slab with ID:', slab.id); // Add logging to check the ID
   
+  deleteCommission(userType: string, slab: any, index: number) {
     this.spinnerService.show();
     this.commissionService.deleteCommission(slab.id).subscribe({
       next: (response) => {
@@ -191,39 +210,63 @@ export class CommissionComponent implements OnInit {
         this.toastr.success(response.message);
         if (userType === 'singleUser') {
           this.singleUserSlabs.splice(index, 1);
+          this.isSingleUserEditing.splice(index, 1);
         } else if (userType === 'superUser') {
           this.superUserSlabs.splice(index, 1);
+          this.isSuperUserEditing.splice(index, 1);
         } else if (userType === 'enterpriseUser') {
           this.enterpriseUserSlabs.splice(index, 1);
+          this.isEnterpriseUserEditing.splice(index, 1);
         }
         this.fetchCommissions(); // Optionally fetch updated commissions
       },
       error: (error) => {
         this.spinnerService.hide();
-        const errorMessage = error.error?.message || 'Failed to delete commission';
+        const errorMessage =
+          error.error?.message || 'Failed to delete commission';
         this.toastr.error(errorMessage);
-      }
+      },
     });
   }
 
-  toggleSingleUserEdit() {
-    this.isSingleUserEditing = !this.isSingleUserEditing;
+  toggleEdit(index: number, userType: string) {
+    if (userType === 'singleUser') {
+      if (this.isSingleUserEditing[index]) {
+        // Save the commission changes
+        this.editCommission(this.singleUserSlabs[index], 'singleUser', index);
+      } else {
+        this.isSingleUserEditing[index] = true;
+      }
+    } else if (userType === 'superUser') {
+      if (this.isSuperUserEditing[index]) {
+        // Save the commission changes
+        this.editCommission(this.superUserSlabs[index], 'superUser', index);
+      } else {
+        this.isSuperUserEditing[index] = true;
+      }
+    } else if (userType === 'enterpriseUser') {
+      if (this.isEnterpriseUserEditing[index]) {
+        // Save the commission changes
+        this.editCommission(this.enterpriseUserSlabs[index], 'enterpriseUser', index);
+      } else {
+        this.isEnterpriseUserEditing[index] = true;
+      }
+    }
   }
 
-  toggleSuperUserEdit() {
-    this.isSuperUserEditing = !this.isSuperUserEditing;
-  }
-
-  toggleEnterpriseUserEdit() {
-    this.isEnterpriseUserEditing = !this.isEnterpriseUserEditing;
+  isEditing(index: number, userType: string): boolean {
+    if (userType === 'singleUser') {
+      return this.isSingleUserEditing[index];
+    } else if (userType === 'superUser') {
+      return this.isSuperUserEditing[index];
+    } else if (userType === 'enterpriseUser') {
+      return this.isEnterpriseUserEditing[index];
+    }
+    return false;
   }
 
   switchTab(tab: string) {
     this.activeTab = tab;
-  }
-
-  isEditIconVisible(slab: any): boolean {
-    return !slab.isNew;
   }
 
   removeSingleUserSlab(index: number) {
@@ -235,6 +278,10 @@ export class CommissionComponent implements OnInit {
   }
 
   removeEnterpriseUserSlab(index: number) {
-    this.deleteCommission('enterpriseUser', this.enterpriseUserSlabs[index], index);
+    this.deleteCommission(
+      'enterpriseUser',
+      this.enterpriseUserSlabs[index],
+      index
+    );
   }
 }

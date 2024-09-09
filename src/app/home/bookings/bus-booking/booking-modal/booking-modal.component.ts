@@ -14,6 +14,13 @@ export class BookingModalComponent {
 
   constructor(public activeModal: NgbActiveModal, public router: Router) {}
 
+  ngOnInit(): void {
+    // Automatically close the modal and navigate after 2 seconds
+    setTimeout(() => {
+      this.closeModalAndNavigate();
+    }, 2000); 
+  }
+
   closeModalAndNavigate(): void {
     console.log(this.bookingId)
     this.activeModal.dismiss();

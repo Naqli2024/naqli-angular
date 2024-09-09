@@ -1921,7 +1921,7 @@ input[type="checkbox"] {
 .booking-history .table th,
 .booking-history .table td {
   padding: 10px;
-  text-align: center;
+  text-align: center !important;
 }
 
 .booking-history .location-cell {

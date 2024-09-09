@@ -270,12 +270,45 @@ const getTopPartners = async (req, res) => {
 
         const accountType = user.accountType;
         const commission = await Commission.findOne({ userType: accountType });
-        if (!commission) continue;
+        if (
+          !commission ||
+          !commission.slabRates ||
+          commission.slabRates.length === 0
+        ) {
+          return res
+            .status(404)
+            .json({
+              success: false,
+              message: "Commission slabs not found for user type",
+            });
+        }
 
-        const commissionRate = commission.commissionRate / 100;
         const quotePrice = booking.quotePrice;
+
+        // Determine the applicable slab rate based on the amount
+        let commissionRate = 0;
+        for (const slab of commission.slabRates) {
+          if (
+            quotePrice >= slab.slabRateStart &&
+            quotePrice <= slab.slabRateEnd
+          ) {
+            commissionRate = parseFloat(slab.commissionRate) / 100; // Convert to decimal
+            console.log(commissionRate);
+            break;
+          }
+        }
+
+        if (commissionRate === 0) {
+          return res
+            .status(400)
+            .json({
+              success: false,
+              message: "Commission rate not applicable for the given amount",
+            });
+        }
+
         const finalQuotePrice =
-          quotePrice != null ? quotePrice * (1 + commissionRate) : quotePrice;
+          quotePrice != null ? parseFloat((quotePrice * (1 + commissionRate)).toFixed(0)) : quotePrice;
 
         // Find the matching operator details for the current partner
         const operator = partner.operators.find(
@@ -469,7 +502,7 @@ const assignOperator = async (req, res) => {
       return res.status(404).json({ message: "Partner not found" });
     }
 
-    let available = 'available'; // Default value if conditions are not met
+    let available = "available"; // Default value if conditions are not met
 
     if (partnerFound.type === "multipleUnits") {
       // Find the booking request object in the partner's bookingRequest array
@@ -482,7 +515,7 @@ const assignOperator = async (req, res) => {
         bookingRequest.assignedOperator = {
           unit,
           operatorName,
-          available: 'Not available'
+          available: "Not available",
         };
       } else {
         return res.status(404).json({
@@ -495,7 +528,7 @@ const assignOperator = async (req, res) => {
       const assignedOperators = partnerFound.operators.map((operator) => ({
         unit: operator.plateInformation,
         operatorName: `${operator.operatorDetail.firstName} ${operator.operatorDetail.lastName}`,
-        available: 'Not available'
+        available: "Not available",
       }));
 
       partnerFound.bookingRequest.push({
@@ -504,11 +537,11 @@ const assignOperator = async (req, res) => {
       });
     } else {
       // If none of the conditions are met, set available to 'available'
-      available = 'available';
+      available = "available";
     }
 
     // Update available status for any booking requests not handled by the above conditions
-    partnerFound.bookingRequest.forEach(request => {
+    partnerFound.bookingRequest.forEach((request) => {
       if (!request.assignedOperator) {
         request.assignedOperator = { available };
       }
@@ -524,7 +557,6 @@ const assignOperator = async (req, res) => {
     res.status(500).json({ message: "Server Error", error });
   }
 };
-
 
 /*****************************************
             Send OTP 

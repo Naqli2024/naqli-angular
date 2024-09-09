@@ -10,7 +10,7 @@ const slabSchema = new mongoose.Schema({
     required: true,
   },
   commissionRate: {
-    type: String,
+    type: Number,
     required: true,
   },
 });

@@ -9,11 +9,11 @@ const createCommission = async (req, res) => {
       return res.status(400).json({ message: "Invalid data provided" });
     }
 
-    // Format the slab rates for comparison and ensure numeric values
+    // Format the slab rates
     const formattedSlabRates = slabRates.map((rate) => ({
       slabRateStart: Number(rate.slabRateStart),
       slabRateEnd: Number(rate.slabRateEnd),
-      commissionRate: rate.commissionRate,
+      commissionRate: Number(rate.commissionRate.replace('%', '')), // Convert to number
     }));
 
     // Check for duplicate slabRateStart and slabRateEnd values in the new data
@@ -139,9 +139,9 @@ const editCommission = async (req, res) => {
     const { slabRateStart, slabRateEnd, commissionRate } = req.body;
 
     if (
-      slabRateStart === null || slabRateStart === undefined ||
-      slabRateEnd === null || slabRateEnd === undefined ||
-      commissionRate === null || commissionRate === undefined
+      typeof slabRateStart !== 'number' ||
+      typeof slabRateEnd !== 'number' ||
+      typeof commissionRate !== 'number'
     ) {
       return res.status(400).json({ message: "Invalid data provided" });
     }
@@ -152,7 +152,7 @@ const editCommission = async (req, res) => {
         $set: {
           "slabRates.$.slabRateStart": slabRateStart,
           "slabRates.$.slabRateEnd": slabRateEnd,
-          "slabRates.$.commissionRate": commissionRate,
+          "slabRates.$.commissionRate": commissionRate, // Store as number
         },
       },
       { new: true } 
