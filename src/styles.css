@@ -779,6 +779,27 @@ input[type="checkbox"] {
 .drop-point {
   background-color: red;
 }
+.suggestions-dropdown {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  position: absolute;
+  z-index: 1000;
+  width: calc(100% - 20px);
+  max-width: 600px;
+  height: auto;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 260px !important;
+  box-sizing: border-box;
+}
+.suggestion-item {
+  padding: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}
 @media (max-width: 768px) {
   .booking-container-head {
     padding-top: 35px;
@@ -787,19 +808,19 @@ input[type="checkbox"] {
   .col-md-6.text-center {
     border-right: none !important;
   }
+  .suggestions-dropdown {
+    width: 100% !important;
+    max-width: 480px !important; 
+    height: auto; 
+    max-height: 200px; 
+    margin-top: 230px !important;
+  }
 }
-@media (max-width: 576px) {
-  .checkbox-container label {
-    margin-left: 0px;
-    font-size: 14px;
-    margin-left: 10px;
-  }
-  .radio-container {
-    margin: 10px 16px;
-  }
-  .radio-container input[type="radio"] {
-    margin-right: 5px;
-    font-size: 14px !important;
+@media (max-width: 480px) {
+  .suggestions-dropdown {
+    width: calc(100% - 45px) !important; 
+    max-height: 150px; 
+    margin-top: 190px !important; 
   }
 }
 

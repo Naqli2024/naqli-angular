@@ -81,7 +81,7 @@
                 [ngModel]="bookingData.type[0]?.typeOfLoad"
                 (ngModelChange)="bookingData.type[0].typeOfLoad = $event"
                 required
-                >
+              >
                 <option value="" disabled selected>Load Type</option>
                 <option
                   *ngFor="let load of filteredLoads[selectedVehicleName]"
@@ -144,11 +144,25 @@
             <div class="pick-up"></div>
             <input
               type="text"
-              placeholder="Pick Up"
+              placeholder="Enter pickup location"
               [(ngModel)]="bookingData.pickup"
+              (input)="onPickupInputChange()"
               required
               style="margin-bottom: 8px"
             />
+            <!-- Pickup Suggestions -->
+            <div
+              class="suggestions-dropdown"
+              *ngIf="pickupSuggestions.length > 0"
+            >
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of pickupSuggestions"
+                (click)="selectPickupSuggestion(suggestion)"
+              >
+                {{ suggestion.description }}
+              </div>
+            </div>
           </div>
           <div
             *ngFor="
@@ -161,8 +175,9 @@
             <div class="drop-point"></div>
             <input
               type="text"
-              [placeholder]="'Drop Point ' + (i + 1)"
+              [placeholder]="'Drop point location ' + (i + 1)"
               [(ngModel)]="bookingData.dropPoints[i]"
+              (input)="onDropPointInputChange(i)"
               required
             />
             <div
@@ -175,6 +190,18 @@
             <div class="circle" *ngIf="i !== 0" (click)="removeInputField(i)">
               <i class="fas fa-times"></i>
             </div>
+            <div
+              class="suggestions-dropdown"
+              *ngIf="dropPointSuggestions[i] && dropPointSuggestions[i].length > 0"
+            >
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of dropPointSuggestions[i]"
+                (click)="selectDropPointSuggestion(suggestion, i)"
+              >
+                {{ suggestion.description }}
+              </div>
+            </div>
           </div>
         </div>
         <div class="buttons">
@@ -186,7 +213,7 @@
             Get Direction
           </button>
         </div>
-        <div id="mapContainer" class="google-map-style"></div>
+        <div id="map" class="google-map-style"></div>
         <div class="buttons">
           <button
             type="submit"

@@ -8,25 +8,23 @@ export class MapService {
   private directionsService: google.maps.DirectionsService | undefined;
   private directionsRenderer: google.maps.DirectionsRenderer | undefined;
   private geocoder: google.maps.Geocoder | undefined;
-  private isMapInitialized = false;
-  private isGeocoderInitialized = false;
-
+  public isMapInitialized = false;
+  public isGeocoderInitialized = false;
 
   initializeMapInContainer(containerId: string): void {
     const mapContainer = document.getElementById(containerId);
 
     if (mapContainer) {
-      // Check if mapContainer has dimensions
       if (mapContainer.clientWidth === 0 || mapContainer.clientHeight === 0) {
         console.error('Map container has no size.');
         return;
       }
-  
+
       this.map = new google.maps.Map(mapContainer, {
         center: { lat: 37.7749, lng: -122.4194 }, // San Francisco
         zoom: 10,
       });
-  
+
       this.directionsService = new google.maps.DirectionsService();
       this.directionsRenderer = new google.maps.DirectionsRenderer();
       this.directionsRenderer.setMap(this.map);

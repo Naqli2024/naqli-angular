@@ -12,18 +12,29 @@ export class GoogleMapsService {
 
   constructor(private http: HttpClient) {}
 
-  loadGoogleMapsScript(): void {
-    if (this.isScriptLoaded) {
-      return;
-    }
-
-    this.isScriptLoaded = true;
-
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&callback=initMap`;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
+  loadGoogleMapsScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.isScriptLoaded) {
+        resolve(); // Script is already loaded
+        return;
+      }
+  
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+  
+      script.onload = () => {
+        this.isScriptLoaded = true;
+        resolve(); // Script loaded successfully
+      };
+  
+      script.onerror = (error) => {
+        reject(error); // Failed to load script
+      };
+  
+      document.head.appendChild(script);
+    });
   }
 
   getGeocode(address: string): Observable<any> {
@@ -32,3 +43,4 @@ export class GoogleMapsService {
     return this.http.get(url);
   }
 }
+

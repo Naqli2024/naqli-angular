@@ -49,6 +49,11 @@ export class VehicleBookingComponent implements OnInit {
     additionalLabour: null,
   };
 
+   // Autocomplete related properties
+   private autocompleteService!: google.maps.places.AutocompleteService;
+   public pickupSuggestions: google.maps.places.AutocompletePrediction[] = [];
+   public dropPointSuggestions: google.maps.places.AutocompletePrediction[][] = [];
+
   constructor(
     private vehicleService: VehicleService,
     private modalService: NgbModal,
@@ -61,32 +66,125 @@ export class VehicleBookingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.vehicleService.getVehicles().subscribe((data: Vehicle[]) => {
-      this.vehicles = data;
-      if (this.vehicles.length > 0) {
-        this.bookingData.unitType = this.vehicles[0].unitType;
-      }
-      this.vehicles.forEach((vehicle) => {
-        this.filteredLoads[vehicle.name] = [];
-        this.optionsVisible[vehicle.name] = false;
-        this.selectedOptions[vehicle.name] = null;
-      });
+    // Load vehicles independently of map initialization
+    this.loadVehicles();
+
+    // Define the initMap function globally before loading the script
+    (window as any).initMap = () => {
+      this.initializeMap();
+    };
+  
+    // Load the Google Maps script
+    this.googleMapsService.loadGoogleMapsScript().then(() => {
+      // Initialize the AutocompleteService after the script has loaded
+      this.autocompleteService = new google.maps.places.AutocompleteService();
+    }).catch((error) => {
+      console.error('Failed to load Google Maps script:', error);
     });
-    this.googleMapsService.loadGoogleMapsScript();
-    // Define the global initMap function
-  (window as any).initMap = () => {
-    this.mapService.initializeMapInContainer('mapContainer');
-  };
   }
 
+  loadVehicles(): void {
+    this.vehicleService.getVehicles().subscribe(
+      (data: Vehicle[]) => {
+        this.vehicles = data;
+        if (this.vehicles.length > 0) {
+          this.bookingData.unitType = this.vehicles[0].unitType;
+        }
+        this.vehicles.forEach((vehicle) => {
+          this.filteredLoads[vehicle.name] = [];
+          this.optionsVisible[vehicle.name] = false;
+          this.selectedOptions[vehicle.name] = null;
+        });
+      },
+      (error) => {
+        console.error('Error loading vehicles:', error);
+        this.toastr.error('Failed to load vehicle data');
+      }
+    );
+  }
+
+// Initialize your map
+initializeMap(): void {
+  const mapOptions = {
+    center: { lat: -34.397, lng: 150.644 },
+    zoom: 8
+  };
+  const map = new google.maps.Map(document.getElementById('map') as HTMLElement, mapOptions);
+
+  // Initialize MapService with the newly created map
+  this.mapService.initializeMapInContainer('map');
+}
+
+   // Autocomplete for Pickup Input
+   onPickupInputChange(): void {
+    if (this.bookingData.pickup) {
+      this.autocompleteService.getPlacePredictions(
+        { input: this.bookingData.pickup },
+        (predictions, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            this.pickupSuggestions = predictions || [];
+          } else {
+            this.pickupSuggestions = [];
+          }
+        }
+      );
+    } else {
+      this.pickupSuggestions = [];
+    }
+  }
+
+  // Autocomplete for Drop Points
+  onDropPointInputChange(index: number): void {
+    const input = this.bookingData.dropPoints[index];
+  
+    // Initialize the dropPointSuggestions array at the current index if not already initialized
+    if (!this.dropPointSuggestions[index]) {
+      this.dropPointSuggestions[index] = [];
+    }
+  
+    if (input) {
+      this.autocompleteService.getPlacePredictions(
+        { input: input },
+        (predictions, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            this.dropPointSuggestions[index] = predictions || [];
+          } else {
+            this.dropPointSuggestions[index] = [];
+          }
+        }
+      );
+    } else {
+      this.dropPointSuggestions[index] = [];
+    }
+  }
+
+  // Select Pickup Suggestion
+  selectPickupSuggestion(suggestion: google.maps.places.AutocompletePrediction): void {
+    this.bookingData.pickup = suggestion.description;
+    this.pickupSuggestions = [];
+  }
+
+  // Select Drop Point Suggestion
+  selectDropPointSuggestion(suggestion: google.maps.places.AutocompletePrediction, index: number): void {
+    this.bookingData.dropPoints[index] = suggestion.description;
+    this.dropPointSuggestions[index] = [];
+  }
+
+
   updateRoute(): void {
-    // Check if pickup and at least one drop point are set
-    if (this.bookingData.pickup && this.bookingData.dropPoints.length > 0) {
-      const start = this.bookingData.pickup;
-      const waypoints = this.bookingData.dropPoints.slice(0, -1); // All except the last one
-      const end =
-        this.bookingData.dropPoints[this.bookingData.dropPoints.length - 1]; // Last drop point
-      this.mapService.calculateRoute(start, waypoints, end);
+    if (this.mapService.isMapInitialized) {
+      // Check if pickup and at least one drop point are set
+      if (this.bookingData.pickup && this.bookingData.dropPoints.length > 0) {
+        const start = this.bookingData.pickup;
+        const waypoints = this.bookingData.dropPoints.slice(0, -1); // All except the last one
+        const end = this.bookingData.dropPoints[this.bookingData.dropPoints.length - 1]; // Last drop point
+
+        this.mapService.calculateRoute(start, waypoints, end);
+      } else {
+        console.error('Pickup or drop points are missing.');
+      }
+    } else {
+      console.error('Map not initialized.');
     }
   }
 
@@ -217,11 +315,6 @@ export class VehicleBookingComponent implements OnInit {
             this.clearForm();
             // Check if there is an existing bookingId in localStorage
             const existingBookingId = localStorage.getItem('bookingId');
-            if (existingBookingId) {
-              console.log(
-                `Replacing existing bookingId: ${existingBookingId} with new bookingId: ${response._id}`
-              );
-            }
 
             // Set the new bookingId in localStorage, replacing the old one
             localStorage.setItem('bookingId', response._id);
