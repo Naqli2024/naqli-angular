@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row"></div>
   <div class="col-md-12 booking-history">
     <div class="head-element" style="position: relative">
       <h2>Booking Management</h2>
@@ -38,17 +38,17 @@
             <td>
               <select
                 class="form-select"
-                [(ngModel)]="selectedOperatorEmail[booking._id]"
+                [(ngModel)]="selectedOperatorName[booking._id]"  
                 [disabled]="!editingBooking || editingBooking !== booking._id"
               >
                 <option value="" disabled>Select</option>
                 <ng-container *ngFor="let operator of getFilteredOperators(booking._id); trackBy: trackByOperatorEmail">
-                  <option *ngIf="!operator.operatorsDetail" [value]="operator.email">
+                  <option *ngIf="!operator.operatorsDetail" [value]="operator.firstName + ' ' + operator.lastName"> <!-- Updated value to operatorName -->
                     {{ operator.firstName }} {{ operator.lastName }}{{ operator.label || "" }}
                   </option>
                   <ng-container *ngIf="operator.operatorsDetail">
                     <ng-container *ngFor="let detail of operator.operatorsDetail">
-                      <option [value]="detail.email">
+                      <option [value]="detail.firstName + ' ' + detail.lastName"> <!-- Updated value to detail operatorName -->
                         {{ detail.firstName }} {{ detail.lastName }}
                       </option>
                     </ng-container>
@@ -73,4 +73,3 @@
       Assign
     </button>
   </div>
-</div>

@@ -47,6 +47,7 @@ export class EquipmentBookingComponent {
   selectedOptions: { [key: string]: EquipmentType | null } = {};
   selectedEquipmentName: string = '';
   isFormSubmitted: boolean = false;
+  
 
   bookingData: BookingData = {
     name: '',
@@ -60,6 +61,11 @@ export class EquipmentBookingComponent {
     zipCode: '',
     additionalLabour: null,
   };
+
+  public citySuggestions: google.maps.places.AutocompletePrediction[] = [];
+  public addressSuggestions: google.maps.places.AutocompletePrediction[] = [];
+
+  private autocompleteService!: google.maps.places.AutocompleteService;
 
   constructor(
     private equipmentService: EquipmentService,
@@ -75,15 +81,66 @@ export class EquipmentBookingComponent {
   ngOnInit(): void {
     this.equipmentService.getEquipment().subscribe((data: Equipment[]) => {
       this.equipment = data;
-      if (this.equipment.length > 0) {
-        this.bookingData.unitType = this.equipment[0].unitType;
-      }
     });
-    this.googleMapsService.loadGoogleMapsScript();
-    // Define the global initMap function
+  
+    // Define the initMap function globally before loading the script
     (window as any).initMap = () => {
-      this.mapService.initializeMapInContainer('mapContainer');
+      this.initializeMap();
     };
+  
+    // Load the Google Maps script and initialize the AutocompleteService
+    this.googleMapsService.loadGoogleMapsScript().then(() => {
+      // Initialize the AutocompleteService after the script has loaded
+      this.autocompleteService = new google.maps.places.AutocompleteService();
+    }).catch((error) => {
+      console.error('Failed to load Google Maps script:', error);
+    });
+  }
+  
+  // Method to initialize the map
+  private initializeMap(): void {
+    this.mapService.initializeMapInContainer('mapContainer');
+  }
+
+  onCityInputChange(): void {
+    if (this.bookingData.cityName.length > 0) {
+      this.autocompleteService.getPlacePredictions(
+        { input: this.bookingData.cityName, types: ['(cities)'] },
+        (predictions, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+            this.citySuggestions = predictions;
+          }
+        }
+      );
+    } else {
+      this.citySuggestions = [];
+    }
+  }
+
+  onAddressInputChange(): void {
+    if (this.bookingData.cityName.length > 0 && this.bookingData.address.length > 0) {
+      const input = `${this.bookingData.address}, ${this.bookingData.cityName}`;
+      this.autocompleteService.getPlacePredictions(
+        { input, types: ['geocode'] },
+        (predictions, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+            this.addressSuggestions = predictions;
+          }
+        }
+      );
+    } else {
+      this.addressSuggestions = [];
+    }
+  }
+
+  selectCitySuggestion(suggestion: google.maps.places.AutocompletePrediction): void {
+    this.bookingData.cityName = suggestion.description;
+    this.citySuggestions = [];
+  }
+
+  selectAddressSuggestion(suggestion: google.maps.places.AutocompletePrediction): void {
+    this.bookingData.address = suggestion.description;
+    this.addressSuggestions = [];
   }
 
   
@@ -109,17 +166,7 @@ export class EquipmentBookingComponent {
   selectOption(type: EquipmentType, equipName: string): void {
     this.selectedOptions[equipName] = type;
     this.closeAllDropdownsExcept(equipName);
-    this.onEquipmentTypeChange(type, equipName);
-    this.selectedEquipmentName = equipName;
-    this.optionsVisible[equipName] = false;
-
-    this.bookingData.name = equipName;
-    this.bookingData.type = [
-      {
-        typeName: type.typeName,
-        typeImage: type.typeImage,
-      },
-    ];
+    this.optionsVisible[equipName] = false; // Hide options after selecting
   }
 
   onEquipmentTypeChange(type: EquipmentType, equipName: string): void {
@@ -134,14 +181,15 @@ export class EquipmentBookingComponent {
   @HostListener('document:click', ['$event'])
   clickOutside(event: any): void {
     const clickedElement = event.target;
-    const isInsideDropdown = this.isInsideDropdown(clickedElement);
+   
 
-    if (!isInsideDropdown) {
-      this.closeAllDropdowns();
-    }
+  if (!this.isInsideDropdown(clickedElement)) {
+    this.closeAllDropdowns();
+  }
   }
 
   private isInsideDropdown(clickedElement: any): boolean {
+    // Check if the click is inside equipment dropdowns
     for (const equipmentName of Object.keys(this.optionsVisible)) {
       const dropdownElement = document.querySelector(
         `.custom-select-trigger[data-vehicle="${equipmentName}"]`
@@ -150,8 +198,23 @@ export class EquipmentBookingComponent {
         return true;
       }
     }
+  
+    // Check if the click is inside city suggestions dropdown
+    const citySuggestionsDropdown = document.querySelector('.suggestions-dropdown.city');
+    if (citySuggestionsDropdown && citySuggestionsDropdown.contains(clickedElement)) {
+      return true;
+    }
+  
+    // Check if the click is inside address suggestions dropdown
+    const addressSuggestionsDropdown = document.querySelector('.suggestions-dropdown.address');
+    if (addressSuggestionsDropdown && addressSuggestionsDropdown.contains(clickedElement)) {
+      return true;
+    }
+  
+    // Click is not inside any of the dropdowns
     return false;
   }
+  
 
   private closeAllDropdownsExcept(excludeEquipName: string): void {
     Object.keys(this.optionsVisible).forEach((key) => {
@@ -165,6 +228,9 @@ export class EquipmentBookingComponent {
     Object.keys(this.optionsVisible).forEach((key) => {
       this.optionsVisible[key] = false;
     });
+    // Optionally, you might want to clear city and address suggestions as well
+  this.citySuggestions = [];
+  this.addressSuggestions = [];
   }
 
   openBookingModal(bookingId: string): void {

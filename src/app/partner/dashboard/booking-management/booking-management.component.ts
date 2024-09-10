@@ -30,7 +30,7 @@ export class BookingManagementComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   filteredOperators: any[] = [];
   selectedPlateInformation: { [bookingId: string]: string } = {};
-  selectedOperatorEmail: { [bookingId: string]: string } = {};
+  selectedOperatorName: { [bookingId: string]: string } = {}; // Changed from selectedOperatorEmail to selectedOperatorName
   editingBooking: string | null = null;
 
   constructor(
@@ -74,8 +74,8 @@ export class BookingManagementComponent implements OnInit {
           this.partner.bookingRequest.forEach((booking: any) => {
             this.selectedPlateInformation[booking.bookingId] =
               booking.assignedOperator?.unit || '';
-            this.selectedOperatorEmail[booking.bookingId] =
-              booking.assignedOperator?.operatorName || '';
+            this.selectedOperatorName[booking.bookingId] =
+              booking.assignedOperator?.operatorName || ''; // Updated to operatorName
           });
 
           if (this.bookingRequests.length > 0) {
@@ -216,7 +216,7 @@ export class BookingManagementComponent implements OnInit {
     const target = event.target as HTMLSelectElement;
     const plateInformation = target.value;
     this.selectedPlateInformation[bookingId] = plateInformation;
-    this.selectedOperatorEmail[bookingId] = '';
+    this.selectedOperatorName[bookingId] = ''; // Reset operatorName when plate information changes
   }
 
   assignOperators() {
@@ -224,7 +224,7 @@ export class BookingManagementComponent implements OnInit {
 
     const assignObservables = this.bookings.map((booking) => {
       const unit = this.selectedPlateInformation[booking._id];
-      const operatorName = this.selectedOperatorEmail[booking._id];
+      const operatorName = this.selectedOperatorName[booking._id]; // Updated to operatorName
 
       if (unit && operatorName) {
         return this.partnerService.assignOperator(

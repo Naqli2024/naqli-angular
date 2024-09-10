@@ -2,7 +2,7 @@
   <div class="custom-slider">
     <h2 class="booking-container-head">Available Equipment Units</h2>
   </div>
-  <div class="container booking-container">
+  <div class="container booking-container" style="margin-top: -300px !important">
     <div class="row">
       <div class="col-md-6">
         <div class="vehicle-cols">
@@ -19,15 +19,13 @@
                     (click)="toggleOptions(equip.name)"
                     [attr.data-vehicle]="equip.name"
                   >
-                    <span>{{
-                      selectedOptions[equip.name]?.typeName ||
-                        "Select an option"
-                    }}</span>
+                    <span>{{ selectedOptions[equip.name]?.typeName || "Select an option" }}</span>
                     <i class="fa-solid fa-chevron-down"></i>
                   </div>
                   <div
                     class="custom-options"
                     [class.show]="optionsVisible[equip.name]"
+                    *ngIf="equip.type && equip.type.length > 0"
                   >
                     <div
                       *ngFor="let type of equip.type"
@@ -48,10 +46,22 @@
           </div>
           <div class="row" style="margin: 20px 0px">
             <div class="col-md-6">
-              <input type="time" class="form-control" [(ngModel)]="bookingData.fromTime" name="fromTime" required/>
+              <input
+                type="time"
+                class="form-control"
+                [(ngModel)]="bookingData.fromTime"
+                name="fromTime"
+                required
+              />
             </div>
             <div class="col-md-6">
-              <input type="time" class="form-control" [(ngModel)]="bookingData.toTime" name="toTime" required/>
+              <input
+                type="time"
+                class="form-control"
+                [(ngModel)]="bookingData.toTime"
+                name="toTime"
+                required
+              />
             </div>
           </div>
           <div class="row">
@@ -116,25 +126,51 @@
       </div>
       <div class="col-md-6 text-center">
         <div class="row-container">
-          <div class="input-field design">
+          <div class="input-field design" style="position: relative;">
             <i class="fas fa-search"></i>
             <input
               type="text"
               placeholder="Enter city name"
               [(ngModel)]="bookingData.cityName"
+              (input)="onCityInputChange()"
               style="margin-bottom: 8px"
               required
             />
+            <div
+              *ngIf="citySuggestions.length > 0"
+              class="suggestions-dropdown city"
+            >
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of citySuggestions"
+                (click)="selectCitySuggestion(suggestion)"
+              >
+                {{ suggestion.description }}
+              </div>
+            </div>
           </div>
-          <div class="input-field design">
+          <div class="input-field design" style="position: relative;">
             <i class="fas fa-map-marker-alt"></i>
             <input
               type="text"
               placeholder="Enter your address"
               [(ngModel)]="bookingData.address"
               style="margin-bottom: 8px"
+              (input)="onAddressInputChange()"
               required
             />
+            <div
+              *ngIf="addressSuggestions.length > 0"
+              class="suggestions-dropdown address"
+            >
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of addressSuggestions"
+                (click)="selectAddressSuggestion(suggestion)"
+              >
+                {{ suggestion.description }}
+              </div>
+            </div>
           </div>
           <div class="input-field design">
             <i class="fas fa-mail-bulk"></i>
@@ -162,7 +198,7 @@
             type="submit"
             class="btn create-booking"
             (click)="submitBooking()"
-            style="margin-bottom: 15px;"
+            style="margin-bottom: 15px"
           >
             Create Booking
           </button>

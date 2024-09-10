@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BookingModalComponent } from '../bus-booking/booking-modal/booking-modal.component';
 import { FormsModule } from '@angular/forms';
@@ -57,6 +57,11 @@ export class SpecialComponent {
     date: '',
   };
 
+  public citySuggestions: google.maps.places.AutocompletePrediction[] = [];
+  public addressSuggestions: google.maps.places.AutocompletePrediction[] = [];
+
+  private autocompleteService!: google.maps.places.AutocompleteService;
+
   constructor(
     private busService: SpecialService,
     private modalService: NgbModal,
@@ -75,16 +80,88 @@ export class SpecialComponent {
         this.bookingData.unitType = this.buses[0].unitType;
       }
     });
-    this.googleMapsService.loadGoogleMapsScript();
-    // Define the global initMap function
+    // Define the initMap function globally before loading the script
     (window as any).initMap = () => {
-      this.mapService.initializeMapInContainer('mapContainer');
+      this.initializeMap();
     };
+
+    // Load the Google Maps script and initialize the AutocompleteService
+    this.googleMapsService
+      .loadGoogleMapsScript()
+      .then(() => {
+        // Initialize the AutocompleteService after the script has loaded
+        this.autocompleteService = new google.maps.places.AutocompleteService();
+      })
+      .catch((error) => {
+        console.error('Failed to load Google Maps script:', error);
+      });
+  }
+
+  // Method to initialize the map
+  private initializeMap(): void {
+    this.mapService.initializeMapInContainer('mapContainer');
+  }
+
+  onCityInputChange(): void {
+    if (this.bookingData.cityName.length > 0) {
+      this.autocompleteService.getPlacePredictions(
+        { input: this.bookingData.cityName, types: ['(cities)'] },
+        (predictions, status) => {
+          if (
+            status === google.maps.places.PlacesServiceStatus.OK &&
+            predictions
+          ) {
+            this.citySuggestions = predictions;
+          }
+        }
+      );
+    } else {
+      this.citySuggestions = [];
+    }
+  }
+
+  onAddressInputChange(): void {
+    if (
+      this.bookingData.cityName.length > 0 &&
+      this.bookingData.address.length > 0
+    ) {
+      const input = `${this.bookingData.address}, ${this.bookingData.cityName}`;
+      this.autocompleteService.getPlacePredictions(
+        { input, types: ['geocode'] },
+        (predictions, status) => {
+          if (
+            status === google.maps.places.PlacesServiceStatus.OK &&
+            predictions
+          ) {
+            this.addressSuggestions = predictions;
+          }
+        }
+      );
+    } else {
+      this.addressSuggestions = [];
+    }
+  }
+
+  selectCitySuggestion(
+    suggestion: google.maps.places.AutocompletePrediction
+  ): void {
+    this.bookingData.cityName = suggestion.description;
+    this.citySuggestions = [];
+  }
+
+  selectAddressSuggestion(
+    suggestion: google.maps.places.AutocompletePrediction
+  ): void {
+    this.bookingData.address = suggestion.description;
+    this.addressSuggestions = [];
   }
 
   getLocation(): void {
     if (this.bookingData.address && this.bookingData.cityName) {
-      this.mapService.markLocation(this.bookingData.address, this.bookingData.cityName);
+      this.mapService.markLocation(
+        this.bookingData.address,
+        this.bookingData.cityName
+      );
     } else {
       console.error('Address is required to mark location.');
     }
@@ -205,5 +282,46 @@ export class SpecialComponent {
       date: '',
     };
     this.selectedBus = null;
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: any): void {
+    const clickedElement = event.target;
+
+    if (!this.isInsideDropdown(clickedElement)) {
+      this.closeAllDropdowns();
+    }
+  }
+
+  private closeAllDropdowns(): void {
+    this.citySuggestions = [];
+    this.addressSuggestions = [];
+  }
+
+  private isInsideDropdown(clickedElement: any): boolean {
+    // Check if the click is inside city suggestions dropdown
+    const citySuggestionsDropdown = document.querySelector(
+      '.suggestions-dropdown.city'
+    );
+    if (
+      citySuggestionsDropdown &&
+      citySuggestionsDropdown.contains(clickedElement)
+    ) {
+      return true;
+    }
+
+    // Check if the click is inside address suggestions dropdown
+    const addressSuggestionsDropdown = document.querySelector(
+      '.suggestions-dropdown.address'
+    );
+    if (
+      addressSuggestionsDropdown &&
+      addressSuggestionsDropdown.contains(clickedElement)
+    ) {
+      return true;
+    }
+
+    // Click is not inside any of the dropdowns
+    return false;
   }
 }

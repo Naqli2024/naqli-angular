@@ -28,7 +28,11 @@ const bookingRequestSchema = new mongoose.Schema({
     operatorName: {
       type: String,
       required: false
-    }
+    },
+    operatorMobileNo: {
+      type: String,
+      required: false
+    },
   }
 });
 
@@ -75,6 +79,11 @@ const operatorDetailSchema = new mongoose.Schema({
     data: { type: Buffer },          
     contentType: { type: String, required: true },
     fileName: String
+  },
+  status: { 
+    type: String,
+    enum: ['available', 'Not available'],
+    default: 'available',
   }
 });
 

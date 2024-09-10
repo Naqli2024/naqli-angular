@@ -491,67 +491,122 @@ const assignOperator = async (req, res) => {
     const { bookingId } = req.params;
     const { unit, operatorName } = req.body;
 
+    // Find the booking by its ID
     const booking = await Booking.findById(bookingId);
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
+    // Find the partner by ID from the booking
     const partnerId = booking.partner;
-    const partnerFound = await partner.findById(partnerId);
+    const partnerFound = await partner.findById(partnerId); // Use correct model name
     if (!partnerFound) {
       return res.status(404).json({ message: "Partner not found" });
     }
 
-    let available = "available"; // Default value if conditions are not met
+    // Find the booking request object in the partner's bookingRequest array
+    const bookingRequest = partnerFound.bookingRequest.find(
+      (req) => req.bookingId.toString() === booking._id.toString()
+    );
 
+    if (!bookingRequest) {
+      return res.status(404).json({
+        message: "Booking request not found in partner's bookingRequest array",
+      });
+    }
+
+    // Check if the partner type is "multipleUnits"
     if (partnerFound.type === "multipleUnits") {
-      // Find the booking request object in the partner's bookingRequest array
-      const bookingRequest = partnerFound.bookingRequest.find(
-        (req) => req.bookingId.toString() === booking._id.toString()
+      // Find the operator with the given name
+      const operator = partnerFound.operators.find(op =>
+        op.operatorsDetail.some(detail =>
+          `${detail.firstName} ${detail.lastName}` === operatorName
+        )
       );
 
-      if (bookingRequest) {
-        // Add assignedOperator to the existing bookingRequest object
+      if (operator) {
+        // Extract mobile number from the operator details
+        const operatorDetail = operator.operatorsDetail.find(detail =>
+          `${detail.firstName} ${detail.lastName}` === operatorName
+        );
+        const operatorMobileNo = operatorDetail?.mobileNo || '';
+
+        // Reset all operator statuses to 'available'
+        partnerFound.operators.forEach(op => {
+          op.operatorsDetail.forEach(detail => {
+            detail.status = 'available';
+          });
+        });
+
+        // Set status to 'Not available' for operators already assigned to a booking
+        partnerFound.bookingRequest.forEach(br => {
+          if (br.assignedOperator) {
+            const assignedOperator = partnerFound.operators.find(op =>
+              op.operatorsDetail.some(detail =>
+                `${detail.firstName} ${detail.lastName}` === br.assignedOperator.operatorName
+              )
+            );
+            if (assignedOperator) {
+              assignedOperator.operatorsDetail.forEach(detail => {
+                if (`${detail.firstName} ${detail.lastName}` === br.assignedOperator.operatorName) {
+                  detail.status = 'Not available';
+                }
+              });
+            }
+          }
+        });
+
+        // Update the booking request with the new assigned operator
         bookingRequest.assignedOperator = {
           unit,
           operatorName,
-          available: "Not available",
+          operatorMobileNo,
         };
+
+        // Save the updated partner document
+        await partnerFound.save();
+
+        res.status(200).json({ message: "Operator assigned successfully", partnerFound });
       } else {
-        return res.status(404).json({
-          message:
-            "Booking request not found in partner's bookingRequest array",
-        });
+        res.status(404).json({ message: "Operator not found" });
       }
+
+    // Check if the partner type is "singleUnit + operator"
     } else if (partnerFound.type === "singleUnit + operator") {
       // Create assignedOperators from partner.operators
-      const assignedOperators = partnerFound.operators.map((operator) => ({
-        unit: operator.plateInformation,
-        operatorName: `${operator.operatorDetail.firstName} ${operator.operatorDetail.lastName}`,
-        available: "Not available",
-      }));
+      const assignedOperators = partnerFound.operators
+        .filter(operator => operator.operatorsDetail[0].status === 'available') // Filter only available operators
+        .map(operator => {
+          const operatorDetail = operator.operatorsDetail[0];
+          return {
+            unit: operator.plateInformation,
+            operatorName: `${operatorDetail.firstName} ${operatorDetail.lastName}`,
+            operatorMobileNo: operatorDetail.mobileNo,
+            available: "Not available",
+          };
+        });
 
+      // Push new booking request with available operators
       partnerFound.bookingRequest.push({
         bookingId: booking._id,
         assignedOperators,
       });
+
+      // Update the status of the first operator to 'Not available'
+      if (partnerFound.operators.length > 0) {
+        partnerFound.operators[0].operatorsDetail[0].status = 'Not available';
+      }
+
+      // Save the updated partner document
+      await partnerFound.save();
+
+      res.status(200).json({ message: "Operator assigned successfully", partnerFound });
     } else {
-      // If none of the conditions are met, set available to 'available'
-      available = "available";
+      return res.status(400).json({
+        message: "Invalid partner type or no matching conditions found",
+      });
     }
 
-    // Update available status for any booking requests not handled by the above conditions
-    partnerFound.bookingRequest.forEach((request) => {
-      if (!request.assignedOperator) {
-        request.assignedOperator = { available };
-      }
-    });
-
-    await partnerFound.save();
-
-    res
-      .status(200)
-      .json({ message: "Operator assigned successfully", partnerFound });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error", error });

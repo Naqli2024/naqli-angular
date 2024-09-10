@@ -369,6 +369,13 @@ initializeMap(): void {
         return true;
       }
     }
+
+    // Check if the click is inside suggestions dropdown
+    const suggestionsDropdown = document.querySelector('.suggestions-dropdown');
+    if (suggestionsDropdown && suggestionsDropdown.contains(clickedElement)) {
+      return true;
+    }
+  
     return false;
   }
 
@@ -376,6 +383,8 @@ initializeMap(): void {
     Object.keys(this.optionsVisible).forEach((key) => {
       this.optionsVisible[key] = false;
     });
+    this.pickupSuggestions = [];
+    this.dropPointSuggestions = [];
   }
 
   clearForm() {

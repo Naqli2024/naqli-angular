@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BookingModalComponent } from './booking-modal/booking-modal.component';
@@ -290,5 +290,30 @@ initializeMap(): void {
 
   trackByIndex(index: number, obj: any): any {
     return index;
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: any): void {
+    const clickedElement = event.target;
+    const isInsideDropdown = this.isInsideDropdown(clickedElement);
+
+    if (!isInsideDropdown) {
+      this.closeAllDropdowns();
+    }
+  }
+
+  private isInsideDropdown(clickedElement: any): boolean {
+   // Check if the click is inside suggestions dropdown
+    const suggestionsDropdown = document.querySelector('.suggestions-dropdown');
+    if (suggestionsDropdown && suggestionsDropdown.contains(clickedElement)) {
+      return true;
+    }
+  
+    return false;
+  }
+
+  private closeAllDropdowns(): void {
+    this.pickupSuggestions = [];
+    this.dropPointSuggestions = [];
   }
 }
