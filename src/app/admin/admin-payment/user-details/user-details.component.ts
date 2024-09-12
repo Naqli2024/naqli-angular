@@ -65,11 +65,11 @@ export class UserDetailsComponent implements OnInit {
   }
 
   getBookings(bookingId: string): void {
-    // this.spinnerService.show();
     this.bookingService.getBookingsByBookingId(bookingId).subscribe(
       (response) => {
         if (response.success) {
           this.bookingDetails = response.data;
+          console.log('Booking Details:', this.bookingDetails); // Debugging
           this.getPartnerDetails(this.bookingDetails.partner);
         } else {
           this.spinnerService.hide();
@@ -102,27 +102,50 @@ export class UserDetailsComponent implements OnInit {
   }
 
   combineBookingAndPartnerDetails(): void {
-    if (
-      this.partnerDetails.operators &&
-      this.partnerDetails.operators.length > 0
-    ) {
-      const operator = this.partnerDetails.operators[0]; // Assuming you want the first operator
+    if (this.bookingDetails && this.partnerDetails) {
+      // Combine unitType and name
+      const unitTypeName = this.bookingDetails.unitType;
+      const unitName = this.bookingDetails.name;
+      
       this.combinedDetails = {
-        booking: this.bookingDetails,
-        partner: {
-          ...this.partnerDetails,
-          operatorFirstName: operator.firstName,
-          operatorLastName: operator.lastName,
-          operatorMobileNo: operator.mobileNo,
-          unitClassificationName: operator.unitClassification,
-          unitSubClassificationName: operator.subClassification,
+        booking: {
+          ...this.bookingDetails,
+          unitTypeName: unitTypeName,
+          unitName: unitName
         },
+        partner: this.partnerDetails
       };
+  
+      console.log('Combined Details:', this.combinedDetails);
     } else {
       this.combinedDetails = {
         booking: this.bookingDetails,
-        partner: this.partnerDetails,
+        partner: this.partnerDetails
       };
     }
+  }
+
+  getOperatorNameFromBooking(bookingRequests: any[] | null, bookingId: string): string {
+    if (!bookingRequests || !Array.isArray(bookingRequests)) {
+      console.warn('Booking requests are null or undefined');
+      return 'N/A';
+    }
+  
+    const booking = bookingRequests.find(
+      (request) => request.bookingId === bookingId
+    );
+    return booking?.assignedOperator?.operatorName ?? 'N/A';
+  }
+  
+  getOperatorMobileFromBooking(bookingRequests: any[] | null, bookingId: string): string {
+    if (!bookingRequests || !Array.isArray(bookingRequests)) {
+      console.warn('Booking requests are null or undefined');
+      return 'N/A';
+    }
+  
+    const booking = bookingRequests.find(
+      (request) => request.bookingId === bookingId
+    );
+    return booking?.assignedOperator?.operatorMobileNo ?? 'N/A';
   }
 }

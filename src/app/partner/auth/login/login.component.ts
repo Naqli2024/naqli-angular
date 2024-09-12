@@ -28,7 +28,7 @@ export class LoginComponent {
     private router: Router,
     private toastr: ToastrService,
     private spinnerService: SpinnerService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   login() {

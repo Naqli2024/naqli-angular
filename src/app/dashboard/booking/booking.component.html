@@ -1,4 +1,4 @@
-<div class="dashboard-booking-container">
+<div class="dashboard-booking-container" *ngIf="bookingId">
   <div class="row">
     <div class="col-md-7 left-div">
       <div class="">
@@ -6,13 +6,13 @@
           <img src="assets/images/delivery-truck.svg" />
           <p>Booking Id {{ bookingId }}</p>
         </div>
-          <button
-            type="submit"
-            class="btn create-booking get-route-btn"
-            (click)="updateRoute()"
-          >
-            Show Route
-          </button>
+        <button
+          type="submit"
+          class="btn create-booking get-route-btn"
+          (click)="updateRoute()"
+        >
+          Show Route
+        </button>
         <div id="mapContainer" class="google-map-style"></div>
       </div>
     </div>
@@ -76,36 +76,53 @@
         <div class="input-container">
           <div class="vendor-info">
             <p>
-              Vendor Name <span>{{ combinedDetails.partner?.partnerName }}</span>
+              Vendor Name
+              <span>{{ combinedDetails.partner?.partnerName }}</span>
             </p>
 
-            <p>
-              Operator Name
-              <span
-                >{{ combinedDetails.partner?.operatorFirstName }}
-                {{ combinedDetails.partner?.operatorLastName }}
-                </span
-              >
+            <p *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'">
+              Operator Name:
+              <span>
+                {{ combinedDetails?.partner?.operatorFirstName }} {{ combinedDetails?.partner?.operatorLastName }}
+              </span>
             </p>
-            <p>
-              Operator Mobile <span>{{ combinedDetails.partner?.operatorMobileNo }}</span>
+            
+            <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
+              Operator Name:
+              <span>
+                {{ getOperatorNameFromBooking(combinedDetails?.partner?.bookingRequest, bookingId) }}
+              </span>
+            </p>
+            
+            <p *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'">
+              Operator Mobile:
+              <span>{{ combinedDetails?.partner?.operatorMobileNo }}</span>
+            </p>
+            
+            <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
+              Operator Mobile:
+              <span>
+                {{ getOperatorMobileFromBooking(combinedDetails?.partner?.bookingRequest, bookingId) }}
+              </span>
             </p>
             <p>
               Unit<span
-                >{{
-                  combinedDetails.partner?.unitClassificationName
-                }}-{{
+                >{{ combinedDetails.partner?.unitClassificationName }}-{{
                   combinedDetails.partner?.unitSubClassificationName
                 }}</span
               >
             </p>
             <p>
-              Booking Status <span>{{ combinedDetails.booking?.bookingStatus }}</span>
+              Booking Status
+              <span>{{ combinedDetails.booking?.bookingStatus }}</span>
             </p>
           </div>
         </div>
 
-        <div class="vendor-info-last" *ngFor="let booking of combinedDetails.booking.bookings">
+        <div
+          class="vendor-info-last"
+          *ngFor="let booking of combinedDetails.booking.bookings"
+        >
           <h2>Pending Amount</h2>
           <p>{{ booking.remainingBalance }}</p>
         </div>
@@ -115,6 +132,13 @@
       </div>
     </div>
   </div>
+</div>
+
+<div *ngIf="!bookingId" class="centered-container">
+  <p>No active bookings avilable. You can create a new booking !!</p>
+  <button type="button" class="btn btn-pay-advance" (click)="createBooking()">
+    Create Booking
+  </button>
 </div>
 
 <!-- Cancel Request Modal Template -->

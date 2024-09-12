@@ -40,23 +40,36 @@
             Vendor Name <span>{{ combinedDetails.partner?.partnerName }}</span>
           </p>
 
-          <p>
-            Operator Name
-            <span
-              >{{ combinedDetails.partner?.operatorFirstName }}
-              {{ combinedDetails.partner?.operatorLastName }}
+          <p *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'">
+            Operator Name:
+            <span>
+              {{ combinedDetails.partner?.operatorFirstName }} {{ combinedDetails.partner?.operatorLastName }}
+            </span>
+          </p>
+          
+          <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
+            Operator Name:
+            <span>
+              {{ getOperatorNameFromBooking(combinedDetails?.partner?.bookingRequest, bookingId) }}
+            </span>
+          </p>
+          
+          <p *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'">
+            Operator Mobile:
+            <span>{{ combinedDetails.partner?.operatorMobileNo }}</span>
+          </p>
+          
+          <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
+            Operator Mobile:
+            <span>
+              {{ getOperatorMobileFromBooking(combinedDetails?.partner?.bookingRequest, bookingId) }}
             </span>
           </p>
           <p>
-            Operator Mobile
-            <span>{{ combinedDetails.partner?.operatorMobileNo }}</span>
-          </p>
-          <p>
-            Unit<span
-              >{{ combinedDetails.partner?.unitClassificationName }}-{{
-                combinedDetails.partner?.unitSubClassificationName
-              }}</span
-            >
+            Unit:
+            <span>
+              {{ combinedDetails.booking?.unitTypeName }} - {{ combinedDetails.booking?.unitName }}
+            </span>
           </p>
           <p>
             Booking Status

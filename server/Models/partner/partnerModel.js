@@ -5,8 +5,7 @@ const bookingRequestSchema = new mongoose.Schema({
   bookingId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "booking",
-    required: true,
-    unique: true
+    required: false,
   },
   quotePrice: {
     type: Number,
@@ -23,17 +22,17 @@ const bookingRequestSchema = new mongoose.Schema({
   assignedOperator: {
     unit: {
       type: String,
-      required: false
+      required: false,
     },
     operatorName: {
       type: String,
-      required: false
+      required: false,
     },
     operatorMobileNo: {
       type: String,
-      required: false
+      required: false,
     },
-  }
+  },
 });
 
 const operatorDetailSchema = new mongoose.Schema({
@@ -63,30 +62,29 @@ const operatorDetailSchema = new mongoose.Schema({
   },
   panelInformation: {
     type: String,
-    required: true
+    required: true,
   },
   drivingLicense: {
     data: { type: Buffer },
     contentType: { type: String, required: true },
-    fileName: String
+    fileName: String,
   },
   aramcoLicense: {
     data: { type: Buffer },
     contentType: { type: String, required: true },
-    fileName: String
+    fileName: String,
   },
   nationalID: {
-    data: { type: Buffer },          
+    data: { type: Buffer },
     contentType: { type: String, required: true },
-    fileName: String
+    fileName: String,
   },
-  status: { 
+  status: {
     type: String,
-    enum: ['available', 'Not available'],
-    default: 'available',
-  }
+    enum: ["available", "Not available"],
+    default: "available",
+  },
 });
-
 
 const operatorSchema = new mongoose.Schema({
   unitType: {
@@ -113,24 +111,24 @@ const operatorSchema = new mongoose.Schema({
   istimaraCard: {
     data: { type: Buffer },
     contentType: { type: String, required: true },
-    fileName: String
+    fileName: String,
   },
   pictureOfVehicle: {
     data: { type: Buffer },
     contentType: { type: String, required: true },
-    fileName: String
+    fileName: String,
   },
   operatorsDetail: [operatorDetailSchema],
 });
 
 // Define the possible values for unitType
-const unitTypeEnum = ['vehicle', 'bus', 'equipment', 'special', 'others'];
+const unitTypeEnum = ["vehicle", "bus", "equipment", "special", "others"];
 
 const extraOperatorSchema = new mongoose.Schema({
   unitType: {
     type: String,
     required: false,
-    enum: unitTypeEnum
+    enum: unitTypeEnum,
   },
   unitClassification: {
     type: String,
@@ -146,7 +144,7 @@ const extraOperatorSchema = new mongoose.Schema({
   },
   lastName: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
@@ -158,31 +156,31 @@ const extraOperatorSchema = new mongoose.Schema({
   },
   iqamaNo: {
     type: String,
-    required: true
+    required: true,
   },
   dateOfBirth: {
     type: Date,
-    required: true
+    required: true,
   },
   panelInformation: {
     type: String,
-    required: true
+    required: true,
   },
   drivingLicense: {
     data: { type: Buffer },
     contentType: { type: String, required: true },
-    fileName: String
+    fileName: String,
   },
   aramcoLicense: {
     data: { type: Buffer },
     contentType: { type: String, required: true },
-    fileName: String
+    fileName: String,
   },
   nationalID: {
-    data: { type: Buffer },          
+    data: { type: Buffer },
     contentType: { type: String, required: true },
-    fileName: String
-  }
+    fileName: String,
+  },
 });
 
 const partnerSchema = new mongoose.Schema(
@@ -269,8 +267,8 @@ const partnerSchema = new mongoose.Schema(
         },
         isOpen: {
           type: Boolean,
-          default: false
-        }, 
+          default: false,
+        },
         createdAt: {
           type: Date,
           default: Date.now,
@@ -292,10 +290,10 @@ const partnerSchema = new mongoose.Schema(
         zipCode: { type: Number, required: true },
         companyType: { type: String, required: true },
         companyIdNo: { type: Number, required: true },
-      }
+      },
     ],
-    bookingRequest: [bookingRequestSchema],
-    extraOperators: [extraOperatorSchema]
+    bookingRequest: { type: [bookingRequestSchema], default: [] },
+    extraOperators: [extraOperatorSchema],
   },
   {
     timestamps: true,
@@ -305,14 +303,22 @@ const partnerSchema = new mongoose.Schema(
 // Pre-save hook to prevent duplicate booking requests
 partnerSchema.pre('save', async function (next) {
   const partner = this;
-  
-  // Check for duplicate bookingId in bookingRequest array
-  const uniqueBookingIds = new Set(partner.bookingRequest.map(br => br.bookingId.toString()));
-  
-  if (uniqueBookingIds.size !== partner.bookingRequest.length) {
-    return next(new Error("Duplicate booking requests are not allowed for the same partner."));
+
+  // Filter out the requests that have valid bookingId (not null)
+  const validBookingRequests = partner.bookingRequest.filter(
+    (br) => br.bookingId !== null
+  );
+
+  const uniqueBookingIds = new Set(
+    validBookingRequests.map((br) => br.bookingId.toString())
+  );
+
+  if (uniqueBookingIds.size !== validBookingRequests.length) {
+    return next(
+      new Error("Duplicate booking requests are not allowed for the same partner.")
+    );
   }
-  
+
   next();
 });
 

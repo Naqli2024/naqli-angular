@@ -779,7 +779,6 @@ input[type="checkbox"] {
 .drop-point {
   background-color: red;
 }
-
 .suggestions-dropdown {
   border: 1px solid #ccc;
   background-color: #fff;
@@ -801,6 +800,21 @@ input[type="checkbox"] {
 }
 .suggestion-item:hover {
   background-color: #f0f0f0;
+}
+.centered-container {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
+  height: 65vh; 
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+}
+.centered-container p {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 20px; 
 }
 @media (max-width: 768px) {
   .booking-container-head {

@@ -29,7 +29,7 @@
               >
                 <option value="" disabled>Select Plate Information</option>
                 <ng-container *ngFor="let operator of filteredOperators">
-                  <option *ngIf="matchesCriteria(booking, operator)" [value]="operator.plateInformation">
+                  <option *ngIf="operator && matchesCriteria(booking, operator)" [value]="operator.plateInformation">
                     {{ operator.plateInformation }}
                   </option>
                 </ng-container>

@@ -82,6 +82,11 @@ const createBooking = async (req, res) => {
 
     const savedBooking = await booking.save();
 
+    // Ensure bookingId is not null
+    if (!savedBooking._id) {
+      throw new Error("Booking ID is required for operator update.");
+    }
+
     // Update operators with this new booking
     await updateOperatorsWithNewBooking(savedBooking, false);
 
@@ -143,6 +148,7 @@ const deleteBooking = async (bookingId) => {
 
 
 
+
 const updateBookingPaymentStatus = async (req, res) => {
   const { bookingId } = req.params;
   const { amount, status, partnerId, totalAmount, oldQuotePrice } = req.body;
@@ -166,12 +172,13 @@ const updateBookingPaymentStatus = async (req, res) => {
       return res.status(404).json({ success: false, message: "Commission slabs not found for user type" });
     }
 
-    // Determine the applicable slab rate based on the amount
+    // Determine the applicable slab rate based on the oldQuotePrice
     let commissionRate = 0;
     for (const slab of commission.slabRates) {
-      if (amount >= slab.slabRateStart && amount <= slab.slabRateEnd) {
+      if (oldQuotePrice >= slab.slabRateStart && oldQuotePrice <= slab.slabRateEnd) {
         commissionRate = parseFloat(slab.commissionRate) / 100; // Convert to decimal
-        console.log(commissionRate)
+        console.log(`Applicable Slab Rate: ${slab.commissionRate}%`);
+        console.log(`Commission Rate: ${commissionRate}`);
         break;
       }
     }
@@ -180,15 +187,13 @@ const updateBookingPaymentStatus = async (req, res) => {
       return res.status(400).json({ success: false, message: "Commission rate not applicable for the given amount" });
     }
 
+    // Calculate admin commission based on the oldQuotePrice
+    const adminCommission = oldQuotePrice * commissionRate;
+    console.log(`Calculated Admin Commission: ${adminCommission}`);
 
-    // Ensure oldQuotePrice is valid
-    if (booking.adminCommission === 0 && oldQuotePrice <= 0) {
-      return res.status(400).json({ success: false, message: "Invalid quotePrice" });
-    }
-
-    // Calculate admin commission based on the oldQuotePrice only if it hasn't been set yet
+    // Ensure adminCommission is set only if it's not already set
     if (booking.adminCommission === undefined || booking.adminCommission === 0) {
-      booking.adminCommission = oldQuotePrice * commissionRate;
+      booking.adminCommission = adminCommission;
     }
 
     // Initialize remainingBalance if not already set
@@ -196,21 +201,21 @@ const updateBookingPaymentStatus = async (req, res) => {
       booking.remainingBalance = totalAmount;
     }
 
-    // Calculate the net amount after admin commission for HalfPaid status
+    // Calculate the net amount after admin commission based on status
     let netAmount;
     if (status === "HalfPaid") {
       const halfAmount = totalAmount / 2;
-      netAmount = halfAmount - booking.adminCommission;
+      netAmount = halfAmount - adminCommission;
       booking.remainingBalance = totalAmount - halfAmount;
       booking.initialPayout = netAmount; // Store the initial payout
     } else if (status === "Completed") {
       netAmount = amount; // No need to deduct admin commission again
       booking.remainingBalance = 0;
-      booking.finalPayout += netAmount; // Store the final payout
-    } else if (status === "Paid"){
-      netAmount = totalAmount - booking.adminCommission;
+      booking.finalPayout = netAmount; // Store the final payout
+    } else if (status === "Paid") {
+      netAmount = totalAmount - adminCommission;
       booking.remainingBalance = 0;
-      booking.initialPayout = netAmount/2;
+      booking.initialPayout = netAmount / 2;
       booking.finalPayout = netAmount - booking.initialPayout;
     } else {
       netAmount = amount;
@@ -282,6 +287,7 @@ const updateBookingPaymentStatus = async (req, res) => {
     });
   }
 };
+
 
 
 

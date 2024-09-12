@@ -76,9 +76,7 @@ export class BookingComponent implements OnInit {
       this.fetchBookings();
       this.getTopPartners();
       this.getBookings(this.bookingId);
-    } else {
-      this.toastr.error('Booking ID is missing');
-    }
+    } 
     this.googleMapsService.loadGoogleMapsScript();
     // Define the global initMap function
     (window as any).initMap = () => {
@@ -562,5 +560,55 @@ export class BookingComponent implements OnInit {
         partner: this.partnerDetails,
       };
     }
+  }
+
+  createBooking() {
+    this.router.navigate(['/home/user']);
+  }
+  
+  getOperatorNameFromBooking(bookingRequests: any[], bookingId: string): string {
+    console.log('Booking Requests:', bookingRequests);
+    console.log('Looking for Booking ID:', bookingId);
+  
+    if (!bookingRequests) {
+      console.warn('Booking requests are null or undefined');
+      return 'N/A';
+    }
+  
+    const booking = bookingRequests.find(
+      (request) => request.bookingId === bookingId
+    );
+  
+    console.log('Found Booking:', booking);
+    if (booking && booking.assignedOperator) {
+      console.log('Assigned Operator:', booking.assignedOperator);
+    } else {
+      console.warn('Assigned Operator details are missing for booking ID:', bookingId);
+    }
+  
+    return booking?.assignedOperator?.operatorName ?? 'N/A';
+  }
+  
+  getOperatorMobileFromBooking(bookingRequests: any[], bookingId: string): string {
+    console.log('Booking Requests:', bookingRequests);
+    console.log('Looking for Booking ID:', bookingId);
+  
+    if (!bookingRequests) {
+      console.warn('Booking requests are null or undefined');
+      return 'N/A';
+    }
+  
+    const booking = bookingRequests.find(
+      (request) => request.bookingId === bookingId
+    );
+  
+    console.log('Found Booking:', booking);
+    if (booking && booking.assignedOperator) {
+      console.log('Assigned Operator:', booking.assignedOperator);
+    } else {
+      console.warn('Assigned Operator details are missing for booking ID:', bookingId);
+    }
+  
+    return booking?.assignedOperator?.operatorMobileNo ?? 'N/A';
   }
 }

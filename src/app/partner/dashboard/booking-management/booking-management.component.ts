@@ -32,6 +32,7 @@ export class BookingManagementComponent implements OnInit {
   selectedPlateInformation: { [bookingId: string]: string } = {};
   selectedOperatorName: { [bookingId: string]: string } = {}; // Changed from selectedOperatorEmail to selectedOperatorName
   editingBooking: string | null = null;
+  combinedDetails: any = {};
 
   constructor(
     private spinnerService: SpinnerService,
@@ -209,7 +210,7 @@ export class BookingManagementComponent implements OnInit {
         label: ' (Extra Driver)',
       })) || [];
 
-    return [...mainOperators, ...extraOperators];
+    return [...(mainOperators || []), ...(extraOperators || [])];
   }
 
   onPlateInfoChange(bookingId: string, event: Event) {
@@ -248,12 +249,12 @@ export class BookingManagementComponent implements OnInit {
         const errorMessage =
           error.error?.message || 'Failed to assign operators'; // Adjust based on your backend response
         this.toastr.error(errorMessage);
-        console.error('Error assigning operators', error);
+        window.location.reload();
       }
     );
   }
 
   trackByOperatorEmail(index: number, operator: any): string {
-    return operator.email;
+    return operator.email || operator._id;
   }
 }

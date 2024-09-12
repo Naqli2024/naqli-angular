@@ -53,6 +53,11 @@ export class LoginComponent {
   ) {}
 
   login() {
+    if (localStorage.getItem('userId') || localStorage.getItem('partnerId')) {
+      localStorage.clear();
+      sessionStorage.clear();
+    }
+
     this.spinnerService.show();
     this.authService.login(this.loginData).subscribe(
       (response: any) => {
@@ -71,7 +76,8 @@ export class LoginComponent {
               if (this.isAdmin) {
                 this.router.navigate(['/home/user/dashboard/admin/overview']);
               } else {
-                window.location.reload();
+
+                this.router.navigate(['/home/user/dashboard/booking']);
               }
             }, (error) => {
               // Handle error if getUserById fails
