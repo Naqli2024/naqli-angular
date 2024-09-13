@@ -172,33 +172,33 @@ const deletedBookingRequest = async (req, res) => {
   const { partnerId, bookingId } = req.params;
 
   try {
+    // Find the partner by ID
     const partnerExists = await partner.findById(partnerId);
 
+    // Check if partner exists
     if (!partnerExists) {
       return res.status(404).json({ message: "Partner not found" });
     }
 
-    let bookingRequestDeleted = false;
+    // Filter out the booking request from the partner's bookingRequest array
+    const initialLength = partnerExists.bookingRequest.length;
+    partnerExists.bookingRequest = partnerExists.bookingRequest.filter(
+      (request) => request.bookingId.toString() !== bookingId
+    );
 
-    partnerExists.operators.forEach((operator) => {
-      const initialLength = operator.bookingRequest.length;
-      operator.bookingRequest = operator.bookingRequest.filter(
-        (request) => request.bookingId.toString() !== bookingId
-      );
-      if (operator.bookingRequest.length < initialLength) {
-        bookingRequestDeleted = true;
-      }
-    });
-
-    if (!bookingRequestDeleted) {
+    // If no booking request was deleted (i.e., no change in the array length), return an error
+    if (partnerExists.bookingRequest.length === initialLength) {
       return res.status(404).json({ message: "Booking request not found" });
     }
 
+    // Save the updated partner document
     await partnerExists.save();
 
-    res
-      .status(200)
-      .json({ success: true, message: "Booking request deleted successfully" });
+    // Respond with success
+    res.status(200).json({
+      success: true,
+      message: "Booking request deleted successfully",
+    });
   } catch (error) {
     console.error("Error deleting booking request:", error);
     res.status(500).json({ message: "Server error" });
