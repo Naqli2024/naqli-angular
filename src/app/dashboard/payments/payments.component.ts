@@ -159,7 +159,6 @@ export class PaymentsComponent implements OnInit {
     amount: number,
     partnerId: string
   ) {
-    console.log(this.totalAmount);
     if (status == 'HalfPaid') {
       this.totalAmount = amount * 2;
     } else {
