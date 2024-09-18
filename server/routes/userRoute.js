@@ -6,7 +6,6 @@ const userRegisterValidation = require('../middlewares/createAccountMiddleware')
 const userLoginValidation = require("../middlewares/userLoginValidation");
 const forgotPasswordValidation = require("../middlewares/forgetPasswordValidation");
 const userLogin = require("../controller/userLogin");
-const sendOtp = require("../controller/sendOTP");
 
 router.post('/register', userRegisterValidation, userController.userRegister);
 router.post('/verify-otp', userController.verifyOTP);
@@ -17,6 +16,5 @@ router.post('/verify-otp-update-password', forgotPassword.verifyOTPAndUpdatePass
 router.get('/users/:id', userController.getUserById);
 router.get('/users', userController.getAllUsers);
 router.put('/users/:id/status', userController.updateUserStatus);
-router.post('/send-otp', sendOtp.sendOtp);
 
 module.exports = router;

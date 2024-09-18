@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CommissionService {
-  private baseUrl = 'http://localhost:4000/api/admin'; 
+  private baseUrl = 'https://naqli.onrender.com/api/admin'; 
 
   constructor(private http: HttpClient) {}
 

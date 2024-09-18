@@ -5,5 +5,6 @@ const extraOperatorController = require("../controller/partner/extraOperatorCont
 
 router.post("/add-operator", operatorController.parseFormData, operatorController.createOperator);
 router.post("/add-extra-operator", extraOperatorController.parseFormData, extraOperatorController.createExtraOperator);
+router.post("/operator-login", operatorController.operatorLogin);
 
 module.exports = router;

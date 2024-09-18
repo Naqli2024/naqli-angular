@@ -94,7 +94,8 @@ export class MultipleUnitDashboardComponent implements OnInit {
                 subClassification: operator.subClassification,
                 firstName: detail.firstName,
                 lastName: detail.lastName,
-                plateInformation: operator.plateInformation
+                plateInformation: operator.plateInformation,
+                status: detail.status
               });
             });
           });
@@ -106,6 +107,7 @@ export class MultipleUnitDashboardComponent implements OnInit {
               subClassification: extraOperator.subClassification,
               firstName: extraOperator.firstName,
               lastName: extraOperator.lastName,
+              status: extraOperator.status
             });
           });
 
@@ -315,15 +317,5 @@ export class MultipleUnitDashboardComponent implements OnInit {
       bookingRequests.some((request) => request.paymentStatus)
       ? 'red'
       : 'green';
-  }
-
-  getOperatorStatus(operator): string {
-    if (this.partnerDetails?.bookingRequest) {
-      const isOperatorBooked = this.partnerDetails.bookingRequest.some(
-        (request) => request.assignedOperator?.unit === operator.plateInformation
-      );
-      return isOperatorBooked ? 'Not available' : 'Available';
-    }
-    return 'N/A';
   }
 }

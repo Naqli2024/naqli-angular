@@ -4,6 +4,9 @@ const multer = require("multer");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcryptjs");
+const { validationResult } = require("express-validator");
+const jwt = require("jsonwebtoken");
+
 
 // Multer setup for file uploads with disk storage
 const storage = multer.diskStorage({
@@ -272,5 +275,89 @@ const createOperator = async (req, res) => {
   }
 };
 
+
+
+const operatorLogin = async (req, res) => {
+  try {
+    // Validate request
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Find the partner that contains the operator
+    const partnerData = await Partner.findOne({
+      "operators.operatorsDetail.email": req.body.email
+    });
+
+    if (!partnerData) {
+      return res.status(400).send({
+        message: "Operator not found",
+        success: false,
+        data: null
+      });
+    }
+
+    // Find the specific operator details
+    const operator = partnerData.operators.flatMap(op => op.operatorsDetail)
+      .find(opDetail => opDetail.email === req.body.email);
+
+    if (!operator) {
+      return res.status(400).send({
+        message: "Operator not found",
+        success: false,
+        data: null
+      });
+    }
+
+    // Check if the operator is blocked or suspended
+    if (partnerData.isBlocked || operator.isBlocked) {
+      return res.status(400).send({
+        message: "Your account is blocked",
+        success: false,
+        data: null
+      });
+    }
+
+    // Check the password
+    const matchedPassword = await bcrypt.compare(
+      req.body.password,
+      operator.password
+    );
+    if (!matchedPassword) {
+      return res.status(400).send({
+        message: "Incorrect Password",
+        success: false,
+        data: null
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { operatorId: operator._id, partnerId: partnerData._id },
+      process.env.JSON_WEB_TOKEN,
+      { expiresIn: "365d" }
+    );
+
+    // Return the token and operator details
+    return res.status(200).send({
+      message: "Logged in successfully",
+      success: true,
+      data: {
+        token,
+        operator
+      }
+    });
+  } catch (error) {
+    console.error("Login error:", error.message);
+    return res.status(500).send({
+      message: error.message,
+      success: false,
+      data: null
+    });
+  }
+};
+
 exports.createOperator = createOperator;
 exports.parseFormData = parseFormData;
+exports.operatorLogin = operatorLogin;

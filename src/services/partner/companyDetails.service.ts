@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CompanyDetailsService {
-  private apiUrl = 'http://localhost:4000/api/partner';
+  private apiUrl = 'https://naqli.onrender.com/api/partner';
   constructor(private http: HttpClient) {}
 
   addCompanyDetails(partnerId: string, companyDetails: any): Observable<any> {
