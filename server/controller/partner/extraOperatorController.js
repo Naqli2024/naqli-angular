@@ -58,6 +58,8 @@ const createExtraOperator = async (req, res) => {
       firstName,
       lastName,
       email,
+      password,
+      confirmPassword,
       mobileNo,
       iqamaNo,
       dateOfBirth,
@@ -83,6 +85,14 @@ const createExtraOperator = async (req, res) => {
         .json({ success: false, message: "iqamaNo must be 10 digits long" });
     }
 
+    // Check if password and confirmPassword match
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Password and Confirm Password do not match",
+      });
+    }
+
     // Find the partner and add the operator reference
     const partner = await Partner.findById(partnerId);
     if (!partner) {
@@ -100,6 +110,8 @@ const createExtraOperator = async (req, res) => {
         });
       }
     } else if (partner.type === "multipleUnits") {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       // Push to extraOperators only if partner type is "multipleUnits"
       partner.extraOperators.push({
         unitType: unitType || undefined,
@@ -108,6 +120,7 @@ const createExtraOperator = async (req, res) => {
         firstName,
         lastName,
         email,
+        password: hashedPassword,
         mobileNo,
         iqamaNo,
         dateOfBirth,
