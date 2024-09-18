@@ -22,6 +22,8 @@ interface FormData {
   partnerId: string;
   mobileNo: string;
   email: string;
+  password: string;
+  confirmPassword: string;
   unitType: string;
   unitClassification: string;
   subClassification: string;
@@ -115,6 +117,8 @@ export class OperatorManagementComponent {
       this.formData.firstName &&
       this.formData.lastName &&
       this.formData.email &&
+      this.formData.password && 
+      this.formData.confirmPassword && 
       this.formData.mobileNo &&
       this.formData.iqamaNo &&
       this.formData.dateOfBirth &&
@@ -132,6 +136,8 @@ export class OperatorManagementComponent {
       firstName: 'First Name is required.',
       lastName: 'Last Name is required.',
       email: 'Email is required.',
+      password: 'Password is required',
+      confirmPassword: 'confirmPassword is required',
       mobileNo: 'Mobile No is required.',
       iqamaNo: 'Iqama No is required.',
       dateOfBirth: 'Date of Birth is required.',
@@ -186,6 +192,8 @@ export class OperatorManagementComponent {
       partnerId: '',
       mobileNo: '',
       email: '',
+      password: '',
+      confirmPassword: '',
       unitType: '',
       unitClassification: '',
       subClassification: '',

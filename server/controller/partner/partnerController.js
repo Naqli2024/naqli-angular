@@ -517,20 +517,35 @@ const assignOperator = async (req, res) => {
 
     // Check if the partner type is "multipleUnits"
     if (partnerFound.type === "multipleUnits") {
-      // Find the operator with the given name
-      const newOperator = partnerFound.operators.find(op =>
+      // Check in both operators and extraOperators for the operator
+      let newOperator, newOperatorDetail, newOperatorMobileNo;
+
+      // Search in regular operators
+      newOperator = partnerFound.operators.find(op =>
         op.operatorsDetail.some(detail =>
           `${detail.firstName} ${detail.lastName}` === operatorName
         )
       );
 
-      if (newOperator) {
-        // Extract new operator's details
-        const newOperatorDetail = newOperator.operatorsDetail.find(detail =>
+      // If not found in regular operators, search in extraOperators
+      if (!newOperator) {
+        newOperator = partnerFound.extraOperators.find(op =>
+          `${op.firstName} ${op.lastName}` === operatorName
+        );
+
+        if (newOperator) {
+          newOperatorDetail = newOperator;
+          newOperatorMobileNo = newOperator?.mobileNo || '';
+        }
+      } else {
+        // Extract new operator's details from regular operators
+        newOperatorDetail = newOperator.operatorsDetail.find(detail =>
           `${detail.firstName} ${detail.lastName}` === operatorName
         );
-        const newOperatorMobileNo = newOperatorDetail?.mobileNo || '';
+        newOperatorMobileNo = newOperatorDetail?.mobileNo || '';
+      }
 
+      if (newOperatorDetail) {
         // Ensure the new operator is available and not already assigned to another booking
         const isOperatorAssigned = partnerFound.bookingRequest.some(req =>
           req.unitType === unit &&
@@ -550,12 +565,15 @@ const assignOperator = async (req, res) => {
             op.operatorsDetail.some(detail =>
               `${detail.firstName} ${detail.lastName}` === bookingRequest.assignedOperator.operatorName
             )
+          ) || partnerFound.extraOperators.find(op =>
+            `${op.firstName} ${op.lastName}` === bookingRequest.assignedOperator.operatorName
           );
 
           if (previousOperator) {
-            const previousOperatorDetail = previousOperator.operatorsDetail.find(detail =>
+            const previousOperatorDetail = previousOperator.operatorsDetail?.find(detail =>
               `${detail.firstName} ${detail.lastName}` === bookingRequest.assignedOperator.operatorName
-            );
+            ) || previousOperator;
+
             if (previousOperatorDetail) {
               previousOperatorDetail.status = 'available'; // Mark the previous operator as available
             }

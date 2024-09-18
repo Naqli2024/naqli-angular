@@ -22,6 +22,7 @@ interface FormData {
   mobileNo: string;
   email: string;
   password: string;
+  confirmPassword: string;
   unitType: string;
   unitClassification: string;
   subClassification: string;
@@ -141,6 +142,8 @@ export class UnitManagementComponent implements OnInit {
       !this.formData.firstName ||
       !this.formData.lastName ||
       !this.formData.email ||
+      !this.formData.password ||
+      !this.formData.confirmPassword ||
       !this.formData.mobileNo ||
       !this.formData.iqamaNo ||
       !this.formData.dateOfBirth ||
@@ -192,6 +195,7 @@ export class UnitManagementComponent implements OnInit {
       mobileNo: '',
       email: '',
       password: '',
+      confirmPassword: '',
       unitType: '',
       unitClassification: '',
       subClassification: '',
@@ -323,6 +327,8 @@ export class UnitManagementComponent implements OnInit {
     this.formData.firstName = '';
     this.formData.lastName = '';
     this.formData.email = '';
+    this.formData.password = '';
+    this.formData.confirmPassword = '';
     this.formData.mobileNo = '';
     this.formData.iqamaNo = '';
     this.formData.dateOfBirth = '';

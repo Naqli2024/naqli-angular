@@ -3,6 +3,7 @@ const Partner = require("../../Models/partner/partnerModel");
 const multer = require("multer");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcryptjs");
 
 // Multer setup for file uploads with disk storage
 const storage = multer.diskStorage({
@@ -65,6 +66,8 @@ const createOperator = async (req, res) => {
       firstName,
       lastName,
       email,
+      password,
+      confirmPassword,
       mobileNo,
       iqamaNo,
       dateOfBirth,
@@ -101,6 +104,16 @@ const createOperator = async (req, res) => {
         .status(400)
         .json({ success: false, message: "iqamaNo must be 10 digits long" });
     }
+
+     // Check if password and confirmPassword match
+     if (password !== confirmPassword) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Passwords do not match" });
+    }
+
+    // Hash the password using bcrypt
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Find the partner and add the operator reference
     const partner = await Partner.findById(partnerId);
@@ -153,6 +166,7 @@ const createOperator = async (req, res) => {
         lastName,
         email,
         mobileNo,
+        password: hashedPassword,
         iqamaNo,
         dateOfBirth,
         panelInformation,
@@ -218,6 +232,7 @@ const createOperator = async (req, res) => {
           lastName,
           email,
           mobileNo,
+          password: hashedPassword,
           iqamaNo,
           dateOfBirth,
           panelInformation,

@@ -81,28 +81,50 @@
             </p>
 
             <p *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'">
-              Operator Name:
-              <span>
-                {{ combinedDetails?.partner?.operatorFirstName }} {{ combinedDetails?.partner?.operatorLastName }}
+              Operator Name
+              <span
+                *ngIf="combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0"
+              >
+                {{
+                  combinedDetails?.partner?.operators?.[0]?.operatorsDetail[0]?.firstName
+                }}
+                {{
+                  combinedDetails?.partner?.operators?.[0]?.operatorsDetail[0]?.lastName
+                }}
               </span>
             </p>
-            
+
             <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
-              Operator Name:
+              Operator Name
               <span>
-                {{ getOperatorNameFromBooking(combinedDetails?.partner?.bookingRequest, bookingId) }}
+                {{
+                  getOperatorNameFromBooking(
+                    combinedDetails?.partner?.bookingRequest,
+                    bookingId
+                  )
+                }}
               </span>
             </p>
-            
+
             <p *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'">
-              Operator Mobile:
-              <span>{{ combinedDetails?.partner?.operatorMobileNo }}</span>
+              Operator Mobile
+              <span
+                *ngIf="combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0"
+                >{{
+                  combinedDetails?.partner?.operators?.[0]?.operatorsDetail[0]?.mobileNo
+                }}</span
+              >
             </p>
-            
+
             <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
-              Operator Mobile:
+              Operator Mobile
               <span>
-                {{ getOperatorMobileFromBooking(combinedDetails?.partner?.bookingRequest, bookingId) }}
+                {{
+                  getOperatorMobileFromBooking(
+                    combinedDetails?.partner?.bookingRequest,
+                    bookingId
+                  )
+                }}
               </span>
             </p>
             <p>
@@ -143,10 +165,10 @@
 
 <!-- Cancel Request Modal Template -->
 <ng-template #cancelBookingModal let-modal>
-  <div class="" role="document">
+  <div class="custom-modal-dialog">
     <div class="modal-content custom-modal-content">
       <div class="modal-body cancel-booking">
-        Are you sure want to cancel this booking?
+        Are you sure you want to cancel this booking?
       </div>
       <div class="modal-footer cancel-booking-btns">
         <button

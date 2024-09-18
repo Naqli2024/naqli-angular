@@ -433,6 +433,7 @@ body {
   padding: 0;
   position: relative;
   height: 90vh;
+  overflow-y: auto;
 }
 
 .custom-slider {
@@ -490,6 +491,22 @@ body {
   padding-bottom: 15px !important;
   font-size: 14px;
   font-weight: 600;
+}
+.home-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.home-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+.home-container::-webkit-scrollbar-thumb {
+  background: #a8a8a8;
+  border-radius: 4px;
+}
+
+.home-container::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
 }
 @media (max-width: 768px) {
   .home-container {
@@ -1166,18 +1183,24 @@ input[type="checkbox"] {
 
 /****************Booking Cancel and payment Modal***************/
 .custom-modal-dialog {
-  margin: 1.75rem auto;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 0;
+  background-color: transparent !important; 
 }
 
 .custom-modal-content {
-  background-color: #fff;
-  border: none;
-  border-radius: 10px;
+  background-color: transparent !important; 
+  border: none !important; 
+  border-radius: 10px; 
+  width: 100%;
+  max-width: 500px;
 }
 
 .cancel-booking {
   padding: 1rem;
-  background-color: #6c6afc;
+  background-color: #6c6afc; 
   color: white;
   border-bottom: none;
   text-align: center;
@@ -1187,8 +1210,7 @@ input[type="checkbox"] {
   display: flex;
   justify-content: center !important;
   padding: 1rem;
-  border-top: none;
-  margin: 30px 0px;
+  margin: 20px 20px;
   border-top: none !important;
 }
 
@@ -1197,6 +1219,7 @@ input[type="checkbox"] {
   width: 25%;
   border-radius: 20px;
   margin: 0px 30px;
+  color: white;
 }
 
 .cancel-booking-btns .btn-secondary:hover {
@@ -1913,7 +1936,7 @@ input[type="checkbox"] {
 
 .partner-operator-form {
   margin-top: -400px !important;
-  padding: 5px 20px !important;
+  padding: 0px 20px !important;
 }
 
 .col-form-label {

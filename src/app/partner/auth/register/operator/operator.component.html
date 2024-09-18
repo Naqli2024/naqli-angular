@@ -214,6 +214,33 @@
           <div class="row">
             <div class="col-md-6">
               <label class="col-form-label" style="font-size: 14px"
+                >Password</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                [(ngModel)]="formData.password"
+                name="password"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
+                >Confirm Password</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                [(ngModel)]="formData.confirmPassword"
+                name="confirmPassword"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label class="col-form-label" style="font-size: 14px"
                 >Mobile No</label
               >
               <input

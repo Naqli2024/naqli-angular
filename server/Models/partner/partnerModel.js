@@ -48,6 +48,10 @@ const operatorDetailSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  password: {
+    type: String,
+    required: true
+  },
   mobileNo: {
     type: String,
     required: true,
@@ -180,6 +184,11 @@ const extraOperatorSchema = new mongoose.Schema({
     data: { type: Buffer },
     contentType: { type: String, required: true },
     fileName: String,
+  },
+  status: {
+    type: String,
+    enum: ["available", "Not available"],
+    default: "available",
   },
 });
 

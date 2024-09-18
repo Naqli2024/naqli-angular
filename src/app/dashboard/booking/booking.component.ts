@@ -554,6 +554,7 @@ export class BookingComponent implements OnInit {
           unitSubClassificationName: operator.subClassification,
         },
       };
+      console.log(this.combinedDetails)
     } else {
       this.combinedDetails = {
         booking: this.bookingDetails,
