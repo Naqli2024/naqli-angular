@@ -20,7 +20,7 @@
         </thead>
         <tbody *ngIf="bookings.length > 0">
           <ng-container *ngFor="let booking of bookings; let i = index">
-            <tr *ngIf="users[booking.user]">
+            <tr *ngIf="users[booking.user] && booking.bookingStatus !== 'Completed'">
               <td class="align-middle">
                 {{ users[booking.user]?.firstName }}
                 {{ users[booking.user]?.lastName }}

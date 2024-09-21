@@ -409,6 +409,45 @@ const addAdditionalCharges = async (req, res) => {
 };
 
 
+
+const updateBookingStatus = async (req, res) => {
+  try {
+    const { bookingId, status } = req.body;
+
+    // Find the booking by bookingId
+    const booking = await Booking.findOne({ _id: bookingId });
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    // Check if the remainingBalance is 0 and the paymentStatus is "Completed" or "Paid"
+    if (booking.remainingBalance === 0 && 
+       (booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid')) {
+      
+      // If status is true, update the booking status to "Completed"
+      if (status === true) {
+        booking.bookingStatus = 'Completed';
+        await booking.save();
+        return res.status(200).json({ message: 'Booking status updated to Completed', booking });
+      } else {
+        return res.status(400).json({ message: 'Status is not true, cannot update booking status' });
+      }
+
+    } else {
+      // Conditions not met to mark booking as "Completed"
+      return res.status(400).json({ 
+        message: 'Cannot update booking status. Ensure paymentStatus is Completed or Paid.' 
+      });
+    }
+  } catch (error) {
+    console.error('Error updating booking status:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+
 module.exports = {
   createBooking,
   cancelBooking,
@@ -418,4 +457,5 @@ module.exports = {
   getAllBookings,
   getBookingsByBookingId,
   addAdditionalCharges,
+  updateBookingStatus
 };

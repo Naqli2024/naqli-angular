@@ -123,7 +123,7 @@ export class UnitManagementComponent implements OnInit {
   getOperatorStatus(operator): string {
     if (this.partnerDetails?.bookingRequest) {
       const isOperatorBooked = this.partnerDetails.bookingRequest.some(
-        (request) => request.assignedOperator.unit === operator.plateInformation
+        (request) => request.assignedOperator?.unit === operator.plateInformation
       );
       return isOperatorBooked ? 'Not available' : 'Available';
     }

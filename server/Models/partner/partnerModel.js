@@ -15,11 +15,12 @@ const bookingRequestSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  bookingStatus: {
-    type: String,
-    required: false,
-  },
   assignedOperator: {
+    bookingId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "booking",
+      required: false,
+    },
     unit: {
       type: String,
       required: false,
@@ -30,6 +31,11 @@ const bookingRequestSchema = new mongoose.Schema({
     },
     operatorMobileNo: {
       type: String,
+      required: false,
+    },
+    operatorId: {  
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "operatorDetail",
       required: false,
     },
   },
@@ -88,6 +94,11 @@ const operatorDetailSchema = new mongoose.Schema({
     enum: ["available", "Not available"],
     default: "available",
   },
+  mode: {
+    type: String,
+    enum: ["online", "offline"],
+    default: "offline"
+  }
 });
 
 const operatorSchema = new mongoose.Schema({
@@ -194,6 +205,11 @@ const extraOperatorSchema = new mongoose.Schema({
     enum: ["available", "Not available"],
     default: "available",
   },
+  mode: {
+    type: String,
+    enum: ["online", "offline"],
+    default: "offline"
+  }
 });
 
 const partnerSchema = new mongoose.Schema(

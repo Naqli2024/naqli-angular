@@ -285,32 +285,41 @@ const operatorLogin = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    // Find the partner that contains the operator
+    // Find the partner that contains the operator or extraOperator
     const partnerData = await Partner.findOne({
-      "operators.operatorsDetail.email": req.body.email
+      $or: [
+        { "operators.operatorsDetail.email": req.body.email },
+        { "extraOperators.email": req.body.email }
+      ]
     });
 
     if (!partnerData) {
       return res.status(400).send({
-        message: "Operator not found",
+        message: "Operator or Extra Operator not found",
         success: false,
         data: null
       });
     }
 
-    // Find the specific operator details
-    const operator = partnerData.operators.flatMap(op => op.operatorsDetail)
+    // Search for the operator within the operators array
+    let operator = partnerData.operators
+      .flatMap(op => op.operatorsDetail)
       .find(opDetail => opDetail.email === req.body.email);
+
+    // If not found in operators, check in extraOperators
+    if (!operator) {
+      operator = partnerData.extraOperators.find(extraOp => extraOp.email === req.body.email);
+    }
 
     if (!operator) {
       return res.status(400).send({
-        message: "Operator not found",
+        message: "Operator or Extra Operator not found",
         success: false,
         data: null
       });
     }
 
-    // Check if the operator is blocked or suspended
+    // Check if the partner or operator is blocked or suspended
     if (partnerData.isBlocked || operator.isBlocked) {
       return res.status(400).send({
         message: "Your account is blocked",
@@ -358,6 +367,64 @@ const operatorLogin = async (req, res) => {
   }
 };
 
+
+const updateOperatorMode = async (req, res) => {
+  try {
+    const { partnerId, operatorId, mode } = req.body;
+
+    // Validate the mode value
+    if (!["online", "offline"].includes(mode)) {
+      return res.status(400).json({ message: "Invalid mode value. Must be 'online' or 'offline'." });
+    }
+
+    // Find the partner by partnerId
+    const partner = await Partner.findById(partnerId);
+    if (!partner) {
+      return res.status(404).json({ message: "Partner not found" });
+    }
+
+    // Check if the operatorId belongs to an extraOperator
+    const extraOperator = partner.extraOperators.find(eo => eo._id.toString() === operatorId);
+
+    // Check if the operatorId belongs to an operator
+    let operatorDetail = null;
+    const operator = partner.operators.find(op =>
+      op.operatorsDetail.some(od => od._id.toString() === operatorId)
+    );
+    
+    // If operator is found, get the operatorDetail object
+    if (operator) {
+      operatorDetail = operator.operatorsDetail.find(od => od._id.toString() === operatorId);
+    }
+
+    // If neither extraOperator nor operatorDetail is found
+    if (!extraOperator && !operatorDetail) {
+      return res.status(404).json({ message: "Operator or Extra Operator not found" });
+    }
+
+    // Update the mode if extraOperator is found
+    if (extraOperator) {
+      extraOperator.mode = mode;
+    }
+
+    // Update the mode if operatorDetail is found
+    if (operatorDetail) {
+      operatorDetail.mode = mode;
+    }
+
+    await partner.save();
+
+    res.status(200).json({
+      message: "Mode updated successfully",
+      updatedOperator: extraOperator || operatorDetail
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
 exports.createOperator = createOperator;
 exports.parseFormData = parseFormData;
 exports.operatorLogin = operatorLogin;
+exports.updateOperatorMode = updateOperatorMode;

@@ -42,12 +42,12 @@ export class MapService {
       console.error('Map or Directions Service not initialized.');
       return;
     }
-
+  
     const waypts = waypoints.map((waypoint) => ({
       location: waypoint,
       stopover: true,
     }));
-
+  
     this.directionsService.route(
       {
         origin: start,
@@ -59,6 +59,55 @@ export class MapService {
       (response, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
           this.directionsRenderer?.setDirections(response);
+  
+          const route = response.routes[0];
+          let totalDistance = 0;
+          let totalDuration = 0;
+  
+          // Create a single InfoWindow object
+          const infoWindow = new google.maps.InfoWindow({
+            disableAutoPan: true, // Disable auto-panning
+            pixelOffset: new google.maps.Size(0, -30), // Adjust position if needed
+          });
+  
+          route.legs.forEach((leg, index) => {
+            totalDistance += leg.distance.value; // distance in meters
+            totalDuration += leg.duration.value; // duration in seconds
+  
+            // Create polyline for each leg
+            const path = leg.steps.map((step) => step.path).flat();
+  
+            const polyline = new google.maps.Polyline({
+              path: path,
+              strokeColor: '#0000FF', // Line color
+              strokeOpacity: 0.7,
+              strokeWeight: 5,
+              map: this.map,
+            });
+  
+            // Position the tooltip at a calculated location along the polyline
+            const midpointIndex = Math.floor(path.length / 2); // Get the midpoint of the polyline path
+            const midpoint = path[midpointIndex];
+  
+            // Set tooltip content without labels and with custom styles
+            const tooltipContent = `
+              <div class="custom-tooltip">
+                <div>${leg.distance.text},</div>
+                <div>${leg.duration.text}</div>
+              </div>
+            `;
+  
+            infoWindow.setContent(tooltipContent);
+            infoWindow.setPosition(midpoint); // Set the position to the midpoint of the polyline
+            infoWindow.open(this.map); // Open the tooltip at the polyline
+          });
+  
+          // Convert totalDuration (in seconds) to hours and minutes
+          const hours = Math.floor(totalDuration / 3600); // Total hours
+          const minutes = Math.floor((totalDuration % 3600) / 60); // Remaining minutes
+  
+          console.log(`Total Distance: ${(totalDistance / 1000).toFixed(2)} km`);
+          console.log(`Total Duration: ${hours} hours ${minutes} minutes`);
         } else {
           console.error('Directions request failed due to ', status);
         }

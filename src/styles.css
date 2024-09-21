@@ -3254,3 +3254,20 @@ table .make-disable.disabled td:not(:first-child) {
   border-color: #7e7e7e !important;
   box-shadow: none !important;
 }
+
+/* Hide default Google Maps InfoWindow styling */
+.gm-style-iw-chr {
+  display: none !important;
+}
+
+/* Custom tooltip styles */
+.custom-tooltip {
+  background-color: white;
+  font-size: 12px !important;
+  max-width: 150px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 12px;
+}

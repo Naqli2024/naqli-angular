@@ -499,7 +499,7 @@ const assignOperator = async (req, res) => {
 
     // Find the partner by ID from the booking
     const partnerId = booking.partner;
-    const partnerFound = await partner.findById(partnerId); // Ensure correct model name
+    const partnerFound = await partner.findById(partnerId); 
     if (!partnerFound) {
       return res.status(404).json({ message: "Partner not found" });
     }
@@ -518,7 +518,7 @@ const assignOperator = async (req, res) => {
     // Check if the partner type is "multipleUnits"
     if (partnerFound.type === "multipleUnits") {
       // Check in both operators and extraOperators for the operator
-      let newOperator, newOperatorDetail, newOperatorMobileNo;
+      let newOperator, newOperatorDetail, newOperatorMobileNo, newOperatorId;
 
       // Search in regular operators
       newOperator = partnerFound.operators.find(op =>
@@ -536,6 +536,7 @@ const assignOperator = async (req, res) => {
         if (newOperator) {
           newOperatorDetail = newOperator;
           newOperatorMobileNo = newOperator?.mobileNo || '';
+          newOperatorId = newOperator?._id || '';
         }
       } else {
         // Extract new operator's details from regular operators
@@ -543,6 +544,7 @@ const assignOperator = async (req, res) => {
           `${detail.firstName} ${detail.lastName}` === operatorName
         );
         newOperatorMobileNo = newOperatorDetail?.mobileNo || '';
+        newOperatorId = newOperatorDetail._id || '';
       }
 
       if (newOperatorDetail) {
@@ -583,15 +585,17 @@ const assignOperator = async (req, res) => {
         // Assign the new operator and mark them as 'Not available'
         newOperatorDetail.status = 'Not available';
         bookingRequest.assignedOperator = {
+          bookingId: booking._id,
           unit,
           operatorName,
           operatorMobileNo: newOperatorMobileNo,
+          operatorId: newOperatorId,
         };
 
         // Save the updated partner document
         await partnerFound.save();
 
-        res.status(200).json({ message: "Operator assigned successfully", partnerFound });
+        res.status(200).json({ message: "Operator assigned successfully", partnerFound, bookingId });
       } else {
         res.status(404).json({ message: "Operator not found" });
       }

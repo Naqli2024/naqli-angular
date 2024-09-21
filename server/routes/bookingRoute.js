@@ -9,6 +9,7 @@ const {
   getAllBookings,
   getBookingsByBookingId,
   addAdditionalCharges,
+  updateBookingStatus,
 } = require("../controller/bookingController");
 const { protect } = require("../middlewares/authMiddleware");
 
@@ -20,5 +21,6 @@ router.get("/bookings/:userId", protect, getBookingsById);
 router.get("/getAllBookings", getAllBookings);
 router.get("/getBookingsByBookingId/:bookingId", protect, getBookingsByBookingId);
 router.post("/bookings/:bookingId/additional-charges", protect, addAdditionalCharges);
+router.post("/bookings/update-booking-status", protect, updateBookingStatus);
 
 module.exports = router;

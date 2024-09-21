@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class FileService {
-  private baseUrl = 'https://naqli.onrender.com/api/files'; 
+  private baseUrl = 'http://localhost:4000/api/files'; 
   
   constructor(private http: HttpClient) {}
 
