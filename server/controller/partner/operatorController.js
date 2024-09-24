@@ -277,6 +277,7 @@ const createOperator = async (req, res) => {
 
 
 
+
 const operatorLogin = async (req, res) => {
   try {
     // Validate request
@@ -348,13 +349,16 @@ const operatorLogin = async (req, res) => {
       { expiresIn: "365d" }
     );
 
-    // Return the token and operator details
+    const associatedPartnerId = partnerData._id;
+
+    // Return the token and operator details along with the associated partner ID
     return res.status(200).send({
       message: "Logged in successfully",
       success: true,
       data: {
         token,
-        operator
+        operator,
+        associatedPartnerId 
       }
     });
   } catch (error) {
@@ -366,6 +370,7 @@ const operatorLogin = async (req, res) => {
     });
   }
 };
+
 
 
 const updateOperatorMode = async (req, res) => {
