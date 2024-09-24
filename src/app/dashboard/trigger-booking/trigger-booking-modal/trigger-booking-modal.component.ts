@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -10,6 +10,9 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './trigger-booking-modal.component.css'
 })
 export class TriggerBookingModalComponent {
+  @Input() booking: any;
+  @Input() vendor: any;
+
   constructor(public activeModal: NgbActiveModal, public router: Router) {}
 
   closeModalAndNavigate(): void {

@@ -5,11 +5,11 @@
         <thead>
           <tr class="trigger-booking-table">
             <th>Trigger Booking</th>
-            <th style="text-align: center !important;">Actions</th>
+            <th style="text-align: center !important">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="trigger-booking-table">
+          <tr class="trigger-booking-table"  *ngFor="let booking of bookings">
             <td class="trigger-booking-td">
               <!-- Trigger Booking Checkbox -->
               <input
@@ -21,14 +21,14 @@
 
               <!-- Vehicle and Booking ID Information -->
               <div class="trigger-booking-td-1">
-                <p class="p1">Vehicle: XYZ</p>
-                <p class="p2">Booking ID: 12345999999999999999999</p>
+                <p class="p1">{{ booking.unitType }}</p>
+                <p class="p2">Booking ID: {{ booking._id }}</p>
               </div>
 
               <!-- Vendor List with Radio Buttons -->
-              <div class="trigger-booking-td-2">
-                <div class="input-field" *ngFor="let vendor of vendors">
-                  <input type="radio" name="vendor" [value]="vendor.name" />
+              <div class="trigger-booking-td-2" *ngIf="vendorsByBooking[booking._id]">
+                <div class="input-field" *ngFor="let vendor of vendorsByBooking[booking._id]">
+                  <input type="radio" [value]="vendor" name="vendor_{{ booking._id }}" [(ngModel)]="selectedVendor[booking._id]" />
                   <div class="vendor-details">
                     <span>{{ vendor.name }}</span>
                     <span class="vendor-price">{{ vendor.price }} SAR</span>
@@ -42,13 +42,14 @@
               <button
                 type="button"
                 class="btn btn-payNow"
-                (click)="openPaymentModal()"
+                (click)="openPaymentModal(booking)"
               >
                 Pay Now
               </button>
               <button
                 type="button"
                 class="btn btn-danger"
+                (click)="cancelBooking(booking._id)"
                 style="
                   border-radius: 20px;
                   font-size: 14px;

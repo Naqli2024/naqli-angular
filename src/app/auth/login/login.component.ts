@@ -62,7 +62,6 @@ export class LoginComponent {
     this.authService.login(this.loginData).subscribe(
       (response: any) => {
         this.spinnerService.hide();
-        console.log(response)
         if (response.success === true) {
           this.toastr.success(response.message, 'Success');
           this.clearForm();
@@ -73,10 +72,14 @@ export class LoginComponent {
             this.userService.getUserById(userId).subscribe((user: User) => {
               this.isAdmin = user.isAdmin;
               
-              // Dynamically redirect based on the isAdmin status
-              if (this.isAdmin) {
+              if (user.accountType === 'Super User') {
+                // Navigate to Super User dashboard
+                this.router.navigate(['/home/user/dashboard/super-user/dashboard']);
+              } else if (this.isAdmin) {
+                // Navigate to Admin dashboard
                 this.router.navigate(['/home/user/dashboard/admin/overview']);
               } else {
+                // Navigate to regular user booking page
                 this.router.navigate(['/home/user/dashboard/booking']);
               }
             }, (error) => {
