@@ -62,6 +62,7 @@ export class LoginComponent {
     this.authService.login(this.loginData).subscribe(
       (response: any) => {
         this.spinnerService.hide();
+        console.log(response)
         if (response.success === true) {
           this.toastr.success(response.message, 'Success');
           this.clearForm();
@@ -76,7 +77,6 @@ export class LoginComponent {
               if (this.isAdmin) {
                 this.router.navigate(['/home/user/dashboard/admin/overview']);
               } else {
-
                 this.router.navigate(['/home/user/dashboard/booking']);
               }
             }, (error) => {

@@ -152,7 +152,7 @@ body {
 }
 .parent-container {
   display: flex !important;
-  justify-content: center !important;  
+  justify-content: center !important;
   align-items: center !important;
 }
 .notifications-dropdown {
@@ -820,10 +820,10 @@ input[type="checkbox"] {
 }
 .centered-container {
   display: flex;
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: center; 
-  height: 65vh; 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 65vh;
   text-align: center;
   padding: 20px;
   border-radius: 8px;
@@ -831,7 +831,7 @@ input[type="checkbox"] {
 .centered-container p {
   font-size: 18px;
   color: #333;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
 }
 @media (max-width: 768px) {
   .booking-container-head {
@@ -843,17 +843,17 @@ input[type="checkbox"] {
   }
   .suggestions-dropdown {
     width: 100% !important;
-    max-width: 480px !important; 
-    height: auto; 
-    max-height: 200px; 
+    max-width: 480px !important;
+    height: auto;
+    max-height: 200px;
     margin-top: 230px !important;
   }
 }
 @media (max-width: 480px) {
   .suggestions-dropdown {
-    width: calc(100% - 45px) !important; 
-    max-height: 150px; 
-    margin-top: 190px !important; 
+    width: calc(100% - 45px) !important;
+    max-height: 150px;
+    margin-top: 190px !important;
   }
 }
 
@@ -900,11 +900,11 @@ input[type="checkbox"] {
   font-size: 2rem;
   cursor: pointer;
 }
- @media (max-width: 768px) {
+@media (max-width: 768px) {
   .booking-inputs {
     margin-bottom: 10px;
   }
- }
+}
 
 /*******************Dashboard*****************/
 .layout-container {
@@ -1102,9 +1102,9 @@ input[type="checkbox"] {
 }
 .get-route-btn {
   padding: 5px !important;
-  margin: 10px 0px!important;
+  margin: 10px 0px !important;
   font-size: 13px !important;
-  background-color:#3769ce !important;
+  background-color: #3769ce !important;
   color: #fff !important;
 }
 
@@ -1187,20 +1187,20 @@ input[type="checkbox"] {
   justify-content: center !important;
   align-items: center !important;
   margin: 0;
-  background-color: transparent !important; 
+  background-color: transparent !important;
 }
 
 .custom-modal-content {
-  background-color: transparent !important; 
-  border: none !important; 
-  border-radius: 10px; 
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 10px;
   width: 100%;
   max-width: 500px;
 }
 
 .cancel-booking {
   padding: 1rem;
-  background-color: #6c6afc; 
+  background-color: #6c6afc;
   color: white;
   border-bottom: none;
   text-align: center;
@@ -2015,7 +2015,7 @@ input[type="checkbox"] {
 
 .bookingId {
   text-decoration: underline;
-  color: #7B0864 !important;
+  color: #7b0864 !important;
   cursor: pointer;
 }
 
@@ -2125,14 +2125,13 @@ input[type="checkbox"] {
 
 /***************google map component***************/
 .google-map-style {
-  height: 350px; 
+  height: 350px;
   width: 100%;
   max-width: 600px;
   margin: 10px auto !important;
 }
 
 @media (width: 768px) {
-
 }
 
 /***************additional Charges***************/
@@ -2701,14 +2700,14 @@ table .make-disable.disabled td:not(:first-child) {
   justify-content: left;
 }
 .range-input input {
-  width: 100%; 
+  width: 100%;
   max-width: 200px !important;
   text-align: center;
 }
 .range-input .separator {
-  margin: 0 4px; 
-  border-bottom: 1.5px dashed #979797; 
-  flex-grow: 0.2; 
+  margin: 0 4px;
+  border-bottom: 1.5px dashed #979797;
+  flex-grow: 0.2;
 }
 .Commission-input {
   border: 1px solid #a6a6a6 !important;
@@ -2729,21 +2728,23 @@ table .make-disable.disabled td:not(:first-child) {
 .Commission-table .range-input input.Commission-input:focus {
   border: 1px solid#a1a1a1 !important;
 }
-.Commission-table th,td {
+.Commission-table th,
+td {
   text-align: left !important;
 }
-.Commission-table th, td {
+.Commission-table th,
+td {
   padding: 10px 45px !important;
 }
 .Commission-btn.edit {
-  background-color: #FFA504 !important; 
+  background-color: #ffa504 !important;
   font-size: 14px !important;
 }
 .Commission-btn.save {
-  background-color: #178E13 !important;
+  background-color: #178e13 !important;
 }
 .Commission-btn.cancel {
-  background-color: #9B0D0D !important; 
+  background-color: #9b0d0d !important;
   font-size: 14px !important;
 }
 .add-slab-btn {
@@ -2759,7 +2760,7 @@ table .make-disable.disabled td:not(:first-child) {
 .add-slab-btn fa-icon {
   border: 1px solid #9d9d9d !important;
   font-size: 11px !important;
-  padding: 0px 3px!important;
+  padding: 0px 3px !important;
   border-radius: 5px !important;
   color: #707070 !important;
   margin-right: 7px;
@@ -2882,18 +2883,18 @@ table .make-disable.disabled td:not(:first-child) {
   padding: 5px 25px;
   border-radius: 3px;
   color: white;
-  font-size: 13px
+  font-size: 13px;
 }
 .status-button.open {
-  background-color: #07A236;
+  background-color: #07a236;
 }
 .status-button.closed {
-  background-color: #C10909;
+  background-color: #c10909;
 }
 .ticket-icon {
-  color: #727272; 
-  padding: 3px 4px; 
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1); 
+  color: #727272;
+  padding: 3px 4px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 3px;
   margin: 0px 5px;
   cursor: pointer;
@@ -2901,7 +2902,7 @@ table .make-disable.disabled td:not(:first-child) {
 .ticket-form {
   padding: 10px 60px !important;
   border-radius: 5px;
-  box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin: 20px 0px;
   overflow-y: auto;
   width: 100%;
@@ -2939,14 +2940,14 @@ table .make-disable.disabled td:not(:first-child) {
   display: inline-block;
   padding: 5px 15px;
   border-radius: 3px;
-  background-color: #07A236;;
+  background-color: #07a236;
   color: white;
 }
 .status-closed {
   display: inline-block;
   padding: 5px 15px;
   border-radius: 3px;
-  background-color: #C10909;
+  background-color: #c10909;
   color: white;
 }
 .back-button {
@@ -2960,7 +2961,7 @@ table .make-disable.disabled td:not(:first-child) {
   margin: 50px 0px;
 }
 .btn-open {
-  background-color: #07A236;;
+  background-color: #07a236;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -2970,7 +2971,7 @@ table .make-disable.disabled td:not(:first-child) {
   margin: 30px 0px;
 }
 .btn-closed {
-  background-color: #C10909;
+  background-color: #c10909;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -2980,10 +2981,10 @@ table .make-disable.disabled td:not(:first-child) {
   margin: 30px 0px;
 }
 .open {
-  color: #07A236;;
+  color: #07a236;
 }
 .closed {
-  color: #C10909;
+  color: #c10909;
 }
 .delete-modal-body {
   display: flex;
@@ -3016,7 +3017,8 @@ table .make-disable.disabled td:not(:first-child) {
   .ticket-form-row-head {
     flex-direction: column;
   }
-  .btn-open, .btn-closed {
+  .btn-open,
+  .btn-closed {
     width: 100%;
     margin: 10px 0;
   }
@@ -3051,7 +3053,6 @@ table .make-disable.disabled td:not(:first-child) {
 }
 @media (max-width: 768px) {
   .company-details-form {
-    
     overflow-y: scroll !important;
   }
   .company-details-form-2 {
@@ -3093,16 +3094,16 @@ table .make-disable.disabled td:not(:first-child) {
 }
 .multiple-unit-dashboard-head-left {
   border-radius: 50%;
-  width: 50px; 
-  height: 50px; 
+  width: 50px;
+  height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
 }
 .multiple-unit-dashboard-head-left img {
-  width: 60%; 
-  height: 60%; 
+  width: 60%;
+  height: 60%;
   color: #1f55e9 !important;
 }
 .multiple-unit-dashboard-head-right {
@@ -3123,7 +3124,7 @@ table .make-disable.disabled td:not(:first-child) {
 .chart-table-container .col-md-5 {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   margin: 20px 13px;
-  padding: 20px 10px; 
+  padding: 20px 10px;
   height: 100%;
   max-height: 450px;
   overflow-x: hidden;
@@ -3154,7 +3155,7 @@ table .make-disable.disabled td:not(:first-child) {
   font-size: 14px;
 }
 .btn-success {
-  background:#004907 !important;
+  background: #004907 !important;
   border: 1px solid #ddd !important;
 }
 @media (max-width: 768px) {
@@ -3212,8 +3213,8 @@ table .make-disable.disabled td:not(:first-child) {
   margin: 20px 0;
 }
 .operator-form-unit {
-  box-shadow: 0px 4px 8px rgba(150, 150, 150, 0.3); 
-  border: 1px solid #ccc; 
+  box-shadow: 0px 4px 8px rgba(150, 150, 150, 0.3);
+  border: 1px solid #ccc;
   margin: 0px 5px !important;
 }
 /* Custom scrollbar */
@@ -3239,10 +3240,10 @@ table .make-disable.disabled td:not(:first-child) {
 }
 /***************Operator Management****************/
 .add-operator {
-    width: 100% !important;
-    max-width: 100px;
-    padding: 2px !important;
-    font-size: 13px !important;
+  width: 100% !important;
+  max-width: 100px;
+  padding: 2px !important;
+  font-size: 13px !important;
 }
 .add-operator-btn1 {
   width: 100% !important;
@@ -3270,4 +3271,81 @@ table .make-disable.disabled td:not(:first-child) {
   overflow: hidden;
   text-overflow: ellipsis;
   margin-top: 12px;
+}
+
+/*******************trigger booking******************/
+.booking-history .table-container .table .trigger-booking-table th,
+.booking-history .table-container .table .trigger-booking-table td {
+  text-align: left !important;
+  padding-left: 20px !important;
+}
+.trigger-booking-td {
+  display: flex !important;
+  align-items: center;
+}
+.trigger-booking-td-1 {
+  display: flex;
+  flex-direction: column; 
+  margin-left: 20px
+}
+.trigger-booking-td-1 .p1 {
+  margin-bottom: 0px !important;
+  font-size: 15px !important;
+}
+.trigger-booking-td-1 .p2 {
+  margin-bottom: 0px !important;
+  font-size: 13px !important;
+  color: #818181 !important;
+}
+.trigger-booking-td input[type="checkbox"] {
+  height: 18px !important;
+  width: 18px !important;
+}
+.trigger-booking-td-2 {
+  display: flex;
+  align-items: center !important;
+  margin-left: 10px;
+}
+.trigger-booking-td-2 .input-field {
+  border: 1px solid #ddd;
+  margin: 0px 20px !important;
+  border-radius: 20px;
+  padding: 5px 15px;
+}
+.trigger-booking-td-2 .input-field:nth-child(1) {
+  background-color: #C8FBFD; /* Light Blue */
+}
+/* Background for Vendor 2 */
+.trigger-booking-td-2 .input-field:nth-child(2) {
+  background-color: #E0FDC8; /* Light Green */
+}
+/* Background for Vendor 3 */
+.trigger-booking-td-2 .input-field:nth-child(3) {
+  background-color: #F5FDC8; /* Light Yellow */
+}
+.trigger-booking-td-2 .vendor-details span {
+  font-size: 13px !important;
+}
+.trigger-booking-td-2 .input-field input[type="radio"] {
+  margin-right: 10px;
+  margin-top: 3px;
+  flex: 0 !important;
+}
+.trigger-booking-td-2 .vendor-details .vendor-price {
+  padding-left: 35px;
+}
+.btn-payNow {
+  background-color: #6c6afc !important;
+  border-radius: 20px !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  padding: 5px 25px !important;
+}
+
+/******************trigger payment model******************/
+.trigger-modal-body {
+  margin: 20px 35px !important;
+}
+.trigger-payment-model {
+  display: flex;
 }

@@ -1,0 +1,73 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="booking-modal">
+      <h2>Booking ID xxxxxxxxxxxxxxxxxxx</h2>
+      <div class="modal-close">
+        <button
+          type="button"
+          class="close"
+          aria-label="Close"
+          (click)="closeModalAndNavigate()"
+          style="margin-right: 10px; color: white"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Body Container -->
+    <div class="trigger-modal-body container">
+      <!-- First Column -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="trigger-payment-model row">
+            <label class="col-md-6">Name</label>
+            <p class="col-md-6">Jackson Maine</p>
+          </div>
+          <div class="trigger-payment-model row">
+            <label class="col-md-6">Phone Number</label>
+            <p class="col-md-6">9845621357</p>
+          </div>
+          <div class="trigger-payment-model row">
+            <label class="col-md-6">Booking ID</label>
+            <p class="col-md-6">###################</p>
+          </div>
+          <div class="trigger-payment-model row">
+            <label class="col-md-6">Mode</label>
+            <p class="col-md-6">XXXXXXXXX</p>
+          </div>
+        </div>
+
+        <!-- Second Column -->
+        <div class="col-md-6">
+          <div class="trigger-payment-model row">
+            <label class="col-md-6">From</label>
+            <p class="col-md-6">XXXX</p>
+          </div>
+          <div class="trigger-payment-model row">
+            <label class="col-md-6">To</label>
+            <p class="col-md-6">XXXX</p>
+          </div>
+          <div class="trigger-payment-model row">
+            <label class="col-md-6">Extra Labour</label>
+            <p class="col-md-6">XXXX</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+          "
+        >
+          <button type="button" class="btn btn-payNow">Pay Advance</button>
+          <button type="button" class="btn btn-payNow">Pay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

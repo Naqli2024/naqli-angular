@@ -30,6 +30,7 @@ import { User } from '../../../models/user.model';
 export class DashboardComponent {
   menuItems: { name: string; route: string }[] = [];
   isAdmin: boolean = false; // Initial value
+  accountType: string = '';
 
   constructor(private userService: UserService, private router: Router) {}
 
@@ -38,6 +39,7 @@ export class DashboardComponent {
     if (userId) {
       this.userService.getUserById(userId).subscribe((user: User) => {
         this.isAdmin = user.isAdmin;
+        this.accountType = user.accountType;
         this.setMenuItems();
       });
     } else {
@@ -47,7 +49,15 @@ export class DashboardComponent {
   }
 
   setMenuItems(): void {
-    if (this.isAdmin) {
+    if (this.accountType === 'Super User') {
+      this.menuItems = [
+        { name: 'Dashboard', route: 'super-user/dashboard' },
+        { name: 'Trigger Booking', route: 'super-user/trigger-booking' },
+        { name: 'Booking Manager', route: 'super-user/booking-manager' },
+        { name: 'Payments', route: 'super-user/payments' },
+        { name: 'Help', route: 'help' },
+      ];
+    } else if (this.isAdmin) {
       this.menuItems = [
         { name: 'Overview', route: 'admin/overview' },
         { name: 'Support tickets', route: 'admin/tickets' },

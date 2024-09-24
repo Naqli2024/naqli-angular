@@ -15,6 +15,7 @@ import { map, catchError } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
+
 export class AuthGuard implements CanActivate {
   constructor(
     private modalService: NgbModal,
@@ -39,8 +40,15 @@ export class AuthGuard implements CanActivate {
               return false;
             }
             return true;
+          } else if (user.accountType === 'Super User') {
+            // If the user is a Super User, redirect to super user dashboard
+            if (state.url !== '/home/user/dashboard/super-user/dashboard') {
+              this.router.navigate(['/home/user/dashboard/super-user/dashboard']);
+              return false;
+            }
+            return true;
           } else {
-            // Allow access to non-admin users
+            // Allow access to non-admin, non-super users
             return true;
           }
         }),
@@ -65,7 +73,6 @@ export class AuthGuard implements CanActivate {
     });
   }
 }
-
 
 export class LoginGuard implements CanActivate {
   constructor(private router: Router) {}

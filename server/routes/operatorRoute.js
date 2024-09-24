@@ -7,5 +7,6 @@ router.post("/add-operator", operatorController.parseFormData, operatorControlle
 router.post("/add-extra-operator", extraOperatorController.parseFormData, extraOperatorController.createExtraOperator);
 router.post("/operator-login", operatorController.operatorLogin);
 router.post("/updateOperatorMode", operatorController.updateOperatorMode);
+router.post("/getBookingRequest", operatorController.getBookingRequest);
 
 module.exports = router;

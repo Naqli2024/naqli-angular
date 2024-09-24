@@ -424,7 +424,93 @@ const updateOperatorMode = async (req, res) => {
 };
 
 
+const getBookingRequest =  async (req, res) => {
+  try {
+    const { operatorId } = req.body; // Get operatorId from the request body
+
+    // Find the partner either based on multipleUnits operatorId or check if singleUnit+operator type has the matching operator
+    const partner = await Partner.findOne({
+      $or: [
+        { 'bookingRequest.assignedOperator.operatorId': operatorId }, // For multipleUnits type
+        { 'type': 'singleUnit + operator', 'operators.operatorsDetail._id': operatorId } // For singleUnit + operator type
+      ]
+    });
+
+    // If no partner is found
+    if (!partner) {
+      return res.status(404).json({ message: 'Partner or Operator not found' });
+    }
+
+    // Check if the partner has any bookingRequest
+    if (!partner.bookingRequest || partner.bookingRequest.length === 0) {
+      return res.status(404).json({ message: 'No bookingRequest found' });
+    }
+
+    // If the partner type is "multipleUnits"
+    if (partner.type === 'multipleUnits') {
+      // Find the bookingRequest with the assignedOperator matching the given operatorId
+      const booking = partner.bookingRequest.find(
+        request => request.assignedOperator.operatorId.toString() === operatorId
+      );
+
+      // If no matching bookingRequest found
+      if (!booking) {
+        return res.status(404).json({ message: 'Operator not found in any booking request' });
+      }
+
+      // Check if the bookingRequest has paymentStatus and it's a valid status
+      if (!booking.paymentStatus || !['Paid', 'HalfPaid', 'Completed'].includes(booking.paymentStatus)) {
+        return res.status(400).json({ message: 'Payment status not updated! Please wait!' });
+      }
+
+      // Return the bookingRequest and assignedOperator for multipleUnits type
+      return res.json({
+        partnerId: partner._id,
+        partnerName: partner.partnerName,
+        bookingRequest: booking, // The full bookingRequest
+      });
+    }
+
+    // If the partner type is "singleUnit + operator"
+    if (partner.type === 'singleUnit + operator') {
+      // Find the operator in the operators.operatorsDetail array
+      const operator = partner.operators.find(
+        operator => operator.operatorsDetail.some(detail => detail._id.toString() === operatorId)
+      );
+
+      if (!operator) {
+        return res.status(404).json({ message: 'Operator not found in partner details' });
+      }
+
+      // Since there's only one bookingRequest for singleUnit + operator, we access the first one
+      const booking = partner.bookingRequest[0]; // Assuming there's only one bookingRequest
+
+      // Check if the bookingRequest has paymentStatus and it's a valid status
+      if (!booking.paymentStatus || !['Paid', 'HalfPaid', 'Completed'].includes(booking.paymentStatus)) {
+        return res.status(400).json({ message: 'Payment status not updated! Please wait!' });
+      }
+
+      // Return the bookingRequest for singleUnit + operator type
+      return res.json({
+        partnerId: partner._id,
+        partnerName: partner.partnerName,
+        bookingRequest: booking // The full bookingRequest
+      });
+    }
+
+    // If the partner type is not valid
+    return res.status(400).json({ message: 'Invalid partner type' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+
+
 exports.createOperator = createOperator;
 exports.parseFormData = parseFormData;
 exports.operatorLogin = operatorLogin;
 exports.updateOperatorMode = updateOperatorMode;
+exports.getBookingRequest = getBookingRequest;

@@ -1,0 +1,67 @@
+<div class="row">
+  <div class="col-md-12 booking-history">
+    <div class="table-container">
+      <table class="table" style="margin: 10px 0px !important">
+        <thead>
+          <tr class="trigger-booking-table">
+            <th>Trigger Booking</th>
+            <th style="text-align: center !important;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="trigger-booking-table">
+            <td class="trigger-booking-td">
+              <!-- Trigger Booking Checkbox -->
+              <input
+                type="checkbox"
+                id="triggerBooking1"
+                name="triggerBooking1"
+                value="booking1"
+              />
+
+              <!-- Vehicle and Booking ID Information -->
+              <div class="trigger-booking-td-1">
+                <p class="p1">Vehicle: XYZ</p>
+                <p class="p2">Booking ID: 12345999999999999999999</p>
+              </div>
+
+              <!-- Vendor List with Radio Buttons -->
+              <div class="trigger-booking-td-2">
+                <div class="input-field" *ngFor="let vendor of vendors">
+                  <input type="radio" name="vendor" [value]="vendor.name" />
+                  <div class="vendor-details">
+                    <span>{{ vendor.name }}</span>
+                    <span class="vendor-price">{{ vendor.price }} SAR</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Actions Column -->
+            <td>
+              <button
+                type="button"
+                class="btn btn-payNow"
+                (click)="openPaymentModal()"
+              >
+                Pay Now
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                style="
+                  border-radius: 20px;
+                  font-size: 14px;
+                  margin: 0px 10px;
+                  padding: 5px 25px !important;
+                "
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

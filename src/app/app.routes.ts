@@ -45,6 +45,10 @@ import { BookingsComponent } from './partner/dashboard/bookings/bookings.compone
 import { BookingManagementComponent } from './partner/dashboard/booking-management/booking-management.component';
 import { ContractComponent } from './partner/dashboard/contract/contract.component';
 import { CommissionComponent } from './admin/commission/commission.component';
+import { SuperUserDashboardComponent } from './dashboard/super-user-dashboard/super-user-dashboard.component';
+import { TriggerBookingComponent } from './dashboard/trigger-booking/trigger-booking.component';
+import { BookingManagerComponent } from './dashboard/booking-manager/booking-manager.component';
+import { SuperUserPaymentsComponent } from './dashboard/super-user-payments/super-user-payments.component';
 
 
 export const routes: Routes = [
@@ -114,6 +118,12 @@ export const routes: Routes = [
       },
       { path: 'admin/naqlee-user', component: NaqleeUserComponent },
       { path: 'admin/commission', component: CommissionComponent },
+      { path: 'super-user/dashboard', component: SuperUserDashboardComponent, canActivate: [AuthGuard], },
+      { path: 'super-user/trigger-booking', component: TriggerBookingComponent },
+      { path: 'super-user/booking-manager', component: BookingManagerComponent },
+      { path: 'super-user/payments', component: SuperUserPaymentsComponent },
+      { path: 'help', component: HelpComponent}
+
     ],
   },
   { path: 'home/partner', component: PartnerComponent },

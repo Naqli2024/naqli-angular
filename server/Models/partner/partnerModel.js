@@ -15,6 +15,10 @@ const bookingRequestSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  bookingStatus: {
+    type: String,
+    required: false
+  },
   assignedOperator: {
     bookingId: {
       type: mongoose.Schema.Types.ObjectId,
