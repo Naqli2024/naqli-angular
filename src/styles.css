@@ -3342,18 +3342,78 @@ td {
   font-size: 14px !important;
   padding: 5px 20px !important;
 }
+.booking-history .table-container::-webkit-scrollbar {
+  width: 10px !important;
+  height: 10px !important;
+}
+.booking-history .table-container::-webkit-scrollbar-track {
+  background: #f0f0f0 !important;
+}
+.booking-history .table-container::-webkit-scrollbar-thumb {
+  background: #a8a8a8 !important;
+  border-radius: 4px !important;
+}
+.booking-history .table-container::-webkit-scrollbar-thumb:hover {
+  background: #ccc !important;
+}
+.table tbody tr:last-child td{
+  border-bottom: none !important;
+}
+.booking-history .table-container .trigger-booking-table {
+  border-collapse: separate; 
+  border-spacing: 0;
+  border-bottom-left-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+}
+.trigger-booking-table svg {
+  margin: 49px 0px !important;
+}
+@media (max-width: 1600px) {
+  .booking-history .table-container {
+    overflow-x: auto !important;
+  }
+}
 
 /******************trigger payment model******************/
 .trigger-modal-body {
   margin: 20px 0px !important;
 }
 .trigger-payment-model {
-  display: flex;
-  justify-content: center;
-  margin: 0px 150px !important;
+ margin-left: 50px !important;
 }
 @media (max-width: 768px) {
   .trigger-payment-model {
     margin: 0px 20px !important;
   }
+  .trigger-payment-model p {
+    text-align: left !important;
+  }
+  .trigger-payment-model label {
+    font-weight: 700 !important;
+  }
 }
+
+/*******************Cancel Booking Modal*******************/
+.cancel-booking-modal {
+  padding: 30px 0px !important;
+}
+
+/********************Booking Manager*******************/
+.booking-manager-container {
+  margin: 15px!important;
+}
+.booking-manager-table {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+@media (max-width: 768px) {
+ .booking-manager-container {
+  gap: 20px !important;
+ }
+ .booking-manager-container {
+  margin: 0px!important;
+}
+}
+
+

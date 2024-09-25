@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SuperUserPaymentsComponent } from './super-user-payments.component';
+import { BookingModalComponent } from './booking-modal.component';
 
-describe('SuperUserPaymentsComponent', () => {
-  let component: SuperUserPaymentsComponent;
-  let fixture: ComponentFixture<SuperUserPaymentsComponent>;
+describe('BookingModalComponent', () => {
+  let component: BookingModalComponent;
+  let fixture: ComponentFixture<BookingModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SuperUserPaymentsComponent]
+      imports: [BookingModalComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(SuperUserPaymentsComponent);
+    fixture = TestBed.createComponent(BookingModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

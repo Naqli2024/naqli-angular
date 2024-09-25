@@ -7,6 +7,8 @@ import { SpinnerService } from '../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { PartnerService } from '../../../services/partner/partner.service';
 import { FormsModule } from '@angular/forms';
+import { CancelBookingModalComponent } from './cancel-booking-modal/cancel-booking-modal.component';
+
 
 @Component({
   selector: 'app-trigger-booking',
@@ -25,7 +27,7 @@ export class TriggerBookingComponent {
     private bookingService: BookingService,
     private partnerService: PartnerService,
     private spinnerService: SpinnerService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -76,7 +78,9 @@ export class TriggerBookingComponent {
         if (response.success) {
           this.vendorsByBooking[booking._id] = response.data.map((vendor: any) => ({
             name: vendor.partnerName,
-            price: vendor.quotePrice || 'N/A' 
+            price: vendor.quotePrice || 'N/A' ,
+            partnerId: vendor.partnerId,
+            oldQuotePrice: vendor.oldQuotePrice
           }));
         } else {
           this.toastr.error('Failed to fetch vendors');
@@ -91,22 +95,17 @@ export class TriggerBookingComponent {
   }
 
   cancelBooking(bookingId: any): void {
-    this.spinnerService.show();
-
-    this.bookingService.cancelBooking(bookingId).subscribe(
-      (response: any) => {
-        this.spinnerService.hide();
-        this.toastr.success(response.message);
-      },
-      (error) => {
-          this.spinnerService.hide();
-          this.toastr.error(
-            error.error?.message || 'Failed to cancel booking',
-            'Error'
-          );
-      }
-    )
-  } 
+    const modalRef = this.modalService.open(CancelBookingModalComponent, {
+      size: 'md',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
+    // Pass booking and vendor data to modal
+    modalRef.componentInstance.bookingId = bookingId;
+    modalRef.componentInstance.fetchBookings = this.fetchBookings.bind(this);
+  }
 
   openPaymentModal(booking: any): void {
     const selectedVendor = this.selectedVendor[booking._id];

@@ -20,21 +20,21 @@
       <!-- First Column -->
       <div class="row">
         <div class="col-md-6 col-sm-12">
-          <div class="trigger-payment-model row">
-            <label class="col-md-6 col-sm-3">Vendor Name</label>
-            <p class="col-md-6 col-sm-3">{{ vendor.name }}</p>
+          <div class="trigger-payment-model row justify-content-center">
+            <label class="col-md-6 col-sm-12">Vendor Name</label>
+            <p class="col-md-6 col-sm-12">{{ vendor.name }}</p>
           </div>
           <div class="trigger-payment-model row">
-            <label class="col-md-6">Phone Number</label>
-            <p class="col-md-6">9845621357</p>
+            <label class="col-md-6 col-sm-12">Phone Number</label>
+            <p class="col-md-6 col-sm-12">{{ partnerNo }}</p>
           </div>
           <div class="trigger-payment-model row">
-            <label class="col-md-6">Booking ID</label>
-            <p class="col-md-6">{{ booking._id }}</p>
+            <label class="col-md-6 col-sm-12">Booking ID</label>
+            <p class="col-md-6 col-sm-12">{{ booking._id }}</p>
           </div>
           <div class="trigger-payment-model row">
-            <label class="col-md-6">Mode</label>
-            <p class="col-md-6">
+            <label class="col-md-6 col-sm-12">Mode</label>
+            <p class="col-md-6 col-sm-12">
               {{ booking.name }} - {{ booking.type[0]?.typeName }}
             </p>
           </div>
@@ -43,16 +43,16 @@
         <!-- Second Column -->
         <div class="col-md-6 col-sm-12">
           <div class="trigger-payment-model row">
-            <label class="col-md-6">From</label>
-            <p class="col-md-6">{{ booking.pickup }}</p>
+            <label class="col-md-6 col-sm-12">From</label>
+            <p class="col-md-6 col-sm-12">{{ booking.pickup }}</p>
           </div>
           <div class="trigger-payment-model row">
-            <label class="col-md-6">To</label>
-            <p class="col-md-6">{{ booking.dropPoints.join(", ") }}</p>
+            <label class="col-md-6 col-sm-12">To</label>
+            <p class="col-md-6 col-sm-12">{{ booking.dropPoints.join(", ") }}</p>
           </div>
           <div class="trigger-payment-model row">
-            <label class="col-md-6">Extra Labour</label>
-            <p class="col-md-6">{{ booking.additionalLabour }}</p>
+            <label class="col-md-6 col-sm-12">Extra Labour</label>
+            <p class="col-md-6 col-sm-12">{{ booking.additionalLabour }}</p>
           </div>
         </div>
       </div>
@@ -70,6 +70,15 @@
             type="button"
             class="btn btn-payNow"
             style="width: 200px !important"
+            (click)="
+              makePayment(
+                $event,
+                (vendor.price || 0) / 2,
+                'HalfPaid',
+                vendor.partnerId,
+                vendor.oldQuotePrice
+              )
+            "
           >
             Pay Advance: {{ vendor.price / 2 }} SAR
           </button>
@@ -77,6 +86,15 @@
             type="button"
             class="btn btn-payNow"
             style="width: 200px !important"
+            (click)="
+              makePayment(
+                $event,
+                vendor.price,
+                'Paid',
+                vendor.partnerId,
+                vendor.oldQuotePrice
+              )
+            "
           >
             Pay: {{ vendor.price }} SAR
           </button>
