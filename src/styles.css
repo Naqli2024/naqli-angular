@@ -3416,4 +3416,23 @@ td {
 }
 }
 
+.scrollable-tbody {
+  display: block; 
+  max-height: 300px;
+  overflow-y: auto !important; 
+}
+.scrollable-tbody tr {
+  display: table; 
+  width: 100%;  
+}
+.scrollable-tbody::-webkit-scrollbar {
+  width: 8px; 
+}
+.scrollable-tbody::-webkit-scrollbar-thumb {
+  background-color: darkgrey; 
+  border-radius: 10px; 
+}
+.scrollable-tbody::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
 

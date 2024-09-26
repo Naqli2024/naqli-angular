@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { SpinnerService } from '../../../services/spinner.service';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 import { checkoutService } from '../../../services/checkout.service';
 import { Router } from '@angular/router';
 

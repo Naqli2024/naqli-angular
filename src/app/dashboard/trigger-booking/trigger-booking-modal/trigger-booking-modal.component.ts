@@ -8,17 +8,19 @@ import { SpinnerService } from '../../../../services/spinner.service';
 import { BookingService } from '../../../../services/booking.service';
 import { PartnerService } from '../../../../services/partner/partner.service';
 import { BookingModalComponent } from './booking-modal/booking-modal.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-trigger-booking-modal',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './trigger-booking-modal.component.html',
   styleUrl: './trigger-booking-modal.component.css',
 })
 export class TriggerBookingModalComponent {
   @Input() booking: any;
   @Input() vendor: any;
+  @Input() fetchBookings!: () => void;
   paymentHandler: any = null;
   totalAmount: number = 0;
   partnerNo: any;
@@ -40,9 +42,9 @@ export class TriggerBookingModalComponent {
   }
 
   getPartnerDetails(): void {
-    if(this.booking.partner) {
+    if(this.vendor.partnerId) {
       this.partnerService
-      .getPartnerDetails(this.booking.partner)
+      .getPartnerDetails(this.vendor.partnerId)
       .subscribe((response: any) => {
         this.partnerNo = response.data.mobileNo;
       });
@@ -172,6 +174,7 @@ export class TriggerBookingModalComponent {
         (response) => {
           this.spinnerService.hide();
           this.openBookingModal(this.booking._id);
+          this.fetchBookings();
           console.log('Booking payment status updated successfully:', response);
         },
         (error) => {

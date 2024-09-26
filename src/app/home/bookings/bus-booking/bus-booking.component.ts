@@ -12,6 +12,8 @@ import { MapComponent } from '../../../map/map.component';
 import { Router } from '@angular/router';
 import { GoogleMapsService } from '../../../../services/googlemap.service';
 import { MapService } from '../../../../services/map.service';
+import { User } from '../../../../models/user.model';
+import { UserService } from '../../../../services/user.service';
 
 @Component({
   selector: 'app-bus-booking',
@@ -57,7 +59,8 @@ export class BusBookingComponent implements OnInit {
     private bookingService: BookingService,
     private router: Router,
     private googleMapsService: GoogleMapsService,
-    private mapService: MapService
+    private mapService: MapService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -246,32 +249,60 @@ initializeMap(): void {
   }
 
   submitBooking(): void {
-    if(this.formIsValid()) {
+    if (this.formIsValid()) {
       this.spinnerService.show();
-      this.bookingService.createBooking(this.bookingData).subscribe(
-        (response) => {
-          this.spinnerService.hide();
-          if (response && response._id) {
-            this.toastr.success(response.message, 'Booking Successful!');
-            this.clearForm();
-            // Check if there is an existing bookingId in localStorage
-            const existingBookingId = localStorage.getItem('bookingId');
-
-            // Set the new bookingId in localStorage, replacing the old one
-            localStorage.setItem('bookingId', response._id);
-            this.router.navigate(['/home/user/dashboard/booking']);
-            this.openBookingModal(response._id);
-          } else {
-            this.toastr.error(response.message, 'Booking Failed!');
+  
+      // Fetch userId from localStorage
+      const userId = localStorage.getItem('userId');
+  
+      if (userId) {
+        // Fetch the user accountType from the backend
+        this.userService.getUserById(userId).subscribe(
+          (user: User) => {
+            // Proceed with booking creation once user data is available
+            this.bookingService.createBooking(this.bookingData).subscribe(
+              (response) => {
+                this.spinnerService.hide();
+                if (response && response._id) {
+                  this.toastr.success(response.message, 'Booking Successful!');
+                  this.clearForm();
+  
+                  // Set the new bookingId in localStorage, replacing the old one
+                  localStorage.setItem('bookingId', response._id);
+  
+                  // Navigate based on user accountType
+                  if (user.accountType === 'Super User') {
+                    // Redirect to Super User dashboard
+                    this.router.navigate(['/home/user/dashboard/super-user/dashboard']);
+                  } else if (user.accountType === 'Single User') {
+                    // Redirect to booking dashboard
+                    this.router.navigate(['/home/user/dashboard/booking']);
+                  }
+  
+                  // Optionally open a booking modal after navigation
+                  this.openBookingModal(response._id);
+                } else {
+                  this.toastr.error(response.message, 'Booking Failed!');
+                }
+              },
+              (error) => {
+                this.spinnerService.hide();
+                const errorMessage = error.error?.message || 'An error occurred';
+                this.toastr.error(errorMessage, 'Error');
+                console.log('Backend Error:', error);
+              }
+            );
+          },
+          (error) => {
+            this.spinnerService.hide();
+            const errorMessage = error.error?.message || 'Failed to retrieve user data';
+            this.toastr.error(errorMessage, 'Error');
           }
-        },
-        (error) => {
-          this.spinnerService.hide();
-          const errorMessage = error.error?.message || 'An error occurred';
-          this.toastr.error(errorMessage, 'Error');
-          console.log('Backend Error:', error);
-        }
-      );
+        );
+      } else {
+        this.spinnerService.hide();
+        this.toastr.error('User not logged in', 'Error');
+      }
     }
   }
 

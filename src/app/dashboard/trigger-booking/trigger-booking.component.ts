@@ -51,10 +51,8 @@ export class TriggerBookingComponent {
             this.toastr.error('Failed to fetch bookings');
           }
         },
-        (error) => {
+        () => {
           this.spinnerService.hide();
-          const errorMessage = error.error?.message || 'An error occurred';
-          this.toastr.error(errorMessage, 'Error');
         }
       );
     } else {
@@ -125,5 +123,7 @@ export class TriggerBookingComponent {
     // Pass booking and vendor data to modal
     modalRef.componentInstance.booking = booking;
     modalRef.componentInstance.vendor = selectedVendor;
+     // Pass fetchBookings method to modal
+     modalRef.componentInstance.fetchBookings = this.fetchBookings.bind(this);
   }
 }

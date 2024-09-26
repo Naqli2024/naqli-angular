@@ -1,8 +1,15 @@
 <div class="row booking-manager-container">
   <div class="col-md-12 booking-history">
-    <div class="dropdown-container" style="width: 100%; margin: 15px 0px;">
-      <select class="form-select" style="width: 150px !important;">
+    <div class="dropdown-container" style="width: 100%; margin: 15px 0px">
+      <select
+        class="form-select"
+        style="width: 150px !important"
+        [(ngModel)]="selectedFilter"
+        (change)="onFilterChange($event)"
+      >
+        <option>All</option>
         <option>Pending</option>
+        <option>HalfPaid</option>
         <option>Completed</option>
         <option>Paid</option>
       </select>
@@ -14,25 +21,71 @@
             <th>Booking ID</th>
             <th>Mode</th>
             <th>Vendor</th>
-            <th>Payment Made</th>
             <th>Status</th>
+            <th>Payment Made</th>
+            <th>Pending Payment</th>
           </tr>
         </thead>
         <tbody>
           <ng-container>
-            <tr class="trigger-booking-table">
-              <td>XXXXXXXXXXXXX</td>
-              <td>Vehicle</td>
-              <td>Arumugam</td>
-              <td>Completed</td>
-              <td>OK</td>
-            </tr>
-            <tr class="trigger-booking-table">
-              <td>XXXXXXXXXXXXX</td>
-              <td>Vehicle</td>
-              <td>Arumugam</td>
-              <td>Completed</td>
-              <td>OK</td>
+            <tr
+              class="trigger-booking-table"
+              *ngFor="let booking of filteredBookings"
+            >
+              <td>{{ booking._id }}</td>
+              <td>{{ booking.unitType }}</td>
+              <td>
+                {{
+                  booking.partner
+                    ? partnerDetails[booking.partner]?.partnerName ||
+                      "Loading..."
+                    : "N/A"
+                }}
+              </td>
+              <td>
+                <ng-container [ngSwitch]="booking.paymentStatus">
+                  <img
+                    *ngSwitchCase="'HalfPaid'"
+                    src="assets/images/halfpaid.svg"
+                    alt="Half Paid"
+                  />
+                  <img
+                    *ngSwitchCase="'Pending'"
+                    src="assets/images/pending payment.svg"
+                    alt="Pending Payment"
+                  />
+                  <img
+                    *ngSwitchCase="'Completed'"
+                    src="assets/images/payment-completed.svg"
+                    alt="Payment Completed"
+                  />
+                </ng-container>
+              </td>
+              <td>{{ booking.paymentAmount }} SAR</td>
+              <td>
+                <ng-container
+                  *ngIf="booking.remainingBalance > 0; else noPaymentNeeded"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-payNow"
+                    (click)="
+                      makePayment(
+                        $event,
+                        booking.remainingBalance || 0,
+                        'Completed',
+                        booking.partner,
+                        booking._id
+                      )
+                    "
+                  >
+                    Pay {{ booking.remainingBalance }} SAR
+                  </button>
+                </ng-container>
+                <ng-template #noPaymentNeeded>
+                  <p>---</p>
+                </ng-template>
+              </td>
             </tr>
           </ng-container>
         </tbody>

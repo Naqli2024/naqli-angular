@@ -13,7 +13,6 @@ export class BookingService {
   constructor(private http: HttpClient) {}
 
   createBooking(bookingData: any): Observable<any> {
-    console.log(bookingData)
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${this.apiUrl}/bookings`, bookingData, {

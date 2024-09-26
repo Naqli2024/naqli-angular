@@ -35,7 +35,8 @@
           <div class="trigger-payment-model row">
             <label class="col-md-6 col-sm-12">Mode</label>
             <p class="col-md-6 col-sm-12">
-              {{ booking.name }} - {{ booking.type[0]?.typeName }}
+              {{ booking.name }}
+              <span *ngIf="booking.type && booking.type.length > 0 && booking.type[0]?.typeName"> - {{ booking.type[0]?.typeName }}</span>
             </p>
           </div>
         </div>

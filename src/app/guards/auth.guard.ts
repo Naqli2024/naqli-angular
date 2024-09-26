@@ -15,7 +15,6 @@ import { map, catchError } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-
 export class AuthGuard implements CanActivate {
   constructor(
     private modalService: NgbModal,
@@ -41,9 +40,22 @@ export class AuthGuard implements CanActivate {
             }
             return true;
           } else if (user.accountType === 'Super User') {
+            if (
+              state.url === '/home/user' ||
+              state.url === '/home/user/vehicle' ||
+              state.url === '/home/user/bus' ||
+              state.url === '/home/user/equipment' ||
+              state.url === '/home/user/special' ||
+              state.url === '/home/user/others'
+            ) {
+              return true; // Allow access to this specific route
+            }
+
             // If the user is a Super User, redirect to super user dashboard
             if (state.url !== '/home/user/dashboard/super-user/dashboard') {
-              this.router.navigate(['/home/user/dashboard/super-user/dashboard']);
+              this.router.navigate([
+                '/home/user/dashboard/super-user/dashboard',
+              ]);
               return false;
             }
             return true;
