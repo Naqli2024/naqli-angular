@@ -3436,3 +3436,21 @@ td {
   background: #f1f1f1; 
 }
 
+.labels-container {
+  display: flex;
+  flex-direction: column;
+  margin: 30px 30px !important;
+}
+
+.label-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.color-box {
+  width: 15px;
+  height: 15px;
+  margin-right: 10px;
+  border-radius: 50%;
+}
