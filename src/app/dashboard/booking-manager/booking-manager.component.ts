@@ -8,6 +8,8 @@ import { environment } from '../../../environments/environment.prod';
 import { SpinnerService } from '../../../services/spinner.service';
 import { checkoutService } from '../../../services/checkout.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EditBookingModalComponent } from './edit-booking-modal/edit-booking-modal.component';
 
 @Component({
   selector: 'app-booking-manager',
@@ -30,7 +32,8 @@ export class BookingManagerComponent {
     private partnerService: PartnerService,
     private spinnerService: SpinnerService,
     private checkout: checkoutService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -177,7 +180,9 @@ export class BookingManagerComponent {
           partnerId
         );
         if (status === 'Completed' || status === 'HalfPaid') {
-          this.router.navigate(['/home/user/dashboard/super-user/booking-manager']);
+          this.router.navigate([
+            '/home/user/dashboard/super-user/booking-manager',
+          ]);
         }
       } else {
         this.toastr.error(data.message);
@@ -221,5 +226,18 @@ export class BookingManagerComponent {
           );
         }
       );
+  }
+
+  openEditModal(booking: any): void {
+    const modalRef = this.modalService.open(EditBookingModalComponent, {
+      size: 'xl',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
+
+    // Pass booking and vendor data to modal
+    modalRef.componentInstance.booking = booking;
   }
 }

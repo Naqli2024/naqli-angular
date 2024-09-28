@@ -1,0 +1,256 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="booking-modal">
+      <h2 style="text-align: left; margin-left: 20px">Edit</h2>
+      <div class="modal-close">
+        <button
+          type="button"
+          class="close"
+          aria-label="Close"
+          (click)="closeModalAndNavigate()"
+          style="margin-right: 10px; color: white"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Body Container -->
+    <div
+      class="trigger-modal-body container edit-booking-modal"
+    >
+      <!-- First row -->
+      <div class="row container">
+        <div
+          class="home-body"
+          style="
+            background-color: transparent !important;
+            padding: 0px !important;
+            box-shadow: none !important;
+            margin: 20px 0px !important;
+          "
+        >
+          <div
+            *ngFor="let item of items"
+            class="item"
+            [ngClass]="{
+              'highlighted-border': bookingData.unitType === item.name
+            }"
+            style="
+              width: 130px;
+              margin: 0px 18px;
+              padding-bottom: 0px !important;
+            "
+          >
+            <img
+              [src]="item.image"
+              alt="{{ item.name }}"
+              style="max-height: 80px; max-width: 80px"
+            />
+            <hr class="line" />
+            <p class="item-name" style="padding-bottom: 10px">{{ item.name }}</p>
+          </div>
+        </div>
+      </div>
+      <!-- second row -->
+      <div class="row container">
+        <div class="col-md-4 edit-model-row-2">
+          <label>Mode</label>
+          <select
+            class="form-select"
+            [(ngModel)]="bookingData.name"
+            style="width: 200px !important"
+          >
+            <option>{{ bookingData.name }}</option>
+          </select>
+        </div>
+        <div
+          class="col-md-4 edit-model-row-2"
+          *ngIf="bookingData.type?.length > 0"
+        >
+          <label>Mode Classification</label>
+          <select
+            class="form-select"
+            [(ngModel)]="bookingData.type[0].typeName"
+            style="width: 200px !important"
+          >
+            <option>
+              {{ bookingData.type[0].typeName }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <!-- second row -->
+      <div class="row" style="margin: 0px 15px !important">
+        <div
+          class="col-md-4 edit-model-row-2"
+          style="border-right: 1px solid #ccc"
+        >
+          <label>Date</label>
+          <div
+            class="booking-inputs"
+            style="width: 200px !important; margin-right: 40px !important"
+          >
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="bookingData.date"
+              required
+            />
+          </div>
+        </div>
+        <div
+          class="col-md-5 edit-model-row-2"
+          style="
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #ccc;
+            margin: 0px 5px;
+          "
+        >
+          <div
+            class="input-field"
+            style="
+              border: 1px solid #ddd !important;
+              padding: 5px 20px;
+              border-radius: 10px;
+            "
+          >
+            <div class="pick-up"></div>
+            <input
+              type="text"
+              placeholder="Enter pickup location"
+              [(ngModel)]="bookingData.pickup"
+              (input)="onPickupInputChange()"
+              required
+            />
+            <!-- Pickup Suggestions -->
+            <div
+              class="suggestions-dropdown"
+              *ngIf="pickupSuggestions.length > 0"
+            >
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of pickupSuggestions"
+                (click)="selectPickupSuggestion(suggestion)"
+              >
+                {{ suggestion.description }}
+              </div>
+            </div>
+          </div>
+          <div
+            *ngFor="
+              let dropPoint of bookingData.dropPoints;
+              let i = index;
+              trackBy: trackByIndex
+            "
+            class="input-field"
+            style="
+              border: 1px solid #ddd !important;
+              padding: 5px 20px;
+              display: flex;
+              align-items: center;
+              border-radius: 10px;
+            "
+          >
+            <div class="drop-point"></div>
+            <input
+              type="text"
+              [placeholder]="'Drop point location ' + (i + 1)"
+              [(ngModel)]="bookingData.dropPoints[i]"
+              (input)="onDropPointInputChange(i)"
+              required
+            />
+            <div
+              class="circle"
+              *ngIf="i === 0 && bookingData.dropPoints.length === 1"
+              (click)="addInputField()"
+              style="margin-bottom: 8px"
+            >
+              <i class="fas fa-plus"></i>
+            </div>
+            <div
+              class="circle"
+              *ngIf="i !== 0"
+              (click)="removeInputField(i)"
+              style="margin-bottom: 8px"
+            >
+              <i class="fas fa-times"></i>
+            </div>
+            <div
+              class="suggestions-dropdown"
+              *ngIf="
+                dropPointSuggestions[i] && dropPointSuggestions[i].length > 0
+              "
+            >
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of dropPointSuggestions[i]"
+                (click)="selectDropPointSuggestion(suggestion, i)"
+              >
+                {{ suggestion.description }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 edit-model-row-2">
+          <div class="col-md-12">
+            <div class="checkbox-container">
+              <input
+                type="checkbox"
+                id="additionalLabourCheckbox"
+                (change)="toggleAdditionalLabour($event)"
+                [checked]="additionalLabourEnabled"
+              />
+              <label for="additionalLabourCheckbox"
+                >Need any additional labour</label
+              >
+            </div>
+            <div
+              class="radio-container"
+              *ngIf="additionalLabourEnabled"
+              style="display: flex; flex-direction: row !important"
+            >
+              <input
+                type="radio"
+                id="radio1"
+                name="radios"
+                value="1"
+                (change)="logRadioValue($event)"
+                [checked]="bookingData.additionalLabour === 1"
+              />
+              <label for="radio1">1</label>
+              <input
+                type="radio"
+                id="radio2"
+                name="radios"
+                value="2"
+                (change)="logRadioValue($event)"
+                [checked]="bookingData.additionalLabour === 2"
+              />
+              <label for="radio2">2</label>
+              <input
+                type="radio"
+                id="radio3"
+                name="radios"
+                value="3"
+                (change)="logRadioValue($event)"
+                [checked]="bookingData.additionalLabour === 3"
+              />
+              <label for="radio3">3</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="" style="float: right !important">
+        <button
+          type="button"
+          class="btn btn-payNow"
+          style="width: 150px; margin: 20px 15px !important"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

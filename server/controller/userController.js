@@ -96,7 +96,7 @@ const client = twilio(
 
 // Function to send OTP to the user's contact number using Twilio
 const sendOTP = async (contactNumber, otp) => {
-  const from = "+12563716772"; // Replace with your Twilio phone number
+  const from = "+12563716772"; 
   const to = `+ ${contactNumber}`;
   const text = `Your verification code is ${otp}`;
 

@@ -3454,3 +3454,23 @@ td {
   margin-right: 10px;
   border-radius: 50%;
 }
+
+/******************Edit Model Component****************/
+.edit-model-row-2 {
+  display: flex !important;
+  justify-content: center !important;
+  margin: 25px 0px !important;
+  align-items: center !important;
+  gap: 20px;
+}
+.edit-booking-modal {
+  max-height: 450px; 
+}
+@media (max-width: 768px) {
+  .edit-booking-modal {
+    overflow-y: auto;
+  }
+}
+.highlighted-border {
+  border: 2px solid #1BD0BB !important;
+}
