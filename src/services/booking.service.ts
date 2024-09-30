@@ -8,7 +8,7 @@ import { Booking } from '../models/booking.model';
 })
 export class BookingService {
   private bookingId: string | null = null;
-  private apiUrl = 'http://localhost:4000/api';
+  private apiUrl = 'https://naqli.onrender.com/api';
 
   constructor(private http: HttpClient) {}
 

@@ -9,7 +9,7 @@ import { Equipment } from '../models/equipment-booking';
 })
 export class EquipmentService {
 
-  private apiUrl = 'http://localhost:4000/api/equipments'; 
+  private apiUrl = 'https://naqli.onrender.com/api/equipments'; 
 
   constructor(private http: HttpClient) {}
 

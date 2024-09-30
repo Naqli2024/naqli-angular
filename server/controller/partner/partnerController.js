@@ -206,8 +206,7 @@ const deletedBookingRequest = async (req, res) => {
 };
 
 const getTopPartners = async (req, res) => {
-  const { unitType, unitClassification, subClassification, bookingId } =
-    req.body;
+  const { unitType, unitClassification, subClassification, bookingId } = req.body;
 
   try {
     // Query partners matching criteria
@@ -225,26 +224,20 @@ const getTopPartners = async (req, res) => {
         (operator) =>
           operator.unitType === unitType &&
           operator.unitClassification === unitClassification &&
-          (!subClassification ||
-            operator.subClassification === subClassification)
+          (!subClassification || operator.subClassification === subClassification)
       );
 
       const filteredBookingRequests = partner.bookingRequest.filter(
         (booking) => {
           const bookingIdValid = bookingId && bookingId.toString();
-          const bookingIdMatch =
-            booking.bookingId && booking.bookingId.toString();
-          return (
-            bookingIdValid &&
-            bookingIdMatch &&
-            bookingIdValid === bookingIdMatch
-          );
+          const bookingIdMatch = booking.bookingId && booking.bookingId.toString();
+          return bookingIdValid && bookingIdMatch && bookingIdValid === bookingIdMatch;
         }
       );
 
       if (matchingOperators.length > 0) {
         filtered.push({
-          partnerId: partner._id.toString(), // Ensure partnerId is properly set
+          partnerId: partner._id.toString(),
           partnerName: partner.partnerName,
           operators: matchingOperators,
           bookingRequests: filteredBookingRequests,
@@ -293,7 +286,6 @@ const getTopPartners = async (req, res) => {
             quotePrice <= slab.slabRateEnd
           ) {
             commissionRate = parseFloat(slab.commissionRate) / 100; // Convert to decimal
-            console.log(commissionRate);
             break;
           }
         }
@@ -336,14 +328,39 @@ const getTopPartners = async (req, res) => {
       }
     }
 
-    const topResults = results
-      .sort((a, b) => a.quotePrice - b.quotePrice)
-      .slice(0, 3);
+    // Filter out entries with null or undefined quotePrice
+    const validResults = results.filter(result => result.quotePrice != null);
 
-    res.status(200).json({
-      success: true,
-      data: topResults,
-    });
+    // Sort the valid results by ascending quotePrice
+    const sortedResults = validResults.sort((a, b) => a.quotePrice - b.quotePrice);
+
+    // Return based on the number of valid results
+    if (sortedResults.length === 1) {
+      // Only one result, return it
+      return res.status(200).json({
+        success: true,
+        data: sortedResults,
+      });
+    } else if (sortedResults.length === 2) {
+      // Two results, return both in ascending order
+      return res.status(200).json({
+        success: true,
+        data: sortedResults,
+      });
+    } else if (sortedResults.length >= 3) {
+      // More than three results, return the top 3 in ascending order
+      const topResults = sortedResults.slice(0, 3);
+      return res.status(200).json({
+        success: true,
+        data: topResults,
+      });
+    } else {
+      // No valid quotePrices, return empty data
+      return res.status(200).json({
+        success: true,
+        data: [],
+      });
+    }
   } catch (error) {
     console.error("Error fetching partners:", error);
     res.status(500).json({

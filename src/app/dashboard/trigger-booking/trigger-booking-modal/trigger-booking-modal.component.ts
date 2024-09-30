@@ -94,8 +94,8 @@ export class TriggerBookingModalComponent {
     event.preventDefault();
     this.closeModalAndNavigate();
 
-    if (typeof amount !== 'number' || amount <= 0 || !status) {
-      this.toastr.error('Invalid payment amount or status');
+    if (typeof amount !== 'number' || amount <= 0 || !status || isNaN(this.vendor.price)) {
+      this.toastr.error('Invalid payment amount or status. Please wait for quote price..');
       console.error('Invalid payment amount or status:', amount, status);
       return;
     }
@@ -151,8 +151,8 @@ export class TriggerBookingModalComponent {
     partnerId: string,
     oldQuotePrice: number
   ) {
-    if (!bookingId || typeof amount !== 'number' || amount <= 0 || !status) {
-      this.toastr.error('Invalid input for payment update');
+    if (!bookingId || typeof amount !== 'number' || amount <= 0 || !status || isNaN(this.vendor.price)) {
+      this.toastr.error('Invalid input for payment update. Please wait for quote price..');
       return;
     }
     this.spinnerService.show();
