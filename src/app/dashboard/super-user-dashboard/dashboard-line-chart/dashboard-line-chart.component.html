@@ -1,0 +1,17 @@
+<div class="for-orders" style="padding: 8px">
+    <div class="for-orders-head">
+      <select
+        [(ngModel)]="selectedCustomerOption"
+        (change)="onOrderOptionChange($event)"
+        class="form-select"
+        style="width: 200px !important"
+      >
+        <option *ngFor="let option of options" [value]="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+    <div class="chart-container">
+      <canvas id="linechart"></canvas>
+    </div>
+  </div>

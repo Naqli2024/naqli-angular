@@ -20,6 +20,14 @@ export class BookingService {
     });
   }
 
+  updateBooking(bookingId: string, bookingData: any): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put(`${this.apiUrl}/edit-booking/${bookingId}`, bookingData, {
+      headers,
+    });
+  }
+
   cancelBooking(bookingId: string): Observable<any> {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -35,7 +43,6 @@ export class BookingService {
     partnerId: string,
     totalAmount: number,
     oldQuotePrice: number
-
   ): Observable<any> {
     let originalAmount: number;
     let remainingBalance: number;
@@ -62,16 +69,15 @@ export class BookingService {
       // remainingBalance: remainingBalance,
       partnerId: partnerId,
       totalAmount: totalAmount,
-      oldQuotePrice: oldQuotePrice
+      oldQuotePrice: oldQuotePrice,
     };
-    console.log(payload)
+    console.log(payload);
     return this.http.put(
       `${this.apiUrl}/bookings/${bookingId}/payment`,
       payload,
       { headers }
     );
   }
-
 
   getCompletedBookingsByUser(userId: string): Observable<any> {
     const token = localStorage.getItem('authToken');

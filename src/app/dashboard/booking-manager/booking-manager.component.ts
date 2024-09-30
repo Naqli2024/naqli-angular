@@ -239,5 +239,6 @@ export class BookingManagerComponent {
 
     // Pass booking and vendor data to modal
     modalRef.componentInstance.booking = booking;
+    modalRef.componentInstance.refreshBookings = this.getBookingDetails.bind(this);
   }
 }

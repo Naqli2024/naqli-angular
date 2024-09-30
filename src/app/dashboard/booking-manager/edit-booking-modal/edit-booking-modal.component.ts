@@ -2,6 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { BookingService } from '../../../../services/booking.service';
+import { ToastrService } from 'ngx-toastr';
+import { GoogleMapsService } from '../../../../services/googlemap.service';
+import { MapService } from '../../../../services/map.service';
 
 @Component({
   selector: 'app-edit-booking-modal',
@@ -12,6 +16,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class EditBookingModalComponent {
   @Input() booking: any;
+  @Input() refreshBookings?: () => void;
   additionalLabourEnabled: boolean = false;
   items = [
     {
@@ -48,29 +53,71 @@ export class EditBookingModalComponent {
   // Autocomplete related properties
   private autocompleteService!: google.maps.places.AutocompleteService;
   public pickupSuggestions: google.maps.places.AutocompletePrediction[] = [];
-  public dropPointSuggestions: google.maps.places.AutocompletePrediction[][] = [];
+  public dropPointSuggestions: google.maps.places.AutocompletePrediction[][] =
+    [];
 
-  constructor(public activeModal: NgbActiveModal) {}
+  constructor(
+    public activeModal: NgbActiveModal,
+    private bookingService: BookingService,
+    private toastr: ToastrService,
+    private googleMapsService: GoogleMapsService,
+    private mapService: MapService
+  ) {}
 
   ngOnInit(): void {
-    // Map booking data to bookingData model
-    this.bookingData = { 
-      unitType: this.booking.unitType,
-      name: this.booking.name,
-      type: this.booking.type,
-      time: this.booking.time,
-      date: this.booking.date,
-      productValue: this.booking.productValue,
-      pickup: this.booking.pickup,
-      dropPoints: this.booking.dropPoints.length ? this.booking.dropPoints : [''],
-      additionalLabour: this.booking.additionalLabour
-    };
-    this.additionalLabourEnabled = this.booking.additionalLabour > 0;
+    // Ensure that booking exists
+    if (this.booking) {
+      // Map booking data to bookingData model
+      this.bookingData = {
+        unitType: this.booking.unitType || '',
+        name: this.booking.name || '',
+        type: this.booking.type || '',
+        time: this.booking.time || '',
+        date: this.booking.date || '',
+        productValue: this.booking.productValue || 0,
+        pickup: this.booking.pickup || '',
+        dropPoints:
+          Array.isArray(this.booking.dropPoints) &&
+          this.booking.dropPoints.length
+            ? this.booking.dropPoints
+            : [''], // Fallback to [''] if dropPoints is not an array or empty
+        additionalLabour: this.booking.additionalLabour || 0,
+      };
+      this.additionalLabourEnabled = this.booking.additionalLabour > 0;
+    }
+
+    // Load the Google Maps script
+    this.googleMapsService
+      .loadGoogleMapsScript()
+      .then(() => {
+        // Initialize the AutocompleteService after the script has loaded
+        this.autocompleteService = new google.maps.places.AutocompleteService();
+      })
+      .catch((error) => {
+        console.error('Failed to load Google Maps script:', error);
+      });
+  }
+
+  // Method to update booking
+  updateBooking(): void {
+    const bookingId = this.booking._id;
+
+    this.bookingService.updateBooking(bookingId, this.bookingData).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message);
+        this.activeModal.close('success');
+        if (this.refreshBookings) {
+          this.refreshBookings();
+        }
+      },
+      error: (error) => {
+        this.toastr.error('Failed to update booking. Please try again.');
+      },
+    });
   }
 
   closeModalAndNavigate(): void {
     this.activeModal.dismiss();
-    console.log(this.booking)
   }
 
   // Autocomplete for Pickup Input

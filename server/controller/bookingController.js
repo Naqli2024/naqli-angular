@@ -99,6 +99,55 @@ const createBooking = async (req, res) => {
   }
 };
 
+const editBooking = async (req, res) => {
+  const { bookingId } = req.params; 
+  const { date, pickup, dropPoints, additionalLabour } = req.body;
+
+  try {
+    // Find the booking by bookingId
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Check if the booking belongs to the current user
+    if (booking.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        message: "You do not have permission to edit this booking.",
+      });
+    }
+
+    // Update only the allowed fields
+    if (date) {
+      booking.date = date;
+    }
+    if (pickup) {
+      booking.pickup = pickup;
+    }
+    if (dropPoints) {
+      booking.dropPoints = dropPoints;
+    }
+    if (additionalLabour) {
+      booking.additionalLabour = additionalLabour;
+    }
+
+    // Save the updated booking
+    const updatedBooking = await booking.save();
+
+    res.status(200).json({
+      message: "Booking updated successfully",
+      booking: updatedBooking,
+    });
+  } catch (error) {
+    console.error("Error updating booking:", error);
+    res.status(500).json({
+      message: "Error updating booking",
+      error: error.message,
+    });
+  }
+};
+
 const cancelBooking = async (req, res) => {
   const { bookingId } = req.params;
   try {
@@ -501,6 +550,7 @@ const updateBookingStatus = async (req, res) => {
 
 module.exports = {
   createBooking,
+  editBooking,
   cancelBooking,
   updateBookingPaymentStatus,
   bookingCompleted,
