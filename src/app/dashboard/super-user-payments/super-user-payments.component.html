@@ -9,9 +9,8 @@
       >
         <option>All</option>
         <option>Pending</option>
-        <option>HalfPaid</option>
+        <option>Running</option>
         <option>Completed</option>
-        <option>Paid</option>
       </select>
     </div>
     <div class="table-container booking-manager-table">
@@ -43,19 +42,19 @@
                 }}
               </td>
               <td>
-                <ng-container [ngSwitch]="booking.paymentStatus">
+                <ng-container>
                   <img
-                    *ngSwitchCase="'HalfPaid'"
+                    *ngIf="booking.paymentStatus === 'HalfPaid' && booking.bookingStatus !== 'Completed'"
                     src="assets/images/halfpaid.svg"
                     alt="Half Paid"
                   />
                   <img
-                    *ngSwitchCase="'Pending'"
+                    *ngIf="booking.paymentStatus === 'HalfPaid' && booking.bookingStatus === 'Completed'"
                     src="assets/images/pending payment.svg"
                     alt="Pending Payment"
                   />
                   <img
-                    *ngSwitchCase="'Completed'"
+                    *ngIf="booking.paymentStatus === 'Completed'"
                     src="assets/images/payment-completed.svg"
                     alt="Payment Completed"
                   />

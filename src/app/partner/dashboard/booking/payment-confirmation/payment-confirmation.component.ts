@@ -52,7 +52,6 @@ export class PaymentConfirmationComponent implements OnInit {
         (data) => {
           this.bookingDetails = data.data;
           console.log(this.bookingDetails)
-
           if (this.bookingDetails.user) {
             // Call service method to fetch user details
             this.user$ = this.userService.getUserById(this.bookingDetails.user);
@@ -89,12 +88,15 @@ export class PaymentConfirmationComponent implements OnInit {
     }
   }
 
-  checkPaymentStaus() {
+  checkPaymentStatus() {
     const paymentSuccessful =
-    this.bookingDetails.paymentStatus === 'Completed' &&
-    this.bookingDetails.remainingBalance === 0;
-    if(paymentSuccessful) {
-      this.isPaymentSuccessful == true;
+      (this.bookingDetails.paymentStatus === 'Completed' || this.bookingDetails.paymentStatus === 'Paid') &&
+      this.bookingDetails.remainingBalance === 0;
+  
+    if (paymentSuccessful) {
+      this.isPaymentSuccessful = true;
+    } else {
+      this.isPaymentSuccessful = false; 
     }
   }
 
@@ -120,7 +122,7 @@ export class PaymentConfirmationComponent implements OnInit {
           this.additionalChargesReason =
           this.bookingDetails.additionalChargesReason;
           this.openPartnerRequestPayment(this.bookingId);
-          this.checkPaymentStaus();
+          this.checkPaymentStatus();
         } else {
           this.toastr.error(response.message);
         }

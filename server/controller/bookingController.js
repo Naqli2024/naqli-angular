@@ -53,6 +53,13 @@ const createBooking = async (req, res) => {
       }
     }
 
+     // Validate that productValue is a number
+     if (typeof productValue !== 'number' || isNaN(productValue)) {
+      return res.status(400).json({
+        message: "Validation error: productValue must be a valid number.",
+      });
+    }
+
     const booking = new Booking({
       unitType,
       name,
@@ -479,66 +486,56 @@ const updateBookingStatus = async (req, res) => {
 
     console.log('Partner fetched:', partner);
 
-    // Ensure paymentStatus is "Completed" and remainingBalance is 0
-    if (booking.remainingBalance === 0 && 
-        (booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid')) {
+    if (status === true) {
+      // Update booking status to "Completed"
+      booking.bookingStatus = 'Completed';
+      await booking.save();
 
-      if (status === true) {
-        // Update booking status to "Completed"
-        booking.bookingStatus = 'Completed';
-        await booking.save();
+      // Find the corresponding bookingRequest
+      const bookingRequest = partner.bookingRequest.find(br => br.bookingId.toString() === bookingId.toString());
+      if (bookingRequest) {
+        bookingRequest.bookingStatus = booking.bookingStatus;
+        await partner.save(); // Save updated partner document
 
-        // Find the corresponding bookingRequest
-        const bookingRequest = partner.bookingRequest.find(br => br.bookingId.toString() === bookingId.toString());
-        if (bookingRequest) {
-          bookingRequest.bookingStatus = booking.bookingStatus;
-          await partner.save(); // Save updated partner document
+        // Now access the assignedOperator from the bookingRequest
+        const assignedOperator = bookingRequest.assignedOperator;
 
-          // Now access the assignedOperator from the bookingRequest
-          const assignedOperator = bookingRequest.assignedOperator;
-
-          if (assignedOperator && assignedOperator.operatorId) {
-
-            // Loop through operators to find the one that matches the assignedOperator
-            let operatorFound = false;
-            for (const operator of partner.operators) {
-              let operatorDetail = operator.operatorsDetail.find(op => op._id.toString() === assignedOperator.operatorId.toString());
-              if (operatorDetail) {
-                operatorDetail.status = 'available';  // Update status to 'available'
-                operatorFound = true;
-                break; // Exit loop once found
-              }
+        if (assignedOperator && assignedOperator.operatorId) {
+          // Loop through operators to find the one that matches the assignedOperator
+          let operatorFound = false;
+          for (const operator of partner.operators) {
+            let operatorDetail = operator.operatorsDetail.find(op => op._id.toString() === assignedOperator.operatorId.toString());
+            if (operatorDetail) {
+              operatorDetail.status = 'available';  // Update status to 'available'
+              operatorFound = true;
+              break; // Exit loop once found
             }
+          }
 
-            // Also check and update the `extraOperators` array
-            let extraOperator = partner.extraOperators.find(op => op._id.toString() === assignedOperator.operatorId.toString());
-            if (extraOperator) {
-              extraOperator.status = 'available';  // Update status to 'available'
-            } else {
-              console.log(`Operator not found in extraOperators with ID: ${assignedOperator.operatorId}`);
-            }
-
-            // Save the updated status of operators
-            if (operatorFound || extraOperator) {
-              await partner.save(); // Save the updated partner document
-            } else {
-              console.log('No operator found with the assigned operator ID.');
-            }
+          // Also check and update the `extraOperators` array
+          let extraOperator = partner.extraOperators.find(op => op._id.toString() === assignedOperator.operatorId.toString());
+          if (extraOperator) {
+            extraOperator.status = 'available';  // Update status to 'available'
           } else {
-            console.log('No assigned operator found in booking request.');
+            console.log(`Operator not found in extraOperators with ID: ${assignedOperator.operatorId}`);
+          }
+
+          // Save the updated status of operators
+          if (operatorFound || extraOperator) {
+            await partner.save(); // Save the updated partner document
+          } else {
+            console.log('No operator found with the assigned operator ID.');
           }
         } else {
-          return res.status(404).json({ message: 'No bookingRequest found for this bookingId' });
+          console.log('No assigned operator found in booking request.');
         }
-
-        return res.status(200).json({ message: 'Booking status updated to Completed', booking });
       } else {
-        return res.status(400).json({ message: 'Status is not true, cannot update booking status' });
+        return res.status(404).json({ message: 'No bookingRequest found for this bookingId' });
       }
+
+      return res.status(200).json({ message: 'Booking status updated to Completed', booking });
     } else {
-      return res.status(400).json({
-        message: 'Cannot update booking status. Ensure paymentStatus is Completed or Paid.'
-      });
+      return res.status(400).json({ message: 'Status is not true, cannot update booking status' });
     }
   } catch (error) {
     console.error('Error updating booking status:', error);

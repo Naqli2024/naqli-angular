@@ -55,10 +55,19 @@
             outline: none;
           "
         />
-        <div class="partner-field-last">
-          <p>Pending Amount</p>
-          <p style="color: #914f9d">{{ bookingDetails?.remainingBalance }}</p>
+        <div *ngIf="(bookingDetails.paymentStatus === 'Completed' || bookingDetails.paymentStatus === 'Paid') && bookingDetails.remainingBalance === 0; else pendingAmount">
+          <p style="color: rgb(11, 153, 11); text-align: center">
+            Payment Successful!!
+          </p>
         </div>
+        
+        <ng-template #pendingAmount>
+          <div class="partner-field-last">
+            <p>Pending Amount</p>
+            <p style="color: #914f9d">{{ bookingDetails?.remainingBalance }} SAR</p>
+          </div>
+        </ng-template>
+
         <div class="modal-footer cancel-booking-btns">
           <button
             type="button"
@@ -75,13 +84,6 @@
           >
             Terminate
           </button>
-        </div>
-        <div
-          *ngIf="isPaymentSuccessful && bookingDetails?.remainingBalance === 0"
-        >
-          <p style="color: rgb(11, 153, 11); text-align: center">
-            Payment Successful!!
-          </p>
         </div>
       </div>
     </div>

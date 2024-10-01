@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class NaqleeUserService {
   
-    private baseUrl = 'https://naqli.onrender.com/api/admin'; 
+    private baseUrl = 'http://localhost:4000/api/admin'; 
 
     constructor(private http: HttpClient) { }
   

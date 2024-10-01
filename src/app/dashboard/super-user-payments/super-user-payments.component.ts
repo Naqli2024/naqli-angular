@@ -65,14 +65,19 @@ export class SuperUserPaymentsComponent {
   filterBookings(): void {
     if (this.selectedFilter === 'All') {
       this.filteredBookings = this.bookings; // Show all bookings
-    } else if (this.selectedFilter === 'Paid') {
+    } else if (this.selectedFilter === 'Completed') {
       this.filteredBookings = this.bookings.filter(
-        (booking) => booking.paymentStatus === "Paid"
+        (booking) => booking.paymentStatus === "Paid" || booking.paymentStatus === "Completed"
       );
-    } else {
+    } else if(this.selectedFilter === "Running") {
+      this.filteredBookings =  this.bookings.filter(
+        (booking) => booking.paymentStatus === "HalfPaid"
+      )
+    }
+    else if(this.selectedFilter === "Pending") {
       this.filteredBookings = this.bookings.filter(
-        (booking) => booking.paymentStatus === this.selectedFilter
-      );
+        (booking) => booking.paymentStatus === "HalfPaid" && booking.bookingStatus === "Completed"
+      )
     }
   }
 

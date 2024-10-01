@@ -15,19 +15,65 @@ const userRegister = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const existUser = await user.findOne({
-      emailAddress: req.body.emailAddress,
-    });
-    if (existUser) {
+    const {
+      firstName,
+      lastName,
+      emailAddress,
+      password,
+      confirmPassword,
+      contactNumber,
+      address1,
+      city,
+      accountType,
+      govtId,
+      idNumber,
+    } = req.body;
+
+    // Check for existing users with any of the fields
+    const existUserByEmail = await user.findOne({ emailAddress });
+    const existUserByIdNumber = await user.findOne({ idNumber });
+    const existUserByContactNumber = await user.findOne({ contactNumber });
+
+    // Initialize the message
+    let message = "User with this ";
+
+    // Check for existing email address
+    if (existUserByEmail) {
+      message += "email address ";
+    }
+
+    // Check for existing ID number
+    if (existUserByIdNumber) {
+      message += "ID number "; // Append "ID number" with "and" if necessary
+    }
+
+    // Check for existing contact number
+    if (existUserByContactNumber) {
+      message += "contact number "; // Append "contact number" with "and" if necessary
+    }
+
+    // If any user exists, send the message
+    if (existUserByEmail || existUserByIdNumber || existUserByContactNumber) {
+      message += " already exists.";
+
       return res.status(400).json({
-        message: "User already exists",
+        message: message,
+        success: false,
+        data: null,
+      });
+    }
+
+    // Ensure that idNumber is exactly 10 digits long
+    if (!/^\d{10}$/.test(idNumber)) {
+      return res.status(400).json({
+        message: "ID number must be exactly 10 digits long.",
         success: false,
         data: null,
       });
     }
 
     // Check if password and confirmPassword match
-    if (req.body.password !== req.body.confirmPassword) {
+    if (password !== confirmPassword) {
       return res.status(400).json({
         message: "Passwords do not match",
         success: false,
@@ -36,20 +82,25 @@ const userRegister = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    req.body.password = hashedPassword;
-    const hashedConfirmPassword = await bcrypt.hash(
-      req.body.confirmPassword,
-      10
-    );
-    req.body.confirmPassword = hashedConfirmPassword;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedConfirmPassword = await bcrypt.hash(confirmPassword, 10); 
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
 
     // Create new user with OTP and its expiry time
     const newUser = new user({
-      ...req.body,
+      firstName,
+      lastName,
+      emailAddress,
+      password: hashedPassword,
+      confirmPassword: hashedConfirmPassword,
+      contactNumber,
+      address1,
+      city,
+      accountType,
+      govtId,
+      idNumber,
       resetOTP: otp,
       otpExpiry: Date.now() + 300000, // 5 minutes expiry
     });
@@ -57,7 +108,7 @@ const userRegister = async (req, res) => {
 
     // Send OTP to user's contact number
     try {
-      const otpResponse = await sendOTP(req.body.contactNumber, otp);
+      const otpResponse = await sendOTP(contactNumber, otp);
 
       res.status(200).json({
         message: "User created successfully. OTP sent to contact number.",
@@ -75,7 +126,6 @@ const userRegister = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error during user registration:", error.message);
     res.status(400).json({
       message: error.message,
       success: false,
@@ -93,10 +143,9 @@ const client = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
-
 // Function to send OTP to the user's contact number using Twilio
 const sendOTP = async (contactNumber, otp) => {
-  const from = "+12563716772"; 
+  const from = "+12563716772";
   const to = `+ ${contactNumber}`;
   const text = `Your verification code is ${otp}`;
 
@@ -252,15 +301,21 @@ const updateUserStatus = async (req, res) => {
     const userId = req.params.id;
     const { isBlocked, isSuspended } = req.body;
 
-    const userStatus = await user.findByIdAndUpdate(userId, { isBlocked, isSuspended }, { new: true });
+    const userStatus = await user.findByIdAndUpdate(
+      userId,
+      { isBlocked, isSuspended },
+      { new: true }
+    );
 
     if (!userStatus) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.status(200).json({ success: true, data: userStatus });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating user status', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error updating user status", error: error.message });
   }
 };
 
