@@ -6,10 +6,10 @@ import { ToastrService } from 'ngx-toastr';
 import { PartnerService } from '../../../../services/partner/partner.service';
 import { BookingService } from '../../../../services/booking.service';
 import { UserService } from '../../../../services/user.service';
-import { catchError, forkJoin } from 'rxjs';
+import { catchError, forkJoin, throwError } from 'rxjs';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-booking-management',
@@ -18,7 +18,6 @@ import { of } from 'rxjs';
   templateUrl: './booking-management.component.html',
   styleUrls: ['./booking-management.component.css'],
 })
-
 export class BookingManagementComponent implements OnInit {
   bookings: any[] = [];
   users: { [key: string]: any } = {};
@@ -33,6 +32,13 @@ export class BookingManagementComponent implements OnInit {
   selectedOperatorName: { [bookingId: string]: string } = {}; // Changed from selectedOperatorEmail to selectedOperatorName
   editingBooking: string | null = null;
   combinedDetails: any = {};
+  editMode: { [key: string]: boolean } = {};
+  isEdited: { [key: string]: boolean } = {};
+  assignBooking = {
+    bookingId: '',
+    unit: '',
+    operatorName: ''
+  };
 
   constructor(
     private spinnerService: SpinnerService,
@@ -86,10 +92,6 @@ export class BookingManagementComponent implements OnInit {
           }
         }
       });
-  }
-
-  toggleEdit(bookingId: string) {
-    this.editingBooking = this.editingBooking === bookingId ? null : bookingId;
   }
 
   getBookingsByBookingId() {
@@ -207,7 +209,7 @@ export class BookingManagementComponent implements OnInit {
       this.partner.extraOperators?.map((operator) => ({
         ...operator,
         type: 'extraOperator',
-        label: ' (Extra Driver)',
+        // label: ' (Extra Driver)',
       })) || [];
 
     return [...(mainOperators || []), ...(extraOperators || [])];
@@ -218,43 +220,58 @@ export class BookingManagementComponent implements OnInit {
     const plateInformation = target.value;
     this.selectedPlateInformation[bookingId] = plateInformation;
     this.selectedOperatorName[bookingId] = ''; // Reset operatorName when plate information changes
+
+     // Update the assignBooking.unit with the new plate information
+    this.assignBooking.unit = plateInformation;
+    this.assignBooking.bookingId = bookingId;
+  }
+
+  onOperatorChange(bookingId: string, event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const operatorName = target.value;
+
+    // Update the selected operator
+    this.selectedOperatorName[bookingId] = operatorName;
+
+    // Update the assignBooking.operatorName with the selected operator name
+    this.assignBooking.operatorName = operatorName;
+    this.assignBooking.bookingId = bookingId;
   }
 
   assignOperators() {
     this.spinnerService.show();
-
-    const assignObservables = this.bookings.map((booking) => {
-      const unit = this.selectedPlateInformation[booking._id];
-      const operatorName = this.selectedOperatorName[booking._id]; // Updated to operatorName
-
-      if (unit && operatorName) {
-        return this.partnerService.assignOperator(
-          booking._id,
-          unit,
-          operatorName
-        );
-      } else {
-        return of(null);
-      }
-    });
-
-    forkJoin(assignObservables).subscribe(
-      () => {
-        this.spinnerService.hide();
-        this.toastr.success('Operators assigned successfully');
-        this.getPartnerDetails();
-      },
-      (error) => {
-        this.spinnerService.hide();
-        const errorMessage =
-          error.error?.message || 'Failed to assign operators'; // Adjust based on your backend response
-        this.toastr.error(errorMessage);
-        window.location.reload();
-      }
-    );
+  
+    // Assuming assignBooking is already populated with bookingId, unit, and operatorName
+    if (this.assignBooking.bookingId && this.assignBooking.unit && this.assignBooking.operatorName) {
+      // Directly send assignBooking data to the API
+      this.partnerService.assignOperator(
+        this.assignBooking.bookingId,
+        this.assignBooking.unit,
+        this.assignBooking.operatorName
+      ).subscribe(
+        () => {
+          this.spinnerService.hide();
+          this.toastr.success('Operator assigned successfully');
+          this.getPartnerDetails(); // Refresh partner details after successful assignment
+        },
+        (error) => {
+          this.spinnerService.hide();
+          const errorMessage = error.error?.message || 'Failed to assign operator';
+          this.toastr.error(errorMessage);
+        }
+      );
+    } else {
+      this.spinnerService.hide();
+      this.toastr.error('Missing required fields: bookingId, unit, or operatorName');
+    }
   }
 
   trackByOperatorEmail(index: number, operator: any): string {
     return operator.email || operator._id;
+  }
+
+  editBooking(bookingId: string) {
+    this.editMode[bookingId] = true;
+    this.isEdited[bookingId] = true;
   }
 }

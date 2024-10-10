@@ -1,4 +1,7 @@
-<div class="row booking-manager-container" style="margin: 15px">
+<div
+  class="row booking-manager-container"
+  style="margin: 15px; overflow-y: hidden !important"
+>
   <ng-container *ngFor="let booking of filteredBookings; let i = index">
     <div class="col-md-5 booking-history" *ngIf="filteredBookings.length > 0">
       <div class="table-container booking-manager-table">
@@ -6,33 +9,26 @@
           <thead>
             <tr class="trigger-booking-table">
               <th>Booking {{ i + 1 }}</th>
-              <th></th>
+              <th>Id: {{ booking._id }}</th>
             </tr>
           </thead>
           <tbody>
             <tr class="trigger-booking-table">
               <td class="trigger-booking-td">
-                <input
-                  type="checkbox"
-                  [id]="'triggerBooking' + booking._id"
-                  name="triggerBooking"
-                  [value]="booking._id"
-                />
                 <div class="trigger-booking-td-1">
                   <p class="p1">{{ booking.unitType }}</p>
-                  <p class="p2">{{ booking._id }}</p>
+                  <p class="p2">
+                    {{
+                      unitDetails[booking._id] ||
+                        "Unit not assigned. Please wait..!"
+                    }}
+                  </p>
                 </div>
               </td>
               <td></td>
             </tr>
             <tr class="trigger-booking-table">
               <td class="trigger-booking-td">
-                <input
-                  type="checkbox"
-                  [id]="'triggerBookingPickup' + booking._id"
-                  name="triggerBooking"
-                  [value]="booking._id"
-                />
                 <div class="trigger-booking-td-1">
                   <p class="p1">{{ booking.pickup }}</p>
                   <p class="p2">{{ booking.dropPoints.join(", ") }}</p>
@@ -51,12 +47,6 @@
             </tr>
             <tr class="trigger-booking-table">
               <td class="trigger-booking-td">
-                <input
-                  type="checkbox"
-                  [id]="'triggerBookingBalance' + booking._id"
-                  name="triggerBooking"
-                  [value]="booking._id"
-                />
                 <div class="trigger-booking-td-1">
                   <p class="p1">Balance Amount</p>
                   <p class="p2">{{ booking.date }}</p>
@@ -68,14 +58,14 @@
                   class="btn btn-payNow"
                   style="width: 150px"
                   (click)="
-                makePayment(
-                  $event,
-                  booking.remainingBalance || 0,
-                  'Completed',
-                  booking.partner,
-                  booking._id
-                )
-              "
+                    makePayment(
+                      $event,
+                      booking.remainingBalance || 0,
+                      'Completed',
+                      booking.partner,
+                      booking._id
+                    )
+                  "
                 >
                   Pay: {{ booking.remainingBalance }} SAR
                 </button>
@@ -89,7 +79,7 @@
 
   <div class="col-md-2 booking-history">
     <div class="table-container booking-manager-table">
-      <table class="table" style="margin: 0px 0px !important">
+      <table class="table" style="margin: 0px 0px !important; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
         <thead>
           <tr class="trigger-booking-table">
             <th style="text-align: center !important">New Booking</th>
@@ -127,8 +117,8 @@
 
 <div class="row booking-manager-container">
   <div class="col-md-12 booking-history">
-    <div class="table-container booking-manager-table">
-      <table class="table" style="margin: 0px 0px !important">
+    <div class="table-container booking-manager-table" style="max-height: 350px; overflow-y: auto;">
+      <table class="table" style="margin: 0px 0px !important; width: 100%; border-collapse: collapse;">
         <thead>
           <tr class="trigger-booking-table">
             <th>Booking ID</th>
@@ -146,22 +136,20 @@
               <td>
                 {{
                   booking.partner
-                    ? partnerDetails[booking.partner]?.partnerName ||
-                      "Loading..."
+                    ? partnerDetails[booking.partner]?.partnerName || "Loading..."
                     : "N/A"
                 }}
               </td>
               <td>
                 <span
                   [ngStyle]="{
-                    'background-color': getPaymentStatusColor(
-                      booking.paymentStatus
-                    ),
+                    'background-color': getPaymentStatusColor(booking.paymentStatus),
                     color: getPaymentTextColor(booking.paymentStatus),
-                    padding: '5px 30px',
+                    'padding': '5px 30px',
                     'border-radius': '15px',
                     'font-size': '15px',
-                    width: '230px !important' 
+                    'display': 'block',
+                    'width': '130px'
                   }"
                 >
                   {{ booking.paymentStatus }}
@@ -173,16 +161,19 @@
                     *ngSwitchCase="'HalfPaid'"
                     src="assets/images/halfpaid.svg"
                     alt="Half Paid"
+                    class="payment-status-icon"
                   />
                   <img
                     *ngSwitchCase="'Pending'"
                     src="assets/images/pending payment.svg"
                     alt="Pending Payment"
+                    class="payment-status-icon"
                   />
                   <img
                     *ngSwitchCase="'Completed'"
                     src="assets/images/payment-completed.svg"
                     alt="Payment Completed"
+                    class="payment-status-icon"
                   />
                 </ng-container>
               </td>

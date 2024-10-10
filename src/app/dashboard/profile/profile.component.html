@@ -1,10 +1,37 @@
-<div class="profile-container">
+<div class="profile-container" *ngIf="users; else partnerName">
+  <div class="username">
+    <p>{{ users.firstName }} {{ users.lastName }}</p>
+    <p class="user-city">{{ users.city }}</p>
+  </div>
+
   <div class="profile-photo">
     <label for="upload-photo">
       <img [src]="profilePhoto" alt="Profile Photo" id="profile-img" />
     </label>
     <input type="file" id="upload-photo" accept="image/*" />
   </div>
-  <div class="username">{{ firstName }} {{ lastName }}</div>
+
+  <div style="color: #8f8e97; font-size: 12px; margin-bottom: 5px">
+    ID No: {{ users._id }}
+  </div>
+
   <div class="edit-profile"><i class="fas fa-edit"></i> Edit Profile</div>
 </div>
+
+<ng-template #partnerName>
+  <div class="profile-container">
+    <div class="username" *ngIf="partner">
+      <p>{{ partner.partnerName }}</p>
+    </div>
+    <div class="profile-photo">
+      <label for="upload-photo">
+        <img [src]="profilePhoto" alt="Profile Photo" id="profile-img" />
+      </label>
+      <input type="file" id="upload-photo" accept="image/*" />
+    </div>
+    <div style="color: #8f8e97; font-size: 12px; margin-bottom: 5px">
+      ID No: {{ partner?._id }}
+    </div>
+    <div class="edit-profile"><i class="fas fa-edit"></i> Edit Profile</div>
+  </div>
+</ng-template>

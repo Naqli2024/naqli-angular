@@ -25,6 +25,7 @@ export class BookingManagerComponent {
   paymentHandler: any = null;
   totalAmount: number = 0;
   oldQuotePrice: number = 0;
+  unitDetails: { [key: string]: any } = {}; 
 
   constructor(
     private router: Router,
@@ -50,6 +51,7 @@ export class BookingManagerComponent {
         // Get partner details for each booking and store them in partnerDetails
         this.bookings.forEach((booking) => {
           this.getPartnerDetails(booking.partner);
+          this.getUnitDetails(booking._id);
         });
 
         this.filteredBookings = this.bookings
@@ -63,6 +65,13 @@ export class BookingManagerComponent {
     this.partnerService.getPartnerDetails(partnerId).subscribe((response) => {
       // Store partner details with the partnerId as key
       this.partnerDetails[partnerId] = response.data;
+    });
+  }
+
+  getUnitDetails(bookingId: string): void {
+    this.bookingService.getUnitDetails(bookingId).subscribe((response) => {
+      // Store unit details with bookingId as key
+      this.unitDetails[bookingId] = response.unit;
     });
   }
 

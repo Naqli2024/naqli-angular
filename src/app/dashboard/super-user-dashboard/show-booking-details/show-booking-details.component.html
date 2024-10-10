@@ -1,0 +1,55 @@
+<div class="row">
+    <div class="col-md-12">
+      <div class="booking-modal">
+        <h2 style="text-align: left">Booking Id: {{ bookingId }}</h2>
+        <div class="modal-close">
+          <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="closeModalAndNavigate()"
+            style="margin-right: 10px; color: white"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+      <div
+        class="booking-modal-body show-booking-details"
+        style="
+          color: #000;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: flex-start;
+          padding: 20px;
+        "
+      >
+        <p><b>Unit Type:</b> <span>{{ booking.unitType }}</span></p>
+        <p>
+          <b>Unit Classification:</b> <span>{{ booking.name }}</span>
+          <span *ngIf="booking?.type && booking.type[0]?.typeName">
+            - {{ booking.type[0]?.typeName }}
+          </span>
+        </p>
+        <p><b>Pickup Location:</b> <span>{{ booking.pickup }}</span></p>
+        <p><b>Drop Points:</b> <span>{{ booking.dropPoints.join(', ') }}</span></p>
+        <p><b>Product Value:</b> <span>{{ booking.productValue }}</span></p>
+        <p><b>Date:</b> <span>{{ booking.date }}</span></p>
+        <p>
+            <b>Time:</b>
+            <span *ngIf="booking.time; else timeRange">
+              {{ booking.time }}
+            </span>
+            <ng-template #timeRange>
+              <span *ngIf="booking.fromTime && booking.toTime">
+                {{ booking.fromTime }} - {{ booking.toTime }}
+              </span>
+            </ng-template>
+          </p>
+        <p><b>Additional Labour:</b> <span>{{ booking.additionalLabour }}</span></p>
+        <p><b>Booking Status:</b> <span>{{ booking.bookingStatus }}</span></p>
+        <p><b>Payment Status:</b> <span>{{ booking.paymentStatus }}</span></p>
+      </div>
+    </div>
+  </div>

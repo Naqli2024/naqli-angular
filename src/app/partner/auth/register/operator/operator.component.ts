@@ -56,6 +56,8 @@ export class OperatorComponent implements OnInit {
   faEdit = faEdit;
   faTimes = faTimes;
   faCheck = faCheck;
+  passwordVisible: boolean = false;
+  confirmPasswordVisible: boolean = false;
 
   constructor(
     private router: Router,
@@ -84,6 +86,14 @@ export class OperatorComponent implements OnInit {
         }
       );
     }
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
   toggleEditMode() {

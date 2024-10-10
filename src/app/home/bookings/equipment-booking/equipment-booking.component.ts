@@ -84,6 +84,7 @@ export class EquipmentBookingComponent {
   ngOnInit(): void {
     this.equipmentService.getEquipment().subscribe((data: Equipment[]) => {
       this.equipment = data;
+      this.bookingData.unitType = this.equipment[0].unitType;
     });
   
     // Define the initMap function globally before loading the script
@@ -168,6 +169,34 @@ export class EquipmentBookingComponent {
 
   selectOption(type: EquipmentType, equipName: string): void {
     this.selectedOptions[equipName] = type;
+    this.bookingData.name = equipName;
+  
+    // Ensure type and typeName are valid before proceeding
+    if (!type || !type.typeName || type.typeName.trim() === '') {
+      console.warn('Invalid type or typeName detected.');
+      return;
+    }
+  
+    // Normalize typeName for comparison
+    const normalizedTypeName = type.typeName.trim().toLowerCase();
+  
+    // Remove empty entries before checking for duplicates
+    this.bookingData.type = this.bookingData.type.filter(
+      (equip) => equip.typeName.trim() !== ''
+    );
+  
+    const equipmentIndex = this.bookingData.type.findIndex(
+      (equip) => equip.typeName.trim().toLowerCase() === normalizedTypeName
+    );
+  
+    if (equipmentIndex !== -1) {
+      // Update the existing equipment type in bookingData
+      this.bookingData.type[equipmentIndex] = { typeName: normalizedTypeName, typeImage: type.typeImage };
+    } else {
+      // Add a new equipment type to bookingData
+      this.bookingData.type.push({ typeName: normalizedTypeName, typeImage: type.typeImage });
+    }
+
     this.closeAllDropdownsExcept(equipName);
     this.optionsVisible[equipName] = false; // Hide options after selecting
   }
@@ -263,10 +292,7 @@ export class EquipmentBookingComponent {
     ];
 
     // Check if at least one type is selected
-    if (
-      this.bookingData.type.length === 0 ||
-      !this.bookingData.type[0].typeName.trim()
-    ) {
+    if (this.bookingData.type.every(type => !type.typeName.trim())) {
       errors.push('Please select at least one equipment type');
       isValid = false;
     }

@@ -1,4 +1,7 @@
-<div class="dashboard-booking-container" *ngIf="bookingId">
+<div
+  class="dashboard-booking-container"
+  *ngIf="bookingId && users?.accountType === 'Single User'"
+>
   <div class="row">
     <div class="col-md-7 left-div">
       <div class="">
@@ -13,7 +16,7 @@
         >
           Show Route
         </button>
-        <div id="mapContainer" class="google-map-style"></div>
+        <div id="map" class="google-map-style"></div>
       </div>
     </div>
     <div class="col-md-5 right-div">
@@ -80,7 +83,9 @@
               <span>{{ combinedDetails.partner?.partnerName }}</span>
             </p>
 
-            <p *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'">
+            <p
+              *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'"
+            >
               Operator Name
               <span
                 *ngIf="combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0"
@@ -106,7 +111,9 @@
               </span>
             </p>
 
-            <p *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'">
+            <p
+              *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'"
+            >
               Operator Mobile
               <span
                 *ngIf="combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0"
@@ -157,7 +164,7 @@
 </div>
 
 <div *ngIf="!bookingId" class="centered-container">
-  <p>No active bookings avilable. You can create a new booking !!</p>
+  <p>No active bookings available. You can create a new booking !!</p>
   <button type="button" class="btn btn-pay-advance" (click)="createBooking()">
     Create Booking
   </button>

@@ -55,6 +55,7 @@ export class DashboardComponent {
         { name: 'Trigger Booking', route: 'super-user/trigger-booking' },
         { name: 'Booking Manager', route: 'super-user/booking-manager' },
         { name: 'Payments', route: 'super-user/payments' },
+        { name: 'Report', route: 'report' },
         { name: 'Help', route: 'help' },
       ];
     } else if (this.isAdmin) {

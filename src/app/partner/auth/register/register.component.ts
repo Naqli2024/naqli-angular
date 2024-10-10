@@ -24,6 +24,8 @@ export class RegisterComponent {
     email: '',
     password: '',
   };
+  passwordVisible: boolean = false;
+  confirmPasswordVisible: boolean = false;
 
   constructor(
     private router: Router,
@@ -56,6 +58,15 @@ export class RegisterComponent {
         this.toastr.error(errorMessage, 'Error');
       }
     );
+  }
+
+  
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
   otpVerificatoionModal(): void {

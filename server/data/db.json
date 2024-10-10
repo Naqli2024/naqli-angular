@@ -465,6 +465,18 @@
         {
           "typeName": "hydraulic",
           "typeImage": "assets/images/hydraulic.svg"
+        },
+        {
+          "typeName": "VIP",
+          "typeImage": "assets/images/tow-truck-VIP.svg"
+        },
+        {
+          "typeName": "Two Cars",
+          "typeImage": "assets/images/tow-truck-two-cars.svg"
+        },
+        {
+          "typeName": "Trucks",
+          "typeImage": "assets/images/tow-truck-for-trucks.svg"
         }
       ],
       "id": "fff2"

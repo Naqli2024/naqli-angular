@@ -16,9 +16,7 @@
     </div>
 
     <!-- Modal Body Container -->
-    <div
-      class="trigger-modal-body container edit-booking-modal"
-    >
+    <div class="trigger-modal-body container edit-booking-modal">
       <!-- First row -->
       <div class="row container">
         <div
@@ -48,13 +46,15 @@
               style="max-height: 80px; max-width: 80px"
             />
             <hr class="line" />
-            <p class="item-name" style="padding-bottom: 10px">{{ item.name }}</p>
+            <p class="item-name" style="padding-bottom: 10px">
+              {{ item.name }}
+            </p>
           </div>
         </div>
       </div>
       <!-- second row -->
       <div class="row container">
-        <div class="col-md-4 edit-model-row-2">
+        <div class="col-md-3 edit-model-row-2">
           <label>Mode</label>
           <select
             class="form-select"
@@ -65,7 +65,7 @@
           </select>
         </div>
         <div
-          class="col-md-4 edit-model-row-2"
+          class="col-md-5 edit-model-row-2"
           *ngIf="bookingData.type?.length > 0"
         >
           <label>Mode Classification</label>
@@ -79,18 +79,21 @@
             </option>
           </select>
         </div>
+        <div class="col-md-4 edit-model-row-2">
+          <label>Contract Type</label>
+          <select class="form-select" style="width: 200px !important" disabled>
+            <option>Contract</option>
+          </select>
+        </div>
       </div>
       <!-- second row -->
-      <div class="row" style="margin: 0px 15px !important">
+      <div class="row">
         <div
-          class="col-md-4 edit-model-row-2"
+          class="col-md-3 edit-model-row-2"
           style="border-right: 1px solid #ccc"
         >
           <label>Date</label>
-          <div
-            class="booking-inputs"
-            style="width: 200px !important; margin-right: 40px !important"
-          >
+          <div class="booking-inputs" style="width: 200px !important">
             <input
               type="date"
               class="form-control"
@@ -99,8 +102,13 @@
             />
           </div>
         </div>
+        <div class="col-md-1 pickup-drop">
+          <img src="assets/images/pickup.svg" />
+          <div class="dotted"></div>
+          <img src="assets/images/dropPoint.svg" />
+        </div>
         <div
-          class="col-md-5 edit-model-row-2"
+          class="col-md-4 edit-model-row-2"
           style="
             display: flex;
             flex-direction: column;
@@ -114,9 +122,12 @@
               border: 1px solid #ddd !important;
               padding: 5px 20px;
               border-radius: 10px;
+              position: relative;
+              width: 100%;
+              max-width: 330px;
+              margin: 10px 0px;
             "
           >
-            <div class="pick-up"></div>
             <input
               type="text"
               placeholder="Enter pickup location"
@@ -151,9 +162,10 @@
               display: flex;
               align-items: center;
               border-radius: 10px;
+              width: 100%;
+              max-width: 330px;
             "
           >
-            <div class="drop-point"></div>
             <input
               type="text"
               [placeholder]="'Drop point location ' + (i + 1)"
@@ -193,7 +205,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3 edit-model-row-2">
+        <div class="col-md-4 edit-model-row-2">
           <div class="col-md-12">
             <div class="checkbox-container">
               <input

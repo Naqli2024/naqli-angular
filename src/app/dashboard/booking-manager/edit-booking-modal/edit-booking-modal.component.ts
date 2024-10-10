@@ -48,6 +48,8 @@ export class EditBookingModalComponent {
     pickup: '',
     dropPoints: [''],
     additionalLabour: null,
+    fromTime: '',
+    toTime: ''
   };
 
   // Autocomplete related properties

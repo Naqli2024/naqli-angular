@@ -1,4 +1,4 @@
-<div class="row"></div>
+<div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element" style="position: relative">
       <h2>Booking Management</h2>
@@ -17,7 +17,8 @@
         <tbody>
           <tr *ngFor="let booking of bookings">
             <td *ngIf="users[booking.user]">
-              {{ users[booking.user]?.firstName }} {{ users[booking.user]?.lastName }}
+              {{ users[booking.user]?.firstName }}
+              {{ users[booking.user]?.lastName }}
             </td>
             <td>{{ booking._id }}</td>
             <td>
@@ -25,11 +26,16 @@
                 class="form-select"
                 [(ngModel)]="selectedPlateInformation[booking._id]"
                 (change)="onPlateInfoChange(booking._id, $event)"
-                [disabled]="!editingBooking || editingBooking !== booking._id"
+                [disabled]="
+                !editMode[booking._id] && selectedPlateInformation[booking._id] ? true : false
+              "
               >
                 <option value="" disabled>Select Plate Information</option>
                 <ng-container *ngFor="let operator of filteredOperators">
-                  <option *ngIf="operator && matchesCriteria(booking, operator)" [value]="operator.plateInformation">
+                  <option
+                    *ngIf="operator && matchesCriteria(booking, operator)"
+                    [value]="operator.plateInformation"
+                  >
                     {{ operator.plateInformation }}
                   </option>
                 </ng-container>
@@ -38,17 +44,33 @@
             <td>
               <select
                 class="form-select"
-                [(ngModel)]="selectedOperatorName[booking._id]"  
-                [disabled]="!editingBooking || editingBooking !== booking._id"
+                [(ngModel)]="selectedOperatorName[booking._id]"
+                (change)="onOperatorChange(booking._id, $event)"
+                [disabled]="
+                  !editMode[booking._id] && selectedOperatorName[booking._id] ? true : false
+                "
               >
                 <option value="" disabled>Select</option>
-                <ng-container *ngFor="let operator of getFilteredOperators(booking._id); trackBy: trackByOperatorEmail">
-                  <option *ngIf="!operator.operatorsDetail" [value]="operator.firstName + ' ' + operator.lastName"> <!-- Updated value to operatorName -->
-                    {{ operator.firstName }} {{ operator.lastName }}{{ operator.label || "" }}
+                <ng-container
+                  *ngFor="
+                    let operator of getFilteredOperators(booking._id);
+                    trackBy: trackByOperatorEmail
+                  "
+                >
+                  <option
+                    *ngIf="!operator.operatorsDetail"
+                    [value]="operator.firstName + ' ' + operator.lastName"
+                  >
+                    {{ operator.firstName }} {{ operator.lastName
+                    }}{{ operator.label || "" }}
                   </option>
                   <ng-container *ngIf="operator.operatorsDetail">
-                    <ng-container *ngFor="let detail of operator.operatorsDetail">
-                      <option [value]="detail.firstName + ' ' + detail.lastName"> <!-- Updated value to detail operatorName -->
+                    <ng-container
+                      *ngFor="let detail of operator.operatorsDetail"
+                    >
+                      <option
+                        [value]="detail.firstName + ' ' + detail.lastName"
+                      >
                         {{ detail.firstName }} {{ detail.lastName }}
                       </option>
                     </ng-container>
@@ -57,19 +79,24 @@
               </select>
             </td>
             <td>
-              <fa-icon
-                [icon]="faEdit"
-                class="icon"
-                style="color: #727272; padding: 0px 5px"
-                (click)="toggleEdit(booking._id)"
-              ></fa-icon>
+              <div (click)="editBooking(booking._id)">
+                <fa-icon
+                  [icon]="faEdit"
+                  class="icon"
+                  style="color: #727272; padding: 0px 5px"
+                ></fa-icon>
+              </div>
               <!-- <fa-icon [icon]="faTrashAlt" class="icon" style="color: #727272; padding: 0px 5px"></fa-icon> -->
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <button class="btn notification-modal-btn add-operator-btn1" (click)="assignOperators()">
+    <button
+      class="btn notification-modal-btn add-operator-btn1"
+      (click)="assignOperators()"
+    >
       Assign
     </button>
   </div>
+</div>

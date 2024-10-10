@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PartnerService } from '../../../services/partner/partner.service';
 import { DashboardLineChartComponent } from './dashboard-line-chart/dashboard-line-chart.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ShowBookingDetailsComponent } from './show-booking-details/show-booking-details.component';
 Chart.register(...registerables);
 
 @Component({
@@ -54,7 +56,8 @@ export class SuperUserDashboardComponent {
   constructor(
     private router: Router,
     private bookingService: BookingService,
-    private partnerService: PartnerService
+    private partnerService: PartnerService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -192,5 +195,17 @@ export class SuperUserDashboardComponent {
 
   navigateToTriggerBooking(): void {
     this.router.navigate(['/home/user/dashboard/super-user/trigger-booking']);
+  }
+
+  showBookingDetails(bookingId: string): void {
+    const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
+
+    modalRef.componentInstance.bookingId = bookingId;
   }
 }

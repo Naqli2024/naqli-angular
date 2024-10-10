@@ -33,14 +33,27 @@
               </div>
               <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  required
-                  [(ngModel)]="loginData.password"
-                  name="password"
-                />
+                <div class="input-with-icon" style="position: relative">
+                  <input
+                    [type]="passwordVisible ? 'text' : 'password'"
+                    class="form-control"
+                    id="password"
+                    required
+                    [(ngModel)]="loginData.password"
+                    name="password"
+                  />
+                  <i
+                    class="fas"
+                    [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+                    (click)="togglePasswordVisibility()"
+                    style="
+                      position: absolute;
+                      right: 10px;
+                      top: 38px;
+                      cursor: pointer;
+                    "
+                  ></i>
+                </div>
               </div>
               <div class="buttons">
                 <button type="submit" class="btn btn-primary">Login</button>
@@ -127,32 +140,62 @@
       <div class="row mb-3">
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="password" class="form-label mb-1 me-3">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            placeholder="Password"
-            [(ngModel)]="user.password"
-            name="password"
-            required
-          />
+          <div class="input-with-icon" style="position: relative">
+            <input
+              [type]="passwordVisible ? 'text' : 'password'"
+              class="form-control"
+              id="password"
+              placeholder="Password"
+              [(ngModel)]="user.password"
+              name="password"
+              required
+            />
+            <i
+              class="fas"
+              [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+              (click)="togglePasswordVisibility()"
+              style="
+                position: absolute;
+                right: 10px;
+                top: 38px;
+                cursor: pointer;
+              "
+            ></i>
+          </div>
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start">
-          <label for="confirmPassword" class="form-label mb-1 me-3">Confirm Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="confirmPassword"
-            placeholder="Confirm Password"
-            [(ngModel)]="user.confirmPassword"
-            name="confirmPassword"
-            required
-          />
+          <label for="confirmPassword" class="form-label mb-1 me-3"
+            >Confirm Password</label
+          >
+          <div class="input-with-icon" style="position: relative">
+            <input
+              [type]="confirmPasswordVisible ? 'text' : 'password'"
+              class="form-control"
+              id="confirmPassword"
+              placeholder="Confirm Password"
+              [(ngModel)]="user.confirmPassword"
+              name="confirmPassword"
+              required
+            />
+            <i
+              class="fas"
+              [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+              (click)="toggleConfirmPasswordVisibility()"
+              style="
+                position: absolute;
+                right: 10px;
+                top: 38px;
+                cursor: pointer;
+              "
+            ></i>
+          </div>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6 d-flex flex-column align-items-start">
-          <label for="contactNumber" class="form-label mb-1 me-3">Contact Number</label>
+          <label for="contactNumber" class="form-label mb-1 me-3"
+            >Contact Number</label
+          >
           <input
             type="tel"
             class="form-control"
@@ -164,7 +207,9 @@
           />
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start">
-          <label for="alternateNumber" class="form-label mb-1 me-3">Alternate Number</label>
+          <label for="alternateNumber" class="form-label mb-1 me-3"
+            >Alternate Number</label
+          >
           <input
             type="tel"
             class="form-control"
@@ -214,7 +259,9 @@
           />
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start">
-          <label for="accountType" class="form-label mb-1 me-3">Account Type</label>
+          <label for="accountType" class="form-label mb-1 me-3"
+            >Account Type</label
+          >
           <select
             class="form-select"
             id="accountType"
@@ -262,11 +309,17 @@
           <button
             type="submit"
             class="btn me-2"
-            style="background-color: #6a66d1; color: #fff; width: 50%;"
+            style="background-color: #6a66d1; color: #fff; width: 50%"
           >
             Create Account
           </button>
-          <button type="button" class="btn btn-secondary me-2" style="width: 50%;">Cancel</button>
+          <button
+            type="button"
+            class="btn btn-secondary me-2"
+            style="width: 50%"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </form>

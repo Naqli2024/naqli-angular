@@ -168,7 +168,7 @@
               />
             </div>
           </div>
-
+          <div class="draw-line"></div>
           <div class="row">
             <div class="col-md-6">
               <label class="col-form-label" style="font-size: 14px"
@@ -216,25 +216,53 @@
               <label class="col-form-label" style="font-size: 14px"
                 >Password</label
               >
-              <input
-                type="password"
-                class="form-control"
-                [(ngModel)]="formData.password"
-                name="password"
-                required
-              />
+              <div class="input-with-icon" style="position: relative">
+                <input
+                  [type]="passwordVisible ? 'text' : 'password'"
+                  class="form-control"
+                  [(ngModel)]="formData.password"
+                  name="password"
+                  id="password"
+                  required
+                />
+                <i
+                  class="fas"
+                  [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+                  (click)="togglePasswordVisibility()"
+                  style="
+                    position: absolute;
+                    right: 10px;
+                    top: 38px;
+                    cursor: pointer;
+                  "
+                ></i>
+              </div>
             </div>
             <div class="col-md-6">
               <label class="col-form-label" style="font-size: 14px"
                 >Confirm Password</label
               >
-              <input
-                type="password"
-                class="form-control"
-                [(ngModel)]="formData.confirmPassword"
-                name="confirmPassword"
-                required
-              />
+              <div class="input-with-icon" style="position: relative">
+                <input
+                  [type]="confirmPasswordVisible ? 'text' : 'password'"
+                  class="form-control"
+                  [(ngModel)]="formData.confirmPassword"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  required
+                />
+                <i
+                  class="fas"
+                  [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+                  (click)="toggleConfirmPasswordVisibility()"
+                  style="
+                    position: absolute;
+                    right: 10px;
+                    top: 38px;
+                    cursor: pointer;
+                  "
+                ></i>
+              </div>
             </div>
           </div>
 
@@ -330,6 +358,7 @@
               />
             </div>
           </div>
+          <div class="draw-line"></div>
 
           <div class="row">
             <div class="col-md-12">

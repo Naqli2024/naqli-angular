@@ -60,6 +60,7 @@ export class OperatorManagementComponent {
   showAdditionalFields = false;
   isFormDisabled = false;
   extraOperators: any[] = [];
+  allOperators: any[] = [];
 
   constructor(
     private router: Router,
@@ -82,7 +83,21 @@ export class OperatorManagementComponent {
         (partnerDetails) => {
           this.formData.partnerName = partnerDetails.data.partnerName;
           this.formData.partnerId = partnerDetails.data._id;
+
+          // Collect operatorsDetail and extraOperators
+          let allOperatorsDetail = [];
+          if (partnerDetails.data.operators && partnerDetails.data.operators.length > 0) {
+            partnerDetails.data.operators.forEach((operator) => {
+              if (operator.operatorsDetail && operator.operatorsDetail.length > 0) {
+                allOperatorsDetail = allOperatorsDetail.concat(operator.operatorsDetail);
+              }
+            });
+          }
+
           this.extraOperators = partnerDetails.data.extraOperators;
+
+          // Combine operatorsDetail with extraOperators
+          this.allOperators = [...allOperatorsDetail, ...this.extraOperators];
           this.enableSubmitButton();
         },
         (error) => {

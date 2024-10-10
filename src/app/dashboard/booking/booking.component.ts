@@ -13,6 +13,9 @@ import { Booking } from '../../../models/booking.model';
 import { PartnerService } from '../../../services/partner/partner.service';
 import { MapService } from '../../../services/map.service';
 import { GoogleMapsService } from '../../../services/googlemap.service';
+import { UserService } from '../../../services/user.service';
+import { User } from '../../../models/user.model';
+import { LoginComponent } from '../../auth/login/login.component';
 
 interface Vendor {
   name: string;
@@ -44,6 +47,7 @@ export class BookingComponent implements OnInit {
   paymentHandler: any = null;
   fetchedVendors: boolean = false;
   bookings: Booking[] = [];
+  users: User | undefined;
   unitType: string = '';
   unitClassification: string = '';
   subClassification: string = '';
@@ -53,6 +57,7 @@ export class BookingComponent implements OnInit {
   bookingDetails: any = null;
   partnerDetails: any = null;
   combinedDetails: any = null;
+  private autocompleteService!: google.maps.places.AutocompleteService;
 
   constructor(
     private modalService: NgbModal,
@@ -65,23 +70,122 @@ export class BookingComponent implements OnInit {
     private authService: AuthService,
     private partnerService: PartnerService,
     private mapService: MapService,
-    private googleMapsService: GoogleMapsService
+    private googleMapsService: GoogleMapsService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.bookingId = localStorage.getItem('bookingId');
+    const userId: any = localStorage.getItem('userId');
+
+    if (!userId) {
+      this.toastr.error('User ID not found');
+      this.openLoginModal();
+      return;
+    } else {
+      this.fetchUsers(userId);
+    }
 
     if (this.bookingId) {
       this.invokeStripe();
-      this.fetchBookings();
+
+      // Fetch bookings and initialize the map within the subscription
+      this.fetchBookings(); // Call to fetch bookings
+      this.initializeMap(); // Initialize map immediately after
+
       this.getTopPartners();
       this.getBookings(this.bookingId);
-    } 
-    this.googleMapsService.loadGoogleMapsScript();
+    } else {
+      this.fetchBookingsWithPendingPayment(userId);
+      this.initializeMap();
+    }
+
     // Define the global initMap function
     (window as any).initMap = () => {
-      this.mapService.initializeMapInContainer('mapContainer');
+      this.initializeMap();
     };
+  }
+
+  ngAfterViewInit(): void {
+    // Wait until the Google Maps script is fully loaded before initializing the map
+    this.googleMapsService
+      .loadGoogleMapsScript()
+      .then(() => {
+        // Initialize the AutocompleteService after the script has loaded
+        this.autocompleteService = new google.maps.places.AutocompleteService();
+
+        // Now that the script is loaded and the view is initialized, initialize the map
+        this.initializeMap();
+      })
+      .catch((error) => {
+        console.error('Failed to load Google Maps script:', error);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.polling = false; // Stop any ongoing polling
+  }
+
+  // Initialize the map
+  initializeMap(): void {
+    const mapContainer = document.getElementById('map') as HTMLElement;
+
+    if (!mapContainer) {
+      console.error('Map container element not found.');
+      return;
+    }
+
+    // Initialize MapService with the newly created map
+    this.mapService.initializeMapInContainer('map');
+  }
+
+  openLoginModal(): void {
+    this.modalService.open(LoginComponent, {
+      size: 'xl',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
+  }
+
+  fetchBookingsWithPendingPayment(userId) {
+    this.bookingService.getBookingsWithPendingPayment(userId).subscribe(
+      (response) => {
+        if (response && response.booking) {
+          this.toastr.success(response.message);
+          this.bookingId = response.booking._id;
+          this.initializeMap(); // Initialize map after fetching bookings
+
+          if (this.bookingId) {
+            localStorage.setItem('bookingId', this.bookingId);
+            this.getTopPartners();
+          } else {
+            console.error('bookingId is null or undefined');
+          }
+
+          this.fetchBookings(); // Fetch bookings using the newly stored bookingId
+        } else {
+          this.toastr.error('No pending bookings found.');
+        }
+      },
+      (error) => {
+        const errorMessage =
+          error?.error?.message || 'Failed to get pending bookings.';
+        this.toastr.error(errorMessage);
+      }
+    );
+  }
+
+  fetchUsers(userId: string) {
+    this.userService.getUserById(userId).subscribe(
+      (response: User) => {
+        this.users = response;
+      },
+      (error) => {
+        console.error('Error fetching user:', error);
+      }
+    );
   }
 
   updateRoute(): void {
@@ -195,6 +299,14 @@ export class BookingComponent implements OnInit {
     let toastrRef: ActiveToast<any> | undefined; // Store the ActiveToast reference
     let successToastShown = false; // To keep track if success message was shown
 
+    // Check if bookingId is present
+    if (!this.bookingId) {
+      this.toastr.error(
+        'No booking ID found. Cannot start polling for vendors.'
+      );
+      return; // Exit the function if no bookingId is present
+    }
+
     const poll = () => {
       if (this.polling) {
         if (!toastrRef && !successToastShown) {
@@ -290,6 +402,7 @@ export class BookingComponent implements OnInit {
           if (response.success) {
             this.spinnerService.hide();
             this.bookings = response.data;
+            this.initializeMap(); // Initialize map after fetching bookings
           } else {
             this.spinnerService.hide();
             this.toastr.error('Failed to fetch bookings');
@@ -554,7 +667,7 @@ export class BookingComponent implements OnInit {
           unitSubClassificationName: operator.subClassification,
         },
       };
-      console.log(this.combinedDetails)
+      console.log(this.combinedDetails);
     } else {
       this.combinedDetails = {
         booking: this.bookingDetails,
@@ -566,50 +679,62 @@ export class BookingComponent implements OnInit {
   createBooking() {
     this.router.navigate(['/home/user']);
   }
-  
-  getOperatorNameFromBooking(bookingRequests: any[], bookingId: string): string {
+
+  getOperatorNameFromBooking(
+    bookingRequests: any[],
+    bookingId: string
+  ): string {
     console.log('Booking Requests:', bookingRequests);
     console.log('Looking for Booking ID:', bookingId);
-  
+
     if (!bookingRequests) {
       console.warn('Booking requests are null or undefined');
       return 'N/A';
     }
-  
+
     const booking = bookingRequests.find(
       (request) => request.bookingId === bookingId
     );
-  
+
     console.log('Found Booking:', booking);
     if (booking && booking.assignedOperator) {
       console.log('Assigned Operator:', booking.assignedOperator);
     } else {
-      console.warn('Assigned Operator details are missing for booking ID:', bookingId);
+      console.warn(
+        'Assigned Operator details are missing for booking ID:',
+        bookingId
+      );
     }
-  
+
     return booking?.assignedOperator?.operatorName ?? 'N/A';
   }
-  
-  getOperatorMobileFromBooking(bookingRequests: any[], bookingId: string): string {
+
+  getOperatorMobileFromBooking(
+    bookingRequests: any[],
+    bookingId: string
+  ): string {
     console.log('Booking Requests:', bookingRequests);
     console.log('Looking for Booking ID:', bookingId);
-  
+
     if (!bookingRequests) {
       console.warn('Booking requests are null or undefined');
       return 'N/A';
     }
-  
+
     const booking = bookingRequests.find(
       (request) => request.bookingId === bookingId
     );
-  
+
     console.log('Found Booking:', booking);
     if (booking && booking.assignedOperator) {
       console.log('Assigned Operator:', booking.assignedOperator);
     } else {
-      console.warn('Assigned Operator details are missing for booking ID:', bookingId);
+      console.warn(
+        'Assigned Operator details are missing for booking ID:',
+        bookingId
+      );
     }
-  
+
     return booking?.assignedOperator?.operatorMobileNo ?? 'N/A';
   }
 }

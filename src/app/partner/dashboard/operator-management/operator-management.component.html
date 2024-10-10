@@ -1,25 +1,34 @@
 <div class="row">
   <div class="col-md-12 booking-history" *ngIf="!showNewUnitForm">
-    <div class="head-element" style="position: relative">
+    <div class="head-element" style="position: relative; margin: 30px 0px !important;">
       <h2>Operator Management</h2>
     </div>
-    <div class="table-container">
-      <table class="table">
+    <div class="table-container booking-manager-table">
+      <table class="table" style="margin: 0px 0px !important;">
         <thead>
           <tr>
             <th>Name</th>
             <th>Mobile No</th>
             <th>Email Id</th>
+            <th>Status</th>
             <th>Iqama No/Id</th>
             <th>NationalId</th>
             <th>Driving License</th>
+            <th>Aramco License</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let operator of extraOperators">
+          <tr *ngFor="let operator of allOperators">
             <td>{{ operator.firstName }} {{ operator.lastName }}</td>
             <td>{{ operator.mobileNo }}</td>
             <td>{{ operator.email }}</td>
+            <td
+              [ngStyle]="{
+                color: operator.status === 'available' ? 'green' : 'red'
+              }"
+            >
+              {{ operator.status }}
+            </td>
             <td>{{ operator.iqamaNo }}</td>
             <td>
               <p
@@ -45,6 +54,20 @@
                 "
                 *ngIf="operator.drivingLicense?.fileName"
                 (click)="openFile(operator.drivingLicense.fileName)"
+              >
+                view
+              </p>
+            </td>
+            <td>
+              <p
+                style="
+                  color: #914f9d;
+                  text-decoration: underline;
+                  cursor: pointer;
+                  margin-bottom: 0px !important;
+                "
+                *ngIf="operator.aramcoLicense?.fileName"
+                (click)="openFile(operator.aramcoLicense.fileName)"
               >
                 view
               </p>
@@ -234,33 +257,6 @@
               name="nationalID"
               required
             />
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-12">
-            <label class="col-form-label" style="font-size: 14px"
-              >Partner Name/ID</label
-            >
-            <div class="input-group create-operator">
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="formData.partnerName"
-                [disabled]="!isEditing"
-                name="partnerId"
-              />
-              <button
-                type="button"
-                (click)="toggleEditMode()"
-                style="
-                  border-bottom-right-radius: 5px;
-                  border-top-right-radius: 5px;
-                "
-              >
-                <fa-icon [icon]="isEditing ? faTimes : faEdit"></fa-icon>
-              </button>
-            </div>
           </div>
         </div>
 

@@ -138,6 +138,26 @@ const updateQuotePrice = async (req, res) => {
     // Ensure bookingRequest array exists
     partnerUpdate.bookingRequest = partnerUpdate.bookingRequest || [];
 
+    // Check if the partner type is 'singleUnit + operator'
+    if (partnerUpdate.type === "singleUnit + operator") {
+      // Check if any booking has quotePrice set, paymentStatus exists, and bookingStatus is not 'Completed'
+      const pendingPaymentBooking = partnerUpdate.bookingRequest.some(
+        (booking) =>
+          booking.quotePrice != null && // Ensure quotePrice is already set
+          !booking.hasOwnProperty("paymentStatus") && // Ensure paymentStatus exists
+          booking.bookingStatus !== "Completed" // Ensure bookingStatus is not 'Completed'
+      );
+
+      // If such a booking exists, throw an error
+      if (pendingPaymentBooking) {
+        return res.status(400).json({
+          message:
+            "User payment status not updated in your last request. Please wait!",
+          success: false,
+        });
+      }
+    }
+
     // Check if the bookingId exists in the bookingRequest array
     const booking = partnerUpdate.bookingRequest.find(
       (b) => b.bookingId.toString() === bookingId
@@ -206,7 +226,8 @@ const deletedBookingRequest = async (req, res) => {
 };
 
 const getTopPartners = async (req, res) => {
-  const { unitType, unitClassification, subClassification, bookingId } = req.body;
+  const { unitType, unitClassification, subClassification, bookingId } =
+    req.body;
 
   try {
     // Query partners matching criteria
@@ -224,14 +245,20 @@ const getTopPartners = async (req, res) => {
         (operator) =>
           operator.unitType === unitType &&
           operator.unitClassification === unitClassification &&
-          (!subClassification || operator.subClassification === subClassification)
+          (!subClassification ||
+            operator.subClassification === subClassification)
       );
 
       const filteredBookingRequests = partner.bookingRequest.filter(
         (booking) => {
           const bookingIdValid = bookingId && bookingId.toString();
-          const bookingIdMatch = booking.bookingId && booking.bookingId.toString();
-          return bookingIdValid && bookingIdMatch && bookingIdValid === bookingIdMatch;
+          const bookingIdMatch =
+            booking.bookingId && booking.bookingId.toString();
+          return (
+            bookingIdValid &&
+            bookingIdMatch &&
+            bookingIdValid === bookingIdMatch
+          );
         }
       );
 
@@ -268,12 +295,10 @@ const getTopPartners = async (req, res) => {
           !commission.slabRates ||
           commission.slabRates.length === 0
         ) {
-          return res
-            .status(404)
-            .json({
-              success: false,
-              message: "Commission slabs not found for user type",
-            });
+          return res.status(404).json({
+            success: false,
+            message: "Commission slabs not found for user type",
+          });
         }
 
         const quotePrice = booking.quotePrice;
@@ -291,16 +316,16 @@ const getTopPartners = async (req, res) => {
         }
 
         if (commissionRate === 0) {
-          return res
-            .status(400)
-            .json({
-              success: false,
-              message: "Commission rate not applicable for the given amount",
-            });
+          return res.status(400).json({
+            success: false,
+            message: "Commission rate not applicable for the given amount",
+          });
         }
 
         const finalQuotePrice =
-          quotePrice != null ? parseFloat((quotePrice * (1 + commissionRate)).toFixed(0)) : quotePrice;
+          quotePrice != null
+            ? parseFloat((quotePrice * (1 + commissionRate)).toFixed(0))
+            : quotePrice;
 
         // Find the matching operator details for the current partner
         const operator = partner.operators.find(
@@ -329,10 +354,12 @@ const getTopPartners = async (req, res) => {
     }
 
     // Filter out entries with null or undefined quotePrice
-    const validResults = results.filter(result => result.quotePrice != null);
+    const validResults = results.filter((result) => result.quotePrice != null);
 
     // Sort the valid results by ascending quotePrice
-    const sortedResults = validResults.sort((a, b) => a.quotePrice - b.quotePrice);
+    const sortedResults = validResults.sort(
+      (a, b) => a.quotePrice - b.quotePrice
+    );
 
     // Return based on the number of valid results
     if (sortedResults.length === 1) {
@@ -516,7 +543,7 @@ const assignOperator = async (req, res) => {
 
     // Find the partner by ID from the booking
     const partnerId = booking.partner;
-    const partnerFound = await partner.findById(partnerId); 
+    const partnerFound = await partner.findById(partnerId);
     if (!partnerFound) {
       return res.status(404).json({ message: "Partner not found" });
     }
@@ -538,69 +565,95 @@ const assignOperator = async (req, res) => {
       let newOperator, newOperatorDetail, newOperatorMobileNo, newOperatorId;
 
       // Search in regular operators
-      newOperator = partnerFound.operators.find(op =>
-        op.operatorsDetail.some(detail =>
-          `${detail.firstName} ${detail.lastName}` === operatorName
+      newOperator = partnerFound.operators.find((op) =>
+        op.operatorsDetail.some(
+          (detail) => `${detail.firstName} ${detail.lastName}` === operatorName
         )
       );
 
       // If not found in regular operators, search in extraOperators
       if (!newOperator) {
-        newOperator = partnerFound.extraOperators.find(op =>
-          `${op.firstName} ${op.lastName}` === operatorName
+        newOperator = partnerFound.extraOperators.find(
+          (op) => `${op.firstName} ${op.lastName}` === operatorName
         );
 
         if (newOperator) {
           newOperatorDetail = newOperator;
-          newOperatorMobileNo = newOperator?.mobileNo || '';
-          newOperatorId = newOperator?._id || '';
+          newOperatorMobileNo = newOperator?.mobileNo || "";
+          newOperatorId = newOperator?._id || "";
         }
       } else {
         // Extract new operator's details from regular operators
-        newOperatorDetail = newOperator.operatorsDetail.find(detail =>
-          `${detail.firstName} ${detail.lastName}` === operatorName
+        newOperatorDetail = newOperator.operatorsDetail.find(
+          (detail) => `${detail.firstName} ${detail.lastName}` === operatorName
         );
-        newOperatorMobileNo = newOperatorDetail?.mobileNo || '';
-        newOperatorId = newOperatorDetail._id || '';
+        newOperatorMobileNo = newOperatorDetail?.mobileNo || "";
+        newOperatorId = newOperatorDetail._id || "";
       }
 
       if (newOperatorDetail) {
         // Ensure the new operator is available and not already assigned to another booking
-        const isOperatorAssigned = partnerFound.bookingRequest.some(req =>
-          req.unitType === unit &&
-          req.assignedOperator &&
-          req.assignedOperator.operatorName === operatorName &&
-          req.assignedOperator.operatorMobileNo === newOperatorMobileNo &&
-          req.bookingId.toString() !== booking._id.toString()
+        const isOperatorAssigned = partnerFound.bookingRequest.some(
+          (req) =>
+            req.unitType === unit &&
+            req.assignedOperator &&
+            req.assignedOperator.operatorName === operatorName &&
+            req.assignedOperator.operatorMobileNo === newOperatorMobileNo &&
+            req.bookingId.toString() !== booking._id.toString()
         );
 
-        if (isOperatorAssigned || newOperatorDetail.status === 'Not available') {
-          return res.status(400).json({ message: "This operator is not available" });
+         // Check if the unit is assigned and the booking status is not 'Completed'
+         const isUnitAvailable = partnerFound.bookingRequest.some(
+          (req) =>
+            req.assignedOperator?.unit === unit && req.bookingStatus !== 'Completed'
+        );
+
+        if (
+          isOperatorAssigned ||
+          newOperatorDetail.status === "Not available"
+        ) {
+          return res
+            .status(400)
+            .json({ message: "This operator is not available" });
+        }
+
+         // Check if the unit is already assigned to another booking and not completed
+         if (isUnitAvailable) {
+          return res.status(400).json({ message: "This unit is not available" });
         }
 
         // Remove "Not available" status from the previously assigned operator
         if (bookingRequest.assignedOperator) {
-          const previousOperator = partnerFound.operators.find(op =>
-            op.operatorsDetail.some(detail =>
-              `${detail.firstName} ${detail.lastName}` === bookingRequest.assignedOperator.operatorName
-            )
-          ) || partnerFound.extraOperators.find(op =>
-            `${op.firstName} ${op.lastName}` === bookingRequest.assignedOperator.operatorName
-          );
+          const previousOperator =
+            partnerFound.operators.find((op) =>
+              op.operatorsDetail.some(
+                (detail) =>
+                  `${detail.firstName} ${detail.lastName}` ===
+                  bookingRequest.assignedOperator.operatorName
+              )
+            ) ||
+            partnerFound.extraOperators.find(
+              (op) =>
+                `${op.firstName} ${op.lastName}` ===
+                bookingRequest.assignedOperator.operatorName
+            );
 
           if (previousOperator) {
-            const previousOperatorDetail = previousOperator.operatorsDetail?.find(detail =>
-              `${detail.firstName} ${detail.lastName}` === bookingRequest.assignedOperator.operatorName
-            ) || previousOperator;
+            const previousOperatorDetail =
+              previousOperator.operatorsDetail?.find(
+                (detail) =>
+                  `${detail.firstName} ${detail.lastName}` ===
+                  bookingRequest.assignedOperator.operatorName
+              ) || previousOperator;
 
             if (previousOperatorDetail) {
-              previousOperatorDetail.status = 'available'; // Mark the previous operator as available
+              previousOperatorDetail.status = "available"; // Mark the previous operator as available
             }
           }
         }
 
         // Assign the new operator and mark them as 'Not available'
-        newOperatorDetail.status = 'Not available';
+        newOperatorDetail.status = "Not available";
         bookingRequest.assignedOperator = {
           bookingId: booking._id,
           unit,
@@ -609,26 +662,31 @@ const assignOperator = async (req, res) => {
           operatorId: newOperatorId,
         };
 
+       
+
         // Save the updated partner document
         await partnerFound.save();
 
-        res.status(200).json({ message: "Operator assigned successfully", partnerFound, bookingId });
+        res
+          .status(200)
+          .json({
+            message: "Operator assigned successfully",
+            partnerFound,
+            bookingId,
+          });
       } else {
         res.status(404).json({ message: "Operator not found" });
       }
-
     } else {
       res.status(200).json({
         message: "No operator assignment made for this partner type",
       });
     }
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error", error });
   }
 };
-
 
 /*****************************************
             Send OTP 

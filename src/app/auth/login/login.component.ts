@@ -41,6 +41,8 @@ export class LoginComponent {
   };
   userDetails: any = {};
   isAdmin: boolean = false;
+  passwordVisible: boolean = false;
+  confirmPasswordVisible: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -66,27 +68,35 @@ export class LoginComponent {
           this.toastr.success(response.message, 'Success');
           this.clearForm();
           this.activeModal.dismiss();
-          
+
           const userId = localStorage.getItem('userId');
           if (userId) {
-            this.userService.getUserById(userId).subscribe((user: User) => {
-              this.isAdmin = user.isAdmin;
-              
-              if (user.accountType === 'Super User') {
-                // Navigate to Super User dashboard
-                this.router.navigate(['/home/user/dashboard/super-user/dashboard']);
-              } else if (this.isAdmin) {
-                // Navigate to Admin dashboard
-                this.router.navigate(['/home/user/dashboard/admin/overview']);
-              } else {
-                // Navigate to regular user booking page
-                this.router.navigate(['/home/user/dashboard/booking']);
+            this.userService.getUserById(userId).subscribe(
+              (user: User) => {
+                this.isAdmin = user.isAdmin;
+
+                if (user.accountType === 'Super User') {
+                  // Navigate to Super User dashboard
+                  this.router.navigate([
+                    '/home/user/dashboard/super-user/dashboard',
+                  ]);
+                } else if (this.isAdmin) {
+                  // Navigate to Admin dashboard
+                  this.router.navigate(['/home/user/dashboard/admin/overview']);
+                } else {
+                  // Navigate to regular user booking page
+                  this.router.navigate(['/home/user/dashboard/booking']);
+                }
+              },
+              (error) => {
+                // Handle error if getUserById fails
+                this.toastr.error(
+                  'Failed to retrieve user information',
+                  'Error'
+                );
+                window.location.reload();
               }
-            }, (error) => {
-              // Handle error if getUserById fails
-              this.toastr.error('Failed to retrieve user information', 'Error');
-              window.location.reload();
-            });
+            );
           } else {
             window.location.reload();
           }
@@ -109,6 +119,14 @@ export class LoginComponent {
         }
       }
     );
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
   otpVerificatoionModal(): void {

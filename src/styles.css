@@ -375,8 +375,26 @@ body {
 .forget-pass-form button {
   background-color: #6a66d1;
   color: #fff;
-  width: 25%;
+  width: 25% !important;
   padding: 10px;
+}
+.input-with-icon {
+  position: relative;
+  border: none !important;
+  padding: 0px 0px !important;
+  color: #535353 !important;
+}
+.input-with-icon input {
+  padding-right: 30px; 
+}
+.input-with-icon i {
+  right: 15px !important; 
+  top: 50% !important;
+  transform: translateY(-50%); 
+}
+.draw-line {
+  border-bottom: 1px solid rgba(186, 186, 186, 0.5) !important;
+  margin-top: 15px;
 }
 
 @media (max-width: 768px) {
@@ -796,6 +814,22 @@ input[type="checkbox"] {
 .drop-point {
   background-color: red;
 }
+.pickup-drop {
+  margin: auto !important;
+}
+.pickup-drop img {
+  width: 25px;
+  height: 25px;
+  display: flex;
+  flex-direction: column;
+  margin: 0px auto !important;
+}
+.dotted {
+  width: 4px !important; 
+  height: 30px; 
+  border-left: 2px dashed #707070; 
+  margin: 5px auto !important;
+}
 .suggestions-dropdown {
   border: 1px solid #ccc;
   background-color: #fff;
@@ -910,7 +944,7 @@ input[type="checkbox"] {
 .layout-container {
   display: flex;
   height: 80vh;
-  background: #f6f9ff;
+  background: #f7f6ff;
   overflow: hidden;
   margin: 50px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -921,10 +955,11 @@ input[type="checkbox"] {
 }
 
 .sidebar {
-  flex: 0 0 25%; /* 25% width for sidebar */
+  flex: 0 0 20%; /* 25% width for sidebar */
   background-color: #f0edfa !important;
   height: 100%;
   padding-right: 0px !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar ul {
@@ -951,7 +986,7 @@ input[type="checkbox"] {
 .mainbar {
   flex: 1; /* Take the remaining space */
   margin: 30px;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -986,7 +1021,7 @@ input[type="checkbox"] {
   text-align: center;
   background: #fff;
   width: 100%;
-  padding: 120px 0px 50px 0px;
+  padding: 50px 0px 50px 0px;
   background-image: url("/assets/images/profile-background.svg");
   background-size: cover;
   background-position: center;
@@ -1013,8 +1048,13 @@ input[type="checkbox"] {
 .username {
   font-size: 16px;
   font-weight: normal;
-  margin-bottom: 5px;
+  margin-bottom: 0px !important;
   text-transform: capitalize;
+}
+.user-city {
+  font-size: 12px;
+  color: #8F8E97;
+  margin-top: -10px;
 }
 
 .edit-profile {
@@ -1986,12 +2026,12 @@ input[type="checkbox"] {
 }
 
 .booking-history .location-cell {
-  display: flex;
-  justify-content: center;
+  display: flex !important;
+  justify-content: center !important;
 }
 
 .booking-history .location-item {
-  display: flex;
+  display: flex !important;
   margin: auto 2px !important;
   align-items: center !important;
 }
@@ -2121,6 +2161,20 @@ input[type="checkbox"] {
   border: 1px solid #bfbebe !important;
   padding: 0px 10px !important;
   background: none !important;
+}
+
+.no-request {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0px;
+}
+.operator-management-table .table{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+  border-bottom-left-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+  margin: 15px 0px !important;
 }
 
 /***************google map component***************/
@@ -3277,7 +3331,7 @@ td {
 .booking-history .table-container .table .trigger-booking-table th,
 .booking-history .table-container .table .trigger-booking-table td {
   text-align: left !important;
-  padding-left: 20px !important;
+  /* padding-left: 20px !important; */
 }
 .trigger-booking-td {
   display: flex !important;
@@ -3286,7 +3340,6 @@ td {
 .trigger-booking-td-1 {
   display: flex;
   flex-direction: column; 
-  margin-left: 20px
 }
 .trigger-booking-td-1 .p1 {
   margin-bottom: 0px !important;
@@ -3366,7 +3419,7 @@ td {
   border-bottom-right-radius: 10px !important;
 }
 .trigger-booking-table svg {
-  margin: 49px 0px !important;
+  margin: 55px 0px !important;
 }
 @media (max-width: 1600px) {
   .booking-history .table-container {
@@ -3400,7 +3453,7 @@ td {
 
 /********************Booking Manager*******************/
 .booking-manager-container {
-  margin: 15px!important;
+  margin: 10px!important;
 }
 .booking-manager-table {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -3415,7 +3468,30 @@ td {
   margin: 0px!important;
 }
 }
-
+.payment-status {
+  width: 300px !important;
+}
+.payment-status-icon {
+  width: 25px !important;
+  height: 25px !important;
+  object-fit: contain;
+}
+.booking-manager-container .first-row {
+  height: 100%; 
+  max-height: 350px; 
+  padding: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+.payment-status-badge {
+  padding: 5px 30px;
+  border-radius: 15px;
+  font-size: 15px;
+  display: inline-block; 
+}
+.booking-table-cell {
+  vertical-align: middle; 
+}
 .scrollable-tbody {
   display: block; 
   max-height: 300px;
@@ -3438,8 +3514,10 @@ td {
 
 .labels-container {
   display: flex;
-  flex-direction: column;
-  margin: 30px 30px !important;
+  flex-direction: row;
+  justify-content: center;
+  gap: 18px;
+  margin: 25px auto !important;
 }
 
 .label-item {
@@ -3451,9 +3529,22 @@ td {
 .color-box {
   width: 15px;
   height: 15px;
-  margin-right: 10px;
+  margin-right: 5px;
   border-radius: 50%;
 }
+
+@media (max-width: 768px) {
+  .labels-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px !important;
+    margin: 25px auto !important;
+  }
+  .booking-manager-container .first-row {
+    height: fit-content !important; 
+  }
+}
+
 
 /******************Edit Model Component****************/
 .edit-model-row-2 {
@@ -3461,7 +3552,7 @@ td {
   justify-content: center !important;
   margin: 25px 0px !important;
   align-items: center !important;
-  gap: 20px;
+  gap: 5px !important;
 }
 .edit-booking-modal {
   max-height: 450px; 
@@ -3473,4 +3564,39 @@ td {
 }
 .highlighted-border {
   border: 2px solid #1BD0BB !important;
+}
+
+.btn-view {
+  background-color: #F5F3FF !important;
+  border: 1px solid #ddd !important;
+  width: 100px !important;
+  font-size: 14px !important;
+  color: #7F6AFF !important;
+}
+
+/***************Booking Deatils****************/
+.booking-details-head {
+  color: #fff;
+  font-size: 18px !important;
+  padding-top: 35px;
+}
+.show-booking-details p {
+  padding: 10px 0; 
+  margin-bottom: 10px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+}
+.show-booking-details {
+  border-bottom: 1px solid #ddd !important; 
+}
+.booking-modal-body p:last-child {
+  border-bottom: none; 
+}
+.booking-modal-body b {
+  margin-right: 10px; 
+}
+.booking-modal-body span {
+  flex-grow: 1; 
+  text-align: end !important; 
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { BookingService } from '../../../services/booking.service';
 import { PartnerService } from '../../../services/partner/partner.service';
 import { CommonModule } from '@angular/common';
@@ -17,7 +17,9 @@ import { Router } from '@angular/router';
   styleUrl: './super-user-payments.component.css',
 })
 
-export class SuperUserPaymentsComponent {
+export class SuperUserPaymentsComponent implements AfterViewInit {
+  @ViewChildren('.no-scroll-header', { read: ElementRef }) tableHeaders!: QueryList<ElementRef>;
+
   bookings: any[] = [];
   filteredBookings: any[] = []; 
   partnerDetails: any = {};
@@ -38,6 +40,16 @@ export class SuperUserPaymentsComponent {
   ngOnInit(): void {
     this.fetchCompletedBookings();
     this.invokeStripe();
+  }
+
+  ngAfterViewInit(): void {
+    this.tableHeaders.forEach(header => this.preventVerticalScroll(header));
+  }
+
+  preventVerticalScroll(header: ElementRef): void {
+    if (header.nativeElement.scrollHeight < 50) { // Example condition to prevent scroll
+      header.nativeElement.style.overflowY = 'hidden';
+    }
   }
 
   fetchCompletedBookings() {
@@ -71,7 +83,7 @@ export class SuperUserPaymentsComponent {
       );
     } else if(this.selectedFilter === "Running") {
       this.filteredBookings =  this.bookings.filter(
-        (booking) => booking.paymentStatus === "HalfPaid"
+        (booking) => booking.paymentStatus === "HalfPaid" && booking.bookingStatus !== "Completed"
       )
     }
     else if(this.selectedFilter === "Pending") {

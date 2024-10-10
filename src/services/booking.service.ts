@@ -23,9 +23,13 @@ export class BookingService {
   updateBooking(bookingId: string, bookingData: any): Observable<any> {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.put(`${this.apiUrl}/edit-booking/${bookingId}`, bookingData, {
-      headers,
-    });
+    return this.http.put(
+      `${this.apiUrl}/edit-booking/${bookingId}`,
+      bookingData,
+      {
+        headers,
+      }
+    );
   }
 
   cancelBooking(bookingId: string): Observable<any> {
@@ -118,6 +122,22 @@ export class BookingService {
       `${this.apiUrl}/bookings/${bookingId}/additional-charges`,
       payload,
       { headers }
+    );
+  }
+
+  getBookingsWithPendingPayment(userId: string): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get(
+      `${this.apiUrl}/bookings/getBookingsWithPendingPayment/${userId}`,
+      { headers }
+    );
+  }
+
+  getUnitDetails(bookingId: string): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/bookings/getUnitDetails/${bookingId}`
     );
   }
 }

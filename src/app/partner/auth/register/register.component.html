@@ -97,22 +97,35 @@
         </div>
         <div class="partner-register">
           <label for="password">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            name="password"
-            placeholder="Enter your Password"
-            [(ngModel)]="formData.password"
-            required
-          />
+          <div class="input-with-icon" style="position: relative">
+            <input
+              [type]="passwordVisible ? 'text' : 'password'"
+              class="form-control"
+              id="password"
+              name="password"
+              placeholder="Enter your Password"
+              [(ngModel)]="formData.password"
+              required
+            />
+            <i
+              class="fas"
+              [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+              (click)="togglePasswordVisibility()"
+              style="
+                position: absolute;
+                right: 10px;
+                top: 38px;
+                cursor: pointer;
+              "
+            ></i>
+          </div>
         </div>
         <div class="text-center">
           <button
             type="submit"
             class="btn custom-register-btn"
             [disabled]="!registerForm.form.valid"
-            style="margin-bottom: 20px !important;"
+            style="margin-bottom: 20px !important"
           >
             Register
           </button>

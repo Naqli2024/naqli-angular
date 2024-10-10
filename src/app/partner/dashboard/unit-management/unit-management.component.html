@@ -3,23 +3,29 @@
     <div class="head-element" style="position: relative">
       <h2>Unit Management</h2>
     </div>
-    <div class="dropdown-container">
-      <select class="form-select" (change)="onUnitTypeChange($event)">
+    <div
+      class="dropdown-container"
+      style="width: 100%; margin: 15px 0px !important"
+    >
+      <select
+        class="form-select"
+        (change)="onUnitTypeChange($event)"
+        style="width: 150px !important"
+      >
         <option *ngFor="let option of options" [value]="option">
           {{ option }}
         </option>
       </select>
     </div>
-    <div class="table-container">
-      <table class="table">
+    <div class="table-container booking-manager-table">
+      <table class="table" style="margin: 0px 0px !important">
         <thead>
           <tr>
             <th>Unit ID</th>
-            <th>Unit Type</th>
             <th>Unit</th>
             <th>Unit Classification</th>
+            <th>Unit SubClassification</th>
             <th>Operator</th>
-            <th>Status</th>
             <th>Vehicle detail/Doc</th>
           </tr>
         </thead>
@@ -36,18 +42,6 @@
                 {{ detail.firstName }} {{ detail.lastName
                 }}<ng-container *ngIf="!last">, </ng-container>
               </ng-container>
-            </td>
-            <td
-              [ngStyle]="{
-                color:
-                  getOperatorStatus(operator) === 'Available'
-                    ? 'green'
-                    : getOperatorStatus(operator) === 'Not available'
-                    ? 'red'
-                    : 'black'
-              }"
-            >
-              {{ getOperatorStatus(operator) }}
             </td>
             <td>
               <p
@@ -239,6 +233,7 @@
             />
           </div>
         </div>
+        <div class="draw-line"></div>
 
         <div class="row">
           <div class="col-md-6">
@@ -305,7 +300,6 @@
             />
           </div>
         </div>
-
 
         <div class="row">
           <div class="col-md-6">
@@ -393,33 +387,6 @@
               name="nationalID"
               required
             />
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-12">
-            <label class="col-form-label" style="font-size: 14px"
-              >Partner Name/ID</label
-            >
-            <div class="input-group create-operator">
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="formData.partnerName"
-                [disabled]="!isEditing"
-                name="partnerId"
-              />
-              <button
-                type="button"
-                (click)="toggleEditMode()"
-                style="
-                  border-bottom-right-radius: 5px;
-                  border-top-right-radius: 5px;
-                "
-              >
-                <fa-icon [icon]="isEditing ? faTimes : faEdit"></fa-icon>
-              </button>
-            </div>
           </div>
         </div>
 

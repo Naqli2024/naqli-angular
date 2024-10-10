@@ -5,6 +5,9 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ReportSupportService } from '../../../../../services/report/report.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { UserService } from '../../../../../services/user.service';
+import { PartnerService } from '../../../../../services/partner/partner.service';
+import { User } from '../../../../../models/user.model';
 
 @Component({
   selector: 'app-report-support',
@@ -17,12 +20,43 @@ export class ReportSupportComponent {
   file: File | null = null;
   email: string = '';
   reportMessage: string = '';
+  userId: string | null = '';
+  partnerId: string | null = '';
+  emailAddress: string = '';
 
   constructor(
     private reportSupportService: ReportSupportService,
     private toastr: ToastrService,
-    public activeModal: NgbActiveModal
+    public activeModal: NgbActiveModal,
+    private userService: UserService,
+    private partnerService: PartnerService
   ) {}
+
+  ngOnInit() {
+    this.userId = localStorage.getItem('userId');
+    this.partnerId = localStorage.getItem('partnerId');
+    if (this.userId) {
+      this.userService.getUserById(this.userId).subscribe(
+        (user: User) => {
+          this.emailAddress = user.emailAddress;
+        },
+        (error) => {
+          console.error('Error fetching user data:', error);
+        }
+      );
+    } else if (this.partnerId) {
+      this.partnerService.getPartnerDetails(this.partnerId).subscribe(
+        (partner: any) => {
+          this.emailAddress = partner?.data?.email;
+        },
+        (error) => {
+          console.error('Error fetching data:', error);
+        }
+      );
+    } else {
+      console.error('Neither userId nor partnerId found');
+    }
+  }
 
   onDrop(event: DragEvent): void {
     event.preventDefault();
@@ -69,7 +103,7 @@ export class ReportSupportComponent {
         (response) => {
           this.toastr.success(response.message);
           this.clearForm();
-          this.closeModal(); 
+          this.closeModal();
         },
         (error) => {
           this.toastr.error('Error submitting report:', error);
@@ -93,6 +127,6 @@ export class ReportSupportComponent {
   }
 
   private closeModal(): void {
-    this.activeModal.close(); 
+    this.activeModal.close();
   }
 }

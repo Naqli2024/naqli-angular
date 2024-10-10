@@ -10,11 +10,12 @@ import { CommonModule } from '@angular/common';
 import { PartnerService } from '../../../../services/partner/partner.service';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { PaymentConfirmationComponent } from './payment-confirmation/payment-confirmation.component';
 
 @Component({
   selector: 'app-booking',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PaymentConfirmationComponent],
   templateUrl: './booking.component.html',
   styleUrl: './booking.component.css',
 })
@@ -26,6 +27,7 @@ export class PartnerBookingComponent implements OnInit {
   quotePrice: any[] = [];
   bookingId: string = '';
   bookingRequests: string[] = [];
+  public shouldShow: boolean = false;
 
   constructor(
     private router: Router,
@@ -56,12 +58,9 @@ export class PartnerBookingComponent implements OnInit {
         this.spinnerService.hide();
         this.partner = response.data;
         if (this.partner && this.partner.bookingRequest) {
-          // Process booking requests directly from the partner object
           this.partner.bookingRequest.forEach((booking: any) => {
-            if (booking.bookingId) {
-              // Collect booking IDs
+            if (booking.bookingId && booking.bookingStatus !== 'Completed') {
               this.bookingRequests.push(booking.bookingId);
-              // Collect quote prices
               this.quotePrice.push({
                 bookingId: booking.bookingId.toString(),
                 quotePrice: booking.quotePrice,
@@ -69,7 +68,6 @@ export class PartnerBookingComponent implements OnInit {
             }
           });
   
-          // Proceed to fetch bookings by booking IDs
           if (this.bookingRequests.length) {
             this.getBookingsByBookingId();
           }
@@ -82,41 +80,58 @@ export class PartnerBookingComponent implements OnInit {
       }
     );
   }
-
+  
   getBookingsByBookingId() {
     const bookingObservables = this.bookingRequests.map((bookingId: string) =>
       this.bookingService.getBookingsByBookingId(bookingId)
     );
-
-    // this.spinnerService.show();
+  
     forkJoin(bookingObservables).subscribe(
       (responses: any[]) => {
-        this.spinnerService.hide();
-        this.bookings = responses.map((response) => response.data);
-        this.bookings = this.bookings.flat();
-        this.fetchUsers();
+        this.spinnerService.hide(); // Hide spinner once response is received
+        // Flatten the bookings from all responses
+        this.bookings = responses.map((response) => response.data).flat();
+  
+        // Loop through bookings to check the condition for calling navigate or showing table
+        this.bookings.forEach((booking) => {
+          if (
+            this.partner.type === 'singleUnit + operator' && 
+            booking.bookingStatus !== 'Completed' &&
+            (booking.paymentStatus === 'HalfPaid' ||
+              booking.paymentStatus === 'Paid' || 
+              booking.paymentStatus === 'Completed')
+          ) {
+            this.navigateToConfirmPayment(booking._id);
+          }
+        });
+  
+        if (this.bookings.length > 0) {
+          this.fetchUsers(); 
+        } else {
+          this.spinnerService.hide(); 
+        }
       },
       (error) => {
         this.spinnerService.hide();
+        this.toastr.error('Error fetching bookings', 'Error');
         console.error('Error fetching bookings', error);
       }
     );
   }
 
   fetchUsers() {
-    this.spinnerService.show();
     const userIds = this.bookings
       .map((booking) => booking.user)
       .filter((value, index, self) => value && self.indexOf(value) === index);
-
+  
     if (userIds.length > 0) {
       const userObservables = userIds.map((userId) =>
         this.userService.getUserById(userId)
       );
-     
+  
       forkJoin(userObservables).subscribe(
         (users: any[]) => {
-          this.spinnerService.hide();
+          this.spinnerService.hide(); // Hide spinner after users are fetched
           this.users = users.reduce((acc, user) => {
             acc[user._id] = user;
             return acc;
@@ -128,12 +143,21 @@ export class PartnerBookingComponent implements OnInit {
           console.error('Error fetching user details', error);
         }
       );
+    } else {
+      // If no users to fetch, ensure spinner is hidden
+      this.spinnerService.hide();
+      this.toastr.warning('No users to fetch');
     }
   }
 
   navigateToConfirmPayment(bookingId: string): void {
-    const booking = this.bookings.find(b => b._id === bookingId);
-    if (booking && (booking.paymentStatus === 'HalfPaid' || booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid')){
+    const booking = this.bookings.find((b) => b._id === bookingId);
+    if (
+      booking &&
+      (booking.paymentStatus === 'HalfPaid' ||
+        booking.paymentStatus === 'Completed' ||
+        booking.paymentStatus === 'Paid')
+    ) {
       this.router.navigate(
         ['/home/partner/dashboard/booking/confirm-payment'],
         {
@@ -159,7 +183,7 @@ export class PartnerBookingComponent implements OnInit {
       .updateQuotePrice(partnerId, bookingId, quotePrice)
       .subscribe(
         (response) => {
-          if(response.success) {
+          if (response.success) {
             this.spinnerService.hide();
             this.toastr.success(response.message);
           } else {

@@ -53,8 +53,8 @@ const createBooking = async (req, res) => {
       }
     }
 
-     // Validate that productValue is a number
-     if (typeof productValue !== 'number' || isNaN(productValue)) {
+    // Validate that productValue is a number
+    if (typeof productValue !== "undefined" && isNaN(productValue)) {
       return res.status(400).json({
         message: "Validation error: productValue must be a valid number.",
       });
@@ -107,7 +107,7 @@ const createBooking = async (req, res) => {
 };
 
 const editBooking = async (req, res) => {
-  const { bookingId } = req.params; 
+  const { bookingId } = req.params;
   const { date, pickup, dropPoints, additionalLabour } = req.body;
 
   try {
@@ -157,19 +157,84 @@ const editBooking = async (req, res) => {
 
 const cancelBooking = async (req, res) => {
   const { bookingId } = req.params;
+
   try {
+    // Try to find and delete the booking by bookingId
     const deletedBooking = await Booking.findByIdAndDelete(bookingId);
 
     if (!deletedBooking) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Update operators to remove canceled booking from bookingRequest
+    // Now, proceed to find the partner associated with this booking
+    const partner = await Partner.findOne({
+      "bookingRequest.bookingId": bookingId,
+    });
+
+    if (!partner) {
+      return res
+        .status(404)
+        .json({ message: "No partner associated with this bookingId" });
+    }
+
+    // Find the bookingRequest to get the assigned operator
+    const bookingRequest = partner.bookingRequest.find(
+      (br) => br.bookingId.toString() === bookingId.toString()
+    );
+
+    if (
+      bookingRequest &&
+      bookingRequest.assignedOperator &&
+      bookingRequest.assignedOperator.operatorId
+    ) {
+      const assignedOperator = bookingRequest.assignedOperator;
+
+      // If the assigned operator's bookingId matches the deleted bookingId, update the status
+      if (bookingRequest.bookingId.toString() === bookingId.toString()) {
+        // Update status for the operator in `operatorsDetail`
+        let operatorFound = false;
+        for (const operator of partner.operators) {
+          let operatorDetail = operator.operatorsDetail.find(
+            (op) => op._id.toString() === assignedOperator.operatorId.toString()
+          );
+          if (operatorDetail) {
+            operatorDetail.status = "available"; // Set status to 'available'
+            operatorFound = true;
+            break;
+          }
+        }
+
+        // Check and update status in `extraOperators`
+        let extraOperator = partner.extraOperators.find(
+          (op) => op._id.toString() === assignedOperator.operatorId.toString()
+        );
+        if (extraOperator) {
+          extraOperator.status = "available"; // Set status to 'available'
+        }
+
+        // Save the updated operator status if any were found and updated
+        if (operatorFound || extraOperator) {
+          await partner.save(); // Save updated operator status in the partner document
+        } else {
+          console.log("No operator found with the assigned operator ID.");
+        }
+      } else {
+        console.log("Assigned operator does not match this bookingId.");
+      }
+    } else {
+      console.log("No assigned operator found in booking request.");
+    }
+
+    // If the booking was found and deleted, update operators to remove the canceled booking
     await updateOperatorsWithNewBooking(deletedBooking, true);
 
+    // Successfully canceled the booking
     res.status(200).json({ success: true, message: "Booking Cancelled" });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed" });
+    console.error("Error cancelling booking:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to cancel booking", error });
   }
 };
 
@@ -202,9 +267,6 @@ const deleteBooking = async (bookingId) => {
   }
 };
 
-
-
-
 const updateBookingPaymentStatus = async (req, res) => {
   const { bookingId } = req.params;
   const { amount, status, partnerId, totalAmount, oldQuotePrice } = req.body;
@@ -213,25 +275,41 @@ const updateBookingPaymentStatus = async (req, res) => {
     // Find the booking by ID
     const booking = await Booking.findById(bookingId);
     if (!booking) {
-      return res.status(404).json({ success: false, message: "Booking not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
     }
 
     // Fetch the user associated with the booking
     const user = await User.findById(booking.user);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     // Fetch the commission slabs based on user's accountType
-    const commission = await Commission.findOne({ userType: user.accountType }).exec();
-    if (!commission || !commission.slabRates || commission.slabRates.length === 0) {
-      return res.status(404).json({ success: false, message: "Commission slabs not found for user type" });
+    const commission = await Commission.findOne({
+      userType: user.accountType,
+    }).exec();
+    if (
+      !commission ||
+      !commission.slabRates ||
+      commission.slabRates.length === 0
+    ) {
+      return res.status(404).json({
+        success: false,
+        message: "Commission slabs not found for user type",
+      });
     }
 
     // Determine the applicable slab rate based on the oldQuotePrice
     let commissionRate = 0;
     for (const slab of commission.slabRates) {
-      if (oldQuotePrice >= slab.slabRateStart && oldQuotePrice <= slab.slabRateEnd) {
+      if (
+        oldQuotePrice >= slab.slabRateStart &&
+        oldQuotePrice <= slab.slabRateEnd
+      ) {
         commissionRate = parseFloat(slab.commissionRate) / 100; // Convert to decimal
         console.log(`Applicable Slab Rate: ${slab.commissionRate}%`);
         console.log(`Commission Rate: ${commissionRate}`);
@@ -240,7 +318,10 @@ const updateBookingPaymentStatus = async (req, res) => {
     }
 
     if (commissionRate === 0) {
-      return res.status(400).json({ success: false, message: "Commission rate not applicable for the given amount" });
+      return res.status(400).json({
+        success: false,
+        message: "Commission rate not applicable for the given amount",
+      });
     }
 
     // Calculate admin commission based on the oldQuotePrice
@@ -248,12 +329,18 @@ const updateBookingPaymentStatus = async (req, res) => {
     console.log(`Calculated Admin Commission: ${adminCommission}`);
 
     // Ensure adminCommission is set only if it's not already set
-    if (booking.adminCommission === undefined || booking.adminCommission === 0) {
+    if (
+      booking.adminCommission === undefined ||
+      booking.adminCommission === 0
+    ) {
       booking.adminCommission = adminCommission;
     }
 
     // Initialize remainingBalance if not already set
-    if (booking.remainingBalance === undefined || booking.remainingBalance === 0) {
+    if (
+      booking.remainingBalance === undefined ||
+      booking.remainingBalance === 0
+    ) {
       booking.remainingBalance = totalAmount;
     }
 
@@ -282,7 +369,9 @@ const updateBookingPaymentStatus = async (req, res) => {
     let updatedRemainingBalance = booking.remainingBalance;
 
     if (updatedRemainingBalance < 0) {
-      return res.status(400).json({ success: false, message: "Amount exceeds remaining balance" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Amount exceeds remaining balance" });
     }
 
     if (status === "Completed" || status === "Paid") {
@@ -299,7 +388,8 @@ const updateBookingPaymentStatus = async (req, res) => {
     if (status === "HalfPaid") {
       booking.payout = booking.initialPayout;
     } else {
-      booking.payout = (booking.initialPayout || 0) + (booking.finalPayout || 0);
+      booking.payout =
+        (booking.initialPayout || 0) + (booking.finalPayout || 0);
     }
 
     // Update booking status if payment status is 'HalfPaid', 'Completed', or 'Paid'
@@ -313,7 +403,9 @@ const updateBookingPaymentStatus = async (req, res) => {
     // Find the partner by ID
     const partner = await Partner.findById(partnerId);
     if (!partner) {
-      return res.status(404).json({ success: false, message: "Partner not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Partner not found" });
     }
 
     // Correctly update the payment status in partner's booking requests
@@ -333,20 +425,16 @@ const updateBookingPaymentStatus = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Booking payment status updated successfully",
-      booking: updatedBooking
+      booking: updatedBooking,
     });
   } catch (error) {
     console.error("Error updating booking payment status:", error);
     return res.status(500).json({
       success: false,
-      message: "Failed to update booking payment status"
+      message: "Failed to update booking payment status",
     });
   }
 };
-
-
-
-
 
 const bookingCompleted = async (req, res) => {
   const { userId } = req.params;
@@ -464,86 +552,238 @@ const addAdditionalCharges = async (req, res) => {
   }
 };
 
-
-
 const updateBookingStatus = async (req, res) => {
   try {
     const { bookingId, status } = req.body;
 
-    // Find the booking by bookingId
+    // Try to find the booking in the Booking collection
     const booking = await Booking.findOne({ _id: bookingId });
 
-    if (!booking) {
-      return res.status(404).json({ message: 'Booking not found' });
-    }
-
-    // Find the partner associated with this booking
-    const partner = await Partner.findOne({ 'bookingRequest.bookingId': bookingId });
+    // If the booking is not found, update the operator status based on the bookingRequest in the Partner
+    const partner = await Partner.findOne({
+      "bookingRequest.bookingId": bookingId,
+    });
 
     if (!partner) {
-      return res.status(404).json({ message: 'No bookingRequest found for this bookingId' });
+      return res
+        .status(404)
+        .json({ message: "No partner found for this bookingId" });
     }
 
-    console.log('Partner fetched:', partner);
+    const bookingRequest = partner.bookingRequest.find(
+      (br) => br.bookingId.toString() === bookingId.toString()
+    );
 
+    if (!booking) {
+      // If booking not found, check if there is an assignedOperator in the bookingRequest
+      if (
+        bookingRequest &&
+        bookingRequest.assignedOperator &&
+        bookingRequest.assignedOperator.operatorId
+      ) {
+        const assignedOperator = bookingRequest.assignedOperator;
+
+        // Update status for operator in `operatorsDetail`
+        let operatorFound = false;
+        for (const operator of partner.operators) {
+          let operatorDetail = operator.operatorsDetail.find(
+            (op) => op._id.toString() === assignedOperator.operatorId.toString()
+          );
+          if (operatorDetail) {
+            operatorDetail.status = "available"; // Update status to 'available'
+            operatorFound = true;
+            break;
+          }
+        }
+
+        // Check and update status in `extraOperators`
+        let extraOperator = partner.extraOperators.find(
+          (op) => op._id.toString() === assignedOperator.operatorId.toString()
+        );
+        if (extraOperator) {
+          extraOperator.status = "available"; // Update status to 'available'
+        }
+
+        // Save the updated partner document if any operator was found and updated
+        if (operatorFound || extraOperator) {
+          await partner.save(); // Save the updated operator status
+          return res.status(200).json({
+            message: "Booking not found, operator status updated to available",
+            operatorStatusUpdated: true,
+          });
+        } else {
+          return res.status(404).json({
+            message:
+              "Assigned operator not found in operators or extraOperators",
+          });
+        }
+      } else {
+        return res
+          .status(404)
+          .json({ message: "No assignedOperator found in bookingRequest" });
+      }
+    }
+
+    // If booking exists, proceed to update status if requested
     if (status === true) {
       // Update booking status to "Completed"
-      booking.bookingStatus = 'Completed';
+      booking.bookingStatus = "Completed";
       await booking.save();
 
-      // Find the corresponding bookingRequest
-      const bookingRequest = partner.bookingRequest.find(br => br.bookingId.toString() === bookingId.toString());
       if (bookingRequest) {
         bookingRequest.bookingStatus = booking.bookingStatus;
-        await partner.save(); // Save updated partner document
+        await partner.save(); // Save updated bookingRequest status in partner
 
-        // Now access the assignedOperator from the bookingRequest
         const assignedOperator = bookingRequest.assignedOperator;
 
         if (assignedOperator && assignedOperator.operatorId) {
-          // Loop through operators to find the one that matches the assignedOperator
+          // Update operator status in `operatorsDetail`
           let operatorFound = false;
           for (const operator of partner.operators) {
-            let operatorDetail = operator.operatorsDetail.find(op => op._id.toString() === assignedOperator.operatorId.toString());
+            let operatorDetail = operator.operatorsDetail.find(
+              (op) =>
+                op._id.toString() === assignedOperator.operatorId.toString()
+            );
             if (operatorDetail) {
-              operatorDetail.status = 'available';  // Update status to 'available'
+              operatorDetail.status = "available"; // Set status to 'available'
               operatorFound = true;
-              break; // Exit loop once found
+              break;
             }
           }
 
-          // Also check and update the `extraOperators` array
-          let extraOperator = partner.extraOperators.find(op => op._id.toString() === assignedOperator.operatorId.toString());
+          // Update operator status in `extraOperators`
+          let extraOperator = partner.extraOperators.find(
+            (op) => op._id.toString() === assignedOperator.operatorId.toString()
+          );
           if (extraOperator) {
-            extraOperator.status = 'available';  // Update status to 'available'
-          } else {
-            console.log(`Operator not found in extraOperators with ID: ${assignedOperator.operatorId}`);
+            extraOperator.status = "available";
           }
 
-          // Save the updated status of operators
+          // Save the updated status if any operator was updated
           if (operatorFound || extraOperator) {
-            await partner.save(); // Save the updated partner document
+            await partner.save(); // Save updated operator status
           } else {
-            console.log('No operator found with the assigned operator ID.');
+            console.log("No operator found with the assigned operator ID.");
           }
-        } else {
-          console.log('No assigned operator found in booking request.');
         }
-      } else {
-        return res.status(404).json({ message: 'No bookingRequest found for this bookingId' });
       }
 
-      return res.status(200).json({ message: 'Booking status updated to Completed', booking });
+      return res
+        .status(200)
+        .json({ message: "Booking status updated to Completed", booking });
     } else {
-      return res.status(400).json({ message: 'Status is not true, cannot update booking status' });
+      return res
+        .status(400)
+        .json({ message: "Status is not true, cannot update booking status" });
     }
   } catch (error) {
-    console.error('Error updating booking status:', error);
-    res.status(500).json({ message: 'Server error', error });
+    console.error("Error updating booking status:", error);
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
+const getBookingsWithPendingPayment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { page = 1 } = req.query;
 
+    // Find the user by ID in the User collection
+    const user = await User.findById(id);
+
+    if (!user) {
+      // If user is not found, throw an error
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find all bookings associated with the user where paymentStatus is 'NotPaid'
+    const pendingBookings = await Booking.find({
+      user: user._id,
+      paymentStatus: "NotPaid",
+    })
+      .skip((page - 1) * 1) // Skip results for pagination, limit set to 1
+      .limit(1); // Limit to 1 result
+
+    // If no pending bookings are found
+    if (!pendingBookings || pendingBookings.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No more pending bookings found" });
+    }
+
+    // Return the filtered bookings (1 result at a time)
+    return res.status(200).json({
+      message: "Pending booking found",
+      booking: pendingBookings[0], // Since we're limiting to 1, take the first (and only) booking
+      currentPage: page, // current page number for reference
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error", error });
+  }
+};
+
+const getUnitDetails = async (req, res) => {
+  try {
+    const bookingId = req.params.bookingId;
+    const bookingDetails = await Booking.findOne({ _id: bookingId });
+
+    if (!bookingDetails) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    if (!bookingDetails.partner) {
+      return res.status(400).json({ message: "Payment is not updated. Partner not found" });
+    }
+
+    const partner = await Partner.findById(bookingDetails.partner);
+
+    if (!partner) {
+      return res.status(404).json({ message: "Partner not found" });
+    }
+
+    let unitInfo;
+
+    // Handle "multipleUnits"
+    if (partner.type === "multipleUnits") {
+      const bookingRequest = partner.bookingRequest.find(
+        (request) => request.bookingId.toString() === bookingId
+      );
+
+      if (bookingRequest && bookingRequest.assignedOperator) {
+        unitInfo = {
+          unit: bookingRequest.assignedOperator.unit, 
+        };
+      } else {
+        return res.status(404).json({ message: "Assigned operator not found for this booking" });
+      }
+    }
+    
+    // Handle "singleUnit + operator"
+    else if (partner.type === "singleUnit + operator") {
+      const unitDetails = partner.operators[0]; 
+      unitInfo = {
+        unit: unitDetails.plateInformation, 
+      };
+    }
+    
+    // Unknown partner type
+    else {
+      return res.status(400).json({ message: "Unknown partner type" });
+    }
+
+    // Return the collected unit info
+    return res.status(200).json({
+      unit: unitInfo.unit,
+    });
+
+  } catch (error) {
+    console.error("Error: ", error.message);
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message || "Unknown error",
+    });
+  }
+};
 
 module.exports = {
   createBooking,
@@ -555,5 +795,7 @@ module.exports = {
   getAllBookings,
   getBookingsByBookingId,
   addAdditionalCharges,
-  updateBookingStatus
+  updateBookingStatus,
+  getBookingsWithPendingPayment,
+  getUnitDetails,
 };

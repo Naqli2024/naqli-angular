@@ -1,18 +1,24 @@
 <div class="row booking-manager-container">
+  <p style="color: #8f8e97; font-size: 14px; margin-bottom: 0px !important">
+    Total Bookings:
+    <span style="color: black; font-size: 16px">{{ bookings.length }}</span>
+  </p>
+</div>
+<div class="row booking-manager-container">
   <div class="col-md-5 booking-history">
-    <div
-      class="table-container booking-manager-table"
-      style="display: flex; justify-content: space-between; padding: 47px"
-    >
-      <canvas id="doughnutchart"></canvas>
+    <div class="table-container booking-manager-table first-row">
+      <canvas id="doughnutchart" style="margin: 0px auto !important"></canvas>
       <!-- Container for labels -->
       <div id="chart-labels-container" class="labels-container"></div>
     </div>
   </div>
 
   <div class="col-md-5 booking-history">
-    <div class="table-container booking-manager-table">
-     <app-dashboard-line-chart></app-dashboard-line-chart>
+    <div
+      class="table-container booking-manager-table"
+      style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px"
+    >
+      <app-dashboard-line-chart></app-dashboard-line-chart>
     </div>
   </div>
 
@@ -28,7 +34,7 @@
           <ng-container>
             <tr
               class="trigger-booking-table"
-              style="cursor: pointer;"
+              style="cursor: pointer"
               (click)="createBooking()"
             >
               <svg
@@ -36,6 +42,7 @@
                 width="82.998"
                 height="89.999"
                 viewBox="0 0 82.998 89.999"
+                style="height: 170px !important"
               >
                 <path
                   id="Union_1"
@@ -59,35 +66,44 @@
     <div class="table-container booking-manager-table">
       <table class="table" style="margin: 0px 0px !important; width: 100%">
         <thead>
-          <tr class="trigger-booking-table" style="height: 50px">
-            <th colspan="2">Booking</th>
+          <tr class="trigger-booking-table">
+            <th>Booking</th>
           </tr>
         </thead>
-        <tbody class="scrollable-tbody">
+        <tbody class="scrollable-tbody" style="max-height: 200px !important">
           <tr class="trigger-booking-table" *ngFor="let booking of bookings">
-            <td class="trigger-booking-td">
-              <input
-                type="checkbox"
-                [id]="'triggerBooking' + booking._id"
-                name="triggerBooking"
-                [value]="booking._id"
-              />
+            <td
+              class="trigger-booking-td"
+              style="
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between !important;
+              "
+            >
               <div class="trigger-booking-td-1">
                 <p class="p1">{{ booking.unitType }}</p>
                 <p class="p2">{{ booking.date }}</p>
               </div>
-            </td>
-            <td>
-              {{ booking.name }}
-              <span
-                *ngIf="
-                  booking.type &&
-                  booking.type.length > 0 &&
-                  booking.type[0]?.typeName
-                "
-              >
-                - {{ booking.type[0]?.typeName }}</span
-              >
+              <div>
+                <p style="margin: 0">
+                  {{ booking.name }}
+                  <span
+                    *ngIf="booking?.type?.length && booking.type[0]?.typeName"
+                  >
+                    - {{ booking.type[0]?.typeName }}
+                  </span>
+                </p>
+              </div>
+
+              <div>
+                <button
+                  type="button"
+                  class="btn btn-view"
+                  (click)="showBookingDetails(booking._id)"
+                >
+                  View
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -96,29 +112,21 @@
   </div>
   <div class="col-md-7 booking-history">
     <div class="table-container booking-manager-table">
-      <table class="table" style="margin: 10px 0px !important">
+      <table class="table" style="margin: 0px 0px !important">
         <thead>
           <tr class="trigger-booking-table">
             <th>Trigger Booking</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="scrollable-tbody" style="max-height: 200px !important">
           <ng-container *ngFor="let booking of bookings">
             <tr
               class="trigger-booking-table"
-              *ngIf="booking.paymentStatus === 'Pending'"
+              *ngIf="booking.paymentStatus === 'NotPaid'"
               style="cursor: pointer"
               (click)="navigateToTriggerBooking()"
             >
               <td class="trigger-booking-td">
-                <!-- Trigger Booking Checkbox -->
-                <input
-                  type="checkbox"
-                  id="triggerBooking1"
-                  name="triggerBooking1"
-                  value="booking1"
-                />
-
                 <!-- Vehicle and Booking ID Information -->
                 <div class="trigger-booking-td-1">
                   <p class="p1">{{ booking.unitType }}</p>
