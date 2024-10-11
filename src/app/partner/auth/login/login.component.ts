@@ -14,21 +14,22 @@ import { ForgetPasswordComponent } from '../forget-password/forget-password.comp
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
-
   loginData = {
     emailOrMobile: '',
-    password: ''
-  }
+    password: '',
+  };
+  passwordVisible: boolean = false;
+  confirmPasswordVisible: boolean = false;
 
   constructor(
     private modalService: NgbModal,
     private router: Router,
     private toastr: ToastrService,
     private spinnerService: SpinnerService,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   login() {
@@ -39,12 +40,13 @@ export class LoginComponent {
         if (response.success == true) {
           this.toastr.success(response.message, 'Success');
           this.resetForm();
-          if(response.data.partner.type === "singleUnit + operator") {
+          if (response.data.partner.type === 'singleUnit + operator') {
             this.router.navigate(['home/partner/dashboard']);
-          } else if(response.data.partner.type === 'multipleUnits') {
-            this.router.navigate(['home/partner/dashboard/multiple-unit-dashboard']);
+          } else if (response.data.partner.type === 'multipleUnits') {
+            this.router.navigate([
+              'home/partner/dashboard/multiple-unit-dashboard',
+            ]);
           }
-          
         } else {
           if (response.message === 'Account not verified') {
             this.toastr.error(response.message, 'Error');
@@ -64,6 +66,14 @@ export class LoginComponent {
         }
       }
     );
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
   otpVerificatoionModal(): void {
@@ -89,7 +99,7 @@ export class LoginComponent {
 
   toggleForm(event: MouseEvent) {
     event.preventDefault();
-    this.router.navigate(['/home/partner/register'])
+    this.router.navigate(['/home/partner/register']);
   }
 
   resetForm() {
