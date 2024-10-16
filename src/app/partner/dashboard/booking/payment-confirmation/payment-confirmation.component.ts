@@ -86,6 +86,17 @@ export class PaymentConfirmationComponent implements OnInit {
         ]; // Last drop point
       this.mapService.calculateRoute(start, waypoints, end);
     }
+    // Alternatively, check if cityName and address are set
+    else if (this.bookingDetails.cityName && this.bookingDetails.address) {
+      this.mapService.markLocation(
+        this.bookingDetails.address,
+        this.bookingDetails.cityName
+      );
+    } 
+    // If neither condition is met, log an error
+    else {
+      console.error('Either pickup and drop points, or address and cityName are required.');
+    }
   }
 
   checkPaymentStatus() {

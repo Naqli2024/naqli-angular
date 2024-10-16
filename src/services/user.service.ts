@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 })
 export class UserService {
   private userDetails: any; 
-  private apiUrl = 'http://localhost:4000/api'; 
+  private apiUrl = 'https://naqli.onrender.com/api'; 
 
   constructor(private http: HttpClient) {}
 

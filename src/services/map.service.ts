@@ -37,6 +37,75 @@ export class MapService {
     }
   }
 
+  centerMapAtUserLocation(): void {
+    if (!this.map) {
+      console.error('Map is not initialized.');
+      return;
+    }
+  
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLocation = new google.maps.LatLng(
+            position.coords.latitude,
+            position.coords.longitude
+          );
+  
+          // Center the map at the user's location and zoom in
+          this.map!.setCenter(userLocation);
+          this.map!.setZoom(14);
+  
+          // Simulate blue shadow by adding a translucent blue circle behind the white circle
+          const blueShadowCircle = new google.maps.Circle({
+            strokeColor: '#4285F4',  // Blue color for the outer shadow circle
+            strokeOpacity: 0,        // No stroke for the shadow
+            strokeWeight: 0,         // No border
+            fillColor: '#4285F4',    // Blue color fill for shadow
+            fillOpacity: 0.3,        // Translucent effect for shadow
+            map: this.map!,
+            center: userLocation,
+            radius: 100,             // Slightly larger radius to create shadow effect
+          });
+  
+          // Create a white border circle (larger than the blue circle)
+          const whiteBorderCircle = new google.maps.Circle({
+            strokeColor: '#FFFFFF',  // White border
+            strokeOpacity: 1.0,
+            strokeWeight: 5,         // Thicker stroke for border effect
+            fillColor: '#FFFFFF',    // White fill for border
+            fillOpacity: 1,          // Fill the outer circle completely with white
+            map: this.map!,
+            center: userLocation,
+            radius: 60,             // Slightly larger radius for white border
+          });
+  
+          // Create the inner blue circle with no shadow inside the white border
+          const blueCircle = new google.maps.Circle({
+            strokeColor: '#4285F4',  // Blue border color (optional, can remove)
+            strokeOpacity: 0,        // No border stroke
+            strokeWeight: 0,         // No border thickness
+            fillColor: '#4285F4',    // Blue fill color
+            fillOpacity: 0.7,        // Blue circle opacity
+            map: this.map!,
+            center: userLocation,
+            radius: 60,             // Blue circle radius
+          });
+  
+          // Ensure the layering of the circles
+          blueShadowCircle.setOptions({ zIndex: 0 }); // Blue shadow behind
+          whiteBorderCircle.setOptions({ zIndex: 1 }); // White border
+          blueCircle.setOptions({ zIndex: 2 });        // Blue inner circle
+  
+        },
+        (error) => {
+          console.error('Error getting user location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  }
+
   calculateRoute(start: string, waypoints: string[], end: string): void {
     if (!this.directionsService || !this.directionsRenderer || !this.map) {
       console.error('Map or Directions Service not initialized.');

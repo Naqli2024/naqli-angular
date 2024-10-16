@@ -73,7 +73,8 @@ export class DashboardComponent {
         { name: 'Naqlee User', route: 'admin/naqlee-user' },
         { name: 'Commission', route: 'admin/commission' },
       ];
-    } else {
+    } 
+    else {
       this.menuItems = [
         { name: 'Booking', route: 'booking' },
         { name: 'Booking History', route: 'booking-history' },

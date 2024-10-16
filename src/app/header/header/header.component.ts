@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { LoginComponent } from '../../auth/login/login.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NotificationService } from '../../../services/admin/notification.service';
@@ -124,15 +124,22 @@ export class HeaderComponent {
 
   openLoginModal(): void {
     const currentRoute = this.router.url;
+    let modalRef: NgbModalRef | null = null;
+  
     if (currentRoute.includes('/home/user')) {
-      const modalRef = this.modalService.open(LoginComponent, {
+      modalRef = this.modalService.open(LoginComponent, {
         size: 'xl',
         centered: true,
         backdrop: true,
         scrollable: true,
         windowClass: 'no-background',
       });
-
+    } else if (currentRoute.includes('/home/partner')) {
+      this.router.navigate(['home/partner/login']);
+      return; // Exit the function if navigating
+    }
+  
+    if (modalRef) {
       modalRef.result.then(
         () => {
           this.updateUserState();

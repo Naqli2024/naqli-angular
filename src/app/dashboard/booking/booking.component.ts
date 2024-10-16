@@ -54,7 +54,7 @@ export class BookingComponent implements OnInit {
   polling = true;
   totalAmount: number = 0;
   bookingInformation: boolean = false;
-  bookingDetails: any = null;
+  bookingDetails: any;
   partnerDetails: any = null;
   combinedDetails: any = null;
   private autocompleteService!: google.maps.places.AutocompleteService;
@@ -154,6 +154,7 @@ export class BookingComponent implements OnInit {
       (response) => {
         if (response && response.booking) {
           this.toastr.success(response.message);
+          console.log(this.bookingDetails)
           this.bookingId = response.booking._id;
           this.initializeMap(); // Initialize map after fetching bookings
 
@@ -189,8 +190,13 @@ export class BookingComponent implements OnInit {
   }
 
   updateRoute(): void {
-    // Check if pickup and at least one drop point are set
-    if (
+    if (this.bookingDetails.cityName && this.bookingDetails.address) {
+      this.mapService.markLocation(
+        this.bookingDetails.address,
+        this.bookingDetails.cityName
+      );
+    } 
+    else if (
       this.bookingDetails.pickup &&
       this.bookingDetails.dropPoints.length > 0
     ) {
@@ -201,6 +207,10 @@ export class BookingComponent implements OnInit {
           this.bookingDetails.dropPoints.length - 1
         ]; // Last drop point
       this.mapService.calculateRoute(start, waypoints, end);
+    }
+    // If neither condition is met, log an error
+    else {
+      console.error('Either pickup and drop points, or address and cityName are required.');
     }
   }
 
@@ -713,8 +723,6 @@ export class BookingComponent implements OnInit {
     bookingRequests: any[],
     bookingId: string
   ): string {
-    console.log('Booking Requests:', bookingRequests);
-    console.log('Looking for Booking ID:', bookingId);
 
     if (!bookingRequests) {
       console.warn('Booking requests are null or undefined');
@@ -725,7 +733,6 @@ export class BookingComponent implements OnInit {
       (request) => request.bookingId === bookingId
     );
 
-    console.log('Found Booking:', booking);
     if (booking && booking.assignedOperator) {
       console.log('Assigned Operator:', booking.assignedOperator);
     } else {

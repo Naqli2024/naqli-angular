@@ -17,6 +17,21 @@
           Show Route
         </button>
         <div id="map" class="google-map-style"></div>
+        <div class="booking-load">
+          <div class="booking-load-1">
+            <h4>{{ bookingDetails.name }}</h4>
+            <p>{{ bookingDetails.type?.[0]?.typeName }}</p>
+          </div>
+          <div class="border-right"></div>
+          <div class="booking-load-2">
+            <h6>Load</h6>
+            <p>{{ bookingDetails.type?.[0]?.typeOfLoad }}</p>
+          </div>
+          <div class="booking-load-3">
+            <h6>Size</h6>
+            <p>{{ bookingDetails.type?.[0]?.scale }}</p>
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-md-5 right-div">

@@ -3,11 +3,26 @@
     <div class="head-element">
       <h2>Booking</h2>
     </div>
-    <div class="table-container partner-booking-page">
+    <div
+      class="table-container booking-manager-table"
+      style="
+        max-height: 500px !important;
+        width: 100% !important;
+        max-width: 1350px !important;
+        overflow-y: auto !important;
+        overflow-x: auto !important;
+        margin-top: 20px !important;
+        display: block !important;
+        white-space: nowrap !important;
+      "
+    >
       <!-- ng-container to control whether to show the table or not -->
       <ng-container>
         <!-- Table will only show if the condition is true -->
-        <table class="table">
+        <table
+          class="table table-responsive"
+          style="margin: 0px 0px !important;" 
+        >
           <thead>
             <tr>
               <th>Booked</th>
@@ -114,8 +129,8 @@
         </table>
       </ng-container>
     </div>
-     <!-- Display message when no bookings are available -->
-     <h6 *ngIf="bookings.length === 0" class="no-request text-center">
+    <!-- Display message when no bookings are available -->
+    <h6 *ngIf="bookings.length === 0" class="no-request text-center">
       No Booking Requests found
     </h6>
   </div>

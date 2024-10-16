@@ -287,10 +287,14 @@ body {
   text-decoration: none;
 }
 .login-form .buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
   margin: 20px 0;
+}
+.buttons {
+  display: flex !important;
+  justify-content: center !important;
 }
 .buttons button {
   width: 25%;
@@ -1188,6 +1192,36 @@ input[type="checkbox"] {
   font-size: 14px !important;
   padding: 10px 20px !important;
 }
+.booking-load {
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.booking-load-1 {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center;
+  align-items: center;
+}
+.border-right {
+  border-right: 1px solid #ddd !important; 
+  height: 100px;
+  margin: 0px 40px !important;
+}
+.booking-load-2 {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center;
+  padding: 0px 20px;
+}
+.booking-load-3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+}
 @media (max-width: 992px) {
   .btn-pay-advance,
   .btn-pay {
@@ -1218,6 +1252,26 @@ input[type="checkbox"] {
     font-size: 14px !important;
     padding: 10px 20px !important;
     border-radius: 20px !important;
+  }
+}
+@media (max-width: 768px) {
+  .booking-load {
+    flex-direction: column; 
+    align-items: flex-start; 
+    margin-left: 20px;
+  }
+  .border-right {
+    border-right: none; 
+    border-bottom: 1px solid #ddd; 
+    height: auto; 
+    margin: 20px 0; 
+  }
+  .booking-load-1,
+  .booking-load-2,
+  .booking-load-3 {
+    width: 100%; 
+    align-items: flex-start; 
+    padding: 10px; 
   }
 }
 
@@ -1393,9 +1447,10 @@ input[type="checkbox"] {
   min-width: 100%;
   border-collapse: collapse;
   text-align: center;
-  margin: 60px 0px;
+  margin: 30px 0px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   white-space: nowrap;
+  overflow-x: auto !important;
 }
 
 .table th {
@@ -2011,7 +2066,9 @@ input[type="checkbox"] {
 }
 /************partner booking page**************/
 .booking-history .table-container {
-  overflow-x: auto;
+  overflow-x: auto !important;
+  max-height: 460px !important;
+  overflow-y: auto !important;
 }
 
 .booking-history .table {
@@ -2050,7 +2107,7 @@ input[type="checkbox"] {
 }
 
 .partner-booking-page {
-  overflow-x: auto;
+  overflow-x: auto !important;
 }
 
 .bookingId {
@@ -2782,14 +2839,6 @@ table .make-disable.disabled td:not(:first-child) {
 .Commission-table .range-input input.Commission-input:focus {
   border: 1px solid#a1a1a1 !important;
 }
-.Commission-table th,
-td {
-  text-align: left !important;
-}
-.Commission-table th,
-td {
-  padding: 10px 45px !important;
-}
 .Commission-btn.edit {
   background-color: #ffa504 !important;
   font-size: 14px !important;
@@ -3269,7 +3318,31 @@ td {
 .operator-form-unit {
   box-shadow: 0px 4px 8px rgba(150, 150, 150, 0.3);
   border: 1px solid #ccc;
-  margin: 0px 5px !important;
+  max-height: 600px; 
+  overflow-y: auto; 
+  overflow-x: hidden;
+}
+.operator-form-unit::-webkit-scrollbar {
+  width: 10px; /* Set the width of the scrollbar */
+}
+
+.operator-form-unit::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Track color */
+}
+
+.operator-form-unit::-webkit-scrollbar-thumb {
+  background-color: #888; /* Thumb color */
+  border-radius: 5px; /* Rounded corners for the scrollbar thumb */
+}
+
+.operator-form-unit::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Darker color on hover */
+}
+
+/* For Firefox */
+.operator-form-unit {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
 }
 /* Custom scrollbar */
 .new-unit::-webkit-scrollbar {
@@ -3468,9 +3541,6 @@ td {
   margin: 0px!important;
 }
 }
-.payment-status {
-  width: 300px !important;
-}
 .payment-status-icon {
   width: 25px !important;
   height: 25px !important;
@@ -3599,4 +3669,17 @@ td {
 .booking-modal-body span {
   flex-grow: 1; 
   text-align: end !important; 
+}
+
+.buttons .viewMyLocation {
+  background: none !important;
+  margin: 0px 10px;
+  padding: 6px 10px !important;
+  border: 1px solid #904fff;
+  color: #904fff !important;
+  cursor: pointer;
+  border-radius: 10px;
+}
+.viewMyLocation i {
+  padding: 0px 5px;
 }

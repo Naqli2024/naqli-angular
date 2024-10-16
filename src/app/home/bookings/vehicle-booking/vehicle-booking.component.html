@@ -140,7 +140,7 @@
       </div>
       <div class="col-md-6 text-center">
         <div class="row-container">
-          <div class="input-field" style="position: relative;">
+          <div class="input-field" style="position: relative">
             <div class="pick-up"></div>
             <input
               type="text"
@@ -171,7 +171,7 @@
               trackBy: trackByIndex
             "
             class="input-field"
-            style="position: relative;"
+            style="position: relative"
           >
             <div class="drop-point"></div>
             <input
@@ -193,7 +193,9 @@
             </div>
             <div
               class="suggestions-dropdown"
-              *ngIf="dropPointSuggestions[i] && dropPointSuggestions[i].length > 0"
+              *ngIf="
+                dropPointSuggestions[i] && dropPointSuggestions[i].length > 0
+              "
             >
               <div
                 class="suggestion-item"
@@ -212,6 +214,14 @@
             (click)="updateRoute()"
           >
             Get Direction
+          </button>
+          <button
+            class="viewMyLocation"
+            (click)="viewMyLocation()"
+            style="display: flex; align-items: center"
+          >
+            <i class="fas fa-crosshairs"></i>
+            Your Location
           </button>
         </div>
         <div id="map" class="google-map-style"></div>

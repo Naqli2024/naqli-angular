@@ -174,6 +174,11 @@ initializeMap(): void {
   }
 
 
+  viewMyLocation(): void {
+    this.mapService.centerMapAtUserLocation();
+  }
+
+
   updateRoute(): void {
     if (this.mapService.isMapInitialized) {
       // Check if pickup and at least one drop point are set

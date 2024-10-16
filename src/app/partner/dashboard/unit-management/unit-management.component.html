@@ -17,8 +17,14 @@
         </option>
       </select>
     </div>
-    <div class="table-container booking-manager-table">
-      <table class="table" style="margin: 0px 0px !important">
+    <div
+      class="table-container booking-manager-table"
+      style="max-height: 500px !important; overflow-y: auto !important"
+    >
+      <table
+        class="table table-responsive"
+        style="margin: 0px 0px !important; overflow-x: auto !important"
+      >
         <thead>
           <tr>
             <th>Unit ID</th>
@@ -82,7 +88,7 @@
       >
         <h2>New Unit</h2>
       </div>
-      <form (ngSubmit)="handleSubmit()">
+      <form (ngSubmit)="handleSubmit()" class="unit-management-form">
         <label
           class="col-form-label"
           style="font-size: 14px; margin-right: 30px"

@@ -26,29 +26,41 @@
           </p>
         </div>
       </div>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Booked by</th>
-            <th>Booking Id</th>
-            <th>Mode</th>
-            <th>Date</th>
-            <th>Payment Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let booking of bookings">
-            <td *ngIf="users[booking.user]">
-              {{ users[booking.user]?.firstName }}
-              {{ users[booking.user]?.lastName }}
-            </td>
-            <td>{{ booking._id }}</td>
-            <td>{{ booking.unitType }}</td>
-            <td>{{ booking.date }}</td>
-            <td>{{ booking.paymentStatus }}</td>
-          </tr>
-        </tbody>
-      </table>
-    <!-- </div> -->
+      <div
+        class="table-container booking-manager-table"
+        style="
+          max-height: 500px !important;
+          overflow-y: auto !important;
+          margin-top: 30px !important;
+        "
+      >
+        <table
+          class="table"
+          style="box-shadow: none !important; margin: 0px 0px !important"
+        >
+          <thead>
+            <tr>
+              <th>Booked by</th>
+              <th>Booking Id</th>
+              <th>Mode</th>
+              <th>Date</th>
+              <th>Payment Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let booking of bookings">
+              <td *ngIf="users[booking.user]">
+                {{ users[booking.user]?.firstName }}
+                {{ users[booking.user]?.lastName }}
+              </td>
+              <td>{{ booking._id }}</td>
+              <td>{{ booking.unitType }}</td>
+              <td>{{ booking.date }}</td>
+              <td>{{ booking.paymentStatus }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- </div> -->
   </div>
 </div>
