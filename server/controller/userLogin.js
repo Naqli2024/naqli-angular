@@ -17,7 +17,7 @@ const userLogin = async (req, res) => {
       });
       if (!existEmail) {
         return res.status(400).send({
-          message: "User not exists",
+          message: "User does not exist",
           success: false,
           data: null,
         });

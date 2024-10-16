@@ -22,7 +22,7 @@ const partnerLogin = async (req, res) => {
 
       if (!existPartner) {
         return res.status(400).send({
-          message: "Incorrect Email or Mobile Number",
+          message: "Partner does not exist",
           success: false,
           data: null,
         });
