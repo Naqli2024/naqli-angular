@@ -1,0 +1,18 @@
+{
+  "language": "English",
+  "ar": "Arabic",
+  "en": "English",
+  "hi": "Hindi",
+  "title": "Title",
+  "NAVBAR": {
+    "USER": "User",
+    "PARTNER": "Partner"
+  },
+  "Login": "Login",
+  "Logout": "Logout",
+  "LANGUAGES": {
+    "en": "English",
+    "ar": "Arabic",
+    "hi": "Hindi"
+  }
+}

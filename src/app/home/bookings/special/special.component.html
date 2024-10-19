@@ -2,7 +2,10 @@
   <div class="custom-slider">
     <h2 class="booking-container-head">Available Special / Others Units</h2>
   </div>
-  <div class="container booking-container" style="margin-top: -300px !important">
+  <div
+    class="container booking-container"
+    style="margin-top: -325px !important"
+  >
     <div class="row">
       <div class="col-md-6">
         <div class="vehicle-cols">
@@ -25,25 +28,31 @@
           </div>
           <div class="row">
             <div class="col-md-6">
-              <input
-                type="time"
-                class="form-control"
+              <label for="fromTime"><b>From Time</b></label>
+              <ngb-timepicker
+                class="custom-timepicker"
                 [(ngModel)]="bookingData.fromTime"
-                placeholder="from time"
-                style="margin-bottom: 10px;"
-              />
+                [spinners]="true"
+                [meridian]="true"
+                required
+              ></ngb-timepicker>
             </div>
             <div class="col-md-6">
-              <input
-                type="time"
-                class="form-control"
+              <label for="toTime"><b>To Time</b></label>
+              <ngb-timepicker
+                class="custom-timepicker"
                 [(ngModel)]="bookingData.toTime"
-                placeholder="to time"
-              />
+                [spinners]="true"
+                [meridian]="true"
+                required
+              ></ngb-timepicker>
             </div>
           </div>
           <div class="row">
             <div class="col-md-12">
+              <label for="startingDate" style="margin-bottom: 8px"
+                ><b>Starting Date</b></label
+              >
               <input
                 type="date"
                 class="form-control"
@@ -102,35 +111,57 @@
       </div>
       <div class="col-md-6 text-center">
         <div class="row-container">
-          <div class="input-field design" style="position: relative;">
+          <div class="input-field design" style="position: relative">
             <i class="fas fa-search"></i>
             <input
               type="text"
               placeholder="Enter city name"
               [(ngModel)]="bookingData.cityName"
               (input)="onCityInputChange()"
+              (focus)="setActiveInputField('cityName')"
               style="margin-bottom: 8px"
+              required
             />
             <div
-            *ngIf="citySuggestions.length > 0"
-            class="suggestions-dropdown city"
-          >
-            <div
-              class="suggestion-item"
-              *ngFor="let suggestion of citySuggestions"
-              (click)="selectCitySuggestion(suggestion)"
+              *ngIf="citySuggestions.length > 0"
+              class="suggestions-dropdown city"
             >
-              {{ suggestion.description }}
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of citySuggestions"
+                (click)="selectCitySuggestion(suggestion)"
+                [ngClass]="{
+                  'your-location': suggestion.description === 'Your location'
+                }"
+                style="display: flex; align-items: center"
+              >
+                <span *ngIf="suggestion.description === 'Your location'">
+                  <i
+                    class="fas fa-crosshairs"
+                    style="margin-right: 8px; color: #0d6efd"
+                  ></i>
+                </span>
+                <span
+                  [style.color]="
+                    suggestion.description === 'Your location'
+                      ? '#0d6efd'
+                      : 'inherit'
+                  "
+                >
+                  {{ suggestion.description }}
+                </span>
+              </div>
             </div>
           </div>
-          </div>
-          <div class="input-field design" style="position: relative;">
+          <div class="input-field design" style="position: relative">
             <i class="fas fa-map-marker-alt"></i>
             <input
               type="text"
               placeholder="Enter your address"
               [(ngModel)]="bookingData.address"
               (input)="onAddressInputChange()"
+              (focus)="setActiveInputField('address')"
+              required
               style="margin-bottom: 8px"
             />
             <div
@@ -141,12 +172,30 @@
                 class="suggestion-item"
                 *ngFor="let suggestion of addressSuggestions"
                 (click)="selectAddressSuggestion(suggestion)"
+                [ngClass]="{
+                  'your-location': suggestion.description === 'Your location'
+                }"
+                style="display: flex; align-items: center"
               >
-                {{ suggestion.description }}
+                <span *ngIf="suggestion.description === 'Your location'">
+                  <i
+                    class="fas fa-crosshairs"
+                    style="margin-right: 8px; color: #0d6efd"
+                  ></i>
+                </span>
+                <span
+                  [style.color]="
+                    suggestion.description === 'Your location'
+                      ? '#0d6efd'
+                      : 'inherit'
+                  "
+                >
+                  {{ suggestion.description }}
+                </span>
               </div>
             </div>
           </div>
-          <div class="input-field design" style="position: relative;">
+          <!-- <div class="input-field design" style="position: relative;">
             <i class="fas fa-mail-bulk"></i>
             <input
               type="text"
@@ -154,14 +203,13 @@
               [(ngModel)]="bookingData.zipCode"
               style="margin-bottom: 8px"
             />
-          </div>
+          </div> -->
         </div>
         <div class="buttons">
           <button
             type="submit"
             class="btn create-booking"
             (click)="getLocation()"
-       
           >
             Get Location
           </button>

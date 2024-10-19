@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { LoginComponent } from '../../auth/login/login.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NotificationService } from '../../../services/admin/notification.service';
 import { MatBadgeModule } from '@angular/material/badge';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 export interface User {
   authToken: string;
@@ -17,15 +19,21 @@ export interface User {
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, LoginComponent, RouterModule, MatBadgeModule],
+  imports: [
+    CommonModule,
+    LoginComponent,
+    RouterModule,
+    MatBadgeModule,
+    TranslateModule,
+    FormsModule,
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent {
+export class HeaderComponent  implements OnInit{
   isDropdownOpen: boolean = false;
   isMenuOpen: boolean = false;
   isNotificationsDropdownOpen: boolean = false;
-  selectedLanguage: string = 'English';
   isAuthenticated: boolean = false;
   userDetails: any;
   firstName: string | null = '';
@@ -33,17 +41,28 @@ export class HeaderComponent {
   partnerName: string | null = '';
   notifications: any[] = [];
   notificationCount: number = 0;
+  selectedLanguage: string = 'English';
+  languages = ['en', 'ar', 'hi'];
+  private translateService = inject(TranslateService);
 
   constructor(
     private modalService: NgbModal,
     private router: Router,
     private toastr: ToastrService,
-    private notificationService: NotificationService
-  ) {}
+    private notificationService: NotificationService,
+  ) {
+  }
 
   ngOnInit(): void {
     this.updateUserState();
     this.getNotificationById();
+    const defaultLanguage  = 'en';
+    this.translateService.setDefaultLang(defaultLanguage);
+    this.translateService.use(defaultLanguage);
+  }
+
+  changeLanguage(lang: string) {
+    this.translateService.use(lang);
   }
 
   getNotificationById() {
@@ -118,6 +137,7 @@ export class HeaderComponent {
   }
 
   selectLanguage(language: string) {
+    this.translateService.use(language);
     this.selectedLanguage = language;
     this.isDropdownOpen = false;
   }
@@ -125,7 +145,7 @@ export class HeaderComponent {
   openLoginModal(): void {
     const currentRoute = this.router.url;
     let modalRef: NgbModalRef | null = null;
-  
+
     if (currentRoute.includes('/home/user')) {
       modalRef = this.modalService.open(LoginComponent, {
         size: 'xl',
@@ -138,7 +158,7 @@ export class HeaderComponent {
       this.router.navigate(['home/partner/login']);
       return; // Exit the function if navigating
     }
-  
+
     if (modalRef) {
       modalRef.result.then(
         () => {

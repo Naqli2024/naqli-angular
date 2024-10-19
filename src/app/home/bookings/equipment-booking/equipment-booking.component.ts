@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { EquipmentService } from '../../../../services/equipment.service';
 import { Equipment, EquipmentType } from '../../../../models/equipment-booking';
 import { BookingModalComponent } from '../bus-booking/booking-modal/booking-modal.component';
@@ -38,6 +38,7 @@ interface BookingData {
     FormsModule,
     BookingModalComponent,
     MapComponent,
+    NgbTimepickerModule,
   ],
   templateUrl: './equipment-booking.component.html',
   styleUrl: './equipment-booking.component.css',
@@ -49,9 +50,9 @@ export class EquipmentBookingComponent {
   selectedOptions: { [key: string]: EquipmentType | null } = {};
   selectedEquipmentName: string = '';
   isFormSubmitted: boolean = false;
-  
+  public activeInputField: 'cityName' | 'address' | null = null;
 
-  bookingData: BookingData = {
+  bookingData: any = {
     name: '',
     unitType: '',
     type: [{ typeName: '', typeImage: '' }],
@@ -60,7 +61,6 @@ export class EquipmentBookingComponent {
     date: '',
     cityName: '',
     address: '',
-    zipCode: '',
     additionalLabour: null,
   };
 
@@ -86,21 +86,24 @@ export class EquipmentBookingComponent {
       this.equipment = data;
       this.bookingData.unitType = this.equipment[0].unitType;
     });
-  
+
     // Define the initMap function globally before loading the script
     (window as any).initMap = () => {
       this.initializeMap();
     };
-  
+
     // Load the Google Maps script and initialize the AutocompleteService
-    this.googleMapsService.loadGoogleMapsScript().then(() => {
-      // Initialize the AutocompleteService after the script has loaded
-      this.autocompleteService = new google.maps.places.AutocompleteService();
-    }).catch((error) => {
-      console.error('Failed to load Google Maps script:', error);
-    });
+    this.googleMapsService
+      .loadGoogleMapsScript()
+      .then(() => {
+        // Initialize the AutocompleteService after the script has loaded
+        this.autocompleteService = new google.maps.places.AutocompleteService();
+      })
+      .catch((error) => {
+        console.error('Failed to load Google Maps script:', error);
+      });
   }
-  
+
   // Method to initialize the map
   private initializeMap(): void {
     this.mapService.initializeMapInContainer('mapContainer');
@@ -111,8 +114,28 @@ export class EquipmentBookingComponent {
       this.autocompleteService.getPlacePredictions(
         { input: this.bookingData.cityName, types: ['(cities)'] },
         (predictions, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
-            this.citySuggestions = predictions;
+          if (
+            status === google.maps.places.PlacesServiceStatus.OK &&
+            predictions
+          ) {
+            this.citySuggestions = predictions || [];
+            // Check if 'Your Location' is already in suggestions
+            const yourLocationSuggestion = {
+              description: 'Your location',
+              // Add other necessary properties if needed
+              // For example, you might need to set a `place_id` or other fields if your logic requires
+            } as google.maps.places.AutocompletePrediction;
+
+            // Only add 'Your Location' if it's not already included
+            if (
+              !this.citySuggestions.some(
+                (suggestion) => suggestion.description === 'Your Location'
+              )
+            ) {
+              this.citySuggestions.unshift(yourLocationSuggestion);
+            }
+          } else {
+            this.citySuggestions = [];
           }
         }
       );
@@ -122,13 +145,36 @@ export class EquipmentBookingComponent {
   }
 
   onAddressInputChange(): void {
-    if (this.bookingData.cityName.length > 0 && this.bookingData.address.length > 0) {
+    if (
+      this.bookingData.cityName.length > 0 &&
+      this.bookingData.address.length > 0
+    ) {
       const input = `${this.bookingData.address}, ${this.bookingData.cityName}`;
       this.autocompleteService.getPlacePredictions(
         { input, types: ['geocode'] },
         (predictions, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
-            this.addressSuggestions = predictions;
+          if (
+            status === google.maps.places.PlacesServiceStatus.OK &&
+            predictions
+          ) {
+            this.addressSuggestions = predictions || [];
+            // Check if 'Your Location' is already in suggestions
+            const yourLocationSuggestion = {
+              description: 'Your location',
+              // Add other necessary properties if needed
+              // For example, you might need to set a `place_id` or other fields if your logic requires
+            } as google.maps.places.AutocompletePrediction;
+
+            // Only add 'Your Location' if it's not already included
+            if (
+              !this.addressSuggestions.some(
+                (suggestion) => suggestion.description === 'Your Location'
+              )
+            ) {
+              this.addressSuggestions.unshift(yourLocationSuggestion);
+            }
+          } else {
+            this.addressSuggestions = [];
           }
         }
       );
@@ -137,20 +183,85 @@ export class EquipmentBookingComponent {
     }
   }
 
-  selectCitySuggestion(suggestion: google.maps.places.AutocompletePrediction): void {
-    this.bookingData.cityName = suggestion.description;
+  selectCitySuggestion(
+    suggestion: google.maps.places.AutocompletePrediction
+  ): void {
+    // Check if the selected suggestion is "Your Location"
+    if (suggestion.description === 'Your location') {
+      this.viewMyLocation(); // Call the method to get the user's location
+    } else {
+      // Update the correct field based on the active input field
+      if (this.activeInputField === 'cityName') {
+        this.bookingData.cityName = suggestion.description;
+      } else if (this.activeInputField === 'address') {
+        this.bookingData.address = suggestion.description;
+      }
+    }
     this.citySuggestions = [];
   }
 
-  selectAddressSuggestion(suggestion: google.maps.places.AutocompletePrediction): void {
-    this.bookingData.address = suggestion.description;
+  selectAddressSuggestion(
+    suggestion: google.maps.places.AutocompletePrediction
+  ): void {
+    // Check if the selected suggestion is "Your Location"
+    if (suggestion.description === 'Your location') {
+      this.viewMyLocation(); // Call the method to get the user's location
+    } else {
+      // Update the correct field based on the active input field
+      if (this.activeInputField === 'cityName') {
+        this.bookingData.cityName = suggestion.description;
+      } else if (this.activeInputField === 'address') {
+        this.bookingData.address = suggestion.description;
+      }
+    }
     this.addressSuggestions = [];
   }
 
-  
+  viewMyLocation(): void {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLocation = new google.maps.LatLng(
+            position.coords.latitude,
+            position.coords.longitude
+          );
+
+          // Use Geocoder to get the formatted address of the user's location
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ location: userLocation }, (results, status) => {
+            if (status === google.maps.GeocoderStatus.OK && results[0]) {
+              // Update the active input field with the user's location
+              const userLocationDescription = results[0].formatted_address;
+
+              if (this.activeInputField === 'cityName') {
+                this.bookingData.cityName = userLocationDescription;
+              } else if (this.activeInputField === 'address') {
+                this.bookingData.address = userLocationDescription;
+              }
+            } else {
+              this.toastr.error('Geocoder failed due to: ' + status);
+            }
+          });
+        },
+        (error) => {
+          console.error('Error getting user location:', error);
+        }
+      );
+    } else {
+      this.toastr.info('Geolocation is not supported by this browser.');
+    }
+  }
+
+  setActiveInputField(inputType: 'cityName' | 'address'): void {
+    this.activeInputField = inputType;
+  }
+
   getLocation(): void {
     if (this.bookingData.address && this.bookingData.cityName) {
-      this.mapService.markLocation(this.bookingData.address, this.bookingData.cityName);
+      this.mapService.markLocation(
+        this.bookingData.address,
+        this.bookingData.cityName
+      );
     } else {
       console.error('Address is required to mark location.');
     }
@@ -170,31 +281,37 @@ export class EquipmentBookingComponent {
   selectOption(type: EquipmentType, equipName: string): void {
     this.selectedOptions[equipName] = type;
     this.bookingData.name = equipName;
-  
+
     // Ensure type and typeName are valid before proceeding
     if (!type || !type.typeName || type.typeName.trim() === '') {
       console.warn('Invalid type or typeName detected.');
       return;
     }
-  
+
     // Normalize typeName for comparison
     const normalizedTypeName = type.typeName.trim().toLowerCase();
-  
+
     // Remove empty entries before checking for duplicates
     this.bookingData.type = this.bookingData.type.filter(
       (equip) => equip.typeName.trim() !== ''
     );
-  
+
     const equipmentIndex = this.bookingData.type.findIndex(
       (equip) => equip.typeName.trim().toLowerCase() === normalizedTypeName
     );
-  
+
     if (equipmentIndex !== -1) {
       // Update the existing equipment type in bookingData
-      this.bookingData.type[equipmentIndex] = { typeName: normalizedTypeName, typeImage: type.typeImage };
+      this.bookingData.type[equipmentIndex] = {
+        typeName: normalizedTypeName,
+        typeImage: type.typeImage,
+      };
     } else {
       // Add a new equipment type to bookingData
-      this.bookingData.type.push({ typeName: normalizedTypeName, typeImage: type.typeImage });
+      this.bookingData.type.push({
+        typeName: normalizedTypeName,
+        typeImage: type.typeImage,
+      });
     }
 
     this.closeAllDropdownsExcept(equipName);
@@ -213,11 +330,10 @@ export class EquipmentBookingComponent {
   @HostListener('document:click', ['$event'])
   clickOutside(event: any): void {
     const clickedElement = event.target;
-   
 
-  if (!this.isInsideDropdown(clickedElement)) {
-    this.closeAllDropdowns();
-  }
+    if (!this.isInsideDropdown(clickedElement)) {
+      this.closeAllDropdowns();
+    }
   }
 
   private isInsideDropdown(clickedElement: any): boolean {
@@ -230,23 +346,32 @@ export class EquipmentBookingComponent {
         return true;
       }
     }
-  
+
     // Check if the click is inside city suggestions dropdown
-    const citySuggestionsDropdown = document.querySelector('.suggestions-dropdown.city');
-    if (citySuggestionsDropdown && citySuggestionsDropdown.contains(clickedElement)) {
+    const citySuggestionsDropdown = document.querySelector(
+      '.suggestions-dropdown.city'
+    );
+    if (
+      citySuggestionsDropdown &&
+      citySuggestionsDropdown.contains(clickedElement)
+    ) {
       return true;
     }
-  
+
     // Check if the click is inside address suggestions dropdown
-    const addressSuggestionsDropdown = document.querySelector('.suggestions-dropdown.address');
-    if (addressSuggestionsDropdown && addressSuggestionsDropdown.contains(clickedElement)) {
+    const addressSuggestionsDropdown = document.querySelector(
+      '.suggestions-dropdown.address'
+    );
+    if (
+      addressSuggestionsDropdown &&
+      addressSuggestionsDropdown.contains(clickedElement)
+    ) {
       return true;
     }
-  
+
     // Click is not inside any of the dropdowns
     return false;
   }
-  
 
   private closeAllDropdownsExcept(excludeEquipName: string): void {
     Object.keys(this.optionsVisible).forEach((key) => {
@@ -261,8 +386,8 @@ export class EquipmentBookingComponent {
       this.optionsVisible[key] = false;
     });
     // Optionally, you might want to clear city and address suggestions as well
-  this.citySuggestions = [];
-  this.addressSuggestions = [];
+    this.citySuggestions = [];
+    this.addressSuggestions = [];
   }
 
   openBookingModal(bookingId: string): void {
@@ -287,12 +412,11 @@ export class EquipmentBookingComponent {
       { key: 'toTime', message: 'Please select a to time' },
       { key: 'cityName', message: 'Please enter city name' },
       { key: 'address', message: 'Please enter address' },
-      { key: 'zipCode', message: 'Please enter zip code' },
       { key: 'unitType', message: 'Please select a unit type' },
     ];
 
     // Check if at least one type is selected
-    if (this.bookingData.type.every(type => !type.typeName.trim())) {
+    if (this.bookingData.type.every((type) => !type.typeName.trim())) {
       errors.push('Please select at least one equipment type');
       isValid = false;
     }
@@ -318,11 +442,13 @@ export class EquipmentBookingComponent {
   submitBooking(): void {
     this.isFormSubmitted = true;
     if (this.formIsValid()) {
+      this.bookingData.fromTime = this.formatTime(this.bookingData.fromTime);
+      this.bookingData.toTime = this.formatTime(this.bookingData.toTime);
       this.spinnerService.show();
-  
+
       // Fetch userId from localStorage
       const userId = localStorage.getItem('userId');
-  
+
       if (userId) {
         // Fetch the user accountType from the backend
         this.userService.getUserById(userId).subscribe(
@@ -334,7 +460,7 @@ export class EquipmentBookingComponent {
                 if (response && response._id) {
                   this.toastr.success(response.message, 'Booking Successful!');
                   this.clearForm();
-  
+
                   // Check if there is an existing bookingId in localStorage
                   const existingBookingId = localStorage.getItem('bookingId');
                   if (existingBookingId) {
@@ -342,28 +468,34 @@ export class EquipmentBookingComponent {
                       `Replacing existing bookingId: ${existingBookingId} with new bookingId: ${response._id}`
                     );
                   }
-  
+
                   // Set the new bookingId in localStorage, replacing the old one
                   localStorage.setItem('bookingId', response._id);
-  
+
                   // Navigate based on user accountType
                   if (user.accountType === 'Super User') {
                     // Redirect to Super User dashboard
-                    this.router.navigate(['/home/user/dashboard/super-user/dashboard']);
+                    this.router.navigate([
+                      '/home/user/dashboard/super-user/dashboard',
+                    ]);
                   } else if (user.accountType === 'Single User') {
                     // Redirect to booking dashboard
                     this.router.navigate(['/home/user/dashboard/booking']);
                   }
-  
+
                   // Optionally open a booking modal after navigation
                   this.openBookingModal(response._id);
                 } else {
-                  this.toastr.error(response.message || 'Booking Failed!', 'Error');
+                  this.toastr.error(
+                    response.message || 'Booking Failed!',
+                    'Error'
+                  );
                 }
               },
               (error) => {
                 this.spinnerService.hide();
-                const errorMessage = error.error?.message || 'An error occurred';
+                const errorMessage =
+                  error.error?.message || 'An error occurred';
                 this.toastr.error(errorMessage, 'Error');
                 console.error('Backend Error:', error);
               }
@@ -371,7 +503,8 @@ export class EquipmentBookingComponent {
           },
           (error) => {
             this.spinnerService.hide();
-            const errorMessage = error.error?.message || 'Failed to retrieve user data';
+            const errorMessage =
+              error.error?.message || 'Failed to retrieve user data';
             this.toastr.error(errorMessage, 'Error');
           }
         );
@@ -380,6 +513,19 @@ export class EquipmentBookingComponent {
         this.toastr.error('User not logged in', 'Error');
       }
     }
+  }
+
+  private formatTime(timeObj: {
+    hour: number;
+    minute?: number;
+    second?: number;
+  }): string {
+    const hour = timeObj.hour || 0; // Default to 0 if undefined
+    const minute = timeObj.minute !== undefined ? timeObj.minute : 0; // Default to 0 if undefined
+    const modifier = hour >= 12 ? 'PM' : 'AM';
+    const formattedHour = hour % 12 || 12; // Convert 0 to 12 for 12 AM
+    const formattedMinute = minute < 10 ? '0' + minute : minute; // Add leading zero if needed
+    return `${formattedHour}:${formattedMinute} ${modifier}`;
   }
 
   clearForm() {

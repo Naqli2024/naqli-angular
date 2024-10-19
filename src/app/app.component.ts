@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
+import {
+  NavigationEnd,
+  Router,
+  RouterModule,
+  RouterOutlet,
+} from '@angular/router';
 import { HeaderComponent } from './header/header/header.component';
 import { PartnerComponent } from './partner/partner/partner.component';
 import { HomeComponent } from './home/home.component';
@@ -22,6 +27,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-root',
@@ -41,19 +48,20 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     ReportComponent,
     HelpComponent,
     ProfileComponent,
-    MakePaymentComponent, 
+    MakePaymentComponent,
     SpinnerComponent,
-    RegisterComponent, 
+    RegisterComponent,
     MapComponent,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
     MatButtonModule,
     ReactiveFormsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    TranslateModule,
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   title = 'naqli';
@@ -61,7 +69,7 @@ export class AppComponent {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         if (event.urlAfterRedirects === '/home/partner') {
           localStorage.removeItem('authToken');

@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { Component, HostListener } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { BookingModalComponent } from '../bus-booking/booking-modal/booking-modal.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -22,7 +22,6 @@ interface BookingData {
   toTime: string;
   cityName: string;
   address: string;
-  zipCode: string;
   additionalLabour: number | null;
   image: string;
   date: string;
@@ -37,6 +36,7 @@ interface BookingData {
     FormsModule,
     BookingModalComponent,
     MapComponent,
+    NgbTimepickerModule,
   ],
   templateUrl: './special.component.html',
   styleUrl: './special.component.css',
@@ -45,15 +45,15 @@ export class SpecialComponent {
   buses: any[] = [];
   selectedBus: any = null;
   additionalLabourEnabled: boolean = false;
+  public activeInputField: 'cityName' | 'address' | null = null;
 
-  bookingData: BookingData = {
+  bookingData: any = {
     name: '',
     unitType: '',
     fromTime: '',
     toTime: '',
     cityName: '',
     address: '',
-    zipCode: '',
     additionalLabour: null,
     image: '',
     date: '',
@@ -114,7 +114,24 @@ export class SpecialComponent {
             status === google.maps.places.PlacesServiceStatus.OK &&
             predictions
           ) {
-            this.citySuggestions = predictions;
+            this.citySuggestions = predictions || [];
+            // Check if 'Your Location' is already in suggestions
+            const yourLocationSuggestion = {
+              description: 'Your location',
+              // Add other necessary properties if needed
+              // For example, you might need to set a `place_id` or other fields if your logic requires
+            } as google.maps.places.AutocompletePrediction;
+
+            // Only add 'Your Location' if it's not already included
+            if (
+              !this.citySuggestions.some(
+                (suggestion) => suggestion.description === 'Your Location'
+              )
+            ) {
+              this.citySuggestions.unshift(yourLocationSuggestion);
+            }
+          } else {
+            this.citySuggestions = [];
           }
         }
       );
@@ -136,7 +153,24 @@ export class SpecialComponent {
             status === google.maps.places.PlacesServiceStatus.OK &&
             predictions
           ) {
-            this.addressSuggestions = predictions;
+            this.addressSuggestions = predictions || [];
+            // Check if 'Your Location' is already in suggestions
+            const yourLocationSuggestion = {
+              description: 'Your location',
+              // Add other necessary properties if needed
+              // For example, you might need to set a `place_id` or other fields if your logic requires
+            } as google.maps.places.AutocompletePrediction;
+
+            // Only add 'Your Location' if it's not already included
+            if (
+              !this.addressSuggestions.some(
+                (suggestion) => suggestion.description === 'Your Location'
+              )
+            ) {
+              this.addressSuggestions.unshift(yourLocationSuggestion);
+            }
+          } else {
+            this.addressSuggestions = [];
           }
         }
       );
@@ -148,15 +182,74 @@ export class SpecialComponent {
   selectCitySuggestion(
     suggestion: google.maps.places.AutocompletePrediction
   ): void {
-    this.bookingData.cityName = suggestion.description;
+    // Check if the selected suggestion is "Your Location"
+    if (suggestion.description === 'Your location') {
+      this.viewMyLocation(); // Call the method to get the user's location
+    } else {
+      // Update the correct field based on the active input field
+      if (this.activeInputField === 'cityName') {
+        this.bookingData.cityName = suggestion.description;
+      } else if (this.activeInputField === 'address') {
+        this.bookingData.address = suggestion.description;
+      }
+    }
     this.citySuggestions = [];
   }
 
   selectAddressSuggestion(
     suggestion: google.maps.places.AutocompletePrediction
   ): void {
-    this.bookingData.address = suggestion.description;
+    // Check if the selected suggestion is "Your Location"
+    if (suggestion.description === 'Your location') {
+      this.viewMyLocation(); // Call the method to get the user's location
+    } else {
+      // Update the correct field based on the active input field
+      if (this.activeInputField === 'cityName') {
+        this.bookingData.cityName = suggestion.description;
+      } else if (this.activeInputField === 'address') {
+        this.bookingData.address = suggestion.description;
+      }
+    }
     this.addressSuggestions = [];
+  }
+
+  viewMyLocation(): void {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLocation = new google.maps.LatLng(
+            position.coords.latitude,
+            position.coords.longitude
+          );
+
+          // Use Geocoder to get the formatted address of the user's location
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ location: userLocation }, (results, status) => {
+            if (status === google.maps.GeocoderStatus.OK && results[0]) {
+              // Update the active input field with the user's location
+              const userLocationDescription = results[0].formatted_address;
+
+              if (this.activeInputField === 'cityName') {
+                this.bookingData.cityName = userLocationDescription;
+              } else if (this.activeInputField === 'address') {
+                this.bookingData.address = userLocationDescription;
+              }
+            } else {
+              this.toastr.error('Geocoder failed due to: ' + status);
+            }
+          });
+        },
+        (error) => {
+          console.error('Error getting user location:', error);
+        }
+      );
+    } else {
+      this.toastr.info('Geolocation is not supported by this browser.');
+    }
+  }
+
+  setActiveInputField(inputType: 'cityName' | 'address'): void {
+    this.activeInputField = inputType;
   }
 
   getLocation(): void {
@@ -209,7 +302,6 @@ export class SpecialComponent {
       { key: 'date', message: 'Please select a date' },
       { key: 'cityName', message: 'Please enter city name' },
       { key: 'address', message: 'Please enter address' },
-      { key: 'zipCode', message: 'Please enter zip code' },
     ];
 
     requiredFields.forEach((field) => {
@@ -238,11 +330,13 @@ export class SpecialComponent {
 
   submitBooking(): void {
     if (this.formIsValid()) {
+      this.bookingData.fromTime = this.formatTime(this.bookingData.fromTime);
+      this.bookingData.toTime = this.formatTime(this.bookingData.toTime);
       this.spinnerService.show();
-  
+
       // Fetch userId from localStorage
       const userId = localStorage.getItem('userId');
-  
+
       if (userId) {
         // Fetch the user accountType from the backend
         this.userService.getUserById(userId).subscribe(
@@ -254,7 +348,7 @@ export class SpecialComponent {
                 if (response && response._id) {
                   this.toastr.success(response.message, 'Booking Successful!');
                   this.clearForm();
-  
+
                   // Check if there is an existing bookingId in localStorage
                   const existingBookingId = localStorage.getItem('bookingId');
                   if (existingBookingId) {
@@ -262,28 +356,34 @@ export class SpecialComponent {
                       `Replacing existing bookingId: ${existingBookingId} with new bookingId: ${response._id}`
                     );
                   }
-  
+
                   // Set the new bookingId in localStorage, replacing the old one
                   localStorage.setItem('bookingId', response._id);
-  
+
                   // Navigate based on user accountType
                   if (user.accountType === 'Super User') {
                     // Redirect to Super User dashboard
-                    this.router.navigate(['/home/user/dashboard/super-user/dashboard']);
+                    this.router.navigate([
+                      '/home/user/dashboard/super-user/dashboard',
+                    ]);
                   } else if (user.accountType === 'Single User') {
                     // Redirect to booking dashboard
                     this.router.navigate(['/home/user/dashboard/booking']);
                   }
-  
+
                   // Optionally open a booking modal after navigation
                   this.openBookingModal(response._id);
                 } else {
-                  this.toastr.error(response.message || 'Booking Failed!', 'Error');
+                  this.toastr.error(
+                    response.message || 'Booking Failed!',
+                    'Error'
+                  );
                 }
               },
               (error) => {
                 this.spinnerService.hide();
-                const errorMessage = error.error?.message || 'An error occurred';
+                const errorMessage =
+                  error.error?.message || 'An error occurred';
                 this.toastr.error(errorMessage, 'Error');
                 console.error('Backend Error:', error);
               }
@@ -291,7 +391,8 @@ export class SpecialComponent {
           },
           (error) => {
             this.spinnerService.hide();
-            const errorMessage = error.error?.message || 'Failed to retrieve user data';
+            const errorMessage =
+              error.error?.message || 'Failed to retrieve user data';
             this.toastr.error(errorMessage, 'Error');
           }
         );
@@ -302,6 +403,19 @@ export class SpecialComponent {
     }
   }
 
+  private formatTime(timeObj: {
+    hour: number;
+    minute?: number;
+    second?: number;
+  }): string {
+    const hour = timeObj.hour || 0; // Default to 0 if undefined
+    const minute = timeObj.minute !== undefined ? timeObj.minute : 0; // Default to 0 if undefined
+    const modifier = hour >= 12 ? 'PM' : 'AM';
+    const formattedHour = hour % 12 || 12; // Convert 0 to 12 for 12 AM
+    const formattedMinute = minute < 10 ? '0' + minute : minute; // Add leading zero if needed
+    return `${formattedHour}:${formattedMinute} ${modifier}`;
+  }
+
   clearForm() {
     this.bookingData = {
       name: '',
@@ -310,7 +424,6 @@ export class SpecialComponent {
       toTime: '',
       cityName: '',
       address: '',
-      zipCode: '',
       additionalLabour: null,
       image: '',
       date: '',

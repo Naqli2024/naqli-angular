@@ -154,7 +154,6 @@ export class BookingComponent implements OnInit {
       (response) => {
         if (response && response.booking) {
           this.toastr.success(response.message);
-          console.log(this.bookingDetails)
           this.bookingId = response.booking._id;
           this.initializeMap(); // Initialize map after fetching bookings
 
@@ -173,7 +172,7 @@ export class BookingComponent implements OnInit {
       (error) => {
         const errorMessage =
           error?.error?.message || 'Failed to get pending bookings.';
-        this.toastr.error(errorMessage);
+        this.toastr.info(errorMessage);
       }
     );
   }

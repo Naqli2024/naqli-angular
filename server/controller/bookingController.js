@@ -4,6 +4,7 @@ const Partner = require("../Models/partner/partnerModel");
 const mongoose = require("mongoose");
 const User = require("../Models/userModel");
 const Commission = require("../Models/commissionModel");
+const convertAndValidateTime = require("../middlewares/convertAndValidateTime");
 
 const createBooking = async (req, res) => {
   const {
@@ -15,9 +16,9 @@ const createBooking = async (req, res) => {
     dropPoints,
     productValue,
     date,
-    time,
-    additionalLabour,
+    time, // time is optional
     fromTime,
+    additionalLabour,
     toTime,
     cityName,
     address,
@@ -39,7 +40,6 @@ const createBooking = async (req, res) => {
 
     // Check if the user has an account type of "Single User"
     if (user.accountType === "Single User") {
-      // Check if the user has any ongoing bookings
       const ongoingBooking = await Booking.findOne({
         user: user._id,
         bookingStatus: { $ne: "Completed" },
@@ -47,19 +47,64 @@ const createBooking = async (req, res) => {
 
       if (ongoingBooking) {
         return res.status(403).json({
-          message:
-            "You already have an ongoing booking. Complete your current booking before making another.",
+          message: "You already have an ongoing booking.",
         });
       }
     }
 
-    // Validate that productValue is a number
-    if (typeof productValue !== "undefined" && isNaN(productValue)) {
+    // Prevent past dates from being booked
+    const currentDate = new Date();
+    const bookingDate = new Date(date);
+    if (bookingDate.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
       return res.status(400).json({
-        message: "Validation error: productValue must be a valid number.",
+        message: "Booking date cannot be in the past.",
       });
     }
 
+    // Condition 1: Check if pickup and dropPoints are the same
+    if (
+      Array.isArray(dropPoints) &&
+      dropPoints.length > 0 &&
+      dropPoints[0] === pickup
+    ) {
+      return res.status(400).json({
+        message: "Pickup and dropPoint locations should be different.",
+      });
+    }
+
+    // Time validation
+    let bookingTime;
+    let fromTimeParsed;
+    let toTimeParsed;
+
+    // Check if 'time' is provided
+    if (time) {
+      try {
+        bookingTime = convertAndValidateTime(time, date);
+        console.log(`Constructed booking date-time: ${bookingTime}`);
+      } catch (conversionError) {
+        return res.status(400).json({
+          message: conversionError.message, // Invalid time format or booking time
+        });
+      }
+    }
+
+    // If 'fromTime' and 'toTime' are provided, validate them
+    if (fromTime && toTime) {
+      try {
+        fromTimeParsed = convertAndValidateTime(fromTime, date);
+      } catch (conversionError) {
+        return res.status(400).json({
+          message: conversionError.message, // Invalid fromTime or toTime format
+        });
+      }
+    } else if (!time && !fromTime && !toTime) {
+      return res.status(400).json({
+        message: "At least one time field (time, fromTime, toTime) must be provided.",
+      });
+    }
+
+    // Continue creating the booking
     const booking = new Booking({
       unitType,
       name,
@@ -69,10 +114,10 @@ const createBooking = async (req, res) => {
       dropPoints,
       productValue,
       date,
-      time,
+      time: time || null, // Assign null if time is not provided
+      fromTime: fromTime || null, // Assign null if fromTime is not provided
       additionalLabour,
-      fromTime,
-      toTime,
+      toTime: toTime || null, // Assign null if toTime is not provided
       cityName,
       address,
       zipCode,
@@ -81,7 +126,6 @@ const createBooking = async (req, res) => {
 
     const validationError = booking.validateSync();
     if (validationError) {
-      console.error("Validation error:", validationError);
       return res
         .status(400)
         .json({ message: "Validation error", error: validationError });
@@ -89,17 +133,14 @@ const createBooking = async (req, res) => {
 
     const savedBooking = await booking.save();
 
-    // Ensure bookingId is not null
     if (!savedBooking._id) {
       throw new Error("Booking ID is required for operator update.");
     }
 
-    // Update operators with this new booking
     await updateOperatorsWithNewBooking(savedBooking, false);
 
     res.status(201).json(savedBooking);
   } catch (error) {
-    console.error("Error saving booking:", error);
     res
       .status(500)
       .json({ message: "Error saving booking", error: error.message });
@@ -732,7 +773,9 @@ const getUnitDetails = async (req, res) => {
     }
 
     if (!bookingDetails.partner) {
-      return res.status(400).json({ message: "Payment is not updated. Partner not found" });
+      return res
+        .status(400)
+        .json({ message: "Payment is not updated. Partner not found" });
     }
 
     const partner = await Partner.findById(bookingDetails.partner);
@@ -751,21 +794,23 @@ const getUnitDetails = async (req, res) => {
 
       if (bookingRequest && bookingRequest.assignedOperator) {
         unitInfo = {
-          unit: bookingRequest.assignedOperator.unit, 
+          unit: bookingRequest.assignedOperator.unit,
         };
       } else {
-        return res.status(404).json({ message: "Assigned operator not found for this booking" });
+        return res
+          .status(404)
+          .json({ message: "Assigned operator not found for this booking" });
       }
     }
-    
+
     // Handle "singleUnit + operator"
     else if (partner.type === "singleUnit + operator") {
-      const unitDetails = partner.operators[0]; 
+      const unitDetails = partner.operators[0];
       unitInfo = {
-        unit: unitDetails.plateInformation, 
+        unit: unitDetails.plateInformation,
       };
     }
-    
+
     // Unknown partner type
     else {
       return res.status(400).json({ message: "Unknown partner type" });
@@ -775,7 +820,6 @@ const getUnitDetails = async (req, res) => {
     return res.status(200).json({
       unit: unitInfo.unit,
     });
-
   } catch (error) {
     console.error("Error: ", error.message);
     return res.status(500).json({

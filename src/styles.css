@@ -127,6 +127,19 @@ body {
   padding: 0.5rem 0;
 }
 
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  min-width: 160px !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 3px 10px;
+}
+
 .dropdown-content {
   display: none;
   position: absolute;
@@ -134,6 +147,21 @@ body {
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
+}
+
+.dropdown-content.show {
+  display: block !important;
+}
+
+.dropdown-item {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-item:hover {
+  background-color: #ddd;
 }
 
 .dropdown-content a {
@@ -147,9 +175,6 @@ body {
   background-color: #f1f1f1;
 }
 
-.dropdown.show .dropdown-content {
-  display: block;
-}
 .parent-container {
   display: flex !important;
   justify-content: center !important;
@@ -696,7 +721,7 @@ body {
   border-right: none;
 }
 .booking-container {
-  margin-top: -280px;
+  margin-top: -320px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -708,7 +733,7 @@ body {
 }
 .vehicle-cols {
   padding: 10px 30px 0px 10px;
-  margin: 30px 0px;
+  margin: 15px 0px;
 }
 .vehicle-cols-1 {
   margin: 10px 10px 0px 10px !important;
@@ -728,7 +753,7 @@ body {
 .booking-container-head {
   color: #fff;
   text-align: center;
-  padding-top: 55px;
+  padding-top: 25px;
 }
 .vehicle-cols p {
   font-weight: 700;
@@ -873,7 +898,7 @@ input[type="checkbox"] {
 }
 @media (max-width: 768px) {
   .booking-container-head {
-    padding-top: 35px;
+    padding-top: 15px;
   }
   .vehicle-cols,
   .col-md-6.text-center {
@@ -3682,4 +3707,158 @@ table .make-disable.disabled td:not(:first-child) {
 }
 .viewMyLocation i {
   padding: 0px 5px;
+}
+
+
+/******************Time input***************/
+/* Increase width and decrease height of the time picker */
+.custom-timepicker {
+  border-radius: 5px; /* Rounded corners */
+  background-color: #f5f5f5; /* Custom background color */
+}
+
+.custom-timepicker .ngb-tp {
+  color: #444; /* Custom text color */
+}
+
+.custom-timepicker .ngb-tp .btn-outline-primary,
+.custom-timepicker .ngb-tp .btn-outline-primary:focus,
+.custom-timepicker .ngb-tp .btn-outline-primary.active {
+  background-color: #6a66d1; /* Custom button color */
+  border-color: #6a66d1; /* Custom border color */
+  color: #fff; /* Button text color */
+  width: 100%;
+  height: 100%;
+}
+
+.custom-timepicker .ngb-tp .btn-outline-primary:hover {
+  background-color: #6a66d1; /* Button color on hover */
+  border-color: #6a66d1;
+}
+
+/* Make spinner buttons smaller */
+.custom-timepicker .ngb-tp .btn {
+  padding: 2px 6px; /* Decrease padding to reduce button size */
+}
+
+/* Adjust input fields' height */
+.custom-timepicker .ngb-tp-hour,
+.custom-timepicker .ngb-tp-minute,
+.custom-timepicker .ngb-tp-second,
+.custom-timepicker .ngb-tp-meridian {
+  width: 100%;
+  height: 100%; /* Decrease height of time fields */
+  font-size: 14px; /* Adjust text size for better readability */
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+@media (max-width: 768px) {
+  .custom-timepicker {
+    max-width: 100%; /* Reduce width for smaller screens */
+  }
+}
+
+.btn-link {
+  color: #9d9d9d !important;
+}
+
+
+/**********************Help Component*********************/
+
+.help-body {
+  border: 1px solid #ddd !important;
+  border-radius: 0px !important;
+  width: 90% !important;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  top: 50%; 
+  left: 50%;
+  background: rgba(255, 255, 255);
+  padding: 10px 0px;
+  height: 550px !important;
+  margin-top: 18%;
+  overflow-y: auto !important;
+}
+.help-component {
+  background-image: url('assets/images/help.svg'); /* Set the background image */
+  background-size: cover; /* Make sure the image covers the entire div */
+  background-position: center; /* Center the background image */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+  height: 220px; /* Adjust the height of the slider as needed */
+  width: 100%;
+  position: relative;
+}
+.help-body h2 {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+}
+.accordion-item {
+  border: none !important;
+}
+
+.accordion-item.collapsed {
+  border-bottom: 1px solid #ddd !important; /* Border for collapsed state */
+}
+
+.accordion-button {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  margin: 5px 0px;
+}
+
+.accordion-body {
+  background-color: #fff;
+}
+
+.custom-accordion-button {
+  background-color: transparent; 
+  border: none; 
+  border-bottom: 1px solid #ddd; /* Add border here */
+  color: inherit;
+  text-align: left; 
+}
+
+.custom-accordion-button:focus {
+  box-shadow: none !important; 
+}
+
+.accordion .accordion-button {
+  background-color: transparent !important; /* Ensure the default state is transparent */
+  border: none; /* Remove the default border */
+}
+
+.accordion .accordion-button:not(.collapsed) {
+  background-color: #fff !important; /* Set to white when not collapsed */
+}
+
+.accordion .accordion-button:not(:last-child) {
+  border-bottom: 1px solid #ddd; /* Add bottom border for all but last */
+}
+
+/* Custom Scrollbar Styles */
+.help-component .help-body .accordion .accordion-item .accordion-collapse .accordion-body::-webkit-scrollbar {
+  width: 8px !important; 
+}
+
+.help-component .help-body .accordion .accordion-item .accordion-collapse .accordion-body::-webkit-scrollbar-track {
+  background: #f1f1f1 !important; 
+  border-radius: 10px !important; 
+}
+
+.help-component .help-body .accordion .accordion-item .accordion-collapse .accordion-body::-webkit-scrollbar-thumb {
+  background: #888 !important;
+  border-radius: 10px !important; 
+}
+
+.help-component .help-body .accordion .accordion-item .accordion-collapse .accordion-body::-webkit-scrollbar-thumb:hover {
+  background: #555 !important; 
+}
+
+/* Custom Scrollbar Styles for Firefox */
+.help-component .help-body .accordion .accordion-item .accordion-collapse .accordion-body {
+  scrollbar-width: thin !important; 
+  scrollbar-color: #888 #f1f1f1 !important; 
 }

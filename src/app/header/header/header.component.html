@@ -7,40 +7,36 @@
 
     <!-- Centered Links -->
     <div class="centered-links" (click)="logout()">
-      <a [routerLink]="'/home/user'" routerLinkActive="active" class="nav-link"
-        >User</a
-      >
+      <a [routerLink]="'/home/user'" routerLinkActive="active" class="nav-link">
+        {{ 'NAVBAR.USER' | translate }}
+      </a>
       <span class="vertical-line"></span>
       <a
         [routerLink]="'/home/partner'"
         routerLinkActive="active"
-        class="nav-link"
-        >Partner</a
-      >
+        class="nav-link">
+        {{ 'NAVBAR.PARTNER' | translate }}
+      </a>
     </div>
 
     <!-- Navbar right-side elements -->
     <div class="right-side-elements">
       <div class="dropdown">
         <button class="dropbtn" (click)="toggleDropdown()">
-          {{ selectedLanguage }} ▼
+          {{ (selectedLanguage || 'en') | translate }} <span>▼</span>
         </button>
         <div class="dropdown-content" [class.show]="isDropdownOpen">
-          <a href="#" class="dropdown-item" (click)="selectLanguage('English')"
-            >English</a
-          >
-          <a href="#" class="dropdown-item" (click)="selectLanguage('Tamil')"
-            >Tamil</a
-          >
+          <a class="dropdown-item" (click)="selectLanguage('en')">{{ 'LANGUAGES.en' | translate }}</a>
+          <a class="dropdown-item" (click)="selectLanguage('ar')">{{ 'LANGUAGES.ar' | translate }}</a>
+          <a class="dropdown-item" (click)="selectLanguage('hi')">{{ 'LANGUAGES.hi' | translate }}</a>
         </div>
       </div>
       <button
         *ngIf="!isAuthenticated"
         type="button"
         class="btn"
-        (click)="openLoginModal()"
-      >
-        Login
+        (click)="openLoginModal()">
+        {{ 'Login' | translate }} 
       </button>
       <button *ngIf="isAuthenticated" type="button" class="btn">
         {{ firstName }} {{ lastName }} {{ partnerName }}
@@ -49,8 +45,7 @@
         <i class="fa fa-bell" aria-hidden="true"></i>
         <span
           class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle"
-          *ngIf="notificationCount > 0"
-        >
+          *ngIf="notificationCount > 0">
           {{ notificationCount }}
         </span>
         <div class="notifications-dropdown" [class.show]="isNotificationsDropdownOpen">
@@ -68,9 +63,8 @@
         *ngIf="isAuthenticated"
         type="button"
         class="btn"
-        (click)="logout()"
-      >
-        Logout
+        (click)="logout()">
+        {{ 'Logout' | translate }} 
       </button>
     </div>
 
@@ -85,39 +79,35 @@
   <!-- Hamburger menu content -->
   <div class="hamburger-menu" [class.active]="isMenuOpen">
     <div class="hamburger-centered-links">
-      <a [routerLink]="'/home/user'" routerLinkActive="active" class="nav-link"
-        >User</a
-      >
+      <a [routerLink]="'/home/user'" routerLinkActive="active" class="nav-link">
+        {{ 'NAVBAR.USER' | translate }}
+      </a>
       <span class="vertical-line"></span>
       <a
         [routerLink]="'/home/partner'"
         routerLinkActive="active"
-        class="nav-link"
-        >Partner</a
-      >
+        class="nav-link">
+        {{ 'NAVBAR.PARTNER' | translate }}
+      </a>
     </div>
 
     <div class="hamburger-sub-links">
       <div class="dropdown">
         <button class="dropbtn" (click)="toggleDropdown()">
-          {{ selectedLanguage }} ▼
+          {{ (selectedLanguage || 'en') | translate }} <span>▼</span>
         </button>
         <div class="dropdown-content" [class.show]="isDropdownOpen">
-          <a href="#" class="dropdown-item" (click)="selectLanguage('English')"
-            >English</a
-          >
-          <a href="#" class="dropdown-item" (click)="selectLanguage('Tamil')"
-            >Tamil</a
-          >
+          <a class="dropdown-item" (click)="selectLanguage('en')">{{ 'LANGUAGES.en' | translate }}</a>
+          <a class="dropdown-item" (click)="selectLanguage('ar')">{{ 'LANGUAGES.ar' | translate }}</a>
+          <a class="dropdown-item" (click)="selectLanguage('hi')">{{ 'LANGUAGES.hi' | translate }}</a>
         </div>
       </div>
       <button
         *ngIf="!isAuthenticated"
         type="button"
         class="btn"
-        (click)="openLoginModal()"
-      >
-        Login
+        (click)="openLoginModal()">
+        {{ 'Login' | translate }} 
       </button>
       <button *ngIf="isAuthenticated" type="button" class="btn">
         {{ partnerName }} {{ firstName }} {{ lastName }}
@@ -126,8 +116,7 @@
         <i class="fa fa-bell" aria-hidden="true"></i>
         <span
           class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle"
-          *ngIf="notificationCount > 0"
-        >
+          *ngIf="notificationCount > 0">
           {{ notificationCount }}
         </span>
         <div class="notifications-dropdown" [class.show]="isNotificationsDropdownOpen">
@@ -145,9 +134,8 @@
         *ngIf="isAuthenticated"
         type="button"
         class="btn"
-        (click)="logout()"
-      >
-        Logout
+        (click)="logout()">
+        {{ 'Logout' | translate }} 
       </button>
     </div>
   </div>

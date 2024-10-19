@@ -23,13 +23,15 @@
               <p class="bus-name">{{ bus.name }}</p>
             </div>
           </div>
-          <div class="row" style="margin: 20px 0px">
+          <div class="row align-items-center" style="margin: 20px 0px">
             <div class="col-md-6">
-              <input
-                type="time"
-                class="form-control"
+              <ngb-timepicker
+                class="custom-timepicker"
                 [(ngModel)]="bookingData.time"
-              />
+                [spinners]="true"
+                [meridian]="true"
+                required
+              ></ngb-timepicker>
             </div>
             <div class="col-md-6">
               <input
@@ -100,14 +102,16 @@
       </div>
       <div class="col-md-6 text-center">
         <div class="row-container">
-          <div class="input-field" style="position: relative;">
+          <div class="input-field" style="position: relative">
             <div class="pick-up"></div>
             <input
               type="text"
               placeholder="Pick up location"
               [(ngModel)]="bookingData.pickup"
               (input)="onPickupInputChange()"
+              (focus)="setActiveInputField('pickup')"
               style="margin-bottom: 8px"
+              required
             />
             <!-- Pickup Suggestions -->
             <div
@@ -118,8 +122,26 @@
                 class="suggestion-item"
                 *ngFor="let suggestion of pickupSuggestions"
                 (click)="selectPickupSuggestion(suggestion)"
+                [ngClass]="{
+                  'your-location': suggestion.description === 'Your location'
+                }"
+                style="display: flex; align-items: center"
               >
-                {{ suggestion.description }}
+                <span *ngIf="suggestion.description === 'Your location'">
+                  <i
+                    class="fas fa-crosshairs"
+                    style="margin-right: 8px; color: #0d6efd"
+                  ></i>
+                </span>
+                <span
+                  [style.color]="
+                    suggestion.description === 'Your location'
+                      ? '#0d6efd'
+                      : 'inherit'
+                  "
+                >
+                  {{ suggestion.description }}
+                </span>
               </div>
             </div>
           </div>
@@ -130,7 +152,7 @@
               trackBy: trackByIndex
             "
             class="input-field"
-            style="position: relative;"
+            style="position: relative"
           >
             <div class="drop-point"></div>
             <input
@@ -138,6 +160,8 @@
               [placeholder]="'Drop point location ' + (i + 1)"
               [(ngModel)]="bookingData.dropPoints[i]"
               (input)="onDropPointInputChange(i)"
+              (focus)="setActiveInputField('dropPoint', i)"
+              required
             />
             <div
               class="circle"
@@ -159,8 +183,26 @@
                 class="suggestion-item"
                 *ngFor="let suggestion of dropPointSuggestions[i]"
                 (click)="selectDropPointSuggestion(suggestion, i)"
+                [ngClass]="{
+                  'your-location': suggestion.description === 'Your location'
+                }"
+                style="display: flex; align-items: center"
               >
-                {{ suggestion.description }}
+                <span *ngIf="suggestion.description === 'Your location'">
+                  <i
+                    class="fas fa-crosshairs"
+                    style="margin-right: 8px; color: #0d6efd"
+                  ></i>
+                </span>
+                <span
+                  [style.color]="
+                    suggestion.description === 'Your location'
+                      ? '#0d6efd'
+                      : 'inherit'
+                  "
+                >
+                  {{ suggestion.description }}
+                </span>
               </div>
             </div>
           </div>
