@@ -16,6 +16,8 @@ import { GoogleMapsService } from '../../../services/googlemap.service';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user.model';
 import { LoginComponent } from '../../auth/login/login.component';
+import { ChangeDetectorRef } from '@angular/core';
+import { PaymentService } from '../../../services/payment.service';
 
 interface Vendor {
   name: string;
@@ -58,6 +60,16 @@ export class BookingComponent implements OnInit {
   partnerDetails: any = null;
   combinedDetails: any = null;
   private autocompleteService!: google.maps.places.AutocompleteService;
+  checkoutId: string | null = null;
+  integrity: string = '';
+  showPaymentForm: boolean = false;
+  shopperResultUrl: string = 'http://localhost:4200/home/user/payment-result';
+  selectedBrand: string = '';
+  showPaymentOptions: boolean = false;
+  amount: number | undefined;
+  status: string | undefined;
+  partnerId: string | undefined;
+  oldQuotePrice: number | undefined;
 
   constructor(
     private modalService: NgbModal,
@@ -71,7 +83,9 @@ export class BookingComponent implements OnInit {
     private partnerService: PartnerService,
     private mapService: MapService,
     private googleMapsService: GoogleMapsService,
-    private userService: UserService
+    private userService: UserService,
+    private paymentService: PaymentService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -87,35 +101,43 @@ export class BookingComponent implements OnInit {
     }
 
     if (this.bookingId) {
-      this.invokeStripe();
-
-      // Fetch bookings and initialize the map within the subscription
-      this.fetchBookings(); // Call to fetch bookings
-      this.initializeMap(); // Initialize map immediately after
-
       this.getTopPartners();
       this.getBookings(this.bookingId);
     } else {
+      this.fetchBookings();
       this.fetchBookingsWithPendingPayment(userId);
-      this.initializeMap();
     }
 
     // Define the global initMap function
     (window as any).initMap = () => {
       this.initializeMap();
     };
+
+    // Optionally get the current payment status synchronously
+    const currentStatus = this.paymentService.getPaymentStatus();
+    console.log('Current Payment Status:', currentStatus);
+    if (currentStatus === 'Payment Successful!') {
+      this.updateBookingPaymentStatus();
+    }
   }
 
   ngAfterViewInit(): void {
-    // Wait until the Google Maps script is fully loaded before initializing the map
     this.googleMapsService
       .loadGoogleMapsScript()
       .then(() => {
-        // Initialize the AutocompleteService after the script has loaded
         this.autocompleteService = new google.maps.places.AutocompleteService();
 
-        // Now that the script is loaded and the view is initialized, initialize the map
-        this.initializeMap();
+        // Use MutationObserver to detect when #map is added to DOM
+        const observer = new MutationObserver(() => {
+          const mapContainer = document.getElementById('map');
+          if (mapContainer) {
+            this.initializeMap();
+            observer.disconnect(); // Stop observing once #map is found
+          }
+        });
+
+        // Observe changes in the DOM
+        observer.observe(document.body, { childList: true, subtree: true });
       })
       .catch((error) => {
         console.error('Failed to load Google Maps script:', error);
@@ -154,6 +176,7 @@ export class BookingComponent implements OnInit {
       (response) => {
         if (response && response.booking) {
           this.toastr.success(response.message);
+          window.location.reload();
           this.bookingId = response.booking._id;
           this.initializeMap(); // Initialize map after fetching bookings
 
@@ -194,8 +217,7 @@ export class BookingComponent implements OnInit {
         this.bookingDetails.address,
         this.bookingDetails.cityName
       );
-    } 
-    else if (
+    } else if (
       this.bookingDetails.pickup &&
       this.bookingDetails.dropPoints.length > 0
     ) {
@@ -209,7 +231,9 @@ export class BookingComponent implements OnInit {
     }
     // If neither condition is met, log an error
     else {
-      console.error('Either pickup and drop points, or address and cityName are required.');
+      console.error(
+        'Either pickup and drop points, or address and cityName are required.'
+      );
     }
   }
 
@@ -302,7 +326,7 @@ export class BookingComponent implements OnInit {
 
   pollForQuotePrices(requestBody: any) {
     const pollInterval = 5000; // Poll every 5 seconds
-    const pollTimeout = 3 * 60 * 1000; // 3 minutes in milliseconds
+    const pollTimeout = 15 * 1000; // 15 seconds in milliseconds
     let numVendorsNeeded = 3; // Number of vendors needed
     let numVendorsFetched = 0; // Number of vendors with prices fetched
     let toastrRef: ActiveToast<any> | undefined; // Store the ActiveToast reference
@@ -317,7 +341,7 @@ export class BookingComponent implements OnInit {
     }
 
     const poll = () => {
-      if (this.polling) {
+      if (this.polling && !this.bookingInformation) {
         if (!toastrRef && !successToastShown) {
           // Show initial Toastr message if not already shown and success message has not been shown
           toastrRef = this.showFindingOperatorsMessage();
@@ -408,9 +432,19 @@ export class BookingComponent implements OnInit {
     if (userId) {
       this.bookingService.getBookingByUserId(userId).subscribe(
         (response) => {
+          this.spinnerService.hide();
           if (response.success) {
-            this.spinnerService.hide();
             this.bookings = response.data;
+            if (
+              this.bookings.length > 0 &&
+              this.bookings[0].bookingStatus !== 'Completed' &&
+              this.bookings[0].paymentStatus !== 'NotPaid'
+            ) {
+              localStorage.setItem('bookingId', this.bookings[0]._id);
+              this.bookingId = this.bookings[0]._id;
+              this.bookingInformation = true;
+              window.location.reload();
+            }
             this.initializeMap(); // Initialize map after fetching bookings
           } else {
             this.spinnerService.hide();
@@ -418,6 +452,7 @@ export class BookingComponent implements OnInit {
           }
         },
         (error) => {
+          this.spinnerService.hide();
           this.toastr.error('Failed to fetch bookings');
           console.error('Error fetching bookings:', error);
         }
@@ -503,123 +538,148 @@ export class BookingComponent implements OnInit {
       console.error('Invalid payment amount or status:', amount, status);
       return;
     }
-
-    const paymentHandler = (<any>window).StripeCheckout.configure({
-      key: environment.stripePublicKey,
-      locale: 'auto',
-      token: (stripeToken: any) => {
-        this.processPayment(
-          stripeToken,
-          amount,
-          status,
-          partnerId,
-          oldQuotePrice
-        );
-      },
+    // Store the payment details globally
+    this.paymentService.setPaymentDetails({
+      amount,
+      status,
+      partnerId,
+      oldQuotePrice,
     });
 
-    paymentHandler.open({
-      name: 'Naqli',
-      description: 'Naqli Transportation',
-      amount: amount * 100,
-    });
+    // Show the payment options (MADA or Other cards)
+    this.showPaymentOptions = true;
   }
 
-  processPayment(
-    stripeToken: any,
-    amount: number,
-    status: string,
-    partnerId: string,
-    oldQuotePrice: number
-  ) {
-    this.checkout.makePayment(stripeToken).subscribe((data: any) => {
-      if (data.success && this.bookingId) {
-        this.toastr.success(data.message);
-        this.updateBookingPaymentStatus(
-          this.bookingId,
-          status,
-          amount,
-          partnerId,
-          oldQuotePrice
-        );
-        if (status === 'Completed' || 'HalfPaid') {
-          this.bookingInformation = true;
-          // window.location.reload();
-        }
-      } else {
-        this.toastr.error(data.message);
-      }
-    });
-  }
+  selectPaymentBrand(brand: string) {
+    this.selectedBrand = brand;
+    console.log(this.selectedBrand);
+    this.showPaymentOptions = false;
+    this.showPaymentForm = true;
+    const details = this.paymentService.getPaymentDetails();
 
-  invokeStripe() {
-    if (!window.document.getElementById('stripe-script')) {
-      const script = window.document.createElement('script');
-      script.id = 'stripe-script';
-      script.type = 'text/javascript';
-      script.src = 'https://checkout.stripe.com/checkout.js';
-      script.onload = () => {
-        this.paymentHandler = (<any>window).StripeCheckout.configure({
-          key: environment.stripePublicKey,
-          locale: 'auto',
-          token: (stripeToken: any) => {
-            console.log(stripeToken);
-          },
-        });
-      };
-      window.document.body.appendChild(script);
-    } else {
-      this.paymentHandler = (<any>window).StripeCheckout.configure({
-        key: environment.stripePublicKey,
-        locale: 'auto',
-        token: (stripeToken: any) => {
-          console.log(stripeToken);
-        },
+    if (details) {
+      // Access individual properties
+      this.amount = details.amount;
+      this.status = details.status;
+      this.partnerId = details.partnerId;
+      this.oldQuotePrice = details.oldQuotePrice;
+
+      console.log('Payment Details:', {
+        amount: this.amount,
+        status: this.status,
+        partnerId: this.partnerId,
+        oldQuotePrice: this.oldQuotePrice,
       });
+    } else {
+      console.log('No payment details available');
+    }
+
+    // Check if `amount` and `selectedBrand` are defined before proceeding
+    if (this.amount && this.selectedBrand) {
+      console.log(this.amount, this.selectedBrand);
+      this.processPayment(this.amount, this.selectedBrand);
+    } else {
+      this.toastr.error('Missing payment details');
     }
   }
 
-  private updateBookingPaymentStatus(
-    bookingId: string,
-    status: string,
-    amount: number,
-    partnerId: string,
-    oldQuotePrice: number
-  ) {
-    if (!bookingId || typeof amount !== 'number' || amount <= 0 || !status) {
-      this.toastr.error('Invalid input for payment update');
+  processPayment(amount: number, paymentBrand: string) {
+    console.log(amount, paymentBrand);
+    this.checkout.createPayment(amount, paymentBrand).subscribe(
+      (data: any) => {
+        this.checkoutId = data.id; // Adjust according to your response structure
+        localStorage.setItem('paymentBrand', paymentBrand);
+        this.integrity = data.integrity; // Adjust according to your response structure
+        this.showPaymentForm = true;
+
+        // Inject the payment widget script into the DOM dynamically
+        this.loadPaymentScript();
+      },
+      (error) => {
+        // Handle errors during payment creation
+        this.toastr.error('Error creating payment', error);
+      }
+    );
+  }
+
+  // This method should be called when the user submits the payment form
+  onPaymentFormSubmit() {
+    // Ensure that checkoutId is available
+    if (!this.checkoutId) {
+      this.toastr.error('Checkout ID is not available. Please try again.');
       return;
     }
-    this.spinnerService.show();
-    if (status == 'HalfPaid') {
-      this.totalAmount = amount * 2;
-    } else {
-      this.totalAmount = amount;
+
+    // Ensure that paymentBrand is available
+    if (!this.selectedBrand) {
+      this.toastr.error('Payment Brand is not selected. Please try again.');
+      return;
     }
-    this.bookingService
-      .updateBookingPaymentStatus(
-        bookingId,
-        status,
-        amount,
-        partnerId,
-        this.totalAmount,
-        oldQuotePrice
-      )
-      .subscribe(
-        (response) => {
-          this.spinnerService.hide();
-          this.bookingInformation = true;
-          console.log('Booking payment status updated successfully:', response);
+
+    setTimeout(() => {
+      this.router.navigate(['home/user/payment-result'], {
+        queryParams: {
+          checkoutId: this.checkoutId,
         },
-        (error) => {
-          console.error('Error updating booking payment status:', error);
-          this.spinnerService.hide();
-          this.toastr.error(
-            error.error?.message || 'Failed to update booking payment status',
-            'Error'
-          );
-        }
-      );
+      });
+    }, 100);
+  }
+
+  // Function to dynamically load the payment widget script
+  loadPaymentScript() {
+    const script = document.createElement('script');
+    script.src = `https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${this.checkoutId}`;
+    script.crossOrigin = 'anonymous';
+    script.integrity = this.integrity;
+
+    script.onload = () => {
+      console.log('Payment widget script loaded');
+    };
+
+    // Append script to body or a specific element where the form will be displayed
+    document.body.appendChild(script);
+  }
+
+  private updateBookingPaymentStatus() {
+    const details = this.paymentService.getPaymentDetails();
+    console.log(details);
+
+    this.spinnerService.show();
+    if (details.status == 'HalfPaid') {
+      this.totalAmount = details.amount * 2;
+    } else {
+      this.totalAmount = details.amount;
+    }
+    if (details.partnerId && details.oldQuotePrice && this.bookingId) {
+      this.bookingService
+        .updateBookingPaymentStatus(
+          this.bookingId,
+          details.status,
+          details.amount,
+          details.partnerId,
+          this.totalAmount,
+          details.oldQuotePrice
+        )
+        .subscribe(
+          (response) => {
+            this.spinnerService.hide();
+            this.bookingInformation = true;
+            console.log(
+              'Booking payment status updated successfully:',
+              response
+            );
+            this.paymentService.clearPaymentDetails();
+          },
+          (error) => {
+            console.error('Error updating booking payment status:', error);
+            this.spinnerService.hide();
+            this.toastr.error(
+              error.error?.message || 'Failed to update booking payment status',
+              'Error'
+            );
+          }
+        );
+    }
   }
 
   getBookings(bookingId: string): void {
@@ -722,7 +782,6 @@ export class BookingComponent implements OnInit {
     bookingRequests: any[],
     bookingId: string
   ): string {
-
     if (!bookingRequests) {
       console.warn('Booking requests are null or undefined');
       return 'N/A';
@@ -742,5 +801,14 @@ export class BookingComponent implements OnInit {
     }
 
     return booking?.assignedOperator?.operatorMobileNo ?? 'N/A';
+  }
+
+  // Method to close the payment form
+  closePaymentForm() {
+    this.showPaymentForm = false;
+  }
+
+  closePaymentOptions() {
+    this.showPaymentOptions = false;
   }
 }

@@ -8,14 +8,15 @@
     <!-- Centered Links -->
     <div class="centered-links" (click)="logout()">
       <a [routerLink]="'/home/user'" routerLinkActive="active" class="nav-link">
-        {{ 'NAVBAR.USER' | translate }}
+        {{ "NAVBAR.USER" | translate }}
       </a>
       <span class="vertical-line"></span>
       <a
         [routerLink]="'/home/partner'"
         routerLinkActive="active"
-        class="nav-link">
-        {{ 'NAVBAR.PARTNER' | translate }}
+        class="nav-link"
+      >
+        {{ "NAVBAR.PARTNER" | translate }}
       </a>
     </div>
 
@@ -23,20 +24,27 @@
     <div class="right-side-elements">
       <div class="dropdown">
         <button class="dropbtn" (click)="toggleDropdown()">
-          {{ (selectedLanguage || 'en') | translate }} <span>▼</span>
+          {{ selectedLanguage || "en" | translate }} <span>▼</span>
         </button>
         <div class="dropdown-content" [class.show]="isDropdownOpen">
-          <a class="dropdown-item" (click)="selectLanguage('en')">{{ 'LANGUAGES.en' | translate }}</a>
-          <a class="dropdown-item" (click)="selectLanguage('ar')">{{ 'LANGUAGES.ar' | translate }}</a>
-          <a class="dropdown-item" (click)="selectLanguage('hi')">{{ 'LANGUAGES.hi' | translate }}</a>
+          <a class="dropdown-item" (click)="selectLanguage('en')">{{
+            "LANGUAGES.en" | translate
+          }}</a>
+          <a class="dropdown-item" (click)="selectLanguage('ar')">{{
+            "LANGUAGES.ar" | translate
+          }}</a>
+          <a class="dropdown-item" (click)="selectLanguage('hi')">{{
+            "LANGUAGES.hi" | translate
+          }}</a>
         </div>
       </div>
       <button
         *ngIf="!isAuthenticated"
         type="button"
         class="btn"
-        (click)="openLoginModal()">
-        {{ 'Login' | translate }} 
+        (click)="openLoginModal()"
+      >
+        {{ "Login" | translate }}
       </button>
       <button *ngIf="isAuthenticated" type="button" class="btn">
         {{ firstName }} {{ lastName }} {{ partnerName }}
@@ -45,13 +53,21 @@
         <i class="fa fa-bell" aria-hidden="true"></i>
         <span
           class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle"
-          *ngIf="notificationCount > 0">
+          *ngIf="notificationCount > 0"
+        >
           {{ notificationCount }}
         </span>
-        <div class="notifications-dropdown" [class.show]="isNotificationsDropdownOpen">
+        <div
+          class="notifications-dropdown"
+          [class.show]="isNotificationsDropdownOpen"
+        >
           <div *ngIf="notifications.length > 0; else noNotifications">
-            <div *ngFor="let notification of notifications" class="notification-item">
-              <b>{{ notification.messageTitle }}</b>: &nbsp;<span>{{ notification.messageBody }}</span>
+            <div
+              *ngFor="let notification of notifications"
+              class="notification-item"
+            >
+              <b>{{ notification.messageTitle }}</b
+              >: &nbsp;<span>{{ notification.messageBody }}</span>
             </div>
           </div>
           <ng-template #noNotifications>
@@ -63,8 +79,9 @@
         *ngIf="isAuthenticated"
         type="button"
         class="btn"
-        (click)="logout()">
-        {{ 'Logout' | translate }} 
+        (click)="logout()"
+      >
+        {{ "Logout" | translate }}
       </button>
     </div>
 
@@ -78,36 +95,44 @@
 
   <!-- Hamburger menu content -->
   <div class="hamburger-menu" [class.active]="isMenuOpen">
-    <div class="hamburger-centered-links">
+    <div class="hamburger-centered-links" (click)="logout()">
       <a [routerLink]="'/home/user'" routerLinkActive="active" class="nav-link">
-        {{ 'NAVBAR.USER' | translate }}
+        {{ "NAVBAR.USER" | translate }}
       </a>
       <span class="vertical-line"></span>
       <a
         [routerLink]="'/home/partner'"
         routerLinkActive="active"
-        class="nav-link">
-        {{ 'NAVBAR.PARTNER' | translate }}
+        class="nav-link"
+      >
+        {{ "NAVBAR.PARTNER" | translate }}
       </a>
     </div>
 
     <div class="hamburger-sub-links">
       <div class="dropdown">
         <button class="dropbtn" (click)="toggleDropdown()">
-          {{ (selectedLanguage || 'en') | translate }} <span>▼</span>
+          {{ selectedLanguage || "en" | translate }} <span>▼</span>
         </button>
         <div class="dropdown-content" [class.show]="isDropdownOpen">
-          <a class="dropdown-item" (click)="selectLanguage('en')">{{ 'LANGUAGES.en' | translate }}</a>
-          <a class="dropdown-item" (click)="selectLanguage('ar')">{{ 'LANGUAGES.ar' | translate }}</a>
-          <a class="dropdown-item" (click)="selectLanguage('hi')">{{ 'LANGUAGES.hi' | translate }}</a>
+          <a class="dropdown-item" (click)="selectLanguage('en')">{{
+            "LANGUAGES.en" | translate
+          }}</a>
+          <a class="dropdown-item" (click)="selectLanguage('ar')">{{
+            "LANGUAGES.ar" | translate
+          }}</a>
+          <a class="dropdown-item" (click)="selectLanguage('hi')">{{
+            "LANGUAGES.hi" | translate
+          }}</a>
         </div>
       </div>
       <button
         *ngIf="!isAuthenticated"
         type="button"
         class="btn"
-        (click)="openLoginModal()">
-        {{ 'Login' | translate }} 
+        (click)="openLoginModal()"
+      >
+        {{ "Login" | translate }}
       </button>
       <button *ngIf="isAuthenticated" type="button" class="btn">
         {{ partnerName }} {{ firstName }} {{ lastName }}
@@ -116,13 +141,22 @@
         <i class="fa fa-bell" aria-hidden="true"></i>
         <span
           class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle"
-          *ngIf="notificationCount > 0">
+          *ngIf="notificationCount > 0"
+        >
           {{ notificationCount }}
         </span>
-        <div class="notifications-dropdown" [class.show]="isNotificationsDropdownOpen">
+        <div
+          class="notifications-dropdown"
+          [class.show]="isNotificationsDropdownOpen"
+        >
           <div *ngIf="notifications.length > 0; else noNotifications">
-            <div *ngFor="let notification of notifications" class="notification-item">
-              <b>{{ notification.messageTitle }}</b>: &nbsp;<p>{{ notification.messageBody }}</p>
+            <div
+              *ngFor="let notification of notifications"
+              class="notification-item"
+            >
+              <b>{{ notification.messageTitle }}</b
+              >: &nbsp;
+              <p>{{ notification.messageBody }}</p>
             </div>
           </div>
           <ng-template #noNotifications>
@@ -134,8 +168,9 @@
         *ngIf="isAuthenticated"
         type="button"
         class="btn"
-        (click)="logout()">
-        {{ 'Logout' | translate }} 
+        (click)="logout()"
+      >
+        {{ "Logout" | translate }}
       </button>
     </div>
   </div>

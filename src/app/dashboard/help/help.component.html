@@ -1,38 +1,36 @@
 <div class="row">
-    <div class="col-md-12">
-        <div class="help-component">
-            <div class="help-body">
-                <h2>FREQUENTLY ASKED QUESTION</h2>
-                <div class="accordion" id="faqAccordion">
-                    <div *ngFor="let faq of faqs; let i = index" class="accordion-item" 
-                         [ngClass]="{'collapsed': !faq.open}">
-                        <h2 class="accordion-header" id="heading{{ i }}">
-                            <button
-                                class="accordion-button custom-accordion-button"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                [attr.data-bs-target]="'#collapse' + i"
-                                [attr.aria-expanded]="faq.open"
-                                [attr.aria-controls]="'collapse' + i"
-                                (click)="faq.open = !faq.open"
-                            >
-                                {{ faq.question }}
-                            </button>
-                        </h2>
-                        <div
-                            id="collapse{{ i }}"
-                            class="accordion-collapse collapse"
-                            [ngClass]="{'show': faq.open}"
-                            [attr.aria-labelledby]="'heading' + i"
-                            data-bs-parent="#faqAccordion"
-                        >
-                            <div class="accordion-body">
-                                {{ faq.answer }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="col-md-12">
+    <div class="help-component">
+      <div class="help-body">
+        <h2 style="padding: 20px 0px;">FREQUENTLY ASKED QUESTIONS</h2>
+        <div class="accordion" id="faqAccordion">
+          <div *ngFor="let faq of faqs; let i = index" class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ i }}">
+              <button
+                class="accordion-button"
+                [ngClass]="{ 'collapsed': !faq.open }"
+                type="button"
+                (click)="faq.open = !faq.open"
+                [attr.aria-expanded]="faq.open"
+                [attr.aria-controls]="'collapse' + i"
+              >
+                {{ faq.question }}
+              </button>
+            </h2>
+            <div
+              id="collapse{{ i }}"
+              class="accordion-collapse collapse"
+              [ngClass]="{ show: faq.open }"
+              [attr.aria-labelledby]="'heading' + i"
+              data-bs-parent="#faqAccordion"
+            >
+              <div class="accordion-body">
+                {{ faq.answer }}
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>

@@ -1,6 +1,8 @@
 <div class="home-container">
   <div class="custom-slider">
-    <h2 class="booking-container-head">Available Vehicle Units</h2>
+    <h2 class="booking-container-head">
+      {{ "availableVehicleUnits" | translate }}
+    </h2>
   </div>
   <div class="container booking-container">
     <div class="row">
@@ -9,7 +11,7 @@
           <div class="row vehicle-cols-1" *ngFor="let vehicle of vehicles">
             <div class="col-md-7 left-col">
               <img src="assets/images/delivery-truck.svg" />
-              <p>{{ vehicle.name }}</p>
+              <p>{{ "vehicleName." + vehicle.name | translate }}</p>
             </div>
             <div class="col-md-5 border">
               <div class="custom-select-wrapper">
@@ -20,8 +22,10 @@
                     [attr.data-vehicle]="vehicle.name"
                   >
                     <span>{{
-                      selectedOptions[vehicle.name]?.typeName ||
-                        "Select an option"
+                      selectedOptions[vehicle.name]?.typeName
+                        ? ("typeNames." +
+                            selectedOptions[vehicle.name]?.typeName | translate)
+                        : ("selectOption" | translate)
                     }}</span>
                     <i class="fa-solid fa-chevron-down"></i>
                   </div>
@@ -37,7 +41,9 @@
                       <div class="option-content">
                         <img [src]="type.typeImage" [alt]="type.typeName" />
                         <div class="text-content">
-                          <span>{{ type.typeName }}</span>
+                          <span>{{
+                            "typeNames." + type.typeName | translate
+                          }}</span>
                           <span class="scale">{{ type.scale }}</span>
                         </div>
                       </div>
@@ -72,7 +78,7 @@
                 type="text"
                 class="form-control"
                 [(ngModel)]="bookingData.productValue"
-                placeholder="Value of the product"
+                [placeholder]="'valueOfProduct' | translate"
                 required
               />
             </div>
@@ -83,12 +89,14 @@
                 (ngModelChange)="bookingData.type[0].typeOfLoad = $event"
                 required
               >
-                <option value="" disabled selected>Load Type</option>
+                <option value="" disabled selected>
+                  {{ "loadType" | translate }}
+                </option>
                 <option
                   *ngFor="let load of filteredLoads[selectedVehicleName]"
                   [value]="load"
                 >
-                  {{ load }}
+                  {{ "loads." + load | translate }}
                 </option>
               </select>
             </div>
@@ -102,9 +110,9 @@
                   (change)="toggleAdditionalLabour($event)"
                   [checked]="additionalLabourEnabled"
                 />
-                <label for="additionalLabourCheckbox"
-                  >Need any additional labour</label
-                >
+                <label for="additionalLabourCheckbox">{{
+                  "needAdditionalLabour" | translate
+                }}</label>
               </div>
               <div class="radio-container" *ngIf="additionalLabourEnabled">
                 <input
@@ -145,7 +153,7 @@
             <div class="pick-up"></div>
             <input
               type="text"
-              placeholder="Enter pickup location"
+              [placeholder]="'pickupLocation' | translate"
               [(ngModel)]="bookingData.pickup"
               (focus)="setActiveInputField('pickup')"
               (input)="onPickupInputChange()"
@@ -196,7 +204,7 @@
             <div class="drop-point"></div>
             <input
               type="text"
-              [placeholder]="'Drop point location ' + (i + 1)"
+              [placeholder]="('dropPointLocation' | translate) + ' ' + (i + 1)"
               [(ngModel)]="bookingData.dropPoints[i]"
               (focus)="setActiveInputField('dropPoint', i)"
               (input)="onDropPointInputChange(i)"
@@ -252,7 +260,7 @@
             class="btn create-booking"
             (click)="updateRoute()"
           >
-            Get Direction
+            {{ "getDirection" | translate }}
           </button>
         </div>
         <div id="map" class="google-map-style"></div>
@@ -262,7 +270,7 @@
             class="btn create-booking"
             (click)="submitBooking()"
           >
-            Create Booking
+            {{ "createBooking" | translate }}
           </button>
         </div>
       </div>

@@ -32,9 +32,17 @@
           Partner
         </button>
       </div>
-      <div class="table-container">
-        <table class="table" style="margin: 0px 0px !important">
-          <thead>
+      <div
+        class="table-container booking-manager-table"
+        style="max-height: 450px !important; overflow-y: auto !important"
+      >
+        <table
+          class="table table-responsive"
+          style="width: 100%; box-shadow: none !important; margin: 0px 0px"
+        >
+          <thead
+            style="position: sticky; top: 0; z-index: 1; background-color: #fff"
+          >
             <tr>
               <th>
                 <input
@@ -97,11 +105,23 @@
         </table>
       </div>
     </div>
-    <div class="table-container" *ngIf="!isPushNotificationMode" >
-      <div class="notification-table" *ngIf="filteredNotifications.length > 0; else noNotifications">
+    <div
+      class="table-container booking-manager-table"
+      *ngIf="!isPushNotificationMode"
+      style="max-height: 500px !important; overflow-y: auto !important"
+    >
+      <div
+        class="notification-table"
+        *ngIf="filteredNotifications.length > 0; else noNotifications"
+      >
         <!-- Create New Notification Table -->
-        <table class="table">
-          <thead>
+        <table
+          class="table"
+          style="width: 100%; box-shadow: none !important; margin: 0px 0px"
+        >
+          <thead
+            style="position: sticky; top: 0; z-index: 1; background-color: #fff"
+          >
             <tr>
               <th>Name</th>
               <th>Notification ID</th>
@@ -120,7 +140,7 @@
                 }}
               </td>
               <!-- <td>{{ notification.userId ? notification.userId : notification.partnerId }}</td> -->
-               <td>{{ notification.notificationId }}</td>
+              <td>{{ notification.notificationId }}</td>
               <td>{{ notification.messageTitle }}</td>
               <td>{{ notification.messageBody }}</td>
               <td>
@@ -142,7 +162,9 @@
         </table>
       </div>
       <ng-template #noNotifications>
-        <p style="text-align: center; margin-top: 50px;">No notifications available.</p>
+        <p style="text-align: center; margin-top: 50px">
+          No notifications available.
+        </p>
       </ng-template>
     </div>
   </div>

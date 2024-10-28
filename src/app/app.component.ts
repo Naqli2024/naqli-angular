@@ -17,7 +17,6 @@ import { PaymentsComponent } from './dashboard/payments/payments.component';
 import { ReportComponent } from './dashboard/report/report.component';
 import { HelpComponent } from './dashboard/help/help.component';
 import { ProfileComponent } from './dashboard/profile/profile.component';
-import { MakePaymentComponent } from './dashboard/booking/make-payment/make-payment.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { RegisterComponent } from './partner/auth/register/register.component';
 import { MapComponent } from './map/map.component';
@@ -27,8 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -48,7 +46,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
     ReportComponent,
     HelpComponent,
     ProfileComponent,
-    MakePaymentComponent,
     SpinnerComponent,
     RegisterComponent,
     MapComponent,

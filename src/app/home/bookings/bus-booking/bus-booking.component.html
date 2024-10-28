@@ -1,13 +1,13 @@
 <div class="home-container">
   <div class="custom-slider">
-    <h2 class="booking-container-head">Available Bus Units</h2>
+    <h2 class="booking-container-head">{{"availableBusUnits" | translate}}</h2>
   </div>
   <div class="container booking-container">
     <div class="row">
       <div class="col-md-6">
         <div class="vehicle-cols">
           <div class="row">
-            <h2 class="text-center">Bus</h2>
+            <h2 class="text-center">{{"bus" | translate}}</h2>
             <div
               class="bus-container"
               *ngFor="let bus of buses"
@@ -46,7 +46,7 @@
               <input
                 type="text"
                 class="form-control"
-                placeholder="Value of the product"
+                [placeholder]="'valueOfProduct' | translate"
                 [(ngModel)]="bookingData.productValue"
               />
             </div>
@@ -61,7 +61,7 @@
                   [checked]="additionalLabourEnabled"
                 />
                 <label for="additionalLabourCheckbox"
-                  >Need any additional labour</label
+                  >{{"needAdditionalLabour" | translate}}</label
                 >
               </div>
 
@@ -106,7 +106,7 @@
             <div class="pick-up"></div>
             <input
               type="text"
-              placeholder="Pick up location"
+              [placeholder]="'pickupLocation' | translate"
               [(ngModel)]="bookingData.pickup"
               (input)="onPickupInputChange()"
               (focus)="setActiveInputField('pickup')"
@@ -157,7 +157,7 @@
             <div class="drop-point"></div>
             <input
               type="text"
-              [placeholder]="'Drop point location ' + (i + 1)"
+              [placeholder]="('dropPointLocation' | translate) + ' ' + (i + 1)"
               [(ngModel)]="bookingData.dropPoints[i]"
               (input)="onDropPointInputChange(i)"
               (focus)="setActiveInputField('dropPoint', i)"

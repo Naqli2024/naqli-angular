@@ -310,7 +310,11 @@ const deleteBooking = async (bookingId) => {
 
 const updateBookingPaymentStatus = async (req, res) => {
   const { bookingId } = req.params;
-  const { amount, status, partnerId, totalAmount, oldQuotePrice } = req.body;
+  let { amount, status, partnerId, totalAmount, oldQuotePrice } = req.body;
+
+  // Round `amount` up to the nearest whole number if it has decimals
+  amount = Math.round(amount);
+  console.log(amount)
 
   try {
     // Find the booking by ID

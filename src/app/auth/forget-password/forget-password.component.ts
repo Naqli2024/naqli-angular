@@ -7,11 +7,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SpinnerService } from '../../../services/spinner.service';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, OtpVerificationComponent],
+  imports: [CommonModule, FormsModule, OtpVerificationComponent, TranslateModule],
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.css',
 })

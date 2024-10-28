@@ -74,4 +74,8 @@ export class HelpComponent {
       open: false,
     },
   ];
+
+  toggleOpen(faq: any) {
+    faq.open = !faq.open;
+  }
 }

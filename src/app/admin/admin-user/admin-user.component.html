@@ -3,16 +3,31 @@
     <div class="head-element" style="position: relative">
       <h2>Users</h2>
     </div>
-    <div class="dropdown-container">
-      <select class="form-select" (change)="onActionSelected($event)">
+    <div
+      class="dropdown-container"
+      style="width: 100%; margin: 15px 0px !important"
+    >
+      <select
+        class="form-select"
+        (change)="onActionSelected($event)"
+        style="width: 150px !important"
+      >
         <option *ngFor="let option of options" [value]="option">
           {{ option }}
         </option>
       </select>
     </div>
-    <div class="table-container">
-      <table class="table">
-        <thead>
+    <div
+      class="table-container booking-manager-table"
+      style="max-height: 500px !important; overflow-y: auto !important"
+    >
+      <table
+        class="table table-responsive"
+        style="width: 100%; box-shadow: none !important; margin: 0px 0px"
+      >
+        <thead
+          style="position: sticky; top: 0; z-index: 1; background-color: #fff"
+        >
           <tr>
             <th>
               <input

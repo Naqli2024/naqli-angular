@@ -12,7 +12,6 @@ import { PaymentsComponent } from './dashboard/payments/payments.component';
 import { ReportComponent } from './dashboard/report/report.component';
 import { HelpComponent } from './dashboard/help/help.component';
 import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
-import { MakePaymentComponent } from './dashboard/booking/make-payment/make-payment.component';
 import { VechileEstimateComponent } from './home/open-get-estimate/vechile-estimate/vechile-estimate.component';
 import { ConfirmEstimateComponent } from './home/open-get-estimate/confirm-estimate/confirm-estimate.component';
 import { BusEstimateComponent } from './home/open-get-estimate/bus-estimate/bus-estimate.component';
@@ -49,6 +48,7 @@ import { SuperUserDashboardComponent } from './dashboard/super-user-dashboard/su
 import { TriggerBookingComponent } from './dashboard/trigger-booking/trigger-booking.component';
 import { BookingManagerComponent } from './dashboard/booking-manager/booking-manager.component';
 import { SuperUserPaymentsComponent } from './dashboard/super-user-payments/super-user-payments.component';
+import { PaymentSuccessfulComponent } from './dashboard/booking/payment-successful/payment-successful.component';
 
 
 export const routes: Routes = [
@@ -83,6 +83,10 @@ export const routes: Routes = [
     component: OthersComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'home/user/payment-result',
+    component: PaymentSuccessfulComponent,
+  },
   { path: 'home/user/vehicle-estimate', component: VechileEstimateComponent },
   { path: 'home/user/bus-estimate', component: BusEstimateComponent },
   {
@@ -97,7 +101,6 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'booking', pathMatch: 'full' },
       { path: 'booking', component: BookingComponent },
-      { path: 'booking/make-payment', component: MakePaymentComponent },
       { path: 'booking-history', component: BookingHistoryComponent },
       { path: 'payments', component: PaymentsComponent },
       { path: 'report', component: ReportComponent },

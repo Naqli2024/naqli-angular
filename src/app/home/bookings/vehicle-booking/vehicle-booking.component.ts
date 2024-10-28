@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 import { GoogleMapsService } from '../../../../services/googlemap.service';
 import { UserService } from '../../../../services/user.service';
 import { User } from '../../../../models/user.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-vehicle-booking',
@@ -31,6 +32,7 @@ import { User } from '../../../../models/user.model';
     BookingModalComponent,
     MapComponent,
     NgbTimepickerModule,
+    TranslateModule
   ],
   templateUrl: './vehicle-booking.component.html',
   styleUrl: './vehicle-booking.component.css',
@@ -51,7 +53,7 @@ export class VehicleBookingComponent implements OnInit {
     unitType: '',
     name: '',
     type: [{ typeName: '', scale: '', typeImage: '', typeOfLoad: '' }],
-    time: '',
+    time: { hour: 0, minute: 0 },
     date: '',
     productValue: '',
     pickup: '',

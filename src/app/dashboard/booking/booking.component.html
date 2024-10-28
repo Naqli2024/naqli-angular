@@ -1,177 +1,183 @@
-<div
-  class="dashboard-booking-container"
-  *ngIf="bookingId && users?.accountType === 'Single User'"
->
-  <div class="row">
-    <div class="col-md-7 left-div">
-      <div class="">
-        <div class="left-div-title">
-          <img src="assets/images/delivery-truck.svg" />
-          <p>Booking Id {{ bookingId }}</p>
-        </div>
-        <button
-          type="submit"
-          class="btn create-booking get-route-btn"
-          (click)="updateRoute()"
-        >
-          Show Route
-        </button>
-        <div id="map" class="google-map-style"></div>
-        <div class="booking-load">
-          <div class="booking-load-1">
-            <h4>{{ bookingDetails.name }}</h4>
-            <p>{{ bookingDetails.type?.[0]?.typeName }}</p>
+<div [ngClass]="{ 'blur-background': showPaymentForm }">
+  <div
+    class="dashboard-booking-container"
+    *ngIf="bookingId && users?.accountType === 'Single User'"
+  >
+    <div class="row">
+      <div class="col-md-7 left-div">
+        <div class="">
+          <div class="left-div-title">
+            <img src="assets/images/delivery-truck.svg" />
+            <p>Booking Id {{ bookingId }}</p>
           </div>
-          <div class="border-right"></div>
-          <div class="booking-load-2">
-            <h6>Load</h6>
-            <p>{{ bookingDetails.type?.[0]?.typeOfLoad }}</p>
-          </div>
-          <div class="booking-load-3">
-            <h6>Size</h6>
-            <p>{{ bookingDetails.type?.[0]?.scale }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-5 right-div">
-      <div class="input-container" *ngIf="!bookingInformation">
-        <div class="input-field" *ngFor="let vendor of vendors">
-          <label>
-            <input type="radio" name="vendor" (change)="onSelect(vendor)" />
-            <div
-              class="vendor-details"
-              [class.selected]="vendor === selectedVendor"
-            >
-              <span>{{ vendor.name }}</span>
-              <span class="vendor-price">{{ vendor.price }} SAR</span>
+          <button
+            type="submit"
+            class="btn create-booking get-route-btn"
+            (click)="updateRoute()"
+          >
+            Show Route
+          </button>
+          <div id="map" class="google-map-style"></div>
+          <div class="booking-load">
+            <div class="booking-load-1">
+              <h4>{{ bookingDetails.name }}</h4>
+              <p>{{ bookingDetails.type?.[0]?.typeName }}</p>
             </div>
-          </label>
-        </div>
-        <a
-          href=""
-          class="cancel-request"
-          (click)="openBookingCancelModal($event)"
-          >Cancel Request</a
-        >
-        <div
-          class="modal-footer cancel-booking-btns"
-          *ngIf="selectedVendor && fetchedVendors"
-        >
-          <button
-            type="button"
-            class="btn btn-pay-advance"
-            (click)="
-              makePayment(
-                $event,
-                (selectedVendor.price || 0) / 2,
-                'HalfPaid',
-                selectedVendor.partnerId,
-                selectedVendor.oldQuotePrice
-              )
-            "
-          >
-            Pay Advance: {{ (selectedVendor.price || 0) / 2 }} SAR
-          </button>
-          <button
-            type="button"
-            class="btn btn-pay"
-            (click)="
-              makePayment(
-                $event,
-                selectedVendor.price,
-                'Paid',
-                selectedVendor.partnerId,
-                selectedVendor.oldQuotePrice
-              )
-            "
-          >
-            Pay: {{ selectedVendor.price || 0 }} SAR
-          </button>
-        </div>
-      </div>
-      <div *ngIf="bookingInformation">
-        <div class="input-container">
-          <div class="vendor-info">
-            <p>
-              Vendor Name
-              <span>{{ combinedDetails.partner?.partnerName }}</span>
-            </p>
-
-            <p
-              *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'"
-            >
-              Operator Name
-              <span
-                *ngIf="combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0"
-              >
-                {{
-                  combinedDetails?.partner?.operators?.[0]?.operatorsDetail[0]?.firstName
-                }}
-                {{
-                  combinedDetails?.partner?.operators?.[0]?.operatorsDetail[0]?.lastName
-                }}
-              </span>
-            </p>
-
-            <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
-              Operator Name
-              <span>
-                {{
-                  getOperatorNameFromBooking(
-                    combinedDetails?.partner?.bookingRequest,
-                    bookingId
-                  )
-                }}
-              </span>
-            </p>
-
-            <p
-              *ngIf="combinedDetails?.partner?.type === 'singleUnit + operator'"
-            >
-              Operator Mobile
-              <span
-                *ngIf="combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0"
-                >{{
-                  combinedDetails?.partner?.operators?.[0]?.operatorsDetail[0]?.mobileNo
-                }}</span
-              >
-            </p>
-
-            <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
-              Operator Mobile
-              <span>
-                {{
-                  getOperatorMobileFromBooking(
-                    combinedDetails?.partner?.bookingRequest,
-                    bookingId
-                  )
-                }}
-              </span>
-            </p>
-            <p>
-              Unit<span
-                >{{ combinedDetails.partner?.unitClassificationName }}-{{
-                  combinedDetails.partner?.unitSubClassificationName
-                }}</span
-              >
-            </p>
-            <p>
-              Booking Status
-              <span>{{ combinedDetails.booking?.bookingStatus }}</span>
-            </p>
+            <div class="border-right"></div>
+            <div class="booking-load-2">
+              <h6>Load</h6>
+              <p>{{ bookingDetails.type?.[0]?.typeOfLoad }}</p>
+            </div>
+            <div class="booking-load-3">
+              <h6>Size</h6>
+              <p>{{ bookingDetails.type?.[0]?.scale }}</p>
+            </div>
           </div>
         </div>
-
-        <div
-          class="vendor-info-last"
-          *ngFor="let booking of combinedDetails.booking.bookings"
-        >
-          <h2>Pending Amount</h2>
-          <p>{{ booking.remainingBalance }}</p>
+      </div>
+      <div class="col-md-5 right-div">
+        <div class="input-container" *ngIf="!bookingInformation">
+          <div class="input-field" *ngFor="let vendor of vendors">
+            <label>
+              <input type="radio" name="vendor" (change)="onSelect(vendor)" />
+              <div
+                class="vendor-details"
+                [class.selected]="vendor === selectedVendor"
+              >
+                <span>{{ vendor.name }}</span>
+                <span class="vendor-price">{{ vendor.price }} SAR</span>
+              </div>
+            </label>
+          </div>
+          <a
+            href=""
+            class="cancel-request"
+            (click)="openBookingCancelModal($event)"
+            >Cancel Request</a
+          >
+          <div
+            class="modal-footer cancel-booking-btns"
+            *ngIf="selectedVendor && fetchedVendors"
+          >
+            <button
+              type="button"
+              class="btn btn-pay-advance"
+              (click)="
+                makePayment(
+                  $event,
+                  (selectedVendor.price || 0) / 2,
+                  'HalfPaid',
+                  selectedVendor.partnerId,
+                  selectedVendor.oldQuotePrice
+                )
+              "
+            >
+              Pay Advance: {{ (selectedVendor.price || 0) / 2 }} SAR
+            </button>
+            <button
+              type="button"
+              class="btn btn-pay"
+              (click)="
+                makePayment(
+                  $event,
+                  selectedVendor.price,
+                  'Paid',
+                  selectedVendor.partnerId,
+                  selectedVendor.oldQuotePrice
+                )
+              "
+            >
+              Pay: {{ selectedVendor.price || 0 }} SAR
+            </button>
+          </div>
         </div>
-        <div class="modal-footer cancel-booking-btns">
-          <p style="color: forestgreen">Booking Successful!</p>
+        <div *ngIf="bookingInformation">
+          <div class="input-container">
+            <div class="vendor-info">
+              <p>
+                Vendor Name
+                <span>{{ combinedDetails.partner?.partnerName }}</span>
+              </p>
+
+              <p
+                *ngIf="
+                  combinedDetails?.partner?.type === 'singleUnit + operator'
+                "
+              >
+                Operator Name
+                <span
+                  *ngIf="combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0"
+                >
+                  {{
+                  combinedDetails?.partner?.operators?.[0]?.operatorsDetail[0]?.firstName
+                  }}
+                  {{
+                  combinedDetails?.partner?.operators?.[0]?.operatorsDetail[0]?.lastName
+                  }}
+                </span>
+              </p>
+
+              <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
+                Operator Name
+                <span>
+                  {{
+                    getOperatorNameFromBooking(
+                      combinedDetails?.partner?.bookingRequest,
+                      bookingId
+                    )
+                  }}
+                </span>
+              </p>
+
+              <p
+                *ngIf="
+                  combinedDetails?.partner?.type === 'singleUnit + operator'
+                "
+              >
+                Operator Mobile
+                <span
+                  *ngIf="combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0"
+                  >{{
+                  combinedDetails?.partner?.operators?.[0]?.operatorsDetail[0]?.mobileNo
+                  }}</span
+                >
+              </p>
+
+              <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
+                Operator Mobile
+                <span>
+                  {{
+                    getOperatorMobileFromBooking(
+                      combinedDetails?.partner?.bookingRequest,
+                      bookingId
+                    )
+                  }}
+                </span>
+              </p>
+              <p>
+                Unit<span
+                  >{{ combinedDetails.partner?.unitClassificationName }}-{{
+                    combinedDetails.partner?.unitSubClassificationName
+                  }}</span
+                >
+              </p>
+              <p>
+                Booking Status
+                <span>{{ combinedDetails.booking?.bookingStatus }}</span>
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="vendor-info-last"
+            *ngFor="let booking of combinedDetails.booking.bookings"
+          >
+            <h2>Pending Amount</h2>
+            <p>{{ booking.remainingBalance }}</p>
+          </div>
+          <div class="modal-footer cancel-booking-btns">
+            <p style="color: forestgreen">Booking Successful!</p>
+          </div>
         </div>
       </div>
     </div>
@@ -236,3 +242,68 @@
     </div>
   </div>
 </ng-template>
+
+<!-- Payment options for user to select a payment brand -->
+<div *ngIf="showPaymentOptions" class="payment-options-container">
+  <div class="payment-options">
+    <!-- Close button -->
+    <button
+      type="button"
+      class="btn-close close-button"
+      (click)="closePaymentOptions()"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+    <!-- Option for MADA -->
+    <button
+      type="button"
+      class="btn btn-pay-mada"
+      (click)="selectPaymentBrand('MADA')"
+    >
+      Pay using MADA
+      <img src="assets/images/Mada_Logo.svg" alt="MADA Icon" />
+    </button>
+
+    <!-- Option for Other Cards -->
+    <button
+      type="button"
+      class="btn btn-pay-other"
+      (click)="selectPaymentBrand('OTHER')"
+    >
+      Pay using Other Card Types
+      <img src="assets/images/visa-mastercard.svg" alt="Other Cards Icon" />
+    </button>
+  </div>
+</div>
+
+<div *ngIf="showPaymentForm">
+  <div class="modal-overlay" (click)="closePaymentForm()"></div>
+  <!-- Payment form -->
+  <!-- Payment Form for MADA -->
+  <div
+    class="centered-payment-form"
+    *ngIf="selectedBrand === 'MADA' && showPaymentForm"
+    (click)="$event.stopPropagation()"
+  >
+    <form
+      [action]="shopperResultUrl"
+      (ngSubmit)="onPaymentFormSubmit()"
+      class="paymentWidgets"
+      data-brands="MADA"
+    ></form>
+  </div>
+
+  <!-- Payment Form for Other Cards -->
+  <div
+    class="centered-payment-form"
+    *ngIf="selectedBrand === 'OTHER' && showPaymentForm"
+    (click)="$event.stopPropagation()"
+  >
+    <form
+      [action]="shopperResultUrl"
+      (ngSubmit)="onPaymentFormSubmit()"
+      class="paymentWidgets"
+      data-brands="VISA MASTER AMEX"
+    ></form>
+  </div>
+</div>

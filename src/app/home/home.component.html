@@ -5,10 +5,10 @@
   <div class="home-body">
     <div *ngFor="let item of items" class="item">
       <a [routerLink]="getRoute(item.name)">
-        <img [src]="item.image" alt="{{ item.name }}" />
+        <img [src]="item.image" alt="{{ item.name | translate }}" />
         <hr class="line" />
         <!-- Horizontal line -->
-        <p class="item-name">{{ item.name }}</p>
+        <p class="item-name">{{ 'ITEMS.' + item.name | translate }}</p>
       </a>
     </div>
     <div
@@ -16,7 +16,7 @@
       style="background-color: #6a66d1"
       (click)="openGetEstimateModal($event)"
     >
-      <div class="estimate-text">Get an Estimate</div>
+      <div class="estimate-text">{{ 'ESTIMATE.GET_ESTIMATE' | translate }}</div>
       <div class="arrow-icon">
         <img src="assets/images/arrow_circle_right.png" alt="" />
       </div>

@@ -1,44 +1,85 @@
 <div class="row">
-    <div class="col-md-12 booking-history">
-      <div class="head-element">
-        <h2>Payment</h2>
-      </div>
-      <div class="table-container">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Booking ID</th>
-              <th>Unit</th>
-              <th>Unit Type</th>
-              <th>Partner</th>
-              <th>Payment Made</th>
-              <th>Pending Payment</th>
-              <th>Commision</th>
-              <th>Payment Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of bookingsWithDetails">
-                <td>{{ item.user?.firstName }} {{ item.user?.lastName }}</td>
-                <td class="bookingId" (click)="userBookingDetails(item.booking._id)">{{ item.booking._id }}</td>
-                <td>{{ item.booking.name }}</td>
-                <td>{{ item.booking.type[0]?.typeName }}</td>
-                <td>{{ item.partner?.data?.partnerName }}</td>
-                <td>{{ item.booking.paymentAmount }}</td>
-                <td [ngStyle]="{'color': (item.booking.paymentStatus === 'Paid' || item.booking.paymentStatus === 'Completed') ? 'forestgreen' : 'red'}">
-                  {{ (item.booking.paymentStatus === 'Paid' || item.booking.paymentStatus === 'Completed') ? item.booking.paymentStatus : item.booking.remainingBalance }}
-                </td>
-                <td>{{ item.booking.adminCommission }}</td>
-                <td>
-                  <i
-                    [ngClass]="(item.booking.paymentStatus === 'Completed' || item.booking.paymentStatus === 'Paid') ? 'fa fa-check' : 'fa fa-times'"
-                    [ngStyle]="{'color': (item.booking.paymentStatus === 'Completed' || item.booking.paymentStatus === 'Paid') ? 'forestgreen' : 'red'}"
-                  ></i>
-                </td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
+  <div class="col-md-12 booking-history">
+    <div class="head-element" style="margin-bottom: 20px !important">
+      <h2>Payment</h2>
+    </div>
+    <div
+      class="table-container booking-manager-table"
+      style="position: relative; max-height: 550px !important; overflow-y: auto"
+    >
+      <table
+        class="table table-responsive"
+        style="
+          width: 100%;
+          box-shadow: none !important;
+          margin: 0px 0px;
+        "
+      >
+        <thead
+          style="position: sticky; top: 0; z-index: 1; background-color: #fff"
+        >
+          <tr>
+            <th>User</th>
+            <th>Booking ID</th>
+            <th>Unit</th>
+            <th>Unit Type</th>
+            <th>Partner</th>
+            <th>Payment Made</th>
+            <th>Pending Payment</th>
+            <th>Commision</th>
+            <th>Payment Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bookingsWithDetails">
+            <td>{{ item.user?.firstName }} {{ item.user?.lastName }}</td>
+            <td
+              class="bookingId"
+              (click)="userBookingDetails(item.booking._id)"
+            >
+              {{ item.booking._id }}
+            </td>
+            <td>{{ item.booking.name }}</td>
+            <td>{{ item.booking.type[0]?.typeName }}</td>
+            <td>{{ item.partner?.data?.partnerName }}</td>
+            <td>{{ item.booking.paymentAmount }}</td>
+            <td
+              [ngStyle]="{
+                color:
+                  item.booking.paymentStatus === 'Paid' ||
+                  item.booking.paymentStatus === 'Completed'
+                    ? 'forestgreen'
+                    : 'red'
+              }"
+            >
+              {{
+                item.booking.paymentStatus === "Paid" ||
+                item.booking.paymentStatus === "Completed"
+                  ? item.booking.paymentStatus
+                  : item.booking.remainingBalance
+              }}
+            </td>
+            <td>{{ item.booking.adminCommission }}</td>
+            <td>
+              <i
+                [ngClass]="
+                  item.booking.paymentStatus === 'Completed' ||
+                  item.booking.paymentStatus === 'Paid'
+                    ? 'fa fa-check'
+                    : 'fa fa-times'
+                "
+                [ngStyle]="{
+                  color:
+                    item.booking.paymentStatus === 'Completed' ||
+                    item.booking.paymentStatus === 'Paid'
+                      ? 'forestgreen'
+                      : 'red'
+                }"
+              ></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
+</div>

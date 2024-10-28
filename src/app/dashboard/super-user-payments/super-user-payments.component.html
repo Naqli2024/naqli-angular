@@ -43,9 +43,9 @@
             <td>{{ booking.paymentAmount }} SAR</td>
             <td>
               <ng-container *ngIf="booking.remainingBalance > 0; else noPaymentNeeded">
-                <button type="button" class="btn btn-payNow" (click)="makePayment($event, booking.remainingBalance || 0, 'Completed', booking.partner, booking._id)">
+                <!-- <button type="button" class="btn btn-payNow" (click)="makePayment($event, booking.remainingBalance || 0, 'Completed', booking.partner, booking._id)">
                   Pay {{ booking.remainingBalance }} SAR
-                </button>
+                </button> -->
               </ng-container>
               <ng-template #noPaymentNeeded>
                 <p>---</p>

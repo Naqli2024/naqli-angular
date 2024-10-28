@@ -6,6 +6,9 @@
 body {
   height: 100vh !important;
   overflow-y: hidden;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-style: normal;
 }
 
 /**********navbar**********/
@@ -1468,14 +1471,18 @@ input[type="checkbox"] {
 }
 
 .table {
-  width: max-content !important;
-  min-width: 100%;
+  width: 100% !important;
   border-collapse: collapse;
   text-align: center;
   margin: 30px 0px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   white-space: nowrap;
   overflow-x: auto !important;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
 }
 
 .table th {
@@ -2091,6 +2098,7 @@ input[type="checkbox"] {
 }
 /************partner booking page**************/
 .booking-history .table-container {
+  width: 100% !important;
   overflow-x: auto !important;
   max-height: 460px !important;
   overflow-y: auto !important;
@@ -2123,7 +2131,7 @@ input[type="checkbox"] {
 }
 
 .booking-history .location-item p {
-  padding-top: 14px !important;
+  text-align: start;
 }
 
 .booking-history .location-item div {
@@ -2146,6 +2154,16 @@ input[type="checkbox"] {
   white-space: nowrap;
   text-align: center;
   vertical-align: middle;
+}
+
+.text-wrap {
+  white-space: normal; /* Allows text to wrap */
+  word-break: break-word; /* Breaks long words to fit within the cell */
+}
+/* Make sure the table is scrollable on all screen sizes */
+.table-responsive {
+  overflow-x: auto; /* Ensures horizontal scroll bar appears if needed */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on touch devices */
 }
 
 .send-btn {
@@ -3787,78 +3805,366 @@ table .make-disable.disabled td:not(:first-child) {
   background-position: center; /* Center the background image */
   background-repeat: no-repeat; /* Prevent the image from repeating */
   height: 220px; /* Adjust the height of the slider as needed */
-  width: 100%;
+  width: 100% !important;
   position: relative;
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
 }
 .help-body h2 {
   text-align: center;
   font-size: 22px;
   font-weight: 600;
 }
-.accordion-item {
-  border: none !important;
-}
 
-.accordion-item.collapsed {
-  border-bottom: 1px solid #ddd !important; /* Border for collapsed state */
+.accordion-item {
+  background-color: #ffffff !important; /* Set background color to white */
+  border: none; /* Remove border if desired */
 }
 
 .accordion-button {
-  background-color: #f8f9fa;
+  background-color: #ffffff !important; /* Set button background color to white */
+  color: #000; /* Set text color */
   font-weight: bold;
-  margin: 5px 0px;
+  box-shadow: none; /* Remove shadow */
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #f6f6ff !important; /* Set background when expanded */
+  box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) .faq-question {
+  color: #6269FE !important; /* Set the FAQ question color when expanded */
+}
+
+.accordion-button:not(.collapsed) + .accordion-body {
+  background-color: #f6f6ff !important; /* Set background for expanded accordion item */
+}
+
+.accordion-item .accordion-collapse.show {
+  background-color: #f6f6ff !important; /* Ensure the background color when expanded */
+}
+
+.accordion-button:focus {
+  box-shadow: none; /* Remove focus outline */
 }
 
 .accordion-body {
+  background-color: #f6f6ff; /* Ensure accordion body is also white */
+  color: #333; /* Set text color */
+}
+.custom-accordion-button {
+  display: flex;
+  justify-content: space-between; /* Ensures icon stays on the far right */
+  align-items: center;
+}
+
+.icon-container {
+  margin-left: auto; /* Pushes icon to the right side */
+}
+@media (max-width: 768px) {
+  .help-body {
+    width: 95% !important;  
+    height: 550px !important; 
+    margin-top: 50%;
+  }
+}
+
+@media (max-width: 576px) {
+  .help-body {
+    width: 100% !important;  
+    height: 550px !important; 
+    padding: 15px; 
+    margin-top: 30%;
+    top: 130%;
+  }
+}
+
+/* Custom scrollbar styling for WebKit browsers */
+.help-body::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.help-body::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the scrollbar track */
+}
+
+.help-body::-webkit-scrollbar-thumb {
+  background-color: #6269FE; /* Color of the scrollbar thumb */
+  border-radius: 4px; /* Rounded edges */
+}
+
+.help-body::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Darker color on hover */
+}
+
+/* Custom scrollbar styling for Firefox */
+.help-body {
+  scrollbar-width: thin; /* Thin scrollbar */
+  scrollbar-color: #a8a8a8 #f1f1f1; /* Thumb color and track color */
+}
+
+/*******************Payment Card Screen*******************/
+.blur-background {
+  filter: blur(5px);
+  pointer-events: none; 
+  opacity: 0.7; 
+  transition: all 0.3s ease; 
+}
+.centered-payment-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  border-radius: 8px;
+  width: 100%; 
+  z-index: 1001;
+}
+/* Dark overlay to dim the background */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(44, 44, 44, 0.5); 
+  z-index: 1000; 
+}
+/* Ensure the entire page content gets the blur effect, not the modal */
+.modal-overlay + .centered-payment-form {
+  filter: none; /* Prevent blur on the modal */
+}
+
+/*****************Payment Successful****************/
+.payment-result-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
   background-color: #fff;
 }
-
-.custom-accordion-button {
-  background-color: transparent; 
-  border: none; 
-  border-bottom: 1px solid #ddd; /* Add border here */
-  color: inherit;
-  text-align: left; 
+h1 {
+  margin-bottom: 20px;
+}
+.status-message {
+  font-size: 1.5em;
+  margin: 20px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+.success {
+  color: green;
+  background-color: rgba(0, 255, 0, 0.1);
+}
+.error {
+  color: red;
+  background-color: rgba(255, 0, 0, 0.1);
+}
+.redirect-message {
+  margin: 10px 0;
+  font-size: 1em;
+  color: #555;
+}
+.goTo-dashboard-btn {
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.goTo-dashboard-btn:hover {
+  background-color: #0056b3;
+}
+.payment-options-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(44, 44, 44, 0.5); 
+  z-index: 1000; 
+}
+.payment-options {
+  display: flex;
+  flex-direction: column; 
+  justify-content: space-between;
+  align-items: start; 
+  background-color: white; 
+  padding: 20px!important;
+  border-radius: 8px; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+/* .payment-options .btn:not(:last-child) {
+  border-bottom: 1px solid #ddd; 
+} */
+.btn-pay-mada, .btn-pay-other {
+  display: flex !important; 
+  justify-content: space-between !important;
+  align-items: center !important; 
+  margin: 5px 0; 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s; 
+  width: 100%;
+}
+.btn-pay-other:hover, .btn-pay-mada:hover {
+  background-color: #f0f0f0 !important; 
+  padding: 5px;
+}
+.btn-pay-mada img, .btn-pay-other img {
+  width: 100%; 
+  max-width: 80px;
+  height: 100%;
+  max-height: 80px;  
+}
+.close-button {
+  align-self: flex-end !important; 
+  background: none !important; 
+  border: none !important; 
+  cursor: pointer !important; 
+  font-size: 1.5em !important; 
+  color: #333 !important; 
+  margin-bottom: 15px !important;
+  margin-top: -10px !important;
+}
+.close-button:hover {
+  color: #e74c3c !important;
+}
+.payment-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it overlays other content */
+}
+.dot-container {
+  height: 55px;
+  width: 0px;
+  animation: spin 3s linear infinite;
+}
+@keyframes spin {
+  from{
+    transform: rotate(-0deg);
+  }
+  to{
+    transform: rotate(-360deg);
+  }
+}
+.dot-container:nth-child(1) {
+  animation-delay: .3s;
+}
+.dot-container:nth-child(2) {
+  animation-delay: .6s;
+}
+.dot-container:nth-child(3) {
+  animation-delay: .9s;
+}
+.dot-container:nth-child(4) {
+  animation-delay: 1.2s;
+}
+.dot-container:nth-child(5) {
+  animation-delay: 1.5s;
+}
+.dot-container:nth-child(6) {
+  animation-delay: 1.8s;
+}
+.dot-container:nth-child(7) {
+  animation-delay: 2.1s;
+}
+.dot-container:nth-child(8) {
+  animation-delay: 2.4s;
+}
+.dot-container:nth-child(9) {
+  animation-delay: 2.7s;
+}
+.dot-container:nth-child(10) {
+  animation-delay: 3s;
+}
+.dot-container:nth-child(11) {
+  animation-delay: 3.3s;
+}
+.dot-container:nth-child(12) {
+  animation-delay: 3.6s;
+}
+.dot-container:nth-child(13) {
+  animation-delay: 3.9s;
 }
 
-.custom-accordion-button:focus {
-  box-shadow: none !important; 
+
+.dot-container .circle {
+  height: 10px;
+  width: 3px;
+  background: black;
+  border-radius: 50%;
+  animation: dots 3s linear infinite;
+}
+@keyframes dots {
+  from{
+    background: black;
+  }
+  to{
+    background: white;
+  }
+}
+.dot-container:nth-child(1) .cirlce {
+  animation-delay: .3s;
+}
+.dot-container:nth-child(2) .cirlce {
+  animation-delay: .6s;
+}
+.dot-container:nth-child(3) .cirlce {
+  animation-delay: .9s;
+}
+.dot-container:nth-child(4) .cirlce {
+  animation-delay: 1.2s;
+}
+.dot-container:nth-child(5) .cirlce {
+  animation-delay: 1.5s;
+}
+.dot-container:nth-child(6) .cirlce {
+  animation-delay: 1.8s;
+}
+.dot-container:nth-child(7) .cirlce {
+  animation-delay: 2.1s;
 }
 
-.accordion .accordion-button {
-  background-color: transparent !important; /* Ensure the default state is transparent */
-  border: none; /* Remove the default border */
+.dot-container:nth-child(8) {
+  animation-delay: 2.4s;
+}
+.dot-container:nth-child(9) {
+  animation-delay: 2.7s;
+}
+.dot-container:nth-child(10) {
+  animation-delay: 3s;
+}
+.dot-container:nth-child(11) {
+  animation-delay: 3.3s;
+}
+.dot-container:nth-child(12) {
+  animation-delay: 3.6s;
+}
+.dot-container:nth-child(13) {
+  animation-delay: 3.9s;
 }
 
-.accordion .accordion-button:not(.collapsed) {
-  background-color: #fff !important; /* Set to white when not collapsed */
-}
 
-.accordion .accordion-button:not(:last-child) {
-  border-bottom: 1px solid #ddd; /* Add bottom border for all but last */
-}
 
-/* Custom Scrollbar Styles */
-.help-component .help-body .accordion .accordion-item .accordion-collapse .accordion-body::-webkit-scrollbar {
-  width: 8px !important; 
-}
-
-.help-component .help-body .accordion .accordion-item .accordion-collapse .accordion-body::-webkit-scrollbar-track {
-  background: #f1f1f1 !important; 
-  border-radius: 10px !important; 
-}
-
-.help-component .help-body .accordion .accordion-item .accordion-collapse .accordion-body::-webkit-scrollbar-thumb {
-  background: #888 !important;
-  border-radius: 10px !important; 
-}
-
-.help-component .help-body .accordion .accordion-item .accordion-collapse .accordion-body::-webkit-scrollbar-thumb:hover {
-  background: #555 !important; 
-}
-
-/* Custom Scrollbar Styles for Firefox */
-.help-component .help-body .accordion .accordion-item .accordion-collapse .accordion-body {
-  scrollbar-width: thin !important; 
-  scrollbar-color: #888 #f1f1f1 !important; 
-}

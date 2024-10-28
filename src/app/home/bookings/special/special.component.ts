@@ -50,8 +50,8 @@ export class SpecialComponent {
   bookingData: any = {
     name: '',
     unitType: '',
-    fromTime: '',
-    toTime: '',
+    fromTime: { hour: 0, minute: 0 },
+    toTime: { hour: 0, minute: 0 },
     cityName: '',
     address: '',
     additionalLabour: null,

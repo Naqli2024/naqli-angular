@@ -3,15 +3,16 @@ import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { OpenGetEstimateComponent } from './open-get-estimate/open-get-estimate.component';
 import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, OpenGetEstimateComponent],
+  imports: [CommonModule, RouterModule, OpenGetEstimateComponent, TranslateModule],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
-  constructor(private modalService: NgbModal) {}
+  constructor(private modalService: NgbModal, private translateService: TranslateService) {}
 
   items = [
     {

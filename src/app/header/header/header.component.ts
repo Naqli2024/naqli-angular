@@ -8,6 +8,7 @@ import { NotificationService } from '../../../services/admin/notification.servic
 import { MatBadgeModule } from '@angular/material/badge';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { LanguageService } from '../../../services/language.service';
 
 export interface User {
   authToken: string;
@@ -41,9 +42,8 @@ export class HeaderComponent  implements OnInit{
   partnerName: string | null = '';
   notifications: any[] = [];
   notificationCount: number = 0;
-  selectedLanguage: string = 'English';
-  languages = ['en', 'ar', 'hi'];
-  private translateService = inject(TranslateService);
+  selectedLanguage: string = 'en';
+  private languageService = inject(LanguageService);
 
   constructor(
     private modalService: NgbModal,
@@ -56,13 +56,7 @@ export class HeaderComponent  implements OnInit{
   ngOnInit(): void {
     this.updateUserState();
     this.getNotificationById();
-    const defaultLanguage  = 'en';
-    this.translateService.setDefaultLang(defaultLanguage);
-    this.translateService.use(defaultLanguage);
-  }
-
-  changeLanguage(lang: string) {
-    this.translateService.use(lang);
+    this.selectedLanguage = localStorage.getItem('language') || 'en';
   }
 
   getNotificationById() {
@@ -137,8 +131,8 @@ export class HeaderComponent  implements OnInit{
   }
 
   selectLanguage(language: string) {
-    this.translateService.use(language);
     this.selectedLanguage = language;
+    this.languageService.changeLanguage(language);
     this.isDropdownOpen = false;
   }
 
@@ -156,7 +150,7 @@ export class HeaderComponent  implements OnInit{
       });
     } else if (currentRoute.includes('/home/partner')) {
       this.router.navigate(['home/partner/login']);
-      return; // Exit the function if navigating
+      return; 
     }
 
     if (modalRef) {

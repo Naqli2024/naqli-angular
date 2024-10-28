@@ -14,6 +14,7 @@ import { GoogleMapsService } from '../../../../services/googlemap.service';
 import { MapService } from '../../../../services/map.service';
 import { User } from '../../../../models/user.model';
 import { UserService } from '../../../../services/user.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bus-booking',
@@ -25,6 +26,7 @@ import { UserService } from '../../../../services/user.service';
     BookingModalComponent,
     MapComponent,
     NgbTimepickerModule,
+    TranslateModule
   ],
   templateUrl: './bus-booking.component.html',
   styleUrl: './bus-booking.component.css',
@@ -39,7 +41,7 @@ export class BusBookingComponent implements OnInit {
   bookingData: any = {
     name: '',
     unitType: '',
-    time: '',
+    time: { hour: 0, minute: 0 },
     date: '',
     productValue: '',
     pickup: '',

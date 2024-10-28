@@ -20,9 +20,17 @@
           Final Payout
         </button>
       </div>
-      <div class="table-container">
-        <table class="table" style="margin: 0px 0px !important">
-          <thead>
+      <div
+        class="table-container booking-manager-table"
+        style="max-height: 500px !important; overflow-y: auto !important"
+      >
+        <table
+          class="table table-responsive"
+          style="width: 100%; box-shadow: none !important; margin: 0px 0px"
+        >
+          <thead
+            style="position: sticky; top: 0; z-index: 1; background-color: #fff"
+          >
             <tr>
               <ng-container *ngIf="isInitialPayoutTab">
                 <th>User Name</th>
@@ -79,10 +87,15 @@
                 <td>{{ partners[booking.partner]?.partnerName }}</td>
                 <td>{{ booking.remainingBalance }} SAR</td>
                 <td>
-                  {{ booking.additionalCharges }} SAR 
+                  {{ booking.additionalCharges }} SAR
                   <span *ngIf="booking.additionalChargesReason.length > 0">
-                    (Reasons: 
-                    <ng-container *ngFor="let reason of booking.additionalChargesReason; let isLast = last">
+                    (Reasons:
+                    <ng-container
+                      *ngFor="
+                        let reason of booking.additionalChargesReason;
+                        let isLast = last
+                      "
+                    >
                       {{ reason }}<span *ngIf="!isLast">, </span>
                     </ng-container>
                     )
@@ -106,7 +119,7 @@
                       font-size: 13px;
                     "
                   >
-                  Pay: {{ booking.finalPayout }} SAR
+                    Pay: {{ booking.finalPayout }} SAR
                   </button>
                 </td>
               </ng-container>

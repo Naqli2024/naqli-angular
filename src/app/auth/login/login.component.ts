@@ -10,11 +10,12 @@ import { OtpVerificationComponent } from '../otp-verification/otp-verification.c
 import { UserService } from '../../../services/user.service';
 import { Router } from '@angular/router';
 import { User } from '../../../models/user.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ForgetPasswordComponent, FormsModule, ToastrModule],
+  imports: [CommonModule, ForgetPasswordComponent, FormsModule, ToastrModule, TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })

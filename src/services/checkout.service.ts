@@ -7,6 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class checkoutService {
   private apiUrl = 'https://naqli.onrender.com/api/checkout';
+  private baseUrl = 'http://localhost:4000/api';
+
 
   constructor(private http: HttpClient) {}
 
@@ -18,5 +20,19 @@ export class checkoutService {
       { token: stripeToken },
       { headers }
     );
+  }
+
+  createPayment(amount: number, paymentBrand: string): Observable<any> {
+    const body = {
+      amount: amount,
+      paymentBrand: paymentBrand
+    }
+    return this.http.post(`${this.baseUrl}/create-payment`, body);
+  }
+  
+  getPaymentStatus(checkoutId: string, paymentBrand: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/payment-status/${checkoutId}`, {
+      params: { paymentBrand },
+    });
   }
 }

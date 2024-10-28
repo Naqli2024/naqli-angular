@@ -119,7 +119,7 @@
   <div class="col-md-12 booking-history">
     <div class="table-container booking-manager-table" style="max-height: 360px !important; overflow-y: auto;">
       <table class="table" style="margin: 0px 0px !important; width: 100%; border-collapse: collapse;">
-        <thead>
+        <thead style="position: sticky; top: 0; z-index: 1; background-color: #fff">
           <tr class="trigger-booking-table">
             <th>Booking ID</th>
             <th>Mode</th>
@@ -170,11 +170,17 @@
                     class="payment-status-icon"
                   />
                   <img
-                    *ngSwitchCase="'Completed'"
-                    src="assets/images/payment-completed.svg"
-                    alt="Payment Completed"
-                    class="payment-status-icon"
-                  />
+                  *ngSwitchCase="'Completed'"
+                  src="assets/images/payment-completed.svg"
+                  alt="Payment Completed"
+                  class="payment-status-icon"
+                />
+                <img
+                  *ngSwitchCase="'Paid'"
+                  src="assets/images/payment-completed.svg"
+                  alt="Payment Completed"
+                  class="payment-status-icon"
+                />
                 </ng-container>
               </td>
             </tr>
