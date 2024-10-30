@@ -15,6 +15,7 @@ import { GoogleMapsService } from '../../../../services/googlemap.service';
 import { MapService } from '../../../../services/map.service';
 import { User } from '../../../../models/user.model';
 import { UserService } from '../../../../services/user.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface BookingData {
   name: string;
@@ -39,6 +40,7 @@ interface BookingData {
     BookingModalComponent,
     MapComponent,
     NgbTimepickerModule,
+    TranslateModule
   ],
   templateUrl: './equipment-booking.component.html',
   styleUrl: './equipment-booking.component.css',

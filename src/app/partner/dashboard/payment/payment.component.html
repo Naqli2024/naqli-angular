@@ -1,66 +1,67 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>Payment</h2>
+      <h2>{{ "Payment" | translate }}</h2>
     </div>
     <!-- <div *ngIf="bookings && bookings.length"> -->
-      <div *ngFor="let booking of bookings">
-        <div *ngIf="booking.remainingBalance != 0" class="payment-status">
-          <p>
-            Booking ID: <span>{{ booking._id }}</span>
-          </p>
-          <p>
-            Paid: <span>{{ booking.paymentAmount }}</span>
-          </p>
-          <p class="text-center">
-            Balance
-            <span>
-              <button
-                type="button"
-                class="btn btn-balance"
-                style="margin-top: 5px; padding: 5px 50px !important"
-              >
-                {{ booking.remainingBalance }}
-              </button>
-            </span>
-          </p>
-        </div>
+    <div *ngFor="let booking of bookings">
+      <div *ngIf="booking.remainingBalance != 0" class="payment-status">
+        <p>
+          Booking ID: <span>{{ booking._id }}</span>
+        </p>
+        <p>
+          {{ "paymentStatus.Paid" | translate }}:
+          <span>{{ booking.paymentAmount }}</span>
+        </p>
+        <p class="text-center">
+          {{ "terms.Balance" | translate }}
+          <span>
+            <button
+              type="button"
+              class="btn btn-balance"
+              style="margin-top: 5px; padding: 5px 50px !important"
+            >
+              {{ booking.remainingBalance }}
+            </button>
+          </span>
+        </p>
       </div>
-      <div
-        class="table-container booking-manager-table"
-        style="
-          max-height: 500px !important;
-          overflow-y: auto !important;
-          margin-top: 30px !important;
-        "
+    </div>
+    <div
+      class="table-container booking-manager-table"
+      style="
+        max-height: 500px !important;
+        overflow-y: auto !important;
+        margin-top: 30px !important;
+      "
+    >
+      <table
+        class="table"
+        style="box-shadow: none !important; margin: 0px 0px !important"
       >
-        <table
-          class="table"
-          style="box-shadow: none !important; margin: 0px 0px !important"
-        >
-          <thead>
-            <tr>
-              <th>Booked by</th>
-              <th>Booking Id</th>
-              <th>Mode</th>
-              <th>Date</th>
-              <th>Payment Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let booking of bookings">
-              <td *ngIf="users[booking.user]">
-                {{ users[booking.user]?.firstName }}
-                {{ users[booking.user]?.lastName }}
-              </td>
-              <td>{{ booking._id }}</td>
-              <td>{{ booking.unitType }}</td>
-              <td>{{ booking.date }}</td>
-              <td>{{ booking.paymentStatus }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <!-- </div> -->
+        <thead>
+          <tr>
+            <th>{{ "Booked by" | translate }}</th>
+            <th>Booking Id</th>
+            <th>{{ "Mode" | translate }}</th>
+            <th>{{ "terms.Date" | translate }}</th>
+            <th>{{ "terms.Payment Status" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of bookings">
+            <td *ngIf="users[booking.user]">
+              {{ users[booking.user]?.firstName }}
+              {{ users[booking.user]?.lastName }}
+            </td>
+            <td>{{ booking._id }}</td>
+            <td>{{ "unitTypes." + booking.unitType | translate }}</td>
+            <td>{{ booking.date }}</td>
+            <td>{{ ("paymentStatus." + booking.paymentStatus | translate) || booking.paymentStatus }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- </div> -->
   </div>
 </div>

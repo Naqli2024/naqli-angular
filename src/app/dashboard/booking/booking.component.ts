@@ -18,6 +18,7 @@ import { User } from '../../../models/user.model';
 import { LoginComponent } from '../../auth/login/login.component';
 import { ChangeDetectorRef } from '@angular/core';
 import { PaymentService } from '../../../services/payment.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface Vendor {
   name: string;
@@ -35,7 +36,7 @@ interface Vendor {
 @Component({
   selector: 'app-booking',
   standalone: true,
-  imports: [CommonModule, MapComponent],
+  imports: [CommonModule, MapComponent, TranslateModule],
   templateUrl: './booking.component.html',
   styleUrl: './booking.component.css',
 })
@@ -85,7 +86,8 @@ export class BookingComponent implements OnInit {
     private googleMapsService: GoogleMapsService,
     private userService: UserService,
     private paymentService: PaymentService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -810,5 +812,34 @@ export class BookingComponent implements OnInit {
 
   closePaymentOptions() {
     this.showPaymentOptions = false;
+  }
+
+  getTranslatedName(name: string): string {
+    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    for (let category of categories) {
+      const translationKey = `${category}.${name}`;
+      if (this.translate.instant(translationKey) !== translationKey) {
+        return this.translate.instant(translationKey);
+      }
+    }
+    return name; 
+  }
+
+  getTranslatedTypeName(unitSubClassificationName: string): string {
+    if (!unitSubClassificationName) {
+      return ''; 
+    }
+  
+    // Check if the type exists in typeNames
+    if (this.translate.instant('typeNames.' + unitSubClassificationName) !== 'typeNames.' + unitSubClassificationName) {
+      return 'typeNames.' + unitSubClassificationName;
+    }
+  
+    // Check if the type exists in equipmentTypeName
+    if (this.translate.instant('equipmentTypeName.' + unitSubClassificationName) !== 'equipmentTypeName.' + unitSubClassificationName) {
+      return 'equipmentTypeName.' + unitSubClassificationName;
+    }
+  
+    return ''; 
   }
 }

@@ -21,7 +21,12 @@
     "Bus": "बस",
     "Equipment": "उपकरण",
     "Special": "विशेष",
-    "Others": "अन्य"
+    "Others": "अन्य",
+    "vehicle": "वाहन",
+    "bus": "बस",
+    "equipment": "उपकरण",
+    "special": "विशेष",
+    "others": "अन्य"
   },
   "ESTIMATE": {
     "GET_ESTIMATE": "एक अनुमान प्राप्त करें"
@@ -51,7 +56,7 @@
     "CREATE_ACCOUNT": "खाता बनाएँ",
     "CANCEL": "रद्द करें",
     "TERMS_PRIVACY": "पंजीकरण पर क्लिक करके, आप",
-  "PRIVACY": "शर्तें और गोपनीयता नीति से सहमत होते हैं।",
+    "PRIVACY": "शर्तें और गोपनीयता नीति से सहमत होते हैं।",
     "ACCOUNT_TYPES": {
       "SINGLE_USER": "एकल उपयोगकर्ता",
       "SUPER_USER": "सुपर उपयोगकर्ता",
@@ -129,5 +134,255 @@
     "Steel": "इस्पात"
   },
   "availableBusUnits": "उपलब्ध बस इकाइयाँ",
-  "bus": "बस"
+  "bus": "बस",
+  "availableEquipmentUnits": "उपलब्ध उपकरण इकाइयाँ",
+  "getLocation": "स्थान प्राप्त करें",
+  "startingDate": "प्रारंभ तिथि",
+  "fromTime": "समय से",
+  "toTime": "समय तक",
+  "enterCityName": "शहर का नाम दर्ज करें",
+  "enterYourAddress": "कृपया अपना पता दर्ज करें",
+  "equipmentName": {
+    "Loaders": "लोडर",
+    "Excavator": "खुदाई करने वाली मशीन",
+    "Cranes": "क्रेन",
+    "Others": "अन्य"
+  },
+  "equipmentTypeName": {
+    "Back hoe": "बैक हो",
+    "Front hoe": "फ्रंट हो",
+    "Skid steer": "स्किड स्टीयर",
+    "Excavator": "खुदाई करने वाली मशीन",
+    "Crawler crane": "क्रॉलर क्रेन",
+    "Mobile crane": "मोबाइल क्रेन",
+    "Compactors": "कम्पेक्टर",
+    "Bulldozers": "बुलडोजर",
+    "Graders": "ग्रेडर्स",
+    "Dump truck": "डंप ट्रक",
+    "Forklift": "फोर्कलिफ्ट",
+    "Scissorlift": "कैंची लिफ्ट"
+  },
+  "availableSpecialUnits": "उपलब्ध विशेष / अन्य इकाइयाँ",
+  "specialOthers": "विशेष / अन्य",
+  "specialUnits": {
+    "Concrete Mixer": "कंक्रीट मिक्सर",
+    "Concrete Pump Truck": "कंक्रीट पंप ट्रक",
+    "Fuel Truck": "ईंधन ट्रक",
+    "Power Generators": "पावर जनरेटर",
+    "Lorry Crane": "लॉरी क्रेन"
+  },
+  "dashboardItems": {
+    "Booking": "बुकिंग",
+    "Booking History": "बुकिंग इतिहास",
+    "Payments": "भुगतान",
+    "Report": "रिपोर्ट",
+    "Help": "मदद",
+    "Dashboard": "डैशबोर्ड",
+    "Trigger Booking": "ट्रिगर बुकिंग",
+    "Booking Manager": "बुकिंग प्रबंधक",
+    "Overview": "अवलोकन",
+    "Support tickets": "समर्थन टिकट",
+    "User": "उपयोगकर्ता",
+    "Partner": "साझेदार",
+    "Payout": "भुगतान",
+    "Notification Management": "सूचना प्रबंधन",
+    "Naqlee User": "नकली उपयोगकर्ता",
+    "Commission": "कमीशन"
+  },
+  "support": {
+    "Report": "रिपोर्ट",
+    "We are available to assist you.": "हम आपकी सहायता के लिए उपलब्ध हैं।",
+    "To get assistance on your naqlee journey, Post in the forum or schedule a one-on-one meeting.": "अपने naqlee सफर में सहायता प्राप्त करने के लिए, फोरम में पोस्ट करें या एक-पर-एक बैठक निर्धारित करें।",
+    "Please fill out the ticket form below if you have any questions about billing or logistics.": "यदि आपके पास बिलिंग या लॉजिस्टिक्स के बारे में कोई प्रश्न हैं, तो कृपया नीचे दिए गए टिकट फॉर्म को भरें।",
+    "Submit a ticket": "टिकट सबमिट करें",
+    "You can reach us via email at": "आप हमें ईमेल पर संपर्क कर सकते हैं",
+    "if that would be more convenient for you.": "यदि यह आपके लिए अधिक सुविधाजनक होगा।",
+    "In either case, we try to reply to every communication within 1 working day.": "किसी भी स्थिति में, हम 1 कार्य दिवस के भीतर हर संचार का उत्तर देने की कोशिश करते हैं।",
+    "SUPPORT FAQS": "समर्थन सामान्य प्रश्न",
+    "Look no further if you are having trouble logging in and navigating our website or controlling your account information. Don't worry, our help docs are available for you even when our employees are asleep.": "यदि आपको लॉग इन करने और हमारी वेबसाइट पर नेविगेट करने या अपने खाते की जानकारी नियंत्रित करने में परेशानी हो रही है, तो और न देखें। चिंता मत करो, हमारी सहायता दस्तावेज़ आपके लिए उपलब्ध हैं, यहां तक कि जब हमारे कर्मचारी सो रहे हों।"
+  },
+  "terms": {
+    "Payment": "भुगतान",
+    "BookingID": "बुकिंग ID",
+    "Date": "तारीख",
+    "Unit Type": "यूनिट प्रकार",
+    "Payment Status": "भुगतान स्थिति",
+    "HalfPaid": "आधा भुगतान",
+    "NotPaid": "भुगतान नहीं",
+    "Paid": "भुगतान किया गया",
+    "Completed": "पूरा हुआ",
+    "Balance": "शेष राशि"
+  },
+  "unitTypes": {
+    "vehicle": "वाहन",
+    "bus": "बस",
+    "equipment": "उपकरण",
+    "special": "विशेष",
+    "others": "अन्य"
+  },
+  "paymentStatus": {
+    "HalfPaid": "आधा भुगतान",
+    "NotPaid": "नहीं चुकाया गया",
+    "Paid": "भुगतान किया गया",
+    "Completed": "पूर्ण"
+  },
+  "faq": {
+    "title": "अक्सर पूछे जाने वाले प्रश्न",
+    "questions": [
+      {
+        "question": "मैं आपकी वेबसाइट के माध्यम से वाहन कैसे बुक कर सकता हूँ?",
+        "answer": "वाहन बुक करने के लिए, जिस सेवा की आवश्यकता है उसे चुनें, तारीख और समय चुनें, उत्पाद का मूल्य दर्ज करें, आवश्यक अतिरिक्त श्रम निर्दिष्ट करें, और पिकअप और डिलीवरी स्थान प्रदान करें। आवश्यक जानकारी भरने के बाद, अपने बुकिंग अनुरोध को हमारे साझेदारों से उद्धरण प्राप्त करने के लिए सबमिट करें।"
+      },
+      {
+        "question": "बुकिंग के बाद उद्धरण प्राप्त करने में कितना समय लगता है?",
+        "answer": "एक बार बुकिंग अनुरोध सबमिट हो जाने के बाद, हमारा मॉड्यूल 5 सेकंड के भीतर साझेदारों से उद्धरण प्राप्त करेगा। आपको चुनने के लिए 3 सबसे कम मूल्य मिलेंगे।"
+      },
+      {
+        "question": "क्या मैं अपने पसंदीदा विक्रेता का चयन कर सकता हूँ?",
+        "answer": "हाँ! उद्धरण प्राप्त करने के बाद, आप अपने बजट और आवश्यकताओं के अनुसार विक्रेता का चयन कर सकते हैं।"
+      },
+      {
+        "question": "आप कौन-कौन से भुगतान विकल्प प्रदान करते हैं?",
+        "answer": "आप पूरा राशि एकमुश्त या आंशिक अग्रिम भुगतान कर सकते हैं। भुगतान विधियों में क्रेडिट/डेबिट कार्ड और हमारी साइट पर उपलब्ध अन्य सुरक्षित विकल्प शामिल हैं।"
+      },
+      {
+        "question": "मैं अपने ऑर्डर को कैसे ट्रैक कर सकता हूँ?",
+        "answer": "बुकिंग की पुष्टि हो जाने के बाद और ऑर्डर शुरू हो जाने पर, आप 'बुकिंग' सेक्शन में अपने वाहन का लाइव लोकेशन देख सकते हैं। आपको विक्रेता का नाम, ऑपरेटर का नाम, चयनित वाहन का प्रकार, साथ ही बुकिंग की स्थिति और भुगतान की स्थिति जैसी विस्तृत जानकारी मिलेगी।"
+      },
+      {
+        "question": "क्या मुझे सूचित किया जाएगा जब मेरा ड्राइवर आ रहा हो?",
+        "answer": "हाँ, जब ड्राइवर आपके स्थान की ओर बढ़ता है तो वह आपको सूचित करेगा, ताकि आपको उनके आगमन समय की जानकारी हो।"
+      },
+      {
+        "question": "मुझे क्या करना चाहिए अगर मुझे अपनी बुकिंग रद्द करनी हो?",
+        "answer": "अगर आपको अपनी बुकिंग रद्द करनी है, तो आप विक्रेता चयन प्रक्रिया के दौरान ऊपर दाईं ओर स्थित रद्द करें आइकन पर क्लिक करके इसे आसानी से कर सकते हैं। रद्दीकरण पूरा करने के लिए निर्देशों का पालन करें।"
+      },
+      {
+        "question": "क्या कोई अतिरिक्त शुल्क है जिसकी मुझे जानकारी होनी चाहिए?",
+        "answer": "हालांकि हम स्पष्ट मूल्य निर्धारण का लक्ष्य रखते हैं, विशेष सेवाओं या परिस्थितियों के आधार पर अतिरिक्त शुल्क लागू हो सकते हैं। यह आपको मिलने वाले उद्धरण में स्पष्ट किया जाएगा।"
+      },
+      {
+        "question": "अगर मेरी गाड़ी समय पर नहीं पहुंची तो क्या होगा?",
+        "answer": "यदि आपकी गाड़ी देर से आती है, तो कृपया हमारी समर्थन टीम से संपर्क करें। हम स्थिति को ट्रैक करने और समस्याओं को हल करने में आपकी मदद करेंगे।"
+      },
+      {
+        "question": "ग्राहक समर्थन से कैसे संपर्क करें?",
+        "answer": "आप हमारी वेबसाइट पर रिपोर्ट सेक्शन के माध्यम से या हमें ईमेल करके हमारे ग्राहक सहायता टीम से संपर्क कर सकते हैं। हम 24 घंटे आपकी सहायता के लिए उपलब्ध हैं।"
+      }
+    ]
+  },
+  "Request Support": "समर्थन अनुरोध करें",
+  "Having trouble logging in, accessing your account or browsing the resources? Utilize this form to report concerns to the group managing the personalized experience logistics of Naqlee.": "लॉगिन करने, अपने खाते का उपयोग करने या संसाधनों को ब्राउज़ करने में परेशानी हो रही है? Naqlee के व्यक्तिगत अनुभव लॉजिस्टिक्स को प्रबंधित करने वाले समूह को चिंताओं की रिपोर्ट करने के लिए इस फॉर्म का उपयोग करें।",
+  "Please feel free to contact us at": "कृपया हमसे संपर्क करने में संकोच न करें",
+  "if you have any more questions.": "अगर आपके पास और प्रश्न हैं।",
+  "P.S. Only requests from member of Naqlee will receive a response. Please make sure the email address you enter matches the one you used to login to Naqlee.": "पी.एस. केवल Naqlee के सदस्यों द्वारा किए गए अनुरोधों का उत्तर दिया जाएगा। कृपया सुनिश्चित करें कि आप जो ईमेल पता दर्ज करते हैं, वह उस पते से मेल खाता है जिसका आपने Naqlee में लॉगिन करने के लिए उपयोग किया था।",
+  "Enter your Email address": "अपना ईमेल पता दर्ज करें",
+  "What's taking place, and what do you hope to see happen? Please be specific so that we can address this as soon as possible.": "क्या हो रहा है, और आप क्या देखना चाहते हैं? कृपया स्पष्ट रहें ताकि हम इसे जल्द से जल्द संबोधित कर सकें।",
+  "Any illustrative or Supporting Documentation (Optional)": "कोई चित्रात्मक या सहायक दस्तावेज़ (वैकल्पिक)",
+  "Drag and drop file here": "यहाँ फ़ाइल खींचें और छोड़ें",
+  "File:": "फ़ाइल:",
+  "Submit": "प्रस्तुत करें",
+  "Write message here": "यहाँ संदेश लिखें",
+  "Booking History": "बुकिंग इतिहास",
+  "Show Route": "रूट दिखाएँ",
+  "Load": "लोड",
+  "Size": "आकार",
+  "Cancel Request": "अनुरोध रद्द करें",
+  "Vendor Name": "विक्रेता का नाम",
+  "Operator Name": "ऑपरेटर का नाम",
+  "Operator Mobile": "ऑपरेटर मोबाइल",
+  "Unit": "इकाई",
+  "Booking Status": "बुकिंग स्थिति",
+  "Pending Amount": "बकाया राशि",
+  "Booking Successful!": "बुकिंग सफल!",
+  "No active bookings available. You can create a new booking !!": "कोई सक्रिय बुकिंग उपलब्ध नहीं है। आप एक नई बुकिंग कर सकते हैं !!",
+  "Create Booking": "बुकिंग बनाएं",
+  "Are you sure you want to cancel this booking?": "क्या आप वाकई इस बुकिंग को रद्द करना चाहते हैं?",
+  "Yes": "हाँ",
+  "No": "नहीं",
+  "Booking Generated": "बुकिंग उत्पन्न हुई",
+  "status of booking": {
+    "Yet to start": "अभी शुरू होना बाकी है",
+    "Running": "चल रही है",
+    "Completed": "पूर्ण"
+  },
+  "Sign up now": "अब साइन अप करें",
+  "Naqli Advantage": "नकली लाभ",
+  "Regular Trips": "नियमित यात्राएं",
+  "Better Earning": "बेहतर कमाई",
+  "On Time Payment": "समय पर भुगतान",
+  "With our growing presence across multiple cities, we always have our hands full! This means you will never run out of trips.": "हमारे बढ़ते उपस्थिति के साथ कई शहरों में, हमारे पास हमेशा हाथ भरे होते हैं! इसका मतलब है कि आपको कभी भी यात्राओं की कमी नहीं होगी.",
+  "Each more by partnering with the best! Regular trips and efficient service can grow your earnings!": "सर्वश्रेष्ठ के साथ साझेदारी करके अधिक कमाएँ! नियमित यात्राएँ और कुशल सेवा आपकी कमाई को बढ़ा सकते हैं!",
+  "Be assured to receive all payments on time & get the best in class support.": "सुनिश्चित रहें कि सभी भुगतान समय पर मिलेंगे और आपको सर्वश्रेष्ठ समर्थन मिलेगा.",
+  "Join Us": "हमसे जुड़ें",
+  "Enterprise": "उद्यम",
+  "Multiple Units": "कई इकाइयाँ",
+  "Single Unit + Operator": "एकल इकाई + ऑपरेटर",
+  "Operator": "ऑपरेटर",
+  "Partner Name": "साझेदार का नाम",
+  "Mobile No": "मोबाइल नंबर",
+  "Email": "ईमेल",
+  "Password": "पासवर्ड",
+  "Enter your Name": "अपना नाम दर्ज करें",
+  "Enter your Mobile Number": "अपना मोबाइल नंबर दर्ज करें",
+  "Enter your Email": "अपना ईमेल दर्ज करें",
+  "Enter your Password": "अपना पासवर्ड दर्ज करें",
+  "Register": "रजिस्टर करें",
+  "Owner": "मालिक",
+  "Unit Classification": "यूनिट वर्गीकरण",
+  "Select Classification": "वर्गीकरण चुनें",
+  "Sub Classification": "उप वर्गीकरण",
+  "Select Sub Classification": "उप वर्गीकरण चुनें",
+  "Plate Information": "प्लेट जानकारी",
+  "Istimara No": "इस्तिमारा नंबर",
+  "Istimara Card": "इस्तिमारा कार्ड",
+  "Picture of Vehicle": "वाहन की तस्वीर",
+  "First Name": "पहला नाम",
+  "Last Name": "अंतिम नाम",
+  "Email ID": "ईमेल आईडी",
+  "Confirm Password": "पासवर्ड की पुष्टि करें",
+  "Iqama No": "इकामा नंबर",
+  "Date of Birth": "जन्म तिथि",
+  "Panel Information": "पैनल जानकारी",
+  "Driving License": "ड्राइविंग लाइसेंस",
+  "Aramco License": "अरामको लाइसेंस",
+  "National ID": "राष्ट्रीय आईडी",
+  "Partner Name/ID": "भागीदार नाम/आईडी",
+  "Booked": "बुक किया गया",
+  "Booking No": "बुकिंग संख्या",
+  "Additional Labour": "अतिरिक्त श्रम",
+  "Quote Price": "उद्धरण मूल्य",
+  "Time": "समय",
+  "Mode": "मोड",
+  "Location": "स्थान",
+  "Action": "कार्य",
+  "No Booking Requests found": "कोई बुकिंग अनुरोध नहीं मिला",
+  "Terminate": "समाप्त करें",
+  "Request Payment": "भुगतान का अनुरोध करें",
+  "Payment Successful!!": "भुगतान सफल!!",
+  "Additional Charges": "अतिरिक्त शुल्क",
+  "User id": "उपयोगकर्ता आईडी",
+  "User name": "उपयोगकर्ता नाम",
+  "Booked by": "द्वारा बुक किया गया",
+  "status": {
+    "All": "सभी",
+    "Pending": "लंबित",
+    "Running": "चल रहा है",
+    "Completed": "पूर्ण",
+    "Status": "स्थिति",
+    "Payment Made": "भुगतान किया गया",
+    "Pending Payment": "लंबित भुगतान"
+  },
+  "BookingWithNumber": "बुकिंग {{number}}",
+  "UnitNotAssigned": "यूनिट असाइन नहीं किया गया है। कृपया प्रतीक्षा करें..!",
+  "Edit": "संपादित करें",
+  "BalanceAmount": "शेष राशि",
+  "Pay": "भुगतान करें",
+  "NewBooking": "नई बुकिंग",
+  "Save": "सहेजें",
+  "ContractType": "अनुबंध प्रकार",
+  "Contract": "अनुबंध",
+  "Id": "पहचान",
+  "PayNow": "अब भुगतान करें",
+  "Delete": "हटाएं"
 }

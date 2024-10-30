@@ -14,11 +14,12 @@ import { PartnerService } from '../../../../../services/partner/partner.service'
 import { Booking } from '../../../../../models/booking.model';
 import { MapService } from '../../../../../services/map.service';
 import { GoogleMapsService } from '../../../../../services/googlemap.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payment-confirmation',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './payment-confirmation.component.html',
   styleUrl: './payment-confirmation.component.css',
 })

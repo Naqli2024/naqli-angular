@@ -8,19 +8,19 @@
         <table class="table" style="margin: 0px 0px !important">
           <thead>
             <tr class="trigger-booking-table">
-              <th>Booking {{ i + 1 }}</th>
-              <th>Id: {{ booking._id }}</th>
+              <th>{{ "BookingWithNumber" | translate : { number: i + 1 } }}</th>
+              <th>{{ "Id" | translate }}: {{ booking._id }}</th>
             </tr>
           </thead>
           <tbody>
             <tr class="trigger-booking-table">
               <td class="trigger-booking-td">
                 <div class="trigger-booking-td-1">
-                  <p class="p1">{{ booking.unitType }}</p>
+                  <p class="p1">{{ 'unitTypes.' + booking.unitType | translate }}</p>
                   <p class="p2">
                     {{
                       unitDetails[booking._id] ||
-                        "Unit not assigned. Please wait..!"
+                        ("UnitNotAssigned" | translate)
                     }}
                   </p>
                 </div>
@@ -41,14 +41,14 @@
                   style="width: 150px"
                   (click)="openEditModal(booking)"
                 >
-                  Edit
+                  {{"Edit"|translate}}
                 </button>
               </td>
             </tr>
             <tr class="trigger-booking-table">
               <td class="trigger-booking-td">
                 <div class="trigger-booking-td-1">
-                  <p class="p1">Balance Amount</p>
+                  <p class="p1">{{"BalanceAmount"|translate}}</p>
                   <p class="p2">{{ booking.date }}</p>
                 </div>
               </td>
@@ -67,7 +67,7 @@
                     )
                   "
                 >
-                  Pay: {{ booking.remainingBalance }} SAR
+                  {{"Pay"|translate}}: {{ booking.remainingBalance }} SAR
                 </button>
               </td>
             </tr>
@@ -79,10 +79,16 @@
 
   <div class="col-md-2 booking-history">
     <div class="table-container booking-manager-table">
-      <table class="table" style="margin: 0px 0px !important; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+      <table
+        class="table"
+        style="
+          margin: 0px 0px !important;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        "
+      >
         <thead>
           <tr class="trigger-booking-table">
-            <th style="text-align: center !important">New Booking</th>
+            <th style="text-align: center !important">{{"NewBooking" |translate}}</th>
           </tr>
         </thead>
         <tbody>
@@ -117,42 +123,57 @@
 
 <div class="row booking-manager-container">
   <div class="col-md-12 booking-history">
-    <div class="table-container booking-manager-table" style="max-height: 360px !important; overflow-y: auto;">
-      <table class="table" style="margin: 0px 0px !important; width: 100%; border-collapse: collapse;">
-        <thead style="position: sticky; top: 0; z-index: 1; background-color: #fff">
+    <div
+      class="table-container booking-manager-table"
+      style="max-height: 360px !important; overflow-y: auto"
+    >
+      <table
+        class="table"
+        style="
+          margin: 0px 0px !important;
+          width: 100%;
+          border-collapse: collapse;
+        "
+      >
+        <thead
+          style="position: sticky; top: 0; z-index: 1; background-color: #fff"
+        >
           <tr class="trigger-booking-table">
             <th>Booking ID</th>
-            <th>Mode</th>
-            <th>Vendor</th>
-            <th>Payment Status</th>
-            <th>Status</th>
+            <th>{{"Mode"|translate}}</th>
+            <th>{{"Vendor Name"|translate}}</th>
+            <th>{{"terms.Payment Status"|translate}}</th>
+            <th>{{"status.Status"|translate}}</th>
           </tr>
         </thead>
         <tbody>
           <ng-container>
             <tr class="trigger-booking-table" *ngFor="let booking of bookings">
               <td>{{ booking._id }}</td>
-              <td>{{ booking.unitType }}</td>
+              <td>{{ "unitTypes." + booking.unitType | translate}}</td>
               <td>
                 {{
                   booking.partner
-                    ? partnerDetails[booking.partner]?.partnerName || "Loading..."
+                    ? partnerDetails[booking.partner]?.partnerName ||
+                      "Loading..."
                     : "N/A"
                 }}
               </td>
               <td>
                 <span
                   [ngStyle]="{
-                    'background-color': getPaymentStatusColor(booking.paymentStatus),
+                    'background-color': getPaymentStatusColor(
+                      booking.paymentStatus
+                    ),
                     color: getPaymentTextColor(booking.paymentStatus),
-                    'padding': '5px 30px',
+                    padding: '5px 30px',
                     'border-radius': '15px',
                     'font-size': '15px',
-                    'display': 'block',
-                    'width': '130px'
+                    display: 'block',
+                    width: '130px'
                   }"
                 >
-                  {{ booking.paymentStatus }}
+                  {{ "paymentStatus." + booking.paymentStatus | translate }}
                 </span>
               </td>
               <td>
@@ -170,17 +191,17 @@
                     class="payment-status-icon"
                   />
                   <img
-                  *ngSwitchCase="'Completed'"
-                  src="assets/images/payment-completed.svg"
-                  alt="Payment Completed"
-                  class="payment-status-icon"
-                />
-                <img
-                  *ngSwitchCase="'Paid'"
-                  src="assets/images/payment-completed.svg"
-                  alt="Payment Completed"
-                  class="payment-status-icon"
-                />
+                    *ngSwitchCase="'Completed'"
+                    src="assets/images/payment-completed.svg"
+                    alt="Payment Completed"
+                    class="payment-status-icon"
+                  />
+                  <img
+                    *ngSwitchCase="'Paid'"
+                    src="assets/images/payment-completed.svg"
+                    alt="Payment Completed"
+                    class="payment-status-icon"
+                  />
                 </ng-container>
               </td>
             </tr>

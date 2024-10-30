@@ -8,11 +8,12 @@ import { PartnerService } from '../../../../services/partner/partner.service';
 import { BookingService } from '../../../../services/booking.service';
 import { forkJoin } from 'rxjs';
 import { UserService } from '../../../../services/user.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payment',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.css'
 })

@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>Payment</h2>
+      <h2>{{ "terms.Payment" | translate }}</h2>
     </div>
     <div *ngFor="let booking of bookings">
       <div
@@ -9,13 +9,15 @@
         *ngIf="booking && booking.remainingBalance !== 0"
       >
         <p>
-          Booking ID: <span>{{ booking._id }}</span>
+          {{ "terms.BookingID" | translate }}: <span>{{ booking._id }}</span>
         </p>
         <p>
-          Paid: <span>{{ booking.paymentAmount }}</span>
+          {{ "terms.Paid" | translate }}:
+          <span>{{ booking.paymentAmount }} SAR</span>
         </p>
         <p class="text-center">
-          Balance<span
+          {{ "terms.Balance" | translate
+          }}<span
             ><button
               type="button"
               class="btn btn-balance"
@@ -30,7 +32,7 @@
                 )
               "
             >
-              {{ booking.remainingBalance }}
+              {{ booking.remainingBalance }} SAR
             </button></span
           >
         </p>
@@ -48,22 +50,24 @@
         class="table"
         style="box-shadow: none !important; margin: 0px 0px !important"
       >
-        <thead style="position: sticky; top: 0; z-index: 1; background-color: #fff">
+        <thead
+          style="position: sticky; top: 0; z-index: 1; background-color: #fff"
+        >
           <tr>
-            <th>Booking ID</th>
-            <th>Date</th>
-            <th>Unit Type</th>
-            <th>Payment</th>
-            <th>Payment Status</th>
+            <th>{{ "terms.BookingID" | translate }}</th>
+            <th>{{ "terms.Date" | translate }}</th>
+            <th>{{ "terms.Unit Type" | translate }}</th>
+            <th>{{ "terms.Payment" | translate }}</th>
+            <th>{{ "terms.Payment Status" | translate }}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let booking of bookings">
             <td>{{ booking._id }}</td>
             <td>{{ booking.date }}</td>
-            <td>{{ booking.name }}</td>
-            <td>{{ booking.paymentAmount }}</td>
-            <td>{{ booking.paymentStatus }}</td>
+            <td>{{ "unitTypes." + booking.name | translate }}</td>
+            <td>{{ booking.paymentAmount }} SAR</td>
+            <td>{{ "paymentStatus." + booking.paymentStatus | translate }}</td>
           </tr>
         </tbody>
       </table>

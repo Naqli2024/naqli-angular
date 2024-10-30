@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>Payment</h2>
+      <h2>{{ "dashboardItems.Payments" | translate }}</h2>
     </div>
     <div class="dropdown-container" style="width: 100%; margin: 15px 0px">
       <select
@@ -10,39 +10,89 @@
         [(ngModel)]="selectedFilter"
         (change)="onFilterChange($event)"
       >
-        <option>All</option>
-        <option>Pending</option>
-        <option>Running</option>
-        <option>Completed</option>
+        <option value="status.All">{{ "status.All" | translate }}</option>
+        <option value="status.Pending">
+          {{ "status.Pending" | translate }}
+        </option>
+        <option value="status.Running">
+          {{ "status.Running" | translate }}
+        </option>
+        <option value="status.Completed">
+          {{ "status.Completed" | translate }}
+        </option>
       </select>
     </div>
-    <div class="table-container booking-manager-table" style="max-height: 460px; overflow-y: auto;">
-      <table class="table" style="margin: 0px 0px !important;">
-        <thead>
+    <div
+      class="table-container booking-manager-table"
+      style="max-height: 460px; overflow-y: auto"
+    >
+      <table class="table" style="margin: 0px 0px !important">
+        <thead
+          style="position: sticky; top: 0; z-index: 1; background-color: #fff"
+        >
           <tr class="trigger-booking-table">
             <th class="no-scroll-header">Booking ID</th>
-            <th class="no-scroll-header">Mode</th>
-            <th class="no-scroll-header">Vendor</th>
-            <th class="no-scroll-header">Status</th>
-            <th class="no-scroll-header">Payment Made</th>
-            <th class="no-scroll-header">Pending Payment</th>
+            <th class="no-scroll-header">{{ "Mode" | translate }}</th>
+            <th class="no-scroll-header">{{ "Vendor Name" | translate }}</th>
+            <th class="no-scroll-header">{{ "status.Status" | translate }}</th>
+            <th class="no-scroll-header">
+              {{ "status.Payment Made" | translate }}
+            </th>
+            <th class="no-scroll-header">
+              {{ "status.Pending Payment" | translate }}
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr class="trigger-booking-table" *ngFor="let booking of filteredBookings">
+          <tr
+            class="trigger-booking-table"
+            *ngFor="let booking of filteredBookings"
+          >
             <td>{{ booking._id }}</td>
-            <td>{{ booking.unitType }}</td>
-            <td>{{ booking.partner ? partnerDetails[booking.partner]?.partnerName || 'Loading...' : 'N/A' }}</td>
+            <td>{{ "ITEMS." + booking.unitType | translate }}</td>
+            <td>
+              {{
+                booking.partner
+                  ? partnerDetails[booking.partner]?.partnerName || "Loading..."
+                  : "N/A"
+              }}
+            </td>
             <td>
               <ng-container>
-                <img *ngIf="booking.paymentStatus === 'HalfPaid' && booking.bookingStatus !== 'Completed'" src="assets/images/halfpaid.svg" alt="Half Paid" class="payment-status-icon" />
-                <img *ngIf="booking.paymentStatus === 'HalfPaid' && booking.bookingStatus === 'Completed'" src="assets/images/pending payment.svg" alt="Pending Payment" class="payment-status-icon" />
-                <img *ngIf="booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid'" src="assets/images/payment-completed.svg" alt="Payment Completed" class="payment-status-icon" />
+                <img
+                  *ngIf="
+                    booking.paymentStatus === 'HalfPaid' &&
+                    booking.bookingStatus !== 'Completed'
+                  "
+                  src="assets/images/halfpaid.svg"
+                  alt="Half Paid"
+                  class="payment-status-icon"
+                />
+                <img
+                  *ngIf="
+                    booking.paymentStatus === 'HalfPaid' &&
+                    booking.bookingStatus === 'Completed'
+                  "
+                  src="assets/images/pending payment.svg"
+                  alt="Pending Payment"
+                  class="payment-status-icon"
+                />
+                <img
+                  *ngIf="
+                    booking.paymentStatus === 'Completed' ||
+                    booking.paymentStatus === 'Paid'
+                  "
+                  src="assets/images/payment-completed.svg"
+                  alt="Payment Completed"
+                  class="payment-status-icon"
+                />
               </ng-container>
             </td>
             <td>{{ booking.paymentAmount }} SAR</td>
             <td>
-              <ng-container *ngIf="booking.remainingBalance > 0; else noPaymentNeeded">
+              <ng-container
+                *ngIf="booking.remainingBalance > 0; else noPaymentNeeded"
+              >
                 <!-- <button type="button" class="btn btn-payNow" (click)="makePayment($event, booking.remainingBalance || 0, 'Completed', booking.partner, booking._id)">
                   Pay {{ booking.remainingBalance }} SAR
                 </button> -->

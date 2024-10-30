@@ -8,12 +8,13 @@ import { ToastrService } from 'ngx-toastr';
 import { PartnerService } from '../../../services/partner/partner.service';
 import { FormsModule } from '@angular/forms';
 import { CancelBookingModalComponent } from './cancel-booking-modal/cancel-booking-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-trigger-booking',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './trigger-booking.component.html',
   styleUrl: './trigger-booking.component.css',
 })

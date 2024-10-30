@@ -10,11 +10,12 @@
       </div>
       <div class="col-md-6 col-sm-12">
         <div class="login-form">
-          <h2>Login</h2>
+          <h2>{{ "Login" | translate }}</h2>
           <form (ngSubmit)="login()">
             <div class="mb-3">
               <label for="emailOrMobile" class="form-label"
-                >Mobile No / Email</label
+                >{{ "Mobile No" | translate }} /
+                {{ "Email" | translate }}</label
               >
               <input
                 type="email"
@@ -26,7 +27,9 @@
               />
             </div>
             <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
+              <label for="password" class="form-label">{{
+                "Password" | translate
+              }}</label>
               <div class="input-with-icon" style="position: relative">
                 <input
                   [type]="passwordVisible ? 'text' : 'password'"
@@ -50,19 +53,24 @@
               </div>
             </div>
             <div class="buttons">
-              <button type="submit" class="btn btn-primary">Login</button>
+              <button type="submit" class="btn btn-primary">
+                {{ "Login" | translate }}
+              </button>
               <a
                 href="#"
                 class="forgot-password"
                 (click)="openForgetPasswordModal($event)"
-                >Forgot Password?</a
+                >{{ "AUTH.FORGOT_PASSWORD" | translate }}</a
               >
             </div>
             <div class="mt-3 form-label">
               <p>
-                Don't have an account?
-                <a href="#" (click)="toggleForm($event)" style="color: #6a66d1"
-                  >Create One!</a
+                {{ "AUTH.NO_ACCOUNT" | translate }}
+                <a
+                  href="#"
+                  (click)="toggleForm($event)"
+                  style="color: #6a66d1"
+                  >{{ "AUTH.CREATE_ONE" | translate }}</a
                 >
               </p>
             </div>

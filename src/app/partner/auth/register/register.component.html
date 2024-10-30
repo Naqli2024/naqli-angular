@@ -2,7 +2,7 @@
   <div class="custom-slider"></div>
   <div class="container booking-container partner-register-container">
     <div class="row">
-      <h2 class="form-title">Join Us</h2>
+      <h2 class="form-title">{{ "Join Us" | translate }}</h2>
 
       <form (ngSubmit)="register()" #registerForm="ngForm">
         <div class="form-group">
@@ -16,9 +16,9 @@
                 [(ngModel)]="formData.type"
                 value="enterprise"
               />
-              <label class="form-check-label" for="enterprise"
-                >Enterprise</label
-              >
+              <label class="form-check-label" for="enterprise">{{
+                "Enterprise" | translate
+              }}</label>
             </div>
             <div class="col form-check">
               <input
@@ -29,9 +29,9 @@
                 [(ngModel)]="formData.type"
                 value="multipleUnits"
               />
-              <label class="form-check-label" for="multipleUnits"
-                >Multiple Units</label
-              >
+              <label class="form-check-label" for="multipleUnits">{{
+                "Multiple Units" | translate
+              }}</label>
             </div>
             <div class="col form-check">
               <input
@@ -42,9 +42,9 @@
                 [(ngModel)]="formData.type"
                 value="singleUnit + operator"
               />
-              <label class="form-check-label" for="singleUnitOperator"
-                >Single Unit + Operator</label
-              >
+              <label class="form-check-label" for="singleUnitOperator">{{
+                "Single Unit + Operator" | translate
+              }}</label>
             </div>
             <div class="col form-check">
               <input
@@ -55,55 +55,57 @@
                 [(ngModel)]="formData.type"
                 value="operator"
               />
-              <label class="form-check-label" for="operator">Operator</label>
+              <label class="form-check-label" for="operator">{{
+                "Operator" | translate
+              }}</label>
             </div>
           </div>
         </div>
         <div class="partner-register">
-          <label for="partnerName">Partner Name</label>
+          <label for="partnerName">{{ "Partner Name" | translate }}</label>
           <input
             type="text"
             class="form-control"
             id="partnerName"
             name="partnerName"
-            placeholder="Enter your Name"
+            placeholder="{{ 'Enter your Name' | translate }}"
             [(ngModel)]="formData.partnerName"
             required
           />
         </div>
         <div class="partner-register">
-          <label for="mobileNo">Mobile No</label>
+          <label for="mobileNo">{{ "Mobile No" | translate }}</label>
           <input
             type="text"
             class="form-control"
             id="mobileNo"
             name="mobileNo"
-            placeholder="Enter your Mobile Number"
+            placeholder="{{ 'Enter your Mobile Number' | translate }}"
             [(ngModel)]="formData.mobileNo"
             required
           />
         </div>
         <div class="partner-register">
-          <label for="email">Email</label>
+          <label for="email">{{ "Email" | translate }}</label>
           <input
             type="email"
             class="form-control"
             id="email"
             name="email"
-            placeholder="Enter your Email"
+            placeholder="{{ 'Enter your Email' | translate }}"
             [(ngModel)]="formData.email"
             required
           />
         </div>
         <div class="partner-register">
-          <label for="password">Password</label>
+          <label for="password">{{ "Password" | translate }}</label>
           <div class="input-with-icon" style="position: relative">
             <input
               [type]="passwordVisible ? 'text' : 'password'"
               class="form-control"
               id="password"
               name="password"
-              placeholder="Enter your Password"
+              placeholder="{{ 'Enter your Password' | translate }}"
               [(ngModel)]="formData.password"
               required
             />
@@ -127,7 +129,7 @@
             [disabled]="!registerForm.form.valid"
             style="margin-bottom: 20px !important"
           >
-            Register
+            {{ "Register" | translate }}
           </button>
         </div>
       </form>

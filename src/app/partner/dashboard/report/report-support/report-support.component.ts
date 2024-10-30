@@ -8,11 +8,12 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from '../../../../../services/user.service';
 import { PartnerService } from '../../../../../services/partner/partner.service';
 import { User } from '../../../../../models/user.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-report-support',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './report-support.component.html',
   styleUrl: './report-support.component.css',
 })

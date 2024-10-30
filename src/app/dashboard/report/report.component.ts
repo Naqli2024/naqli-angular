@@ -3,19 +3,20 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpinnerService } from '../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { ReportSupportComponent } from '../../partner/dashboard/report/report-support/report-support.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-report',
   standalone: true,
-  imports: [],
+  imports: [TranslateModule],
   templateUrl: './report.component.html',
-  styleUrl: './report.component.css'
+  styleUrl: './report.component.css',
 })
 export class ReportComponent {
   constructor(
     private modalService: NgbModal,
     private spinnerService: SpinnerService,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {}
 
   openBookingModal(): void {

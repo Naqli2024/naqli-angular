@@ -6,11 +6,12 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgOtpInputModule } from 'ng-otp-input';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgOtpInputModule],
+  imports: [CommonModule, FormsModule, NgOtpInputModule, TranslateModule],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css',
 })

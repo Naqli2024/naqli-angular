@@ -8,11 +8,12 @@ import { SpinnerService } from '../../../../services/spinner.service';
 import { AuthService } from '../../../../services/partner/auth.service';
 import { OtpVerificationComponent } from '../otp-verification/otp-verification.component';
 import { ForgetPasswordComponent } from '../forget-password/forget-password.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })

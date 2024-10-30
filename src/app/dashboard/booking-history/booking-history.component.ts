@@ -5,11 +5,12 @@ import { AuthService } from '../../../services/auth.service';
 import { Booking } from '../../../models/booking.model';
 import { CommonModule } from '@angular/common';
 import { SpinnerService } from '../../../services/spinner.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-booking-history',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './booking-history.component.html',
   styleUrl: './booking-history.component.css',
 })

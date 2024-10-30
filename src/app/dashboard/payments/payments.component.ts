@@ -8,11 +8,12 @@ import { SpinnerService } from '../../../services/spinner.service';
 import { environment } from '../../../environments/environment.prod';
 import { checkoutService } from '../../../services/checkout.service';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payments',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './payments.component.html',
   styleUrl: './payments.component.css',
 })

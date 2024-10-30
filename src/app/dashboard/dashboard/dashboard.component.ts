@@ -9,6 +9,7 @@ import { ReportComponent } from '../report/report.component';
 import { HelpComponent } from '../help/help.component';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +24,7 @@ import { User } from '../../../models/user.model';
     PaymentsComponent,
     ReportComponent,
     HelpComponent,
+    TranslateModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',

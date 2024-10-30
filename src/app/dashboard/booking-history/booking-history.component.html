@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>Booking History</h2>
+      <h2>{{"Booking History" | translate}}</h2>
     </div>
     <div
       class="table-container booking-manager-table"
@@ -17,17 +17,17 @@
       >
         <thead>
           <tr>
-            <th>Booking ID</th>
-            <th>Date</th>
-            <th>Unit Type</th>
-            <th>Payment</th>
+            <th>{{"terms.BookingID" | translate}}</th>
+            <th>{{"terms.Date" | translate}}</th>
+            <th>{{"terms.Unit Type" | translate}}</th>
+            <th>{{"terms.Payment"| translate}}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let booking of bookings">
             <td>{{ booking._id }}</td>
             <td>{{ booking.date }}</td>
-            <td>{{ booking.name }}</td>
+            <td>{{ "unitTypes." + booking.name | translate }}</td>
             <td>{{ booking.paymentStatus }}</td>
           </tr>
         </tbody>

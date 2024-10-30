@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>Booking</h2>
+      <h2>{{ "dashboardItems.Booking" | translate }}</h2>
     </div>
     <div
       class="table-container booking-manager-table"
@@ -19,15 +19,15 @@
           style="position: sticky; top: 0; z-index: 1; background-color: #fff"
         >
           <tr>
-            <th>Booked</th>
-            <th>Booking No</th>
-            <th>Additional Labour</th>
-            <th>Quote Price</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Mode</th>
-            <th>Location</th>
-            <th>Action</th>
+            <th>{{ "Booked" | translate }}</th>
+            <th>{{ "Booking No" | translate }}</th>
+            <th>{{ "Additional Labour" | translate }}</th>
+            <th>{{ "Quote Price" | translate }}</th>
+            <th>{{ "terms.Date" | translate }}</th>
+            <th>{{ "Time" | translate }}</th>
+            <th>{{ "Mode" | translate }}</th>
+            <th>{{ "Location" | translate }}</th>
+            <th>{{ "Action" | translate }}</th>
           </tr>
         </thead>
         <tbody *ngIf="bookings.length > 0">
@@ -124,7 +124,7 @@
                   "
                   style="margin-right: 5px"
                 >
-                  Send
+                  {{ "Send" | translate }}
                 </button>
                 <span
                   class="close-icon"
@@ -145,7 +145,7 @@
       </table>
     </div>
     <h6 *ngIf="bookings.length === 0" class="no-request text-center">
-      No Booking Requests found
+      {{ "No Booking Requests found" | translate }}
     </h6>
   </div>
 </div>

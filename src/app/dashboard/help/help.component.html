@@ -2,9 +2,9 @@
   <div class="col-md-12">
     <div class="help-component">
       <div class="help-body">
-        <h2 style="padding: 20px 0px;">FREQUENTLY ASKED QUESTIONS</h2>
+        <h2 style="padding: 20px 0px;">{{ 'faq.title' | translate }}</h2>
         <div class="accordion" id="faqAccordion">
-          <div *ngFor="let faq of faqs; let i = index" class="accordion-item">
+          <div *ngFor="let faq of (('faq.questions' | translate) || []); let i = index" class="accordion-item">
             <h2 class="accordion-header" id="heading{{ i }}">
               <button
                 class="accordion-button"

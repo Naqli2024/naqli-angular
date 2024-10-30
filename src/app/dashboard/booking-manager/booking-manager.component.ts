@@ -10,11 +10,12 @@ import { checkoutService } from '../../../services/checkout.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EditBookingModalComponent } from './edit-booking-modal/edit-booking-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-booking-manager',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './booking-manager.component.html',
   styleUrl: './booking-manager.component.css',
 })

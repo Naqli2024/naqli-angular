@@ -12,6 +12,7 @@ import { faEdit, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastrService } from 'ngx-toastr';
 import { SpinnerService } from '../../../../../services/spinner.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface FormData {
   type: string;
@@ -41,7 +42,7 @@ interface FormData {
 @Component({
   selector: 'app-operator',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, TranslateModule],
   templateUrl: './operator.component.html',
   styleUrl: './operator.component.css',
 })
@@ -68,7 +69,8 @@ export class OperatorComponent implements OnInit {
     private operatorService: OperatorService,
     private partnerService: PartnerService,
     private toastr: ToastrService,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -267,5 +269,16 @@ export class OperatorComponent implements OnInit {
   resetForm() {
     this.formData = this.initializeFormData();
     this.isSubmitEnabled = false;
+  }
+
+  getTranslatedName(name: string): string {
+    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    for (let category of categories) {
+      const translationKey = `${category}.${name}`;
+      if (this.translate.instant(translationKey) !== translationKey) {
+        return this.translate.instant(translationKey);
+      }
+    }
+    return name; 
   }
 }

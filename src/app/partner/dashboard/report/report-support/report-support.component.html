@@ -1,28 +1,33 @@
 <div class="row">
   <div class="col-md-12">
     <div class="request-support-body">
-      <h2>Request Support</h2>
+      <h2>{{ "Request Support" | translate }}</h2>
       <div class="request-support-body-p">
         <p>
-          Having trouble logging in, accessing your account or browsing the
-          resources? Utilize this form to report concerns to the group managing
-          the personalized experience logistics of Naqlee.
+          {{
+            "Having trouble logging in, accessing your account or browsing the resources? Utilize this form to report concerns to the group managing the personalized experience logistics of Naqlee."
+              | translate
+          }}
         </p>
         <p>
-          Please feel free to contact us at
-          <span>naqlee45&#64;gmail.com</span> if you have any more questions.
+          {{ "Please feel free to contact us at" | translate }}
+          <span>naqlee45&#64;gmail.com</span>
+          {{ "if you have any more questions." | translate }}
         </p>
         <p>
-          <b>P.S.</b> Only requests from member of Naqlee will receive a
-          response. Please make sure the email address you enter matches the one
-          you used to login to Naqlee.
+          {{
+            "P.S. Only requests from member of Naqlee will receive a response. Please make sure the email address you enter matches the one you used to login to Naqlee."
+              | translate
+          }}
         </p>
       </div>
-      
+
       <form (ngSubmit)="onSubmit(f)" #f="ngForm">
         <div class="form-row">
           <div class="form-group request-support-input">
-            <label for="email">Enter your Email address </label>
+            <label for="email">{{
+              "Enter your Email address" | translate
+            }}</label>
             <input
               type="text"
               class="form-control"
@@ -37,11 +42,13 @@
         </div>
         <div class="report-textarea">
           <p style="margin-bottom: 0px !important">
-            What's taking place, and what do you hope to see happen? Please be
-            specific so that we can address this as soon as possible.
+            {{
+              "What's taking place, and what do you hope to see happen? Please be specific so that we can address this as soon as possible."
+                | translate
+            }}
           </p>
           <textarea
-            placeholder="Write message here"
+            placeholder="{{ 'Write message here' | translate }}"
             class="message-body"
             [(ngModel)]="reportMessage"
             name="reportMessage"
@@ -51,14 +58,19 @@
         </div>
 
         <div class="drag-drop">
-          <p>Any illustrative or Supporting Documentation (Optional)</p>
+          <p>
+            {{
+              "Any illustrative or Supporting Documentation (Optional)"
+                | translate
+            }}
+          </p>
           <div
             class="drag-drop-zone"
             (drop)="onDrop($event)"
             (dragover)="onDragOver($event)"
             (dragleave)="onDragLeave($event)"
           >
-            <p *ngIf="!file">Drag and drop file here</p>
+            <p *ngIf="!file">{{ "Drag and drop file here" | translate }}</p>
             <p *ngIf="file">File: {{ file.name }}</p>
           </div>
         </div>
@@ -72,7 +84,7 @@
               border-radius: 10px !important;
             "
           >
-            Submit
+            {{ "Submit" | translate }}
           </button>
         </div>
       </form>

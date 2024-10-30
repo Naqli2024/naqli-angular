@@ -1,15 +1,19 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>Report</h2>
+      <h2>{{ "support.Report" | translate }}</h2>
     </div>
     <div class="report-container">
-      <h2>We are available to assist you.</h2>
+      <h2>{{ "support.We are available to assist you." | translate }}</h2>
       <p>
-        To get assistance on you naqlee journey,
-        <span>Post in the forum </span>or schedule a
-        <span>one-on-one meeting</span>. Please fill out the ticket form below
-        if you have any questions about billing or logistics.
+        {{
+          "support.To get assistance on your naqlee journey, Post in the forum or schedule a one-on-one meeting."
+            | translate
+        }}.
+        {{
+          "support.Please fill out the ticket form below if you have any questions about billing or logistics."
+            | translate
+        }}
       </p>
 
       <button
@@ -22,22 +26,26 @@
         "
         (click)="openBookingModal()"
       >
-        Submit a ticket
+        {{ "support.Submit a ticket" | translate }}
       </button>
 
       <p>
-        You can reach us via email at <span>naqlee45&#64;gmail.com</span> if that
-        would be more convenient for you. In either case, we try to reply to
-        every communication with 1 working days.
+        {{ "support.You can reach us via email at" | translate }}
+        <span>naqlee45&#64;gmail.com</span>
+        {{ "support.if that would be more convenient for you." | translate }}
+        {{
+          "support.In either case, we try to reply to every communication within 1 working day."
+            | translate
+        }}
       </p>
     </div>
     <div class="report-container-footer">
-      <h2>SUPPORT FAQS</h2>
+      <h2>{{ "support.SUPPORT FAQS" | translate }}</h2>
       <p>
-        Look no further if you are having trouble logging and navigating into
-        our website or controlling your account information don't worry our help
-        <span>DOC</span> are avilable for you even when our employees are
-        asleep.
+        {{
+          "support.Look no further if you are having trouble logging in and navigating our website or controlling your account information. Don't worry, our help docs are available for you even when our employees are asleep."
+            | translate
+        }}
       </p>
     </div>
   </div>

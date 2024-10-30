@@ -8,11 +8,12 @@ import { checkoutService } from '../../../services/checkout.service';
 import { SpinnerService } from '../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-super-user-payments',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './super-user-payments.component.html',
   styleUrl: './super-user-payments.component.css',
 })
@@ -23,7 +24,7 @@ export class SuperUserPaymentsComponent implements AfterViewInit {
   bookings: any[] = [];
   filteredBookings: any[] = []; 
   partnerDetails: any = {};
-  selectedFilter: string = 'All';
+  selectedFilter: string = 'status.All';
   totalAmount: number = 0;
   oldQuotePrice: number = 0;
   paymentHandler: any = null;
@@ -75,18 +76,18 @@ export class SuperUserPaymentsComponent implements AfterViewInit {
   }
 
   filterBookings(): void {
-    if (this.selectedFilter === 'All') {
+    if (this.selectedFilter === 'status.All') {
       this.filteredBookings = this.bookings; // Show all bookings
-    } else if (this.selectedFilter === 'Completed') {
+    } else if (this.selectedFilter === 'status.Completed') {
       this.filteredBookings = this.bookings.filter(
         (booking) => booking.paymentStatus === "Paid" || booking.paymentStatus === "Completed"
       );
-    } else if(this.selectedFilter === "Running") {
+    } else if(this.selectedFilter === "status.Running") {
       this.filteredBookings =  this.bookings.filter(
         (booking) => booking.paymentStatus === "HalfPaid" && booking.bookingStatus !== "Completed"
       )
     }
-    else if(this.selectedFilter === "Pending") {
+    else if(this.selectedFilter === "status.Pending") {
       this.filteredBookings = this.bookings.filter(
         (booking) => booking.paymentStatus === "HalfPaid" && booking.bookingStatus === "Completed"
       )

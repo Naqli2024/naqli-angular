@@ -15,21 +15,30 @@
             class="btn create-booking get-route-btn"
             (click)="updateRoute()"
           >
-            Show Route
+            {{ "Show Route" | translate }}
           </button>
           <div id="map" class="google-map-style"></div>
           <div class="booking-load">
             <div class="booking-load-1">
-              <h4>{{ bookingDetails.name }}</h4>
-              <p>{{ bookingDetails.type?.[0]?.typeName }}</p>
+              <h4>{{ getTranslatedName(bookingDetails.name) }}</h4>
+              {{
+                ('typeNames.' + bookingDetails.type?.[0]?.typeName | translate) !== 'typeNames.' + bookingDetails.type?.[0]?.typeName
+                  ? ('typeNames.' + bookingDetails.type?.[0]?.typeName | translate)
+                  : ('equipmentTypeName.' + bookingDetails.type?.[0]?.typeName | translate) !== 'equipmentTypeName.' + bookingDetails.type?.[0]?.typeName
+                  ? ('equipmentTypeName.' + bookingDetails.type?.[0]?.typeName | translate )
+                  : ''
+                | translate
+              }}
             </div>
             <div class="border-right"></div>
             <div class="booking-load-2">
-              <h6>Load</h6>
-              <p>{{ bookingDetails.type?.[0]?.typeOfLoad }}</p>
+              <h6>{{ "Load" | translate }}</h6>
+              <p>
+                {{ "loads." + bookingDetails.type?.[0]?.typeOfLoad | translate }}
+              </p>
             </div>
             <div class="booking-load-3">
-              <h6>Size</h6>
+              <h6>{{ "Size" | translate }}</h6>
               <p>{{ bookingDetails.type?.[0]?.scale }}</p>
             </div>
           </div>
@@ -53,7 +62,7 @@
             href=""
             class="cancel-request"
             (click)="openBookingCancelModal($event)"
-            >Cancel Request</a
+            >{{ "Cancel Request" | translate }}</a
           >
           <div
             class="modal-footer cancel-booking-btns"
@@ -95,7 +104,7 @@
           <div class="input-container">
             <div class="vendor-info">
               <p>
-                Vendor Name
+                {{ "Vendor Name" | translate }}
                 <span>{{ combinedDetails.partner?.partnerName }}</span>
               </p>
 
@@ -104,7 +113,7 @@
                   combinedDetails?.partner?.type === 'singleUnit + operator'
                 "
               >
-                Operator Name
+                {{ "Operator Name" | translate }}
                 <span
                   *ngIf="combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0"
                 >
@@ -118,7 +127,7 @@
               </p>
 
               <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
-                Operator Name
+                {{ "Operator Name" | translate }}
                 <span>
                   {{
                     getOperatorNameFromBooking(
@@ -134,7 +143,7 @@
                   combinedDetails?.partner?.type === 'singleUnit + operator'
                 "
               >
-                Operator Mobile
+                {{ "Operator Mobile" | translate }}
                 <span
                   *ngIf="combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0"
                   >{{
@@ -144,7 +153,7 @@
               </p>
 
               <p *ngIf="combinedDetails?.partner?.type === 'multipleUnits'">
-                Operator Mobile
+                {{ "Operator Mobile" | translate }}
                 <span>
                   {{
                     getOperatorMobileFromBooking(
@@ -155,15 +164,21 @@
                 </span>
               </p>
               <p>
-                Unit<span
-                  >{{ combinedDetails.partner?.unitClassificationName }}-{{
-                    combinedDetails.partner?.unitSubClassificationName
-                  }}</span
+                {{ "Unit" | translate
+                }}<span
+                  >{{
+                    getTranslatedName(
+                      combinedDetails.partner?.unitClassificationName
+                    )
+                  }}-{{ getTranslatedTypeName(combinedDetails.partner?.unitSubClassificationName) | translate }}</span
                 >
               </p>
               <p>
-                Booking Status
-                <span>{{ combinedDetails.booking?.bookingStatus }}</span>
+                {{ "Booking Status" | translate }}
+                <span>{{
+                  "status of booking." + combinedDetails.booking?.bookingStatus
+                    | translate
+                }}</span>
               </p>
             </div>
           </div>
@@ -172,11 +187,13 @@
             class="vendor-info-last"
             *ngFor="let booking of combinedDetails.booking.bookings"
           >
-            <h2>Pending Amount</h2>
+            <h2>{{ "Pending Amount" | translate }}</h2>
             <p>{{ booking.remainingBalance }}</p>
           </div>
           <div class="modal-footer cancel-booking-btns">
-            <p style="color: forestgreen">Booking Successful!</p>
+            <p style="color: forestgreen">
+              {{ "Booking Successful!" | translate }}
+            </p>
           </div>
         </div>
       </div>
@@ -185,9 +202,14 @@
 </div>
 
 <div *ngIf="!bookingId" class="centered-container">
-  <p>No active bookings available. You can create a new booking !!</p>
+  <p>
+    {{
+      "No active bookings available. You can create a new booking !!"
+        | translate
+    }}
+  </p>
   <button type="button" class="btn btn-pay-advance" (click)="createBooking()">
-    Create Booking
+    {{ "Create Booking" | translate }}
   </button>
 </div>
 
@@ -196,7 +218,7 @@
   <div class="custom-modal-dialog">
     <div class="modal-content custom-modal-content">
       <div class="modal-body cancel-booking">
-        Are you sure you want to cancel this booking?
+        {{ "Are you sure you want to cancel this booking?" | translate }}
       </div>
       <div class="modal-footer cancel-booking-btns">
         <button
@@ -204,14 +226,14 @@
           class="btn btn-danger"
           (click)="confirmCancelBooking(modal, 'confirm')"
         >
-          Yes
+          {{ "Yes" | translate }}
         </button>
         <button
           type="button"
           class="btn btn-secondary"
           (click)="confirmCancelBooking(modal, 'cancel')"
         >
-          No
+          {{ "No" | translate }}
         </button>
       </div>
     </div>

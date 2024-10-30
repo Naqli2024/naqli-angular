@@ -1,6 +1,6 @@
 <div class="home-container">
   <div class="custom-slider">
-    <h2 class="booking-container-head">Available Special / Others Units</h2>
+    <h2 class="booking-container-head">{{ "availableSpecialUnits" | translate }}</h2>
   </div>
   <div
     class="container booking-container"
@@ -10,7 +10,7 @@
       <div class="col-md-6">
         <div class="vehicle-cols">
           <div class="row">
-            <h2 class="text-center">Special / Others</h2>
+            <h2 class="text-center">{{ "specialOthers" | translate }}</h2>
             <div
               class="bus-container special"
               *ngFor="let bus of buses"
@@ -23,12 +23,12 @@
                 alt="{{ bus.name }}"
                 class="bus-image"
               />
-              <p class="bus-name">{{ bus.name }}</p>
+              <p class="bus-name">{{ "specialUnits." + bus.name | translate }}</p>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
-              <label for="fromTime"><b>From Time</b></label>
+              <label for="fromTime"><b>{{ "fromTime" | translate }}</b></label>
               <ngb-timepicker
                 class="custom-timepicker"
                 [(ngModel)]="bookingData.fromTime"
@@ -38,7 +38,7 @@
               ></ngb-timepicker>
             </div>
             <div class="col-md-6">
-              <label for="toTime"><b>To Time</b></label>
+              <label for="toTime"><b>{{ "toTime" | translate }}</b></label>
               <ngb-timepicker
                 class="custom-timepicker"
                 [(ngModel)]="bookingData.toTime"
@@ -51,7 +51,7 @@
           <div class="row">
             <div class="col-md-12">
               <label for="startingDate" style="margin-bottom: 8px"
-                ><b>Starting Date</b></label
+                ><b>{{ "startingDate" | translate }}</b></label
               >
               <input
                 type="date"
@@ -70,7 +70,9 @@
                   [(ngModel)]="bookingData.additionalLabour"
                 />
                 <label for="additionalLabourCheckbox"
-                  >Need any additional labour</label
+                  >{{
+                    "needAdditionalLabour" | translate
+                  }}</label
                 >
               </div>
 
@@ -115,7 +117,7 @@
             <i class="fas fa-search"></i>
             <input
               type="text"
-              placeholder="Enter city name"
+              [placeholder]="'enterCityName' | translate"
               [(ngModel)]="bookingData.cityName"
               (input)="onCityInputChange()"
               (focus)="setActiveInputField('cityName')"
@@ -157,7 +159,7 @@
             <i class="fas fa-map-marker-alt"></i>
             <input
               type="text"
-              placeholder="Enter your address"
+              [placeholder]="'enterYourAddress' | translate"
               [(ngModel)]="bookingData.address"
               (input)="onAddressInputChange()"
               (focus)="setActiveInputField('address')"
@@ -211,7 +213,7 @@
             class="btn create-booking"
             (click)="getLocation()"
           >
-            Get Location
+          {{ "getLocation" | translate }}
           </button>
         </div>
         <div id="mapContainer" class="google-map-style"></div>
@@ -221,7 +223,7 @@
             class="btn create-booking"
             (click)="submitBooking()"
           >
-            Create Booking
+          {{ "createBooking" | translate }}
           </button>
         </div>
       </div>

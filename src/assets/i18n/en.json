@@ -20,7 +20,12 @@
     "Bus": "Bus",
     "Equipment": "Equipment",
     "Special": "Special",
-    "Others": "Others"
+    "Others": "Others",
+    "vehicle": "Vehicle",
+    "bus": "Bus",
+    "equipment": "Equipment",
+    "special": "Special",
+    "others": "Others"
   },
   "ESTIMATE": {
     "GET_ESTIMATE": "Get an Estimate"
@@ -113,6 +118,7 @@
     "Two Cars": "Two Cars",
     "Trucks": "Trucks"
   },
+
   "loads": {
     "Food": "Food",
     "Building Materials": "Building Materials",
@@ -127,6 +133,257 @@
     "Scrap": "Scrap",
     "Steel": "Steel"
   },
+  "busNames": {
+    "15 - 30 Pax": "15 - 30 Pax",
+    "+30 Pax": "+30 Pax",
+    "<15 Pax": "<15 Pax"
+  },
   "availableBusUnits": "Available Bus Units",
-  "bus": "Bus"
+  "bus": "Bus",
+  "availableEquipmentUnits": "Available Equipment Units",
+  "getLocation": "Get Location",
+  "startingDate": "Starting Date",
+  "fromTime": "From Time",
+  "toTime": "To Time",
+  "enterCityName": "Enter city name",
+  "enterYourAddress": "Enter your address",
+  "equipmentName": {
+    "Loaders": "Loaders",
+    "Excavator": "Excavator",
+    "Cranes": "Cranes",
+    "Others": "Others"
+  },
+  "equipmentTypeName": {
+    "Back hoe": "Back hoe",
+    "Front hoe": "Front hoe",
+    "Skid steer": "Skid steer",
+    "Excavator": "Excavator",
+    "Crawler crane": "Crawler crane",
+    "Mobile crane": "Mobile crane",
+    "Compactors": "Compactors",
+    "Bulldozers": "Bulldozers",
+    "Graders": "Graders",
+    "Dump truck": "Dump truck",
+    "Forklift": "Forklift",
+    "Scissorlift": "Scissorlift"
+  },
+  "availableSpecialUnits": "Available Special / Others Units",
+  "specialOthers": "Special / Others",
+  "specialUnits": {
+    "Concrete Mixer": "Concrete Mixer",
+    "Concrete Pump Truck": "Concrete Pump Truck",
+    "Fuel Truck": "Fuel Truck",
+    "Power Generators": "Power Generators",
+    "Lorry Crane": "Lorry Crane"
+  },
+  "dashboardItems": {
+    "Booking": "Booking",
+    "Booking History": "Booking History",
+    "Payments": "Payments",
+    "Report": "Report",
+    "Help": "Help",
+    "Dashboard": "Dashboard",
+    "Trigger Booking": "Trigger Booking",
+    "Booking Manager": "Booking Manager",
+    "Overview": "Overview",
+    "Support tickets": "Support tickets",
+    "User": "User",
+    "Partner": "Partner",
+    "Payout": "Payout",
+    "Notification Management": "Notification Management",
+    "Naqlee User": "Naqlee User",
+    "Commission": "Commission"
+  },
+  "support": {
+    "Report": "Report",
+    "We are available to assist you.": "We are available to assist you.",
+    "To get assistance on your naqlee journey, Post in the forum or schedule a one-on-one meeting.": "To get assistance on your naqlee journey, post in the forum or schedule a one-on-one meeting.",
+    "Please fill out the ticket form below if you have any questions about billing or logistics.": "Please fill out the ticket form below if you have any questions about billing or logistics.",
+    "Submit a ticket": "Submit a ticket",
+    "You can reach us via email at": "You can reach us via email at",
+    "if that would be more convenient for you.": "if that would be more convenient for you.",
+    "In either case, we try to reply to every communication within 1 working day.": "In either case, we try to reply to every communication within 1 working day.",
+    "SUPPORT FAQS": "SUPPORT FAQS",
+    "Look no further if you are having trouble logging in and navigating our website or controlling your account information. Don't worry, our help docs are available for you even when our employees are asleep.": "Look no further if you are having trouble logging in and navigating our website or controlling your account information. Don't worry, our help docs are available for you even when our employees are asleep."
+  },
+  "terms": {
+    "Payment": "Payment",
+    "BookingID": "BookingID",
+    "Date": "Date",
+    "Unit Type": "Unit Type",
+    "Payment Status": "Payment Status",
+    "Balance": "Balance"
+  },
+  "unitTypes": {
+    "vehicle": "Vehicle",
+    "bus": "Bus",
+    "equipment": "Equipment",
+    "special": "Special",
+    "others": "Others"
+  },
+  "paymentStatus": {
+    "HalfPaid": "HalfPaid",
+    "NotPaid": "NotPaid",
+    "Paid": "Paid",
+    "Completed": "Completed"
+  },
+  "faq": {
+    "title": "FREQUENTLY ASKED QUESTIONS",
+    "questions": [
+      {
+        "question": "How do I book a vehicle through your website?",
+        "answer": "To book a vehicle, simply choose the type of service you need, select the date and time, enter the value of the product, specify any additional labour required, and provide the pickup and delivery locations. Once you filled out the necessary information, submit your booking request to receive quotes from our partners."
+      },
+      {
+        "question": "How long does it take to receive a quote after booking?",
+        "answer": "Once the booking request is submitted, our module will obtain quotes from partners within 5 seconds. You'll receive the top 3 lowest price to choose from."
+      },
+      {
+        "question": "Can I choose my preferred vendor?",
+        "answer": "Yes! After receiving quotes, you can select the vendor that best fits your budget and requirements."
+      },
+      {
+        "question": "What payment options do you offer?",
+        "answer": "You can choose to pay the full amount upfront or pay a partial advance. Payment methods include credit/debit card and other secure options available on our site."
+      },
+      {
+        "question": "How can I track my order?",
+        "answer": "After your booking is confirmed and the order has started, you can view the live location of your vehicle in the 'Booking' section. You'll receive detailed information including the vendor name, operator name, the type of vehicle selected, as well as the booking status and payment status for your convenience."
+      },
+      {
+        "question": "Will I be notified when my driver is arriving?",
+        "answer": "Yes, the driver will notify you once they are en route to your location, ensuring you are informed about their arrival time."
+      },
+      {
+        "question": "What should I do if I need to cancel my booking?",
+        "answer": "If you need to cancel your booking, you can easily do so by clicking the cancel icon located in the top right corner during the vendor selection process. Follow the prompts to complete your cancellation."
+      },
+      {
+        "question": "Are there any additional fees that I should be aware of?",
+        "answer": "While we aim to provide clear pricing, additional fees may apply based on specific services or circumstances. This will be disclosed in the quotes you receive."
+      },
+      {
+        "question": "What happens if my vehicle does not arrive on time?",
+        "answer": "If your vehicle is late, please contact our support team. We will assist you in tracking the status and addressing the issues."
+      },
+      {
+        "question": "How do I contact customer support?",
+        "answer": "You can reach our customer support team via the report section on the website or email us. We are here to assist you 24 hours a day."
+      }
+    ]
+  },
+  "Request Support": "Request Support",
+  "Having trouble logging in, accessing your account or browsing the resources? Utilize this form to report concerns to the group managing the personalized experience logistics of Naqlee.": "Having trouble logging in, accessing your account or browsing the resources? Utilize this form to report concerns to the group managing the personalized experience logistics of Naqlee.",
+  "Please feel free to contact us at": "Please feel free to contact us at",
+  "if you have any more questions.": "if you have any more questions.",
+  "P.S. Only requests from member of Naqlee will receive a response. Please make sure the email address you enter matches the one you used to login to Naqlee.": "P.S. Only requests from members of Naqlee will receive a response. Please make sure the email address you enter matches the one you used to login to Naqlee.",
+  "Enter your Email address": "Enter your Email address",
+  "What's taking place, and what do you hope to see happen? Please be specific so that we can address this as soon as possible.": "What's taking place, and what do you hope to see happen? Please be specific so that we can address this as soon as possible.",
+  "Any illustrative or Supporting Documentation (Optional)": "Any illustrative or Supporting Documentation (Optional)",
+  "Drag and drop file here": "Drag and drop file here",
+  "File:": "File:",
+  "Submit": "Submit",
+  "Write message here": "Write message here",
+  "Booking History": "Booking History",
+  "Show Route": "Show Route",
+  "Load": "Load",
+  "Size": "Size",
+  "Cancel Request": "Cancel Request",
+  "Vendor Name": "Vendor Name",
+  "Operator Name": "Operator Name",
+  "Operator Mobile": "Operator Mobile",
+  "Unit": "Unit",
+  "Booking Status": "Booking Status",
+  "Pending Amount": "Pending Amount",
+  "Booking Successful!": "Booking Successful!",
+  "No active bookings available. You can create a new booking !!": "No active bookings available. You can create a new booking !!",
+  "Create Booking": "Create Booking",
+  "Are you sure you want to cancel this booking?": "Are you sure you want to cancel this booking?",
+  "Yes": "Yes",
+  "No": "No",
+  "Booking Generated": "Booking Generated",
+  "status of booking": {
+    "Yet to start": "Yet to start",
+    "Running": "Running",
+    "Completed": "Completed"
+  },
+  "Sign up now": "Sign up now",
+  "Naqli Advantage": "Naqli Advantage",
+  "Regular Trips": "Regular Trips",
+  "Better Earning": "Better Earning",
+  "On Time Payment": "On Time Payment",
+  "With our growing presence across multiple cities, we always have our hands full! This means you will never run out of trips.": "With our growing presence across multiple cities, we always have our hands full! This means you will never run out of trips.",
+  "Each more by partnering with the best! Regular trips and efficient service can grow your earnings!": "Each more by partnering with the best! Regular trips and efficient service can grow your earnings!",
+  "Be assured to receive all payments on time & get the best in class support.": "Be assured to receive all payments on time & get the best in class support.",
+  "Join Us": "Join Us",
+  "Enterprise": "Enterprise",
+  "Multiple Units": "Multiple Units",
+  "Single Unit + Operator": "Single Unit + Operator",
+  "Operator": "Operator",
+  "Partner Name": "Partner Name",
+  "Mobile No": "Mobile No",
+  "Email": "Email",
+  "Password": "Password",
+  "Enter your Name": "Enter your Name",
+  "Enter your Mobile Number": "Enter your Mobile Number",
+  "Enter your Email": "Enter your Email",
+  "Enter your Password": "Enter your Password",
+  "Register": "Register",
+  "Owner": "Owner",
+  "Unit Classification": "Unit Classification",
+  "Select Classification": "Select Classification",
+  "Sub Classification": "Sub Classification",
+  "Select Sub Classification": "Select Sub Classification",
+  "Plate Information": "Plate Information",
+  "Istimara No": "Istimara No",
+  "Istimara Card": "Istimara Card",
+  "Picture of Vehicle": "Picture of Vehicle",
+  "First Name": "First Name",
+  "Last Name": "Last Name",
+  "Email ID": "Email ID",
+  "Confirm Password": "Confirm Password",
+  "Iqama No": "Iqama No",
+  "Date of Birth": "Date of Birth",
+  "Panel Information": "Panel Information",
+  "Driving License": "Driving License",
+  "Aramco License": "Aramco License",
+  "National ID": "National ID",
+  "Partner Name/ID": "Partner Name/ID",
+  "Booked": "Booked",
+  "Booking No": "Booking No",
+  "Additional Labour": "Additional Labour",
+  "Quote Price": "Quote Price",
+  "Time": "Time",
+  "Mode": "Mode",
+  "Location": "Location",
+  "Action": "Action",
+  "No Booking Requests found": "No Booking Requests found",
+  "Terminate": "Terminate",
+  "Request Payment": "Request Payment",
+  "Payment Successful!!": "Payment Successful!!",
+  "Additional Charges": "Additional Charges",
+  "User id": "User id",
+  "User name": "User name",
+  "Booked by": "Booked by",
+  "status": {
+    "All": "All",
+    "Pending": "Pending",
+    "Running": "Running",
+    "Completed": "Completed",
+    "Status": "Status",
+    "Payment Made": "Payment Made",
+    "Pending Payment": "Pending Payment"
+  },
+  "BookingWithNumber": "Booking {{number}}",
+  "UnitNotAssigned": "Unit not assigned. Please wait..!",
+  "Edit": "Edit",
+  "BalanceAmount": "Balance Amount",
+  "Pay": "Pay",
+  "NewBooking": "New Booking",
+  "Save": "Save",
+  "ContractType": "Contract Type",
+  "Contract": "Contract",
+  "Id": "Id",
+  "PayNow": "Pay Now",
+  "Delete": "Delete"
 }

@@ -11,11 +11,12 @@ import { PartnerService } from '../../../../services/partner/partner.service';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { PaymentConfirmationComponent } from './payment-confirmation/payment-confirmation.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-booking',
   standalone: true,
-  imports: [CommonModule, FormsModule, PaymentConfirmationComponent],
+  imports: [CommonModule, FormsModule, PaymentConfirmationComponent, TranslateModule],
   templateUrl: './booking.component.html',
   styleUrl: './booking.component.css',
 })

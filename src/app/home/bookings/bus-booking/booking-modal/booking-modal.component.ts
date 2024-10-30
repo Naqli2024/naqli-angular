@@ -3,11 +3,12 @@ import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from '../../../../../services/user.service';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-booking-modal',
   standalone: true,
-  imports: [],
+  imports: [TranslateModule],
   templateUrl: './booking-modal.component.html',
   styleUrl: './booking-modal.component.css',
 })

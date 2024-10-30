@@ -8,11 +8,12 @@ import { SpinnerService } from '../../../../services/spinner.service';
 import { PartnerService } from '../../../../services/partner/partner.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { OtpVerificationComponent } from '../otp-verification/otp-verification.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, ToastrModule],
+  imports: [CommonModule, FormsModule, ToastrModule, TranslateModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
