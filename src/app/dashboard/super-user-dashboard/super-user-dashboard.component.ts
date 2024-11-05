@@ -8,12 +8,14 @@ import { PartnerService } from '../../../services/partner/partner.service';
 import { DashboardLineChartComponent } from './dashboard-line-chart/dashboard-line-chart.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ShowBookingDetailsComponent } from './show-booking-details/show-booking-details.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../../services/language.service';
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-super-user-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, DashboardLineChartComponent],
+  imports: [CommonModule, FormsModule, DashboardLineChartComponent, TranslateModule],
   templateUrl: './super-user-dashboard.component.html',
   styleUrl: './super-user-dashboard.component.css',
 })
@@ -28,11 +30,11 @@ export class SuperUserDashboardComponent {
   completedPaymentStatus: number = 0;
   halfPaidPaymentStatus: number = 0;
   paidPaymentStatus: number = 0;
-  chart: Chart<'line', number[], string> | undefined;
+  chart: Chart<'line' | 'doughnut', number[], string> | undefined;
 
   myBookings = [
     {
-      status: 'Pending',
+      status: 'NotPaid',
       numberOfBookings: 0,
       colorCode: '#F82D44',
     },
@@ -46,25 +48,50 @@ export class SuperUserDashboardComponent {
       numberOfBookings: 0,
       colorCode: '#57C012',
     },
-    {
-      status: 'Paid',
-      numberOfBookings: 0,
-      colorCode: '#7F6AFF',
-    },
+    // {
+    //   status: 'Paid',
+    //   numberOfBookings: 0,
+    //   colorCode: '#7F6AFF',
+    // },
   ];
 
   constructor(
     private router: Router,
     private bookingService: BookingService,
     private partnerService: PartnerService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private languageService: LanguageService, 
+    private translateService: TranslateService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
     this.getBookingDetails();
+    this.languageService.currentLanguage$.subscribe((lang) => {
+      this.translateStatuses(lang); 
+    });
+  }
+
+  // Method to translate booking statuses
+  translateStatuses(lang: string): void {
+    this.translateService.get('paymentStatus').subscribe((translatedStatus: any) => {
+      // Assuming translatedStatus will give you an object with all payment statuses
+      this.myBookings.forEach((booking) => {
+        const translatedValue = translatedStatus[booking.status]; // Get the translated status
+        if (translatedValue) {
+          booking.status = translatedValue; // Update the status with the translated value
+        }
+      });
+      this.loadchartdata();
+    });
   }
 
   loadchartdata() {
+    // Clear previous data
+    this.labeldata = [];
+    this.realdata = [];
+    this.colordata = [];
+
     this.myBookings.map((o) => {
       this.labeldata.push(o.status);
       this.realdata.push(o.numberOfBookings);
@@ -73,35 +100,36 @@ export class SuperUserDashboardComponent {
     this.Renderchart(this.labeldata, this.realdata, this.colordata);
   }
 
-  Renderchart(labeldata: any, valuedata: any, colordata: any) {
-    const mychart = new Chart('doughnutchart', {
+  Renderchart(labeldata: string[], valuedata: number[], colordata: string[]) {
+    const ctx = document.getElementById('doughnutchart') as HTMLCanvasElement;
+
+    // Check if a chart instance already exists and destroy it
+    if (this.chart) {
+      this.chart.destroy();
+    }
+
+    this.chart = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        // labels: labeldata,
-        datasets: [
-          {
-            data: valuedata,
-            backgroundColor: colordata,
-          },
-        ],
+        datasets: [{
+          data: valuedata,
+          backgroundColor: colordata,
+        }],
+        // labels: labeldata 
       },
     });
+
     // After rendering the chart, add the labels dynamically
     this.addLabelsToChart(labeldata, colordata, valuedata);
   }
 
-  addLabelsToChart(
-    labeldata: string[],
-    colordata: string[],
-    valuedata: number[]
-  ) {
-    // Get the container where you want to display the labels
+
+  addLabelsToChart(labeldata: string[], colordata: string[], valuedata: number[]) {
     const chartContainer = document.getElementById('chart-labels-container');
 
     // Clear any previous labels
     if (chartContainer) chartContainer.innerHTML = '';
 
-    // Loop through the label data to create a flexbox layout for labels
     labeldata.forEach((label, index) => {
       const labelElement = document.createElement('div');
       labelElement.classList.add('label-item');
@@ -113,11 +141,8 @@ export class SuperUserDashboardComponent {
       const text = document.createElement('span');
       text.textContent = `${label}: ${valuedata[index]}`;
 
-      // Append colorBox and text to the label element
       labelElement.appendChild(colorBox);
       labelElement.appendChild(text);
-
-      // Append the label element to the container
       chartContainer?.appendChild(labelElement);
     });
   }
@@ -144,15 +169,13 @@ export class SuperUserDashboardComponent {
     this.bookings.forEach((booking) => {
       let statusBooking;
 
-      if (booking.paymentStatus === 'Pending') {
-        statusBooking = this.myBookings.find((b) => b.status === 'Pending');
+      if (booking.paymentStatus === 'NotPaid') {
+        statusBooking = this.myBookings.find((b) => b.status === 'NotPaid');
       } else if (booking.paymentStatus === 'HalfPaid') {
         statusBooking = this.myBookings.find((b) => b.status === 'HalfPaid');
-      } else if (booking.paymentStatus === 'Completed') {
-        statusBooking = this.myBookings.find((b) => b.status === 'Completed');
-      } else if (booking.paymentStatus === 'Paid') {
-        statusBooking = this.myBookings.find((b) => b.status === 'Paid');
-      }
+      } else if (booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid') {
+        statusBooking = this.myBookings.find((b) => b.status === 'Completed' || b.status === 'Paid');
+      } 
 
       // Only increment if statusBooking is found
       if (statusBooking) {
@@ -207,5 +230,16 @@ export class SuperUserDashboardComponent {
     });
 
     modalRef.componentInstance.bookingId = bookingId;
+  }
+
+  getTranslatedName(name: string): string {
+    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    for (let category of categories) {
+      const translationKey = `${category}.${name}`;
+      if (this.translate.instant(translationKey) !== translationKey) {
+        return this.translate.instant(translationKey);
+      }
+    }
+    return name; 
   }
 }

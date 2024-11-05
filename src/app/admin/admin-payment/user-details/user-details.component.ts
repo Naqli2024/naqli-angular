@@ -9,11 +9,12 @@ import { CommonModule } from '@angular/common';
 import { MapComponent } from '../../../map/map.component';
 import { GoogleMapsService } from '../../../../services/googlemap.service';
 import { MapService } from '../../../../services/map.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-details',
   standalone: true,
-  imports: [CommonModule, MapComponent],
+  imports: [CommonModule, MapComponent, TranslateModule],
   templateUrl: './user-details.component.html',
   styleUrl: './user-details.component.css',
 })

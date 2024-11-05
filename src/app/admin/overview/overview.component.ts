@@ -6,11 +6,12 @@ import { CommonModule } from '@angular/common';
 Chart.register(...registerables);
 import { format, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, endOfYear, isWithinInterval } from 'date-fns';
 import { CustomerChartComponent } from './customer-chart/customer-chart.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-overview',
   standalone: true,
-  imports: [CommonModule, CustomerChartComponent],
+  imports: [CommonModule, CustomerChartComponent, TranslateModule],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css',
 })
@@ -21,7 +22,7 @@ export class OverviewComponent implements OnInit {
   bookingStatusCompletedCount: number = 0;
   pendingPaymentsCount: number = 0;
   pendingPayoutCount: number = 0;
-  options: string[] = ['All Time', 'This Week', 'This Month', 'This Year'];
+  options: string[] = ['AllTime', 'ThisWeek', 'ThisMonth', 'ThisYear'];
   selectedCustomerOption: string = this.options[0];
   bookingData: any[] = [];
   labeldata: string[] = [];
@@ -94,28 +95,28 @@ export class OverviewComponent implements OnInit {
   filterBookingsByTimePeriod(option: string): Booking[] {
     const now = new Date();
     switch (option) {
-      case 'This Week':
+      case 'ThisWeek':
         return this.bookings.filter(booking =>
           isWithinInterval(new Date(booking.createdAt), {
             start: startOfWeek(now),
             end: endOfWeek(now),
           })
         );
-      case 'This Month':
+      case 'ThisMonth':
         return this.bookings.filter(booking =>
           isWithinInterval(new Date(booking.createdAt), {
             start: startOfMonth(now),
             end: endOfMonth(now),
           })
         );
-      case 'This Year':
+      case 'ThisYear':
         return this.bookings.filter(booking =>
           isWithinInterval(new Date(booking.createdAt), {
             start: startOfYear(now),
             end: endOfYear(now),
           })
         );
-      case 'All Time':
+      case 'AllTime':
       default:
         return this.bookings;
     }

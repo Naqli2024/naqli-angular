@@ -10,11 +10,12 @@ import { switchMap, map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserDetailsComponent } from './user-details/user-details.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-admin-payment',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './admin-payment.component.html',
   styleUrl: './admin-payment.component.css'
 })
@@ -25,7 +26,8 @@ export class AdminPaymentComponent {
     private bookingService: BookingService,
     private userService: UserService,
     private partnerService: PartnerService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -69,5 +71,16 @@ export class AdminPaymentComponent {
       windowClass: 'no-background',
     });
     modalRef.componentInstance.bookingId = bookingId;
+  }
+
+  getTranslatedName(name: string): string {
+    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    for (let category of categories) {
+      const translationKey = `${category}.${name}`;
+      if (this.translate.instant(translationKey) !== translationKey) {
+        return this.translate.instant(translationKey);
+      }
+    }
+    return name; 
   }
 }

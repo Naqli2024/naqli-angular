@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class OperatorService {
-  private baseUrl = 'https://naqli.onrender.com/api/partner';
+  private baseUrl = 'http://localhost:4000/api/partner';
 
   constructor(private http: HttpClient) {}
 

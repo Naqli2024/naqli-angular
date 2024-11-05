@@ -7,6 +7,7 @@ import { SpinnerService } from '../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-naqlee-user',
@@ -15,7 +16,8 @@ import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    TranslateModule,
   ],
   templateUrl: './naqlee-user.component.html',
   styleUrl: './naqlee-user.component.css',
@@ -35,12 +37,12 @@ export class NaqleeUserComponent {
 
   dropdownList = [
     { id: 1, itemName: 'Payout' },
-    { id: 2, itemName: 'Support tickets' },
+    { id: 2, itemName: 'SupportTickets' },
     { id: 3, itemName: 'User' },
     { id: 4, itemName: 'Partner' },
     { id: 5, itemName: 'Payments' },
-    { id: 6, itemName: 'Notification Management' },
-    { id: 7, itemName: 'Naqlee user' },
+    { id: 6, itemName: 'NotificationManagement' },
+    { id: 7, itemName: 'NaqleeUser' },
   ];
 
   selectedItems: string[] = [];
@@ -52,7 +54,8 @@ export class NaqleeUserComponent {
   constructor(
     private naqleeUserService: NaqleeUserService,
     private toastr: ToastrService,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -93,40 +96,40 @@ export class NaqleeUserComponent {
 
     this.spinnerService.show();
     if (this.isEditMode && this.currentUserId) {
-    // Update existing user
-    this.naqleeUserService.updateUser(this.currentUserId, formData).subscribe(
-      (response) => {
-        this.spinnerService.hide();
-        this.toastr.success('NaqleeUser updated successfully');
-        this.resetForm();
-        this.showAddUserForm = false;
-        this.fetchNaqleeUsers(); // Refresh the user list after update
-      },
-      (error) => {
-        this.spinnerService.hide();
-        const errorMessage = error.error?.message || 'An error occurred';
-        this.toastr.error(errorMessage);
-        console.log(errorMessage)
-      }
-    );
-  } else {
-    // Add new user
-    this.naqleeUserService.addUser(formData).subscribe(
-      (response) => {
-        this.spinnerService.hide();
-        this.toastr.success('NaqleeUser created successfully');
-        this.resetForm();
-        this.showAddUserForm = false;
-        this.fetchNaqleeUsers(); // Refresh the user list after adding
-      },
-      (error) => {
-        this.spinnerService.hide();
-        const errorMessage = error.error?.message || 'An error occurred';
-        this.toastr.error(errorMessage);
-        console.log(errorMessage)
-      }
-    );
-  }
+      // Update existing user
+      this.naqleeUserService.updateUser(this.currentUserId, formData).subscribe(
+        (response) => {
+          this.spinnerService.hide();
+          this.toastr.success('NaqleeUser updated successfully');
+          this.resetForm();
+          this.showAddUserForm = false;
+          this.fetchNaqleeUsers(); // Refresh the user list after update
+        },
+        (error) => {
+          this.spinnerService.hide();
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage);
+          console.log(errorMessage);
+        }
+      );
+    } else {
+      // Add new user
+      this.naqleeUserService.addUser(formData).subscribe(
+        (response) => {
+          this.spinnerService.hide();
+          this.toastr.success('NaqleeUser created successfully');
+          this.resetForm();
+          this.showAddUserForm = false;
+          this.fetchNaqleeUsers(); // Refresh the user list after adding
+        },
+        (error) => {
+          this.spinnerService.hide();
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage);
+          console.log(errorMessage);
+        }
+      );
+    }
   }
 
   resetForm() {
@@ -145,16 +148,20 @@ export class NaqleeUserComponent {
   }
 
   toggleSelection(itemId: number) {
-    const index = this.selectedItems.indexOf(this.dropdownList.find((item) => item.id === itemId)?.itemName || '');
+    const index = this.selectedItems.indexOf(
+      this.dropdownList.find((item) => item.id === itemId)?.itemName || ''
+    );
     if (index === -1) {
-      this.selectedItems.push(this.dropdownList.find((item) => item.id === itemId)?.itemName || '');
+      this.selectedItems.push(
+        this.dropdownList.find((item) => item.id === itemId)?.itemName || ''
+      );
     } else {
       this.selectedItems.splice(index, 1);
     }
   }
 
   isSelected(itemId: number): boolean {
-    const item = this.dropdownList.find(i => i.id === itemId);
+    const item = this.dropdownList.find((i) => i.id === itemId);
     return item ? this.selectedItems.includes(item.itemName) : false;
   }
 
@@ -178,25 +185,32 @@ export class NaqleeUserComponent {
       mobileNo: user.mobileNo,
       address: user.address,
       accessTo: user.accessTo,
-      userPhoto: null  // Initialize userPhoto as null
+      userPhoto: null, // Initialize userPhoto as null
     };
     this.selectedItems = user.accessTo;
     this.showAddUserForm = true;
   }
 
   deleteUser(userId: string) {
-      this.spinnerService.show();
-      this.naqleeUserService.deleteNaqleeUser(userId).subscribe(
-        (response) => {
-          this.spinnerService.hide();
-          this.toastr.success('NaqleeUser deleted successfully');
-          this.fetchNaqleeUsers();
-        },
-        (error) => {
-          this.spinnerService.hide();
-          const errorMessage = error.error?.message || 'An error occurred';
-          this.toastr.error(errorMessage);
-        }
-      );
+    this.spinnerService.show();
+    this.naqleeUserService.deleteNaqleeUser(userId).subscribe(
+      (response) => {
+        this.spinnerService.hide();
+        this.toastr.success('NaqleeUser deleted successfully');
+        this.fetchNaqleeUsers();
+      },
+      (error) => {
+        this.spinnerService.hide();
+        const errorMessage = error.error?.message || 'An error occurred';
+        this.toastr.error(errorMessage);
+      }
+    );
+  }
+
+  getTranslatedAccessTo(accessTo: string[]): string {
+    const translatedItems = accessTo.map((item) =>
+      this.translate.instant(item)
+    );
+    return translatedItems.join(', ');
   }
 }

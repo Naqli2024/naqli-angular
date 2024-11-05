@@ -8,11 +8,12 @@ import { FormsModule } from '@angular/forms';
 import { formatDateToInput } from '../../../helper/date-helper';
 import { SpinnerService } from '../../../services/spinner.service';
 import { Slab } from '../../../models/slab.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-commission',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, TranslateModule],
   templateUrl: './commission.component.html',
   styleUrl: './commission.component.css',
 })

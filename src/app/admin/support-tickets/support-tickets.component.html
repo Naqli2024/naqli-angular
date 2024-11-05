@@ -2,16 +2,16 @@
   <!-- Ticket Details Form -->
   <div class="form-container ticket-form">
     <button class="back-button" (click)="goBackToList()">
-      <fa-icon [icon]="faArrowLeft"></fa-icon>&nbsp; Back to Ticket
+      <fa-icon [icon]="faArrowLeft"></fa-icon>&nbsp; {{"BackToTicket"|translate}}
     </button>
     <div class="form-row ticket-form-row ticket-form-row-head">
-      <p>Ticket ID: {{ selectedTicket?.id }}</p>
+      <p>{{"TicketId"|translate}}: {{ selectedTicket?.id }}</p>
       <p [ngClass]="selectedTicket.isOpen ? 'open' : 'closed'">
-        {{ selectedTicket?.isOpen ? "Open" : "Closed" }}
+        {{ (selectedTicket?.isOpen ? "Open" : "Closed") | translate }}
       </p>
     </div>
     <div class="form-row ticket-form-row">
-      <label>Requests:</label>
+      <label>{{"Requests"|translate}}:</label>
       <input
         type="text"
         class="form-control"
@@ -20,7 +20,7 @@
       <p class="ticket-form-row-p">{{ selectedTicket.date }}</p>
     </div>
     <div class="form-row ticket-form-row">
-      <label>Add Reply</label>
+      <label>{{"AddReply"|translate}}</label>
       <input
         type="text"
         class="form-control"
@@ -30,17 +30,15 @@
     </div>
     <div class="form-row ticket-form-row">
       <button
-        [ngClass]="selectedTicket.isOpen ? 'btn-closed' : 'btn-open'"
-        (click)="onSubmitReply()"
-      >
-        {{
-          selectedTicket.responseMessage
-            ? "Update"
-            : selectedTicket.isOpen
-            ? "Close ticket"
-            : "Open ticket"
-        }}
-      </button>
+      [ngClass]="selectedTicket.isOpen ? 'btn-closed' : 'btn-open'"
+      (click)="onSubmitReply()"
+    >
+      {{
+        selectedTicket.responseMessage
+          ? ('Update' | translate)
+          : (selectedTicket.isOpen ? ('CloseTicket' | translate) : ('OpenTicket' | translate))
+      }}
+    </button>
     </div>
   </div>
 </div>
@@ -50,12 +48,12 @@
   <div class="row">
     <div class="col-md-12 booking-history">
       <div class="head-element">
-        <h2>Support Tickets</h2>
+        <h2>{{"SupportTickets"|translate}}</h2>
       </div>
       <div class="notification-bar">
         <input
           type="text"
-          placeholder="Search here"
+          placeholder="{{ 'SearchHere' | translate }}"
           class="search-bar"
           [(ngModel)]="searchQuery"
           (input)="onSearch()"
@@ -68,21 +66,21 @@
             [class.active]="currentTab === 'All'"
             (click)="setTab('All')"
           >
-            All Tickets
+            {{"AllTickets"|translate}}
           </button>
           <button
             class="tab-button"
             [class.active]="currentTab === 'Open'"
             (click)="setTab('Open')"
           >
-            Open Tickets
+            {{"OpenTickets"|translate}}
           </button>
           <button
             class="tab-button"
             [class.active]="currentTab === 'Closed'"
             (click)="setTab('Closed')"
           >
-            Closed Tickets
+            {{"ClosedTickets"|translate}}
           </button>
         </div>
         <div
@@ -102,12 +100,12 @@
               "
             >
               <tr>
-                <th>Ticket Id</th>
-                <th>Title</th>
-                <th>Customer</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Action</th>
+                <th>{{"TicketId"|translate}}</th>
+                <th>{{"Title"|translate}}</th>
+                <th>{{"Customer"|translate}}</th>
+                <th>{{"Status"|translate}}</th>
+                <th>{{"Date"|translate}}</th>
+                <th>{{"Action"|translate}}</th>
               </tr>
             </thead>
             <tbody>
@@ -125,7 +123,7 @@
                     [ngClass]="ticket.isOpen ? 'status-open' : 'status-closed'"
                     class="status"
                   >
-                    {{ ticket.isOpen ? "Open" : "Closed" }}
+                    {{ (ticket.isOpen ? "Open" : "Closed") | translate }}
                   </span>
                 </td>
                 <td>{{ ticket.date }}</td>

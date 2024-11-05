@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element" style="margin-bottom: 20px !important">
-      <h2>Payment</h2>
+      <h2>{{ "Payment" | translate }}</h2>
     </div>
     <div
       class="table-container booking-manager-table"
@@ -9,25 +9,21 @@
     >
       <table
         class="table table-responsive"
-        style="
-          width: 100%;
-          box-shadow: none !important;
-          margin: 0px 0px;
-        "
+        style="width: 100%; box-shadow: none !important; margin: 0px 0px"
       >
         <thead
           style="position: sticky; top: 0; z-index: 1; background-color: #fff"
         >
           <tr>
-            <th>User</th>
-            <th>Booking ID</th>
-            <th>Unit</th>
-            <th>Unit Type</th>
-            <th>Partner</th>
-            <th>Payment Made</th>
-            <th>Pending Payment</th>
-            <th>Commision</th>
-            <th>Payment Status</th>
+            <th>{{ "User" | translate }}</th>
+            <th>{{ "terms.BookingID" | translate }}</th>
+            <th>{{ "Unit" | translate }}</th>
+            <th>{{ "UnitType" | translate }}</th>
+            <th>{{ "Partner" | translate }}</th>
+            <th>{{ "PaymentMade" | translate }}</th>
+            <th>{{ "PendingPayment" | translate }}</th>
+            <th>{{ "Commission" | translate }}</th>
+            <th>{{ "PaymentStatus" | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -39,8 +35,13 @@
             >
               {{ item.booking._id }}
             </td>
-            <td>{{ item.booking.name }}</td>
-            <td>{{ item.booking.type[0]?.typeName }}</td>
+            <td>{{ getTranslatedName(item.booking.name) }}</td>
+            <td>{{  ('typeNames.' + item.booking.type?.[0]?.typeName | translate) !== 'typeNames.' + item.booking.type?.[0]?.typeName
+              ? ('typeNames.' + item.booking.type?.[0]?.typeName | translate)
+              : ('equipmentTypeName.' + item.booking.type?.[0]?.typeName | translate) !== 'equipmentTypeName.' + item.booking.type?.[0]?.typeName
+              ? ('equipmentTypeName.' + item.booking.type?.[0]?.typeName | translate )
+              : ''
+            | translate }}</td>
             <td>{{ item.partner?.data?.partnerName }}</td>
             <td>{{ item.booking.paymentAmount }}</td>
             <td

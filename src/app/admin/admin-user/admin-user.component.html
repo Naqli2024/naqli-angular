@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element" style="position: relative">
-      <h2>Users</h2>
+      <h2>{{ "Users" | translate }}</h2>
     </div>
     <div
       class="dropdown-container"
@@ -13,7 +13,7 @@
         style="width: 150px !important"
       >
         <option *ngFor="let option of options" [value]="option">
-          {{ option }}
+          {{ "adminAction." + option | translate }}
         </option>
       </select>
     </div>
@@ -36,12 +36,12 @@
                 (change)="toggleSelectAll($event)"
               />
             </th>
-            <th>User name</th>
-            <th>User id</th>
-            <th>Email id</th>
-            <th>Last sign-in</th>
-            <th>Contact no</th>
-            <th>Address</th>
+            <th>{{ "UserName" | translate }}</th>
+            <th>{{ "UserId" | translate }}</th>
+            <th>{{ "EmailId" | translate }}</th>
+            <th>{{ "LastSignIn" | translate }}</th>
+            <th>{{ "ContactNo" | translate }}</th>
+            <th>{{ "Address" | translate }}</th>
           </tr>
         </thead>
         <tbody>

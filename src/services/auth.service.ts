@@ -9,7 +9,7 @@ import { throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'https://naqli.onrender.com/api';
+  private baseUrl = 'http://localhost:4000/api';
 
   constructor(private http: HttpClient) {}
 

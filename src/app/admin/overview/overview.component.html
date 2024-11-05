@@ -1,46 +1,46 @@
 <div class="admin-overview">
   <div class="order-statistics">
     <div class="head-element">
-      <h2>Order Statistics</h2>
+      <h2>{{"OrderStatistics"|translate}}</h2>
     </div>
     <div class="boxes-container">
       <div class="box">
         <p style="font-weight: bold; font-size: 20px">
           {{ runningBookingsCount }}
         </p>
-        <p>Ongoing Bookings</p>
+        <p>{{"OngoingBookings"|translate}}</p>
       </div>
       <div class="box">
         <p style="font-weight: bold; font-size: 20px">
           {{ bookingStatusCompletedCount }}
         </p>
-        <p>Completed</p>
+        <p>{{"Completed"|translate}}</p>
       </div>
       <div class="box">
         <p style="font-weight: bold; font-size: 20px">
           {{ pendingPaymentsCount }}
         </p>
-        <p>Pending Payment</p>
+        <p>{{"PendingPayment"|translate}}</p>
       </div>
       <div class="box">
         <p style="font-weight: bold; font-size: 20px">
           {{ pendingPayoutCount }}
         </p>
-        <p>Pending Payout</p>
+        <p>{{"PendingPayout"|translate}}</p>
       </div>
     </div>
   </div>
   <div class="overview-chart">
     <div class="for-orders">
       <div class="for-orders-head">
-        <h2>Orders</h2>
+        <h2>{{"Orders"|translate}}</h2>
         <div class="dropdown-filter">
           <select (change)="onOrderOptionChange($event)" class="form-select">
             <option
               *ngFor="let option of options"
               [value]="option"
             >
-              {{ option }}
+              {{ 'filters.' + option | translate }}
             </option>
           </select>
         </div>

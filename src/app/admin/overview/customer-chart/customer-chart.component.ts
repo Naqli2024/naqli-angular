@@ -19,18 +19,19 @@ import { BookingService } from '../../../../services/booking.service';
 import { UserService } from '../../../../services/user.service';
 import { User } from '../../../../models/user.model';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-customer-chart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './customer-chart.component.html',
   styleUrl: './customer-chart.component.css',
 })
 export class CustomerChartComponent {
   bookings: Booking[] = [];
   users: User[] = [];
-  options: string[] = ['All Time', 'This Week', 'This Month', 'This Year', 'Today'];
+  options: string[] = ['AllTime', 'ThisWeek', 'ThisMonth', 'ThisYear', 'Today'];
   selectedCustomerOption: string = this.options[0];
   bookingData: any[] = [];
   labeldata: string[] = [];
@@ -112,19 +113,19 @@ export class CustomerChartComponent {
         startDate = startOfDay(now);
         endDate = endOfDay(now);
         break;
-      case 'This Week':
+      case 'ThisWeek':
         startDate = startOfWeek(now);
         endDate = endOfWeek(now);
         break;
-      case 'This Month':
+      case 'ThisMonth':
         startDate = startOfMonth(now);
         endDate = endOfMonth(now);
         break;
-      case 'This Year':
+      case 'ThisYear':
         startDate = startOfYear(now);
         endDate = endOfYear(now);
         break;
-      case 'All Time':
+      case 'AllTime':
       default:
         return bookings;
     }

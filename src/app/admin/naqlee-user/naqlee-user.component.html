@@ -1,12 +1,12 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>Users</h2>
+      <h2>{{"Users"|translate}}</h2>
     </div>
 
     <div class="add-user-button" *ngIf="!showAddUserForm">
       <button color="primary" (click)="toggleFormVisibility()">
-        + Add user
+        + {{"AddUser"|translate}}
       </button>
     </div>
     <div
@@ -28,14 +28,14 @@
             style="position: sticky; top: 0; z-index: 1; background-color: #fff"
           >
             <tr>
-              <th>User name</th>
-              <th>User id</th>
-              <th>Email id</th>
-              <th>Last sign-in</th>
-              <th>Contact no</th>
-              <th>Address</th>
-              <th>Access to</th>
-              <th>Action</th>
+              <th>{{"UserName"|translate}}</th>
+              <th>{{"UserId"|translate}}</th>
+              <th>{{"EmailId"|translate}}</th>
+              <th>{{"LastSignIn"|translate}}</th>
+              <th>{{"ContactNo"|translate}}</th>
+              <th>{{"Address"|translate}}</th>
+              <th>{{"AccessTo"|translate}}</th>
+              <th>{{"Action"|translate}}</th>
             </tr>
           </thead>
           <tbody>
@@ -46,7 +46,7 @@
               <td>{{ user.lastSignIn || "N/A" }}</td>
               <td>{{ user.mobileNo }}</td>
               <td>{{ user.address }}</td>
-              <td>{{ user.accessTo.join(", ") }}</td>
+              <td>{{ getTranslatedAccessTo(user.accessTo) }}</td>
               <td>
                 <fa-icon
                   [icon]="faEdit"
@@ -69,18 +69,18 @@
     <div class="add-user-form" *ngIf="showAddUserForm">
       <div class="form-row">
         <div class="form-group label-input">
-          <label for="name" class="flex-label">Name</label>
+          <label for="name" class="flex-label">{{"Name"|translate}}</label>
           <input
             type="text"
             class="form-control flex-input custom-input"
             id="name"
-            placeholder="Enter name"
+            placeholder='{{"EnterName"|translate}}'
             [(ngModel)]="newUser.name"
             required
           />
         </div>
         <div class="form-group label-input">
-          <label for="userPhoto" class="flex-label">User Photo</label>
+          <label for="userPhoto" class="flex-label">{{"UserPhoto"|translate}}</label>
           <input
             type="file"
             class="form-control flex-input custom-input"
@@ -94,13 +94,13 @@
       <div class="form-row full-width">
         <div class="form-group label-input full-width">
           <label for="email" class="flex-label" style="flex: 0 0 14.5%"
-            >Email ID</label
+            >{{"EmailId"|translate}}</label
           >
           <input
             type="email"
             class="form-control flex-input custom-input"
             id="email"
-            placeholder="Enter email"
+            placeholder='{{"EnterEmail"|translate}}'
             [(ngModel)]="newUser.emailID"
             required
           />
@@ -108,23 +108,23 @@
       </div>
       <div class="form-row">
         <div class="form-group label-input">
-          <label for="mobile" class="flex-label">Mobile No</label>
+          <label for="mobile" class="flex-label">{{"MobileNo"|translate}}</label>
           <input
             type="text"
             class="form-control flex-input custom-input"
             id="mobile"
-            placeholder="Enter mobile number"
+            placeholder='{{"EnterMobileNumber" | translate}}'
             [(ngModel)]="newUser.mobileNo"
             required
           />
         </div>
         <div class="form-group label-input">
-          <label for="address" class="flex-label">Address</label>
+          <label for="address" class="flex-label">{{"Address"|translate}}</label>
           <input
             type="text"
             class="form-control flex-input custom-input"
             id="address"
-            placeholder="Enter address"
+            placeholder='{{"EnterAddress"|translate}}'
             [(ngModel)]="newUser.address"
             required
           />
@@ -132,7 +132,7 @@
       </div>
       <div class="form-row">
         <div class="form-group label-input">
-          <label for="accessTo" class="flex-label">Access to</label>
+          <label for="accessTo" class="flex-label">{{"AccessTo"|translate}}</label>
           <div class="dropdown">
             <button
               class="btn dropdown-toggle"
@@ -142,7 +142,7 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-              {{ getSelectedItemsText() || "Select access options" }}
+              {{ getSelectedItemsText() || 'SelectAccessOptions' | translate}}
             </button>
             <div
               class="dropdown-menu dropdown-menu-left"
@@ -155,7 +155,7 @@
                   (change)="toggleSelection(item.id)"
                   [checked]="isSelected(item.id)"
                 />
-                {{ item.itemName }}
+                {{ item.itemName | translate }}
               </div>
             </div>
           </div>
@@ -167,7 +167,7 @@
           class="btn btn-primary add-user-btn"
           (click)="onSubmit()"
         >
-          Submit
+          {{"Submit"|translate}}
         </button>
       </div>
     </div>

@@ -4,17 +4,18 @@ import { UserService } from '../../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-admin-user',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './admin-user.component.html',
   styleUrl: './admin-user.component.css'
 })
 export class AdminUserComponent {
   users: User[] = [];
-  options: string[] = ['More Options', 'Block User', 'Suspend User', 'Reactivate User'];
+  options: string[] = ['MoreOptions', 'BlockUser', 'SuspendUser', 'ReactivateUser'];
   isAllSelected: boolean = false;
 
   constructor(private userService: UserService, private toastr: ToastrService) {}

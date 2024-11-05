@@ -32,6 +32,7 @@ const bookingSchema = new mongoose.Schema(
       enum: ["Yet to start", "Running", "Completed"],
       default: "Yet to start",
     },
+    tripStatus: {type: String},
     user: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     paymentStatus: {
       type: String,

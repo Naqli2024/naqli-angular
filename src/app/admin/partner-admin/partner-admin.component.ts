@@ -4,18 +4,19 @@ import { Partner } from '../../../models/partnerData.model';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-partner-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './partner-admin.component.html',
   styleUrl: './partner-admin.component.css'
 })
 
 export class PartnerAdminComponent {
   partners: Partner[] = [];
-  options: string[] = ['More Options', 'Block Partner', 'Suspend Partner', 'Reactivate Partner'];
+  options: string[] = ['MoreOptions', 'BlockPartner', 'SuspendPartner', 'ReactivatePartner'];
   isAllSelected: boolean = false; // Track the "Select All" checkbox state
 
   constructor(private partnerService: PartnerService, private toastr: ToastrService) {}

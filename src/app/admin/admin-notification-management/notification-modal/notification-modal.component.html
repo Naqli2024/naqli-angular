@@ -197,10 +197,10 @@
         </g>
       </svg>
       <div class="notification-content">
-        <h4>SEND PUSH NOTIFICATION</h4>
+        <h4>{{"SendPushNotification"|translate}}</h4>
 
         <textarea
-          placeholder="Message Title"
+          placeholder='{{"MessageTitle"|translate}}'
           class="message-title"
           [(ngModel)]="messageTitle"
           (input)="updateMessageTitleCount()"
@@ -208,7 +208,7 @@
         ></textarea>
         <div class="char-count">{{ messageTitleCount }}</div>
         <textarea
-          placeholder="Write message here"
+          placeholder='{{"WriteMessageHere"|translate}}'
           class="message-body"
           [(ngModel)]="messageBody"
           (input)="updateMessageBodyCount()"
@@ -219,7 +219,7 @@
           class="btn notification-modal-btn"
           (click)="sendNotificationToAdmin()"
         >
-          Next
+          {{"Next"|translate}}
         </button>
         <p
           (click)="activeModal.dismiss()"
@@ -230,7 +230,7 @@
             font-size: 12px;
           "
         >
-          Cancel
+          {{"Cancel"|translate}}
         </p>
       </div>
     </div>

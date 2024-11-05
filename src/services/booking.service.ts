@@ -8,7 +8,7 @@ import { Booking } from '../models/booking.model';
 })
 export class BookingService {
   private bookingId: string | null = null;
-  private apiUrl = 'https://naqli.onrender.com/api';
+  private apiUrl = 'http://localhost:4000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -75,7 +75,6 @@ export class BookingService {
       totalAmount: totalAmount,
       oldQuotePrice: oldQuotePrice,
     };
-    console.log(payload);
     return this.http.put(
       `${this.apiUrl}/bookings/${bookingId}/payment`,
       payload,

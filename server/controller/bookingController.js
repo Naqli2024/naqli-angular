@@ -52,6 +52,21 @@ const createBooking = async (req, res) => {
       }
     }
 
+    if (user.accountType === "Super User") {
+      const bookings = await Booking.find({ user: user._id });
+
+      const activeBookings = bookings.filter(
+        (bookings) => bookings.bookingStatus !== "Completed"
+      );
+
+      if (activeBookings.length >= 25) {
+        return res.status(403).json({
+          message:
+            "Booking limit reached. Complete existing bookings before creating a new one.",
+        });
+      }
+    }
+
     // Prevent past dates from being booked
     const currentDate = new Date();
     const bookingDate = new Date(date);
@@ -100,7 +115,8 @@ const createBooking = async (req, res) => {
       }
     } else if (!time && !fromTime && !toTime) {
       return res.status(400).json({
-        message: "At least one time field (time, fromTime, toTime) must be provided.",
+        message:
+          "At least one time field (time, fromTime, toTime) must be provided.",
       });
     }
 
@@ -314,7 +330,6 @@ const updateBookingPaymentStatus = async (req, res) => {
 
   // Round `amount` up to the nearest whole number if it has decimals
   amount = Math.round(amount);
-  console.log(amount)
 
   try {
     // Find the booking by ID
@@ -440,6 +455,10 @@ const updateBookingPaymentStatus = async (req, res) => {
     // Update booking status if payment status is 'HalfPaid', 'Completed', or 'Paid'
     if (status === "HalfPaid" || status === "Completed" || status === "Paid") {
       booking.bookingStatus = "Running";
+    }
+
+    if (booking.tripStatus === "Completed" && booking.remainingBalance === 0) {
+      booking.bookingStatus = "Completed";
     }
 
     // Save the updated booking
@@ -672,7 +691,13 @@ const updateBookingStatus = async (req, res) => {
     // If booking exists, proceed to update status if requested
     if (status === true) {
       // Update booking status to "Completed"
-      booking.bookingStatus = "Completed";
+      booking.tripStatus = "Completed";
+      if (
+        booking.tripStatus === "Completed" &&
+        booking.remainingBalance === 0
+      ) {
+        booking.bookingStatus = "Completed";
+      }
       await booking.save();
 
       if (bookingRequest) {
@@ -777,9 +802,17 @@ const getUnitDetails = async (req, res) => {
     }
 
     if (!bookingDetails.partner) {
-      return res
-        .status(400)
-        .json({ message: "Payment is not updated. Partner not found" });
+      // If the booking is not paid, return a message without erroring out
+      if (bookingDetails.paymentStatus === "NotPaid") {
+        return res.status(200).json({
+          message:
+            "Payment is not updated. Partner not found, unit details cannot be fetched.",
+        });
+      } else {
+        return res
+          .status(400)
+          .json({ message: "Payment is not updated. Partner not found" });
+      }
     }
 
     const partner = await Partner.findById(bookingDetails.partner);

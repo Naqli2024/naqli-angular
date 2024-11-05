@@ -13,6 +13,7 @@ import { SpinnerService } from '../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TicketModalComponent } from './ticket-modal/ticket-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface Ticket {
   id: string;
@@ -26,7 +27,7 @@ interface Ticket {
 @Component({
   selector: 'app-support-tickets',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, TranslateModule],
   templateUrl: './support-tickets.component.html',
   styleUrl: './support-tickets.component.css',
 })

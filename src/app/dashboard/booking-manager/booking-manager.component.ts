@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EditBookingModalComponent } from './edit-booking-modal/edit-booking-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
+import moment from 'moment';
 
 @Component({
   selector: 'app-booking-manager',
@@ -26,7 +27,12 @@ export class BookingManagerComponent {
   paymentHandler: any = null;
   totalAmount: number = 0;
   oldQuotePrice: number = 0;
-  unitDetails: { [key: string]: any } = {}; 
+  unitDetails: { [key: string]: any } = {};
+  filteredOption: string = 'All';
+  filteredBookingsByTime: any[] = [];
+  filteredBookingOption: string = 'All';
+  filteredBookingsByStatus: any[] = [];
+  filterBookings: any[] = [];
 
   constructor(
     private router: Router,
@@ -48,11 +54,25 @@ export class BookingManagerComponent {
     if (userId) {
       this.bookingService.getBookingByUserId(userId).subscribe((response) => {
         this.bookings = response.data;
+        this.applyFilter();
+        this.applyBookingFilter();
 
         // Get partner details for each booking and store them in partnerDetails
         this.bookings.forEach((booking) => {
-          this.getPartnerDetails(booking.partner);
-          this.getUnitDetails(booking._id);
+          if (booking.partner) {
+            this.getPartnerDetails(booking.partner);
+          } else {
+            console.warn(`No partner ID for booking ${booking._id}`);
+          }
+
+          // Only get unit details if paymentStatus is not 'NotPaid'
+          if (booking.paymentStatus !== 'NotPaid') {
+            this.getUnitDetails(booking._id);
+          } else {
+            console.warn(
+              `Skipping unit details for booking ${booking._id} as payment has not been initiated.`
+            );
+          }
         });
 
         this.filteredBookings = this.bookings
@@ -63,15 +83,23 @@ export class BookingManagerComponent {
   }
 
   getPartnerDetails(partnerId: string): void {
-    this.partnerService.getPartnerDetails(partnerId).subscribe((response) => {
-      // Store partner details with the partnerId as key
-      this.partnerDetails[partnerId] = response.data;
-    });
+    if (!partnerId || this.partnerDetails[partnerId]) return;
+    this.partnerService.getPartnerDetails(partnerId).subscribe(
+      (response) => {
+        this.partnerDetails[partnerId] = response.data;
+      },
+      (error) => {
+        console.error(
+          `Error fetching partner details for ID ${partnerId}:`,
+          error.message
+        );
+      }
+    );
   }
 
   getUnitDetails(bookingId: string): void {
+    if (this.unitDetails[bookingId]) return;
     this.bookingService.getUnitDetails(bookingId).subscribe((response) => {
-      // Store unit details with bookingId as key
       this.unitDetails[bookingId] = response.unit;
     });
   }
@@ -249,6 +277,82 @@ export class BookingManagerComponent {
 
     // Pass booking and vendor data to modal
     modalRef.componentInstance.booking = booking;
-    modalRef.componentInstance.refreshBookings = this.getBookingDetails.bind(this);
+    modalRef.componentInstance.refreshBookings =
+      this.getBookingDetails.bind(this);
+  }
+
+  onFilterChange(event: Event) {
+    this.filteredOption = (event.target as HTMLSelectElement).value;
+    this.applyFilter();
+  }
+
+  onBookingChange(event: Event) {
+    this.filteredBookingOption = (event.target as HTMLSelectElement).value;
+    this.applyBookingFilter();
+  }
+
+  applyFilter() {
+    const today = moment();
+
+    this.filteredBookingsByTime = this.bookings.filter((booking) => {
+      const bookingDate = moment(booking.createdAt);
+
+      switch (this.filteredOption) {
+        case 'All':
+          return true;
+        case 'Today':
+          return bookingDate.isSame(today, 'day');
+        case 'This Week':
+          return bookingDate.isSame(today, 'week');
+        case 'This Month':
+          return bookingDate.isSame(today, 'month');
+        case 'This Year':
+          return bookingDate.isSame(today, 'year');
+        default:
+          return true;
+      }
+    });
+
+    this.updateCombinedFilter();
+  }
+
+  applyBookingFilter() {
+    this.filteredBookingsByStatus = this.bookings.filter((booking) => {
+      switch (this.filteredBookingOption) {
+        case 'All':
+          return true;
+        case 'Completed':
+          return (
+            booking.bookingStatus === 'Completed' &&
+            (booking.paymentStatus === 'Completed' ||
+              booking.paymentStatus === 'Paid')
+          );
+        case 'Running':
+          return booking.bookingStatus === 'Running';
+        case 'Hold':
+          return (
+            booking.bookingStatus === 'Yet to start' ||
+            booking.paymentStatus === 'NotPaid'
+          );
+        case 'Pending for payment':
+          return (
+            booking.tripStatus === 'Completed' &&
+            booking.remainingBalance != 0
+          );
+        default:
+          return true;
+      }
+    });
+
+    this.updateCombinedFilter();
+  }
+
+  updateCombinedFilter() {
+    this.filterBookings = this.bookings.filter(
+      (booking) =>
+        this.filteredBookingsByTime.includes(booking) &&
+        this.filteredBookingsByStatus.includes(booking)
+    );
+    console.log('Combined Filtered Bookings:', this.filterBookings);
   }
 }

@@ -1,12 +1,12 @@
 <div class="for-orders-head">
-    <h2>Customers</h2>
+    <h2>{{"Customers"|translate}}</h2>
     <div class="dropdown-filter">
       <select (change)="onCustomerOptionChange($event)" class="form-select">
         <option
           *ngFor="let option of options"           
           [value]="option"
         >
-          {{ option }}
+          {{ 'filters.' + option | translate }}
         </option>
       </select>
     </div>

@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class checkoutService {
-  private apiUrl = 'https://naqli.onrender.com/api/checkout';
-  private baseUrl = 'https://naqli.onrender.com/api';
+  private apiUrl = 'http://localhost:4000/api/checkout';
+  private baseUrl = 'http://localhost:4000/api';
 
 
   constructor(private http: HttpClient) {}

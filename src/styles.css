@@ -417,12 +417,12 @@ body {
   color: #535353 !important;
 }
 .input-with-icon input {
-  padding-right: 30px; 
+  padding-right: 30px;
 }
 .input-with-icon i {
-  right: 15px !important; 
+  right: 15px !important;
   top: 50% !important;
-  transform: translateY(-50%); 
+  transform: translateY(-50%);
 }
 .draw-line {
   border-bottom: 1px solid rgba(186, 186, 186, 0.5) !important;
@@ -857,9 +857,9 @@ input[type="checkbox"] {
   margin: 0px auto !important;
 }
 .dotted {
-  width: 4px !important; 
-  height: 30px; 
-  border-left: 2px dashed #707070; 
+  width: 4px !important;
+  height: 30px;
+  border-left: 2px dashed #707070;
   margin: 5px auto !important;
 }
 .suggestions-dropdown {
@@ -1011,7 +1011,7 @@ input[type="checkbox"] {
 }
 
 .sidebar a.active {
-  background-color: #3769ce;
+  background-color: #6269fe;
   color: #fff;
 }
 
@@ -1085,7 +1085,7 @@ input[type="checkbox"] {
 }
 .user-city {
   font-size: 12px;
-  color: #8F8E97;
+  color: #8f8e97;
   margin-top: -10px;
 }
 
@@ -1232,7 +1232,7 @@ input[type="checkbox"] {
   align-items: center;
 }
 .border-right {
-  border-right: 1px solid #ddd !important; 
+  border-right: 1px solid #ddd !important;
   height: 100px;
   margin: 0px 40px !important;
 }
@@ -1284,22 +1284,22 @@ input[type="checkbox"] {
 }
 @media (max-width: 768px) {
   .booking-load {
-    flex-direction: column; 
-    align-items: flex-start; 
+    flex-direction: column;
+    align-items: flex-start;
     margin-left: 20px;
   }
   .border-right {
-    border-right: none; 
-    border-bottom: 1px solid #ddd; 
-    height: auto; 
-    margin: 20px 0; 
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    height: auto;
+    margin: 20px 0;
   }
   .booking-load-1,
   .booking-load-2,
   .booking-load-3 {
-    width: 100%; 
-    align-items: flex-start; 
-    padding: 10px; 
+    width: 100%;
+    align-items: flex-start;
+    padding: 10px;
   }
 }
 
@@ -2270,7 +2270,7 @@ input[type="checkbox"] {
   align-items: center;
   padding: 30px 0px;
 }
-.operator-management-table .table{
+.operator-management-table .table {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
   border-bottom-left-radius: 10px !important;
   border-bottom-right-radius: 10px !important;
@@ -2851,7 +2851,7 @@ table .make-disable.disabled td:not(:first-child) {
 .range-input {
   display: flex;
   align-items: center;
-  justify-content: left;
+  justify-content: center;
 }
 .range-input input {
   width: 100%;
@@ -3361,8 +3361,8 @@ table .make-disable.disabled td:not(:first-child) {
 .operator-form-unit {
   box-shadow: 0px 4px 8px rgba(150, 150, 150, 0.3);
   border: 1px solid #ccc;
-  max-height: 600px; 
-  overflow-y: auto; 
+  max-height: 600px;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 .operator-form-unit::-webkit-scrollbar {
@@ -3455,7 +3455,7 @@ table .make-disable.disabled td:not(:first-child) {
 }
 .trigger-booking-td-1 {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
 }
 .trigger-booking-td-1 .p1 {
   margin-bottom: 0px !important;
@@ -3483,15 +3483,15 @@ table .make-disable.disabled td:not(:first-child) {
   width: 250px;
 }
 .trigger-booking-td-2 .input-field:nth-child(1) {
-  background-color: #C8FBFD; /* Light Blue */
+  background-color: #c8fbfd; /* Light Blue */
 }
 /* Background for Vendor 2 */
 .trigger-booking-td-2 .input-field:nth-child(2) {
-  background-color: #E0FDC8; /* Light Green */
+  background-color: #e0fdc8; /* Light Green */
 }
 /* Background for Vendor 3 */
 .trigger-booking-td-2 .input-field:nth-child(3) {
-  background-color: #F5FDC8; /* Light Yellow */
+  background-color: #f5fdc8; /* Light Yellow */
 }
 .trigger-booking-td-2 .vendor-details span {
   font-size: 13px !important;
@@ -3525,11 +3525,11 @@ table .make-disable.disabled td:not(:first-child) {
 .booking-history .table-container::-webkit-scrollbar-thumb:hover {
   background: #ccc !important;
 }
-.table tbody tr:last-child td{
+.table tbody tr:last-child td {
   border-bottom: none !important;
 }
 .booking-history .table-container .trigger-booking-table {
-  border-collapse: separate; 
+  border-collapse: separate;
   border-spacing: 0;
   border-bottom-left-radius: 10px !important;
   border-bottom-right-radius: 10px !important;
@@ -3548,7 +3548,7 @@ table .make-disable.disabled td:not(:first-child) {
   margin: 20px 0px !important;
 }
 .trigger-payment-model {
- margin-left: 50px !important;
+  margin-left: 50px !important;
 }
 @media (max-width: 768px) {
   .trigger-payment-model {
@@ -3569,20 +3569,39 @@ table .make-disable.disabled td:not(:first-child) {
 
 /********************Booking Manager*******************/
 .booking-manager-container {
-  margin: 10px!important;
+  margin: 10px !important;
 }
 .booking-manager-table {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
-@media (max-width: 768px) {
- .booking-manager-container {
-  gap: 20px !important;
- }
- .booking-manager-container {
-  margin: 0px!important;
+.booking-manager-dropdown {
+  width: 100% !important;
+  display: flex !important;
 }
+.booking-manager-dropdown select {
+  width: 150px !important;
+}
+@media (max-width: 768px) {
+  .booking-manager-container {
+    gap: 20px !important;
+  }
+  .booking-manager-container {
+    margin: 0px !important;
+  }
+  .booking-manager-dropdown {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .booking-manager-dropdown select {
+    width: 150px !important;
+    margin: 5px 0px !important;
+    margin-right: 0px !important;
+  }
 }
 .payment-status-icon {
   width: 25px !important;
@@ -3590,8 +3609,8 @@ table .make-disable.disabled td:not(:first-child) {
   object-fit: contain;
 }
 .booking-manager-container .first-row {
-  height: 100%; 
-  max-height: 350px; 
+  height: 100%;
+  max-height: 350px;
   padding: 30px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -3600,29 +3619,29 @@ table .make-disable.disabled td:not(:first-child) {
   padding: 5px 30px;
   border-radius: 15px;
   font-size: 15px;
-  display: inline-block; 
+  display: inline-block;
 }
 .booking-table-cell {
-  vertical-align: middle; 
+  vertical-align: middle;
 }
 .scrollable-tbody {
-  display: block; 
+  display: block;
   max-height: 300px;
-  overflow-y: auto !important; 
+  overflow-y: auto !important;
 }
 .scrollable-tbody tr {
-  display: table; 
-  width: 100%;  
+  display: table;
+  width: 100%;
 }
 .scrollable-tbody::-webkit-scrollbar {
-  width: 8px; 
+  width: 8px;
 }
 .scrollable-tbody::-webkit-scrollbar-thumb {
-  background-color: darkgrey; 
-  border-radius: 10px; 
+  background-color: darkgrey;
+  border-radius: 10px;
 }
 .scrollable-tbody::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #f1f1f1;
 }
 
 .labels-container {
@@ -3654,10 +3673,9 @@ table .make-disable.disabled td:not(:first-child) {
     margin: 25px auto !important;
   }
   .booking-manager-container .first-row {
-    height: fit-content !important; 
+    height: fit-content !important;
   }
 }
-
 
 /******************Edit Model Component****************/
 .edit-model-row-2 {
@@ -3668,7 +3686,7 @@ table .make-disable.disabled td:not(:first-child) {
   gap: 5px !important;
 }
 .edit-booking-modal {
-  max-height: 450px; 
+  max-height: 450px;
 }
 @media (max-width: 768px) {
   .edit-booking-modal {
@@ -3676,15 +3694,15 @@ table .make-disable.disabled td:not(:first-child) {
   }
 }
 .highlighted-border {
-  border: 2px solid #1BD0BB !important;
+  border: 2px solid #1bd0bb !important;
 }
 
 .btn-view {
-  background-color: #F5F3FF !important;
+  background-color: #f5f3ff !important;
   border: 1px solid #ddd !important;
   width: 100px !important;
   font-size: 14px !important;
-  color: #7F6AFF !important;
+  color: #7f6aff !important;
 }
 
 /***************Booking Deatils****************/
@@ -3694,24 +3712,24 @@ table .make-disable.disabled td:not(:first-child) {
   padding-top: 35px;
 }
 .show-booking-details p {
-  padding: 10px 0; 
-  margin-bottom: 10px; 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
+  padding: 10px 0;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .show-booking-details {
-  border-bottom: 1px solid #ddd !important; 
+  border-bottom: 1px solid #ddd !important;
 }
 .booking-modal-body p:last-child {
-  border-bottom: none; 
+  border-bottom: none;
 }
 .booking-modal-body b {
-  margin-right: 10px; 
+  margin-right: 10px;
 }
 .booking-modal-body span {
-  flex-grow: 1; 
-  text-align: end !important; 
+  flex-grow: 1;
+  text-align: end !important;
 }
 
 .buttons .viewMyLocation {
@@ -3726,7 +3744,6 @@ table .make-disable.disabled td:not(:first-child) {
 .viewMyLocation i {
   padding: 0px 5px;
 }
-
 
 /******************Time input***************/
 /* Increase width and decrease height of the time picker */
@@ -3781,7 +3798,6 @@ table .make-disable.disabled td:not(:first-child) {
   color: #9d9d9d !important;
 }
 
-
 /**********************Help Component*********************/
 
 .help-body {
@@ -3791,7 +3807,7 @@ table .make-disable.disabled td:not(:first-child) {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  top: 50%; 
+  top: 50%;
   left: 50%;
   background: rgba(255, 255, 255);
   padding: 10px 0px;
@@ -3800,7 +3816,7 @@ table .make-disable.disabled td:not(:first-child) {
   overflow-y: auto !important;
 }
 .help-component {
-  background-image: url('assets/images/help.svg'); /* Set the background image */
+  background-image: url("assets/images/help.svg"); /* Set the background image */
   background-size: cover; /* Make sure the image covers the entire div */
   background-position: center; /* Center the background image */
   background-repeat: no-repeat; /* Prevent the image from repeating */
@@ -3834,7 +3850,7 @@ table .make-disable.disabled td:not(:first-child) {
 }
 
 .accordion-button:not(.collapsed) .faq-question {
-  color: #6269FE !important; /* Set the FAQ question color when expanded */
+  color: #6269fe !important; /* Set the FAQ question color when expanded */
 }
 
 .accordion-button:not(.collapsed) + .accordion-body {
@@ -3864,17 +3880,17 @@ table .make-disable.disabled td:not(:first-child) {
 }
 @media (max-width: 768px) {
   .help-body {
-    width: 95% !important;  
-    height: 550px !important; 
+    width: 95% !important;
+    height: 550px !important;
     margin-top: 50%;
   }
 }
 
 @media (max-width: 576px) {
   .help-body {
-    width: 100% !important;  
-    height: 550px !important; 
-    padding: 15px; 
+    width: 100% !important;
+    height: 550px !important;
+    padding: 15px;
     margin-top: 30%;
     top: 130%;
   }
@@ -3890,7 +3906,7 @@ table .make-disable.disabled td:not(:first-child) {
 }
 
 .help-body::-webkit-scrollbar-thumb {
-  background-color: #6269FE; /* Color of the scrollbar thumb */
+  background-color: #6269fe; /* Color of the scrollbar thumb */
   border-radius: 4px; /* Rounded edges */
 }
 
@@ -3907,9 +3923,9 @@ table .make-disable.disabled td:not(:first-child) {
 /*******************Payment Card Screen*******************/
 .blur-background {
   filter: blur(5px);
-  pointer-events: none; 
-  opacity: 0.7; 
-  transition: all 0.3s ease; 
+  pointer-events: none;
+  opacity: 0.7;
+  transition: all 0.3s ease;
 }
 .centered-payment-form {
   position: fixed;
@@ -3918,7 +3934,7 @@ table .make-disable.disabled td:not(:first-child) {
   transform: translate(-50%, -50%);
   z-index: 1001;
   border-radius: 8px;
-  width: 100%; 
+  width: 100%;
   z-index: 1001;
 }
 /* Dark overlay to dim the background */
@@ -3928,8 +3944,8 @@ table .make-disable.disabled td:not(:first-child) {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(44, 44, 44, 0.5); 
-  z-index: 1000; 
+  background: rgba(44, 44, 44, 0.5);
+  z-index: 1000;
 }
 /* Ensure the entire page content gets the blur effect, not the modal */
 .modal-overlay + .centered-payment-form {
@@ -3990,18 +4006,18 @@ h1 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(44, 44, 44, 0.5); 
-  z-index: 1000; 
+  background: rgba(44, 44, 44, 0.5);
+  z-index: 1000;
 }
 .payment-options {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   justify-content: space-between;
-  align-items: start; 
-  background-color: white; 
-  padding: 20px!important;
-  border-radius: 8px; 
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+  align-items: start;
+  background-color: white;
+  padding: 20px !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
   width: 100%;
   max-width: 400px;
@@ -4009,35 +4025,38 @@ h1 {
 /* .payment-options .btn:not(:last-child) {
   border-bottom: 1px solid #ddd; 
 } */
-.btn-pay-mada, .btn-pay-other {
-  display: flex !important; 
+.btn-pay-mada,
+.btn-pay-other {
+  display: flex !important;
   justify-content: space-between !important;
-  align-items: center !important; 
-  margin: 5px 0; 
+  align-items: center !important;
+  margin: 5px 0;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s; 
+  transition: background-color 0.3s;
   width: 100%;
 }
-.btn-pay-other:hover, .btn-pay-mada:hover {
-  background-color: #f0f0f0 !important; 
+.btn-pay-other:hover,
+.btn-pay-mada:hover {
+  background-color: #f0f0f0 !important;
   padding: 5px;
 }
-.btn-pay-mada img, .btn-pay-other img {
-  width: 100%; 
+.btn-pay-mada img,
+.btn-pay-other img {
+  width: 100%;
   max-width: 80px;
   height: 100%;
-  max-height: 80px;  
+  max-height: 80px;
 }
 .close-button {
-  align-self: flex-end !important; 
-  background: none !important; 
-  border: none !important; 
-  cursor: pointer !important; 
-  font-size: 1.5em !important; 
-  color: #333 !important; 
+  align-self: flex-end !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  font-size: 1.5em !important;
+  color: #333 !important;
   margin-bottom: 15px !important;
   margin-top: -10px !important;
 }
@@ -4062,21 +4081,21 @@ h1 {
   animation: spin 3s linear infinite;
 }
 @keyframes spin {
-  from{
+  from {
     transform: rotate(-0deg);
   }
-  to{
+  to {
     transform: rotate(-360deg);
   }
 }
 .dot-container:nth-child(1) {
-  animation-delay: .3s;
+  animation-delay: 0.3s;
 }
 .dot-container:nth-child(2) {
-  animation-delay: .6s;
+  animation-delay: 0.6s;
 }
 .dot-container:nth-child(3) {
-  animation-delay: .9s;
+  animation-delay: 0.9s;
 }
 .dot-container:nth-child(4) {
   animation-delay: 1.2s;
@@ -4109,7 +4128,6 @@ h1 {
   animation-delay: 3.9s;
 }
 
-
 .dot-container .circle {
   height: 10px;
   width: 3px;
@@ -4118,21 +4136,21 @@ h1 {
   animation: dots 3s linear infinite;
 }
 @keyframes dots {
-  from{
+  from {
     background: black;
   }
-  to{
+  to {
     background: white;
   }
 }
 .dot-container:nth-child(1) .cirlce {
-  animation-delay: .3s;
+  animation-delay: 0.3s;
 }
 .dot-container:nth-child(2) .cirlce {
-  animation-delay: .6s;
+  animation-delay: 0.6s;
 }
 .dot-container:nth-child(3) .cirlce {
-  animation-delay: .9s;
+  animation-delay: 0.9s;
 }
 .dot-container:nth-child(4) .cirlce {
   animation-delay: 1.2s;
@@ -4165,6 +4183,3 @@ h1 {
 .dot-container:nth-child(13) {
   animation-delay: 3.9s;
 }
-
-
-

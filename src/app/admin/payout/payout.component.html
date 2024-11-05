@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>Payout</h2>
+      <h2>{{ "Payout" | translate }}</h2>
     </div>
     <div style="margin-top: 20px">
       <div class="tab-buttons">
@@ -10,14 +10,14 @@
           [class.active]="isInitialPayoutTab"
           (click)="selectTab('initialPayout')"
         >
-          Initial Payout
+          {{ "InitialPayout" | translate }}
         </button>
         <button
           class="tab-button"
           [class.active]="!isInitialPayoutTab"
           (click)="selectTab('finalPayout')"
         >
-          Final Payout
+          {{ "FinalPayout" | translate }}
         </button>
       </div>
       <div
@@ -33,22 +33,22 @@
           >
             <tr>
               <ng-container *ngIf="isInitialPayoutTab">
-                <th>User Name</th>
-                <th>Booking ID</th>
-                <th>Date</th>
-                <th>Total Payout</th>
-                <th>Initial Payout</th>
-                <th>Partner Name</th>
-                <th>Action</th>
+                <th>{{ "UserName" | translate }}</th>
+                <th>{{ "terms.BookingID" | translate }}</th>
+                <th>{{ "Date" | translate }}</th>
+                <th>{{ "TotalPayout" | translate }}</th>
+                <th>{{ "InitialPayout" | translate }}</th>
+                <th>{{ "PartnerName" | translate }}</th>
+                <th>{{ "Action" | translate }}</th>
               </ng-container>
               <ng-container *ngIf="!isInitialPayoutTab">
-                <th>Partner Name</th>
-                <th>Pending Amount</th>
-                <th>Extra Charges</th>
-                <th>Refunds</th>
-                <th>Commission</th>
-                <th>Final Payout</th>
-                <th>Action</th>
+                <th>{{ "PartnerName" | translate }}</th>
+                <th>{{ "Pending Amount" | translate }}</th>
+                <th>{{ "ExtraCharges" | translate }}</th>
+                <th>{{ "Refunds" | translate }}</th>
+                <th>{{ "Commission" | translate }}</th>
+                <th>{{ "FinalPayout" | translate }}</th>
+                <th>{{ "Action" | translate }}</th>
               </ng-container>
             </tr>
           </thead>

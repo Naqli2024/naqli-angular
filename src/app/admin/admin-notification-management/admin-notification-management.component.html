@@ -1,18 +1,19 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>Notification Management</h2>
+      <h2>{{ "NotificationManagement" | translate }}</h2>
     </div>
     <div class="notification-bar">
       <input
         type="text"
-        placeholder="Search here"
+        placeholder="{{ 'SearchHere' | translate }}"
         class="search-bar"
         [(ngModel)]="searchTerm"
         (input)="onSearchTermChange()"
       />
       <button class="create-button" (click)="toggleNotificationState()">
-        {{ buttonText }}
+        <span *ngIf="isPushNotificationMode">{{ 'SendPushNotification' | translate }}</span>
+        <span *ngIf="!isPushNotificationMode">{{ 'CreateNewNotification' | translate }}</span>
       </button>
     </div>
     <div *ngIf="isPushNotificationMode" style="margin-top: 20px">
@@ -22,14 +23,14 @@
           [class.active]="isUserTab"
           (click)="selectTab('user')"
         >
-          User
+          {{ "User" | translate }}
         </button>
         <button
           class="tab-button"
           [class.active]="!isUserTab"
           (click)="selectTab('partner')"
         >
-          Partner
+          {{ "Partner" | translate }}
         </button>
       </div>
       <div
@@ -52,16 +53,16 @@
                 />
               </th>
               <ng-container *ngIf="isUserTab">
-                <th>User Name</th>
-                <th>User ID</th>
+                <th>{{ "UserName" | translate }}</th>
+                <th>{{ "UserId" | translate }}</th>
               </ng-container>
               <ng-container *ngIf="!isUserTab">
-                <th>Partner Name</th>
-                <th>Partner ID</th>
+                <th>{{ "PartnerName" | translate }}</th>
+                <th>{{ "PartnerId" | translate }}</th>
               </ng-container>
-              <th>Email ID</th>
-              <th>Phone No</th>
-              <th>Last Notification</th>
+              <th>{{ "EmailId" | translate }}</th>
+              <th>{{ "PhoneNo" | translate }}</th>
+              <th>{{ "LastNotification" | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -123,11 +124,11 @@
             style="position: sticky; top: 0; z-index: 1; background-color: #fff"
           >
             <tr>
-              <th>Name</th>
-              <th>Notification ID</th>
-              <th>Notification Title</th>
-              <th>Notification Content</th>
-              <th>Action</th>
+              <th>{{ "Name" | translate }}</th>
+              <th>{{ "NotificationID" | translate }}</th>
+              <th>{{ "NotificationTitle" | translate }}</th>
+              <th>{{ "NotificationContent" | translate }}</th>
+              <th>{{ "Action" | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -163,7 +164,7 @@
       </div>
       <ng-template #noNotifications>
         <p style="text-align: center; margin-top: 50px">
-          No notifications available.
+          {{ "No notifications available" | translate }}.
         </p>
       </ng-template>
     </div>

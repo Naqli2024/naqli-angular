@@ -16,7 +16,9 @@
             <tr class="trigger-booking-table">
               <td class="trigger-booking-td">
                 <div class="trigger-booking-td-1">
-                  <p class="p1">{{ 'unitTypes.' + booking.unitType | translate }}</p>
+                  <p class="p1">
+                    {{ "unitTypes." + booking.unitType | translate }}
+                  </p>
                   <p class="p2">
                     {{
                       unitDetails[booking._id] ||
@@ -41,14 +43,14 @@
                   style="width: 150px"
                   (click)="openEditModal(booking)"
                 >
-                  {{"Edit"|translate}}
+                  {{ "Edit" | translate }}
                 </button>
               </td>
             </tr>
             <tr class="trigger-booking-table">
               <td class="trigger-booking-td">
                 <div class="trigger-booking-td-1">
-                  <p class="p1">{{"BalanceAmount"|translate}}</p>
+                  <p class="p1">{{ "BalanceAmount" | translate }}</p>
                   <p class="p2">{{ booking.date }}</p>
                 </div>
               </td>
@@ -67,7 +69,7 @@
                     )
                   "
                 >
-                  {{"Pay"|translate}}: {{ booking.remainingBalance }} SAR
+                  {{ "Pay" | translate }}: {{ booking.remainingBalance }} SAR
                 </button>
               </td>
             </tr>
@@ -79,16 +81,12 @@
 
   <div class="col-md-2 booking-history">
     <div class="table-container booking-manager-table">
-      <table
-        class="table"
-        style="
-          margin: 0px 0px !important;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        "
-      >
+      <table class="table" style="margin: 0px 0px !important">
         <thead>
           <tr class="trigger-booking-table">
-            <th style="text-align: center !important">{{"NewBooking" |translate}}</th>
+            <th style="text-align: center !important">
+              {{ "NewBooking" | translate }}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -103,6 +101,7 @@
                 width="82.998"
                 height="89.999"
                 viewBox="0 0 82.998 89.999"
+                style="margin: 50px 0px !important"
               >
                 <path
                   id="Union_1"
@@ -121,11 +120,38 @@
   </div>
 </div>
 
+<div class="dropdown-container booking-manager-dropdown">
+  <select
+    class="form-select"
+    style="width: 150px !important; margin-right: 10px"
+    (change)="onFilterChange($event)"
+  >
+    <option value="All" selected>{{ "filters.All" | translate }}</option>
+    <option value="Today">{{ "filters.Today" | translate }}</option>
+    <option value="This Week">{{ "filters.ThisWeek" | translate }}</option>
+    <option value="This Month">{{ "filters.ThisMonth" | translate }}</option>
+    <option value="This Year">{{ "filters.ThisYear" | translate }}</option>
+  </select>
+  <select
+    class="form-select"
+    style="width: 150px !important; margin-right: 25px"
+    (change)="onBookingChange($event)"
+  >
+    <option value="All" selected>{{ "filters.All" | translate }}</option>
+    <option value="Completed">{{ "filters.Completed" | translate }}</option>
+    <option value="Running">{{ "filters.Running" | translate }}</option>
+    <option value="Hold">{{ "filters.Hold" | translate }}</option>
+    <option value="Pending for payment">
+      {{ "filters.PendingForPayment" | translate }}
+    </option>
+  </select>
+</div>
+
 <div class="row booking-manager-container">
   <div class="col-md-12 booking-history">
     <div
       class="table-container booking-manager-table"
-      style="max-height: 360px !important; overflow-y: auto"
+      style="max-height: 310px !important; overflow-y: auto"
     >
       <table
         class="table"
@@ -140,24 +166,22 @@
         >
           <tr class="trigger-booking-table">
             <th>Booking ID</th>
-            <th>{{"Mode"|translate}}</th>
-            <th>{{"Vendor Name"|translate}}</th>
-            <th>{{"terms.Payment Status"|translate}}</th>
-            <th>{{"status.Status"|translate}}</th>
+            <th>{{ "Mode" | translate }}</th>
+            <th>{{ "Vendor Name" | translate }}</th>
+            <th>{{ "terms.Payment Status" | translate }}</th>
+            <th>{{ "status.Status" | translate }}</th>
           </tr>
         </thead>
         <tbody>
           <ng-container>
-            <tr class="trigger-booking-table" *ngFor="let booking of bookings">
+            <tr
+              class="trigger-booking-table"
+              *ngFor="let booking of filterBookings"
+            >
               <td>{{ booking._id }}</td>
-              <td>{{ "unitTypes." + booking.unitType | translate}}</td>
+              <td>{{ "unitTypes." + booking.unitType | translate }}</td>
               <td>
-                {{
-                  booking.partner
-                    ? partnerDetails[booking.partner]?.partnerName ||
-                      "Loading..."
-                    : "N/A"
-                }}
+                {{ partnerDetails[booking.partner]?.partnerName || "N/A" }}
               </td>
               <td>
                 <span

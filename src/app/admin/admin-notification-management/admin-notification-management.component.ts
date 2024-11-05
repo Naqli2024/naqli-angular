@@ -11,16 +11,17 @@ import { NotificationService } from '../../../services/admin/notification.servic
 import { FormsModule } from '@angular/forms';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-admin-notification-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, TranslateModule],
   templateUrl: './admin-notification-management.component.html',
   styleUrl: './admin-notification-management.component.css',
 })
 export class AdminNotificationManagementComponent implements OnInit {
-  buttonText: string = 'Create New Notification';
+  buttonText!: string;
   isPushNotificationMode: boolean = false;
   isUserTab: boolean = true;
   users: User[] = [];
@@ -43,8 +44,11 @@ export class AdminNotificationManagementComponent implements OnInit {
     private partnerService: PartnerService,
     private modalService: NgbModal,
     private toastr: ToastrService,
-    private notificationService: NotificationService
-  ) {}
+    private notificationService: NotificationService,
+    private translate: TranslateService
+  ) {
+    this.updateButtonText();
+  }
 
   ngOnInit(): void {
     this.userService.getAllUsers().subscribe((users) => {
@@ -104,11 +108,17 @@ export class AdminNotificationManagementComponent implements OnInit {
 
   toggleNotificationState() {
     if (!this.isPushNotificationMode) {
-      this.buttonText = 'Send Push Notification';
       this.isPushNotificationMode = true;
     } else {
-      this.sendPushNotification(); // Call sendPushNotification directly if already in push notification mode
+      this.sendPushNotification();
     }
+    this.updateButtonText();
+  }
+
+  private updateButtonText() {
+    this.buttonText = this.isPushNotificationMode
+      ? this.translate.instant('SendPushNotification')
+      : this.translate.instant('CreateNewNotification');
   }
 
   selectTab(tab: string) {

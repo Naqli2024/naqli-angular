@@ -1,7 +1,7 @@
 <div class="row"></div>
 <div class="col-md-12 booking-history">
   <div class="head-element">
-    <h2>Commission</h2>
+    <h2>{{"Commission"|translate}}</h2>
   </div>
   <div style="margin-top: 50px">
     <div class="tab-buttons">
@@ -10,21 +10,21 @@
         [ngClass]="{ active: activeTab === 'singleUser' }"
         (click)="switchTab('singleUser')"
       >
-        Single User
+        {{"REGISTER.ACCOUNT_TYPES.SINGLE_USER"|translate}}
       </button>
       <button
         class="tab-button"
         [ngClass]="{ active: activeTab === 'superUser' }"
         (click)="switchTab('superUser')"
       >
-        Super User
+        {{"REGISTER.ACCOUNT_TYPES.SUPER_USER"|translate}}
       </button>
       <button
         class="tab-button"
         [ngClass]="{ active: activeTab === 'enterpriseUser' }"
         (click)="switchTab('enterpriseUser')"
       >
-        Enterprise User
+        {{"REGISTER.ACCOUNT_TYPES.ENTERPRISE_USER"|translate}}
       </button>
     </div>
 
@@ -32,9 +32,9 @@
       <table class="table Commission-table" style="margin: 0px 0px !important; padding: 10px 45px !important;">
         <thead style="position: sticky; top: 0; z-index: 1; background-color: #fff">
           <tr>
-            <th>Slab rate</th>
-            <th>Commission(%)</th>
-            <th>Action</th>
+            <th>{{"SlabRate" | translate}}</th>
+            <th>{{"Commission"|translate}}(%)</th>
+            <th>{{"Action"|translate}}</th>
           </tr>
         </thead>
         <tbody>
@@ -72,14 +72,14 @@
                   (click)="saveNewSingleUserSlab(i)"
                   class="btn btn-secondary Commission-btn"
                 >
-                  Add
+                  {{"Add" | translate}}
                 </button>
                 <button
                   *ngIf="!slab.isNew"
                   (click)="removeSingleUserSlab(i)"
                   class="btn Commission-btn cancel"
                 >
-                  <fa-icon [icon]="faTrashAlt"></fa-icon> Remove
+                  <fa-icon [icon]="faTrashAlt"></fa-icon> {{"Remove"|translate}}
                 </button>
                 <button
                   *ngIf="!slab.isNew"
@@ -94,7 +94,7 @@
                     *ngIf="!isEditing(i, 'singleUser')"
                     [icon]="faEdit"
                   ></fa-icon>
-                  {{ isEditing(i, 'singleUser') ? "Save" : "Edit" }}
+                  {{ isEditing(i, 'singleUser') ? ('Save' | translate) : ('Edit' | translate) }}
                 </button>
               </td>
             </tr>
@@ -104,7 +104,7 @@
                   (click)="addSingleUserSlab()"
                   class="btn Commission-btn add-slab-btn"
                 >
-                  <fa-icon [icon]="faPlus"></fa-icon> Add Slab
+                  <fa-icon [icon]="faPlus"></fa-icon> {{"AddSlab"|translate}}
                 </button>
               </td>
             </tr>
@@ -144,14 +144,14 @@
                   (click)="saveNewSuperUserSlab(i)"
                   class="btn btn-secondary Commission-btn"
                 >
-                  Add
+                  {{"Add"|translate}}
                 </button>
                 <button
                   *ngIf="!slab.isNew"
                   (click)="removeSuperUserSlab(i)"
                   class="btn Commission-btn cancel"
                 >
-                  <fa-icon [icon]="faTrashAlt"></fa-icon> Remove
+                  <fa-icon [icon]="faTrashAlt"></fa-icon> {{"Remove"|translate}}
                 </button>
                 <button
                   *ngIf="!slab.isNew"
@@ -166,7 +166,7 @@
                     *ngIf="!isEditing(i, 'superUser')"
                     [icon]="faEdit"
                   ></fa-icon>
-                  {{ isEditing(i, 'superUser') ? "Save" : "Edit" }}
+                  {{ isEditing(i, 'superUser') ? ('Save' | translate) : ('Edit' | translate) }}
                 </button>
               </td>
             </tr>
@@ -176,7 +176,7 @@
                   (click)="addSuperUserSlab()"
                   class="btn Commission-btn add-slab-btn"
                 >
-                  <fa-icon [icon]="faPlus"></fa-icon> Add Slab
+                  <fa-icon [icon]="faPlus"></fa-icon> {{"AddSlab"|translate}}
                 </button>
               </td>
             </tr>
@@ -216,14 +216,14 @@
                   (click)="saveNewEnterpriseUserSlab(i)"
                   class="btn btn-secondary Commission-btn"
                 >
-                  Add
+                  {{"Add"|translate}}
                 </button>
                 <button
                   *ngIf="!slab.isNew"
                   (click)="removeEnterpriseUserSlab(i)"
                   class="btn Commission-btn cancel"
                 >
-                  <fa-icon [icon]="faTrashAlt"></fa-icon> Remove
+                  <fa-icon [icon]="faTrashAlt"></fa-icon> {{"Remove"|translate}}
                 </button>
                 <button
                   *ngIf="!slab.isNew"
@@ -238,7 +238,7 @@
                     *ngIf="!isEditing(i, 'enterpriseUser')"
                     [icon]="faEdit"
                   ></fa-icon>
-                  {{ isEditing(i, 'enterpriseUser') ? "Save" : "Edit" }}
+                  {{ isEditing(i, 'enterpriseUser') ? ('Save'|translate) : ('Edit'|translate) }}
                 </button>
               </td>
             </tr>
@@ -248,7 +248,7 @@
                   (click)="addEnterpriseUserSlab()"
                   class="btn Commission-btn add-slab-btn"
                 >
-                  <fa-icon [icon]="faPlus"></fa-icon> Add Slab
+                  <fa-icon [icon]="faPlus"></fa-icon> {{"AddSlab"|translate}}
                 </button>
               </td>
             </tr>

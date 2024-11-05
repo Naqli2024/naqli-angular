@@ -7,11 +7,12 @@ import { User } from '../../../../models/user.model';
 import { Partner } from '../../../../models/partnerData.model';
 import { NotificationService } from '../../../../services/admin/notification.service';
 import { SpinnerService } from '../../../../services/spinner.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-notification-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './notification-modal.component.html',
   styleUrl: './notification-modal.component.css',
 })
