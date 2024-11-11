@@ -3,34 +3,35 @@
     <div class="head-element">
       <h2>{{ "Payment" | translate }}</h2>
     </div>
-    <!-- <div *ngIf="bookings && bookings.length"> -->
-    <div *ngFor="let booking of bookings">
-      <div *ngIf="booking.remainingBalance != 0" class="payment-status">
-        <p>
-          Booking ID: <span>{{ booking._id }}</span>
-        </p>
-        <p>
-          {{ "paymentStatus.Paid" | translate }}:
-          <span>{{ booking.paymentAmount }}</span>
-        </p>
-        <p class="text-center">
-          {{ "terms.Balance" | translate }}
-          <span>
-            <button
-              type="button"
-              class="btn btn-balance"
-              style="margin-top: 5px; padding: 5px 50px !important"
-            >
-              {{ booking.remainingBalance }}
-            </button>
-          </span>
-        </p>
+    <div *ngIf="bookings && bookings.length" class="payment-status-head">
+      <div *ngFor="let booking of bookings">
+        <div *ngIf="booking.remainingBalance != 0" class="payment-status">
+          <p>
+            Booking ID: <span>{{ booking._id }}</span>
+          </p>
+          <p>
+            {{ "paymentStatus.Paid" | translate }}:
+            <span>{{ booking.paymentAmount }}</span>
+          </p>
+          <p class="text-center">
+            {{ "terms.Balance" | translate }}
+            <span>
+              <button
+                type="button"
+                class="btn btn-balance"
+                style="margin-top: 5px; padding: 5px 50px !important"
+              >
+                {{ booking.remainingBalance }}
+              </button>
+            </span>
+          </p>
+        </div>
       </div>
     </div>
     <div
       class="table-container booking-manager-table"
       style="
-        max-height: 500px !important;
+        max-height: 330px !important;
         overflow-y: auto !important;
         margin-top: 30px !important;
       "
@@ -39,10 +40,12 @@
         class="table"
         style="box-shadow: none !important; margin: 0px 0px !important"
       >
-        <thead>
+        <thead
+          style="position: sticky; top: 0; z-index: 1; background-color: #fff"
+        >
           <tr>
             <th>{{ "Booked by" | translate }}</th>
-            <th>Booking Id</th>
+            <th>{{ "terms.BookingID" | translate }}</th>
             <th>{{ "Mode" | translate }}</th>
             <th>{{ "terms.Date" | translate }}</th>
             <th>{{ "terms.Payment Status" | translate }}</th>
@@ -57,11 +60,15 @@
             <td>{{ booking._id }}</td>
             <td>{{ "unitTypes." + booking.unitType | translate }}</td>
             <td>{{ booking.date }}</td>
-            <td>{{ ("paymentStatus." + booking.paymentStatus | translate) || booking.paymentStatus }}</td>
+            <td>
+              {{
+                ("paymentStatus." + booking.paymentStatus | translate) ||
+                  booking.paymentStatus
+              }}
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <!-- </div> -->
   </div>
 </div>

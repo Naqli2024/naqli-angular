@@ -1,4 +1,10 @@
-import { Component, AfterViewInit, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ViewChildren,
+  QueryList,
+  ElementRef,
+} from '@angular/core';
 import { BookingService } from '../../../services/booking.service';
 import { PartnerService } from '../../../services/partner/partner.service';
 import { CommonModule } from '@angular/common';
@@ -17,12 +23,12 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './super-user-payments.component.html',
   styleUrl: './super-user-payments.component.css',
 })
-
 export class SuperUserPaymentsComponent implements AfterViewInit {
-  @ViewChildren('.no-scroll-header', { read: ElementRef }) tableHeaders!: QueryList<ElementRef>;
+  @ViewChildren('.no-scroll-header', { read: ElementRef })
+  tableHeaders!: QueryList<ElementRef>;
 
   bookings: any[] = [];
-  filteredBookings: any[] = []; 
+  filteredBookings: any[] = [];
   partnerDetails: any = {};
   selectedFilter: string = 'status.All';
   totalAmount: number = 0;
@@ -44,11 +50,12 @@ export class SuperUserPaymentsComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.tableHeaders.forEach(header => this.preventVerticalScroll(header));
+    this.tableHeaders.forEach((header) => this.preventVerticalScroll(header));
   }
 
   preventVerticalScroll(header: ElementRef): void {
-    if (header.nativeElement.scrollHeight < 50) { // Example condition to prevent scroll
+    if (header.nativeElement.scrollHeight < 50) {
+      // Example condition to prevent scroll
       header.nativeElement.style.overflowY = 'hidden';
     }
   }
@@ -80,17 +87,23 @@ export class SuperUserPaymentsComponent implements AfterViewInit {
       this.filteredBookings = this.bookings; // Show all bookings
     } else if (this.selectedFilter === 'status.Completed') {
       this.filteredBookings = this.bookings.filter(
-        (booking) => booking.paymentStatus === "Paid" || booking.paymentStatus === "Completed"
+        (booking) =>
+          booking.paymentStatus === 'Paid' ||
+          booking.paymentStatus === 'Completed'
       );
-    } else if(this.selectedFilter === "status.Running") {
-      this.filteredBookings =  this.bookings.filter(
-        (booking) => booking.paymentStatus === "HalfPaid" && booking.bookingStatus !== "Completed"
-      )
-    }
-    else if(this.selectedFilter === "status.Pending") {
+    } else if (this.selectedFilter === 'paymentStatus.HalfPaid') {
       this.filteredBookings = this.bookings.filter(
-        (booking) => booking.paymentStatus === "HalfPaid" && booking.bookingStatus === "Completed"
-      )
+        (booking) =>
+          booking.paymentStatus === 'HalfPaid' &&
+          booking.bookingStatus !== 'Completed' &&
+          booking.tripStatus !== 'Completed'
+      );
+    } else if (this.selectedFilter === 'status.Pending') {
+      this.filteredBookings = this.bookings.filter(
+        (booking) =>
+          booking.paymentStatus === 'HalfPaid' &&
+          booking.tripStatus === 'Completed'
+      );
     }
   }
 

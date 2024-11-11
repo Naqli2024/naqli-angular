@@ -49,7 +49,7 @@ const userRegister = async (req, res) => {
 
     // Check for existing contact number
     if (existUserByContactNumber) {
-      message += "contact number "; // Append "contact number" with "and" if necessary
+      message += "contact number"; // Append "contact number" with "and" if necessary
     }
 
     // If any user exists, send the message
@@ -146,8 +146,9 @@ const client = twilio(
 // Function to send OTP to the user's contact number using Twilio
 const sendOTP = async (contactNumber, otp) => {
   const from = "+12563716772";
-  const to = `+ ${contactNumber}`;
+  const to = `+${contactNumber}`;
   const text = `Your verification code is ${otp}`;
+  console.log(to)
 
   try {
     const message = await client.messages.create({

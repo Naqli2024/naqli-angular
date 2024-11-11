@@ -1,17 +1,23 @@
 <div class="row">
-  <div class="col-md-12 booking-history">
-    <div class="head-element" style="position: relative; margin-bottom: 25px !important;">
-      <h2>Booking Management</h2>
+  <div class="col-md-12">
+    <div
+      class="head-element"
+      style="position: relative; margin-bottom: 25px !important"
+    >
+      <h2>{{ "bookingManagement" | translate }}</h2>
     </div>
-    <div class="table-container booking-manager-table" style="max-height: 500px; overflow-y: auto">
+    <div
+      class="table-container booking-manager-table"
+      style="max-height: 500px; overflow-y: auto"
+    >
       <table class="table" style="margin: 0px 0px !important">
-        <thead>
+        <thead style="position: sticky; top: 0; z-index: 1; background-color: #fff">
           <tr>
-            <th>User Booked</th>
-            <th>Booking Id</th>
-            <th>Unit</th>
-            <th>Operator</th>
-            <th>Action</th>
+            <th>{{ "userBooked" | translate }}</th>
+            <th>{{ "bookingId" | translate }}</th>
+            <th>{{ "unit" | translate }}</th>
+            <th>{{ "operator" | translate }}</th>
+            <th>{{ "Action" | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -27,10 +33,13 @@
                 [(ngModel)]="selectedPlateInformation[booking._id]"
                 (change)="onPlateInfoChange(booking._id, $event)"
                 [disabled]="
-                !editMode[booking._id] && selectedPlateInformation[booking._id] ? true : false
-              "
+                  !editMode[booking._id] &&
+                  selectedPlateInformation[booking._id]
+                    ? true
+                    : false
+                "
               >
-                <option value="" disabled>Select Plate Information</option>
+                <option value="" disabled>{{"selectPlateInformation"|translate}}</option>
                 <ng-container *ngFor="let operator of filteredOperators">
                   <option
                     *ngIf="operator && matchesCriteria(booking, operator)"
@@ -47,10 +56,12 @@
                 [(ngModel)]="selectedOperatorName[booking._id]"
                 (change)="onOperatorChange(booking._id, $event)"
                 [disabled]="
-                  !editMode[booking._id] && selectedOperatorName[booking._id] ? true : false
+                  !editMode[booking._id] && selectedOperatorName[booking._id]
+                    ? true
+                    : false
                 "
               >
-                <option value="" disabled>Select</option>
+                <option value="" disabled>{{"select"|translate}}</option>
                 <ng-container
                   *ngFor="
                     let operator of getFilteredOperators(booking._id);
@@ -96,7 +107,7 @@
       class="btn notification-modal-btn add-operator-btn1"
       (click)="assignOperators()"
     >
-      Assign
+      {{"assign"|translate}}
     </button>
   </div>
 </div>

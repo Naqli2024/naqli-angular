@@ -7,7 +7,7 @@
           class="nav-link"
           [routerLink]="item.route"
           routerLinkActive="active"
-        >{{ item.name }}</a>
+        >{{ "dashboardItems." + item.name | translate }}</a>
       </li>
     </ul>
   </div>

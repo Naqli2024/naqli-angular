@@ -1,20 +1,26 @@
 <div class="row">
   <div class="col-md-12 booking-history" *ngIf="!showNewUnitForm">
-    <div class="head-element" style="position: relative; margin-bottom: 30px !important;">
-      <h2>Operator Management</h2>
+    <div
+      class="head-element"
+      style="position: relative; margin-bottom: 30px !important"
+    >
+      <h2>{{ "operatorManagement" | translate }}</h2>
     </div>
-    <div class="table-container booking-manager-table" style="max-height: 500px !important; overflow-y: auto !important">
-      <table class="table" style="margin: 0px 0px !important;">
+    <div
+      class="table-container booking-manager-table"
+      style="max-height: 500px !important; overflow-y: auto !important"
+    >
+      <table class="table" style="margin: 0px 0px !important">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Mobile No</th>
-            <th>Email Id</th>
-            <th>Status</th>
-            <th>Iqama No/Id</th>
-            <th>NationalId</th>
-            <th>Driving License</th>
-            <th>Aramco License</th>
+            <th>{{ "Name" | translate }}</th>
+            <th>{{ "Mobile No" | translate }}</th>
+            <th>{{ "EmailId" | translate }}</th>
+            <th>{{ "Status" | translate }}</th>
+            <th>{{ "iqamaNoID" | translate }}</th>
+            <th>{{ "nationalId" | translate }}</th>
+            <th>{{ "drivingLicense" | translate }}</th>
+            <th>{{ "aramcoLicense" | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -27,7 +33,7 @@
                 color: operator.status === 'available' ? 'green' : 'red'
               }"
             >
-              {{ operator.status }}
+              {{ operator.status | translate }}
             </td>
             <td>{{ operator.iqamaNo }}</td>
             <td>
@@ -41,7 +47,7 @@
                 *ngIf="operator.nationalID?.fileName"
                 (click)="openFile(operator.nationalID.fileName)"
               >
-                view
+                {{ "view" | translate }}
               </p>
             </td>
             <td>
@@ -55,7 +61,7 @@
                 *ngIf="operator.drivingLicense?.fileName"
                 (click)="openFile(operator.drivingLicense.fileName)"
               >
-                view
+                {{ "view" | translate }}
               </p>
             </td>
             <td>
@@ -69,7 +75,7 @@
                 *ngIf="operator.aramcoLicense?.fileName"
                 (click)="openFile(operator.aramcoLicense.fileName)"
               >
-                view
+                {{ "view" | translate }}
               </p>
             </td>
           </tr>
@@ -80,29 +86,37 @@
       class="btn notification-modal-btn add-operator-btn1"
       (click)="toggleNewUnitForm()"
     >
-      Add
+      {{ "Add" | translate }}
     </button>
   </div>
 </div>
 
 <div class="new-unit" *ngIf="showNewUnitForm">
   <p (click)="toggleNewUnitForm()" style="margin: 10px 0px !important">
-    <i class="fas fa-arrow-left"></i> Back
+    <i class="fas fa-arrow-left"></i> {{ "back" | translate }}
   </p>
-  <div class="row" style="max-height: 600px !important; overflow-y: auto !important; white-space: nowrap !important; display: block;">
+  <div
+    class="row"
+    style="
+      max-height: 600px !important;
+      overflow-y: auto !important;
+      white-space: nowrap !important;
+      display: block;
+    "
+  >
     <div class="col-md-12 booking-history operator-form-unit">
       <div
         class="head-element"
         style="position: relative; margin: 0px -12px !important"
       >
-        <h2>New Operator</h2>
+        <h2>{{ "newOperator" | translate }}</h2>
       </div>
       <form (ngSubmit)="handleSubmit()">
         <div class="row">
           <div class="col-md-6">
-            <label class="col-form-label" style="font-size: 14px"
-              >First Name</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "First Name" | translate
+            }}</label>
             <input
               type="text"
               class="form-control"
@@ -112,9 +126,9 @@
             />
           </div>
           <div class="col-md-6">
-            <label class="col-form-label" style="font-size: 14px"
-              >Last Name</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "Last Name" | translate
+            }}</label>
             <input
               type="text"
               class="form-control"
@@ -127,9 +141,9 @@
 
         <div class="row">
           <div class="col-md-12">
-            <label class="col-form-label" style="font-size: 14px"
-              >Email ID</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "Email ID" | translate
+            }}</label>
             <input
               type="email"
               class="form-control"
@@ -142,9 +156,9 @@
 
         <div class="row">
           <div class="col-md-6">
-            <label class="col-form-label" style="font-size: 14px"
-              >Password</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "Password" | translate
+            }}</label>
             <input
               type="password"
               class="form-control"
@@ -154,9 +168,9 @@
             />
           </div>
           <div class="col-md-6">
-            <label class="col-form-label" style="font-size: 14px"
-              >Confirm Password</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "Confirm Password" | translate
+            }}</label>
             <input
               type="password"
               class="form-control"
@@ -169,9 +183,9 @@
 
         <div class="row">
           <div class="col-md-6">
-            <label class="col-form-label" style="font-size: 14px"
-              >Mobile No</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "Mobile No" | translate
+            }}</label>
             <input
               type="text"
               class="form-control"
@@ -181,9 +195,9 @@
             />
           </div>
           <div class="col-md-6">
-            <label class="col-form-label" style="font-size: 14px"
-              >Iqama No</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "Iqama No" | translate
+            }}</label>
             <input
               type="text"
               class="form-control"
@@ -196,9 +210,9 @@
 
         <div class="row">
           <div class="col-md-6">
-            <label class="col-form-label" style="font-size: 14px"
-              >Date of Birth</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "Date of Birth" | translate
+            }}</label>
             <input
               type="date"
               class="form-control"
@@ -208,9 +222,9 @@
             />
           </div>
           <div class="col-md-6">
-            <label class="col-form-label" style="font-size: 14px"
-              >Panel Information</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "Panel Information" | translate
+            }}</label>
             <input
               type="text"
               class="form-control"
@@ -223,9 +237,9 @@
 
         <div class="row">
           <div class="col-md-4">
-            <label class="col-form-label" style="font-size: 14px"
-              >Driving License</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "Driving License" | translate
+            }}</label>
             <input
               type="file"
               class="form-control operator-file"
@@ -235,9 +249,9 @@
             />
           </div>
           <div class="col-md-4">
-            <label class="col-form-label" style="font-size: 14px"
-              >Aramco License</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "Aramco License" | translate
+            }}</label>
             <input
               type="file"
               class="form-control"
@@ -247,9 +261,9 @@
             />
           </div>
           <div class="col-md-4">
-            <label class="col-form-label" style="font-size: 14px"
-              >National ID</label
-            >
+            <label class="col-form-label" style="font-size: 14px">{{
+              "National ID" | translate
+            }}</label>
             <input
               type="file"
               class="form-control"
@@ -269,14 +283,16 @@
             [disabled]="isFormDisabled"
             name="assignUnit"
           />
-          <label class="form-check-label" for="assignUnit"> Assign Unit </label>
+          <label class="form-check-label" for="assignUnit">
+            {{ "assignUnit" | translate }}
+          </label>
         </div>
 
         <div *ngIf="showAdditionalFields">
           <label
             class="col-form-label"
             style="font-size: 14px; margin-right: 30px"
-            >Unit</label
+            >{{ "Unit" | translate }}</label
           >
 
           <div class="form-check form-check-inline">
@@ -288,7 +304,9 @@
               value="vehicle"
               (change)="onUnitTypeChange('vehicle')"
             />
-            <label class="form-check-label">Vehicle</label>
+            <label class="form-check-label">{{
+              "ITEMS.Vehicle" | translate
+            }}</label>
           </div>
           <div class="form-check form-check-inline">
             <input
@@ -299,7 +317,9 @@
               value="bus"
               (change)="onUnitTypeChange('bus')"
             />
-            <label class="form-check-label">Bus</label>
+            <label class="form-check-label">{{
+              "ITEMS.Bus" | translate
+            }}</label>
           </div>
           <div class="form-check form-check-inline">
             <input
@@ -310,7 +330,9 @@
               value="equipment"
               (change)="onUnitTypeChange('equipment')"
             />
-            <label class="form-check-label">Equipment</label>
+            <label class="form-check-label">{{
+              "ITEMS.Equipment" | translate
+            }}</label>
           </div>
           <div class="form-check form-check-inline">
             <input
@@ -321,7 +343,9 @@
               value="special"
               (change)="onUnitTypeChange('special')"
             />
-            <label class="form-check-label">Special</label>
+            <label class="form-check-label">{{
+              "ITEMS.Special" | translate
+            }}</label>
           </div>
           <div class="form-check form-check-inline">
             <input
@@ -331,44 +355,60 @@
               [(ngModel)]="formData.unitType"
               value="others"
             />
-            <label class="form-check-label">Others</label>
+            <label class="form-check-label">{{
+              "ITEMS.Others" | translate
+            }}</label>
           </div>
 
           <div class="row">
             <div class="col-md-6">
-              <label class="col-form-label" style="font-size: 14px"
-                >Unit Classification</label
-              >
+              <label class="col-form-label" style="font-size: 14px">{{
+                "Unit Classification" | translate
+              }}</label>
               <select
                 class="form-select"
                 [(ngModel)]="formData.unitClassification"
                 name="unitClassification"
                 (change)="onClassificationChange($event)"
               >
-                <option value="">Select Classification</option>
+                <option value="">
+                  {{ "Select Classification" | translate }}
+                </option>
                 <option
                   *ngFor="let classification of classifications"
                   [value]="classification.name"
                 >
-                  {{ classification.name }}
+                  {{ getTranslatedName(classification.name) }}
                 </option>
               </select>
             </div>
             <div class="col-md-6">
-              <label class="col-form-label" style="font-size: 14px"
-                >Sub Classification</label
-              >
+              <label class="col-form-label" style="font-size: 14px">{{
+                "Sub Classification" | translate
+              }}</label>
               <select
                 class="form-select"
                 [(ngModel)]="formData.subClassification"
                 name="subClassification"
               >
-                <option value="">Select Sub Classification</option>
+                <option value="">
+                  {{ "Select Sub Classification" | translate }}
+                </option>
                 <option
                   *ngFor="let subClassification of subClassifications"
                   [value]="subClassification.typeName"
                 >
-                  {{ subClassification.typeName }}
+                  {{
+                    ("typeNames." + subClassification.typeName | translate) !==
+                    "typeNames." + subClassification.typeName
+                      ? ("typeNames." + subClassification.typeName | translate)
+                      : ("equipmentTypeName." + subClassification.typeName
+                          | translate) !==
+                        "equipmentTypeName." + subClassification.typeName
+                      ? ("equipmentTypeName." + subClassification.typeName
+                        | translate)
+                      : ("" | translate)
+                  }}
                 </option>
               </select>
             </div>
@@ -377,7 +417,9 @@
 
         <div class="row mt-3">
           <div class="col-md-12 text-center">
-            <button type="submit" class="btn custom-register-btn">Add</button>
+            <button type="submit" class="btn custom-register-btn">
+              {{ "Add" | translate }}
+            </button>
           </div>
         </div>
       </form>

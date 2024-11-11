@@ -6,12 +6,13 @@ import { ToastrService } from 'ngx-toastr';
 import { SpinnerService } from '../../../../services/spinner.service';
 import { Partner } from '../../../../models/partnerData.model';
 import { BookingService } from '../../../../services/booking.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-multiple-unit-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './multiple-unit-dashboard.component.html',
   styleUrl: './multiple-unit-dashboard.component.css',
 })
@@ -62,7 +63,9 @@ export class MultipleUnitDashboardComponent implements OnInit {
     private partnerService: PartnerService,
     private toastr: ToastrService,
     private spinnerService: SpinnerService,
-    private bookingService: BookingService
+    private bookingService: BookingService,
+    private translateService: TranslateService,
+    private translate: TranslateService
   ) {}
 
   getPartnerId(): string {
@@ -317,5 +320,16 @@ export class MultipleUnitDashboardComponent implements OnInit {
       bookingRequests.some((request) => request.paymentStatus)
       ? 'red'
       : 'green';
+  }
+
+  getTranslatedName(name: string): string {
+    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    for (let category of categories) {
+      const translationKey = `${category}.${name}`;
+      if (this.translate.instant(translationKey) !== translationKey) {
+        return this.translate.instant(translationKey);
+      }
+    }
+    return name; 
   }
 }

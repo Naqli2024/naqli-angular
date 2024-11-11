@@ -34,7 +34,7 @@ export class SuperUserDashboardComponent {
 
   myBookings = [
     {
-      status: 'NotPaid',
+      status: 'Pending',
       numberOfBookings: 0,
       colorCode: '#F82D44',
     },
@@ -169,8 +169,8 @@ export class SuperUserDashboardComponent {
     this.bookings.forEach((booking) => {
       let statusBooking;
 
-      if (booking.paymentStatus === 'NotPaid') {
-        statusBooking = this.myBookings.find((b) => b.status === 'NotPaid');
+      if (booking.paymentStatus === "HalfPaid" && booking.tripStatus === "Completed") {
+        statusBooking = this.myBookings.find((b) => b.status === 'Pending');
       } else if (booking.paymentStatus === 'HalfPaid') {
         statusBooking = this.myBookings.find((b) => b.status === 'HalfPaid');
       } else if (booking.paymentStatus === 'Completed' || booking.paymentStatus === 'Paid') {

@@ -11,7 +11,7 @@ import { PartnerService } from '../../../../services/partner/partner.service';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { PaymentConfirmationComponent } from './payment-confirmation/payment-confirmation.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-booking',
@@ -36,7 +36,9 @@ export class PartnerBookingComponent implements OnInit {
     private userService: UserService,
     private spinnerService: SpinnerService,
     private toastr: ToastrService,
-    private partnerService: PartnerService
+    private partnerService: PartnerService,
+    private translateService: TranslateService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -239,5 +241,16 @@ export class PartnerBookingComponent implements OnInit {
         this.toastr.error(error);
       }
     );
+  }
+
+  getTranslatedName(name: string): string {
+    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    for (let category of categories) {
+      const translationKey = `${category}.${name}`;
+      if (this.translate.instant(translationKey) !== translationKey) {
+        return this.translate.instant(translationKey);
+      }
+    }
+    return name; 
   }
 }

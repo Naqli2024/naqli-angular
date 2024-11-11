@@ -15,6 +15,7 @@ import { OperatorModalComponent } from './operator-modal/operator-modal.componen
 import { faEdit, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FileService } from '../../../../services/file.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface FormData {
   type: string;
@@ -40,7 +41,7 @@ interface FormData {
 @Component({
   selector: 'app-operator-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, TranslateModule],
   templateUrl: './operator-management.component.html',
   styleUrl: './operator-management.component.css',
 })
@@ -73,7 +74,8 @@ export class OperatorManagementComponent {
     private toastr: ToastrService,
     private spinnerService: SpinnerService,
     private modalService: NgbModal,
-    private fileService: FileService
+    private fileService: FileService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -297,5 +299,16 @@ export class OperatorManagementComponent {
     // Hide the form
     this.showNewUnitForm = false;
     this.showAdditionalFields = false; // Uncheck the checkbox
+  }
+
+  getTranslatedName(name: string): string {
+    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    for (let category of categories) {
+      const translationKey = `${category}.${name}`;
+      if (this.translate.instant(translationKey) !== translationKey) {
+        return this.translate.instant(translationKey);
+      }
+    }
+    return name; 
   }
 }

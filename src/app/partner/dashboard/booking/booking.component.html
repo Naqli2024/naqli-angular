@@ -5,15 +5,15 @@
     </div>
     <div
       class="table-container booking-manager-table"
-      style="
-        max-height: 500px !important;
+      style="  
         overflow-y: auto !important;
         margin-top: 30px;
+        max-height: 550px !important;
       "
     >
       <table
         class="table table-responsive"
-        style="width: 100%; box-shadow: none !important; margin: 0px 0px"
+        style="width: 100%; box-shadow: none !important; margin: 0px 0px;"
       >
         <thead
           style="position: sticky; top: 0; z-index: 1; background-color: #fff"
@@ -69,7 +69,7 @@
                 {{ booking.time }}
               </td>
               <td class="text-wrap">
-                {{ booking.name }}
+                {{ getTranslatedName(booking.name) }}
               </td>
               <td class="text-wrap">
                 <div

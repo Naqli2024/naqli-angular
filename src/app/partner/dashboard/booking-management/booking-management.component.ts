@@ -10,11 +10,12 @@ import { catchError, forkJoin, throwError } from 'rxjs';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { of, Observable } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-booking-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, TranslateModule],
   templateUrl: './booking-management.component.html',
   styleUrls: ['./booking-management.component.css'],
 })

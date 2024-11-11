@@ -14,7 +14,7 @@ import { PartnerService } from '../../../../../services/partner/partner.service'
 import { Booking } from '../../../../../models/booking.model';
 import { MapService } from '../../../../../services/map.service';
 import { GoogleMapsService } from '../../../../../services/googlemap.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payment-confirmation',
@@ -43,7 +43,9 @@ export class PaymentConfirmationComponent implements OnInit {
     private partnerService: PartnerService,
     private router: Router,
     private mapService: MapService,
-    private googleMapsService: GoogleMapsService
+    private googleMapsService: GoogleMapsService,
+    private translateService: TranslateService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -178,5 +180,16 @@ export class PaymentConfirmationComponent implements OnInit {
         this.toastr.error(error);
       }
     );
+  }
+
+  getTranslatedName(name: string): string {
+    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    for (let category of categories) {
+      const translationKey = `${category}.${name}`;
+      if (this.translate.instant(translationKey) !== translationKey) {
+        return this.translate.instant(translationKey);
+      }
+    }
+    return name; 
   }
 }

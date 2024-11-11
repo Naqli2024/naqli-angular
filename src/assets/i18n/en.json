@@ -25,7 +25,8 @@
     "bus": "Bus",
     "equipment": "Equipment",
     "special": "Special",
-    "others": "Others"
+    "others": "Others",
+    "All": "All"
   },
   "ESTIMATE": {
     "GET_ESTIMATE": "Get an Estimate"
@@ -185,6 +186,10 @@
     "Dashboard": "Dashboard",
     "Trigger Booking": "Trigger Booking",
     "Booking Manager": "Booking Manager",
+    "Bookings": "Bookings",
+    "UnitManagement": "Unit Management",
+    "OperatorManagement": "Operator Management",
+    "BookingManagement": "Booking Management",
     "Overview": "Overview",
     "Support tickets": "Support tickets",
     "User": "User",
@@ -269,6 +274,63 @@
       {
         "question": "How do I contact customer support?",
         "answer": "You can reach our customer support team via the report section on the website or email us. We are here to assist you 24 hours a day."
+      }
+    ]
+  },
+  "faqs": {
+    "title": "FREQUENTLY ASKED QUESTIONS",
+    "questions": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The price is calculated according to the estimated distance between the loading and delivery point , automatically and directly through the platform."
+      },
+      {
+        "question": "What are the sizes and type of truck?",
+        "answer": "We provide a shipping platform of multiple sizes, Which are as follows: trailer, truck, lorry, diana, and pickup truck."
+      },
+      {
+        "question": "Do you own the truck?",
+        "answer": "We have our own trucks and we also have contracts with transportation agents throughout the kingdom."
+      },
+      {
+        "question": "I have a furniture that I need to move. What shipping platform can you provide me with and what are the condition?",
+        "answer": "To reserve a truck for transporting furniture, you can request the truck through the application, and to find out the prices through the application, specify the loading and delivery address and it will appear for your price automatically 1.Loading and unloading workers can be requested for an additional fee through the application 2.Furniture should be well wrapped to prevent damage 3.We do not provide shipping packaging or dismantling and installation services 4.In shipping, we provide rental trucks to transport all type of products, and we do not specialize in transporting furniture in particular"
+      },
+      {
+        "question": "We have a load of 30 tons and we need a trailer to transport it. is that possible?",
+        "answer": "The maximum load that can be loaded in 25 tons and it is not possible to load more than that, but there are exceptional cases in which we provide assistance to our customers continuing to move higher than that if necessary."
+      },
+      {
+        "question": "What products are prohibited from being transported on a shipping platform?",
+        "answer": "The transportation of all products prohibited by the kingdom of Saudi Arabia is prohibited. it is also prohibits the transportation of people, flammable materials, and the transportation of money."
+      },
+      {
+        "question": "What is the size of the truck: trailer - Lorry - Dyna?",
+        "answer": "You can view the truck measurements and details by visiting the following link."
+      },
+      {
+        "question": "What is the maximum weight that can be loaded per truck?",
+        "answer": "The trailer 25 tons - the lorry 8 tons - the dyna 4.5 tons the pick up 1 ton varies depending on the type of truck, more or less"
+      },
+      {
+        "question": "How many pallets can be loaded per truck?",
+        "answer": "According to the standard pallet size 120 x100, the trailer has 24 pallets, the lorry has 7.5 meters, 10 pallets, the lorry has 8 pallets, and the lorry has 4 pallets."
+      },
+      {
+        "question": "Can a driver of a specific nationality be provided?",
+        "answer": "Drivers of specific nationalities can be provided according to the customer's request for reason of entering government facilities or according to followed regulations and policies of some companies."
+      },
+      {
+        "question": "What are the nationalities of your driver?",
+        "answer": "We have all nationalities of drivers working with us, Saudis and non-Saudis"
+      },
+      {
+        "question": "Can you provide us with a fixed price that is not based on kilometers",
+        "answer": "The policy of the shipping platform requires that the price be calculated according to the estimated distance between the loading point and the delivery point, so you may find that prices vary depending on this distance."
+      },
+      {
+        "question": "What payment methods are available?",
+        "answer": "On the shipping platform, we provide many payment options, which are as follows: Apple pay, STC pay, visa or Mada."
       }
     ]
   },
@@ -493,5 +555,37 @@
   "EnterAddress": "Enter address",
   "Payments": "Payments",
   "Remove": "Remove",
-  "Add": "Add"
+  "Add": "Add",
+  "Vehicle Available": "Vehicle Available",
+  "Driver Available": "Driver Available",
+  "Ongoing": "Ongoing",
+  "Awaiting": "Awaiting",
+  "operators": "Operators",
+  "available": "Available",
+  "Not available": "Not Available",
+  "unitManagement": "Unit Management",
+  "unitID": "Unit ID",
+  "unit": "Unit",
+  "unitClassification": "Unit Classification",
+  "unitSubClassification": "Unit SubClassification",
+  "operator": "Operator",
+  "vehicleDetailDoc": "Vehicle Detail/Doc",
+  "view": "View",
+  "newUnit": "New Unit",
+  "addOperator": "Add Operator",
+  "back": "Back",
+  "operatorManagement": "Operator Management",
+  "iqamaNoID": "Iqama No/ID",
+  "nationalId": "National ID",
+  "drivingLicense": "Driving License",
+  "aramcoLicense": "Aramco License",
+  "bookingManagement": "Booking Management",
+  "userBooked": "User Booked",
+  "bookingId": "Booking ID",
+  "selectPlateInformation": "Select Plate Information",
+  "select": "Select",
+  "assign": "Assign",
+  "reason": "Reason",
+  "newOperator": "New Operator",
+  "assignUnit": "Assign Unit"
 }

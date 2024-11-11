@@ -10,7 +10,7 @@
         </div>
         <div class="multiple-unit-dashboard-head-right">
           <p>{{ item.count }}</p>
-          <p class="dashboard-text">{{ item.text }}</p>
+          <p class="dashboard-text">{{ item.text | translate }}</p>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@
       <div class="col-md-5">
         <div class="head-element">
           <h2 style="font-size: 18px; padding: 10px 0px; margin-left: -20px">
-            Operators
+            {{"Operators"|translate}}
           </h2>
         </div>
         <div
@@ -45,14 +45,19 @@
                     : 'black'
               }"
             >
-              {{ operator.status }}
+              {{ operator.status | translate }}
             </p>
           </div>
           <div class="col-md-4">
             <p>
-              {{ operator.unitClassification }}
+              {{ getTranslatedName(operator.unitClassification) }}
               <span *ngIf="operator.subClassification"
-                >({{ operator.subClassification }})</span
+                >({{  ('typeNames.' + operator.subClassification | translate) !== 'typeNames.' + operator.subClassification
+                ? ('typeNames.' + operator.subClassification | translate)
+                : ('equipmentTypeName.' + operator.subClassification | translate) !== 'equipmentTypeName.' + operator.subClassification
+                ? ('equipmentTypeName.' + operator.subClassification | translate )
+                : ''
+              | translate }})</span
               >
             </p>
           </div>

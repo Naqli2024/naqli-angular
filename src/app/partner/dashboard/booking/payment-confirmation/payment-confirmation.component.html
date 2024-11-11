@@ -30,11 +30,15 @@
         </div>
         <div class="partner-field">
           <label>{{ "Mode" | translate }}</label>
-          <p>{{ bookingDetails?.name }}</p>
+          <p>{{ getTranslatedName(bookingDetails?.name) }}</p>
         </div>
         <div class="partner-field">
-          <label>{{ "Booking status" | translate }}</label>
-          <p>{{ bookingDetails?.bookingStatus }}</p>
+          <label>{{ "Booking Status" | translate }}</label>
+          <p>
+            {{
+              "status of booking." + bookingDetails?.bookingStatus | translate
+            }}
+          </p>
         </div>
         <div class="partner-field" style="border-bottom: none !important">
           <label>{{ "Additional Charges" | translate }}</label>
@@ -47,7 +51,7 @@
         <input
           type="text"
           [(ngModel)]="additionalChargesReason"
-          placeholder="Reason"
+          placeholder="{{ 'reason' | translate }}"
           style="
             border: 1px solid #ddd;
             margin: 5px 20px;

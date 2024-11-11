@@ -14,8 +14,8 @@
         <option value="status.Pending">
           {{ "status.Pending" | translate }}
         </option>
-        <option value="status.Running">
-          {{ "status.Running" | translate }}
+        <option value="paymentStatus.HalfPaid">
+          {{ "paymentStatus.HalfPaid" | translate }}
         </option>
         <option value="status.Completed">
           {{ "status.Completed" | translate }}
@@ -61,8 +61,8 @@
               <ng-container>
                 <img
                   *ngIf="
-                    booking.paymentStatus === 'HalfPaid' &&
-                    booking.bookingStatus !== 'Completed'
+                    booking.tripStatus !== 'Completed' &&
+                    booking.paymentStatus === 'HalfPaid'
                   "
                   src="assets/images/halfpaid.svg"
                   alt="Half Paid"
@@ -70,8 +70,8 @@
                 />
                 <img
                   *ngIf="
-                    booking.paymentStatus === 'HalfPaid' &&
-                    booking.bookingStatus === 'Completed'
+                    booking.remainingBalance !== 0 &&
+                    booking.tripStatus === 'Completed'
                   "
                   src="assets/images/pending payment.svg"
                   alt="Pending Payment"

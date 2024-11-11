@@ -13,6 +13,7 @@ import { UnitManagementComponent } from './unit-management/unit-management.compo
 import { OperatorManagementComponent } from './operator-management/operator-management.component';
 import { BookingComponent } from '../../dashboard/booking/booking.component';
 import { ContractComponent } from './contract/contract.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 interface MenuItem {
@@ -38,6 +39,7 @@ interface MenuItem {
     OperatorManagementComponent,
     BookingComponent,
     ContractComponent,
+    TranslateModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
@@ -58,7 +60,7 @@ export class PartnerDashboardComponent {
         if (partner.data.type === 'singleUnit + operator') {
           this.menuItems = [
             { name: 'Booking', route: 'booking' },
-            { name: 'Payment', route: 'payments' },
+            { name: 'Payments', route: 'payments' },
             { name: 'Report', route: 'report' },
             { name: 'Help', route: 'help' },
           ];
@@ -66,11 +68,12 @@ export class PartnerDashboardComponent {
           this.menuItems = [
             { name: 'Dashboard', route: 'multiple-unit-dashboard' },
             { name: 'Bookings', route: 'bookings' },
-            { name: 'Unit Management', route: 'unit-management' },
-            { name: 'Operator Management', route: 'operator-management' },
-            { name: 'Booking Management', route: 'booking-management' },
-            { name: 'Payment', route: 'payments' },
+            { name: 'UnitManagement', route: 'unit-management' },
+            { name: 'OperatorManagement', route: 'operator-management' },
+            { name: 'BookingManagement', route: 'booking-management' },
+            { name: 'Payments', route: 'payments' },
             { name: 'Report', route: 'report' },
+            { name: 'Help', route: 'help' },
           ];
         }
       });
