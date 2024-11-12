@@ -8,7 +8,7 @@ import { Partner } from '../../models/partnerData.model';
 })
 export class PartnerService {
   private partnerDetails: any;
-  private baseUrl = 'http://localhost:4000/api/partner';
+  private baseUrl = 'http://10.0.2.29:4000/api/partner';
 
   constructor(private http: HttpClient) {}
 
