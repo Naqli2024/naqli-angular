@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class checkoutService {
-  private apiUrl = 'http://localhost:4000/api/checkout';
-  private baseUrl = 'http://localhost:4000/api';
+  private apiUrl = 'http://10.0.2.29:4000/api/checkout';
+  private baseUrl = 'http://10.0.2.29:4000/api';
 
 
   constructor(private http: HttpClient) {}
