@@ -5,9 +5,9 @@
       <fa-icon [icon]="faArrowLeft"></fa-icon>&nbsp; {{"BackToTicket"|translate}}
     </button>
     <div class="form-row ticket-form-row ticket-form-row-head">
-      <p>{{"TicketId"|translate}}: {{ selectedTicket?.id }}</p>
+      <p>{{"TicketId"|translate}}: {{ selectedTicket.id }}</p>
       <p [ngClass]="selectedTicket.isOpen ? 'open' : 'closed'">
-        {{ (selectedTicket?.isOpen ? "Open" : "Closed") | translate }}
+        {{ (selectedTicket.isOpen ? "Open" : "Closed") | translate }}
       </p>
     </div>
     <div class="form-row ticket-form-row">
