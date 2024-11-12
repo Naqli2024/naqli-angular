@@ -5,7 +5,6 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { BookingService } from '../../../services/booking.service';
 import { SpinnerService } from '../../../services/spinner.service';
 import { ToastrService, ActiveToast, IndividualConfig } from 'ngx-toastr';
-import { environment } from '../../../environments/environment.prod';
 import { checkoutService } from '../../../services/checkout.service';
 import { MapComponent } from '../../map/map.component';
 import { AuthService } from '../../../services/auth.service';
