@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    resetOTP: {
+    messageId: {
       type: String,
       required: false,
     },

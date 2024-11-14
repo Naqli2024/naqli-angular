@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 require("dotenv").config();
 const twilio = require("twilio");
+const axios = require("axios");
 
 /*****************************************
             User registration
@@ -83,7 +84,7 @@ const userRegister = async (req, res) => {
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedConfirmPassword = await bcrypt.hash(confirmPassword, 10); 
+    const hashedConfirmPassword = await bcrypt.hash(confirmPassword, 10);
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
@@ -148,7 +149,7 @@ const sendOTP = async (contactNumber, otp) => {
   const from = "+12563716772";
   const to = `+${contactNumber}`;
   const text = `Your verification code is ${otp}`;
-  console.log(to)
+  console.log(to);
 
   try {
     const message = await client.messages.create({

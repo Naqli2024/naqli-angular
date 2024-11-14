@@ -34,7 +34,7 @@
             <div class="booking-load-2">
               <h6>{{ "Load" | translate }}</h6>
               <p>
-                {{ "loads." + bookingDetails.type?.[0]?.typeOfLoad | translate }}
+                {{ bookingDetails.type?.[0]?.typeOfLoad ? ("loads." + bookingDetails.type[0].typeOfLoad | translate) : '' }}
               </p>
             </div>
             <div class="booking-load-3">

@@ -35,7 +35,7 @@ interface Vendor {
 @Component({
   selector: 'app-booking',
   standalone: true,
-  imports: [CommonModule, MapComponent, TranslateModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './booking.component.html',
   styleUrl: './booking.component.css',
 })

@@ -18,6 +18,16 @@ const createPayment = require("./routes/createPaymentRoute");
 //environment variables
 env.config();
 
+// Force HTTPS redirect (Place this at the top to ensure it's applied to all routes)
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect('https://' + req.headers.host + req.url);
+    }
+    next();
+  });
+}
+
 //Database
 connectDb();
 
