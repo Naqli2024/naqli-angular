@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CompanyDetailsService {
-  private apiUrl = 'http://10.0.2.29:4000/api/partner';
+  private apiUrl = 'https://naqlee.com/api/partner';
   constructor(private http: HttpClient) {}
 
   addCompanyDetails(partnerId: string, companyDetails: any): Observable<any> {

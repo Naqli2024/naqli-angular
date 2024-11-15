@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class NaqleeUserService {
   
-    private baseUrl = 'http://10.0.2.29:4000/api/admin'; 
+    private baseUrl = 'https://naqlee.com/api/admin'; 
 
     constructor(private http: HttpClient) { }
   

@@ -8,7 +8,7 @@ import { Booking } from '../models/booking.model';
 })
 export class BookingService {
   private bookingId: string | null = null;
-  private apiUrl = 'http://10.0.2.29:4000/api';
+  private apiUrl = 'https://naqlee.com/api';
 
   constructor(private http: HttpClient) {}
 

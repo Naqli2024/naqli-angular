@@ -10,6 +10,6 @@ export class BusService {
   constructor(private http: HttpClient) {}
 
   getBuses(): Observable<any[]> {
-    return this.http.get<any[]>('http://10.0.2.29:4000/api/buses');
+    return this.http.get<any[]>('https://naqlee.com/api/buses');
   }
 }
