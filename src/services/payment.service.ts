@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class PaymentService {
-  private apiUrl = 'https://naqlee.com/api/api';
+  private apiUrl = 'https://10.0.2.29:4000/api/api';
   private paymentDetails: {
     amount: number;
     status: string;

@@ -10,6 +10,6 @@ export class SpecialService {
   constructor(private http: HttpClient) {}
 
   getSpecialUnits(): Observable<any[]> {
-    return this.http.get<any[]>('https://naqlee.com/api/special-units');
+    return this.http.get<any[]>('https://10.0.2.29:4000/api/special-units');
   }
 }

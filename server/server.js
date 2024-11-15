@@ -14,8 +14,6 @@ const adminRoute = require("./routes/adminRoute");
 const reportRoute = require("./routes/reportRoute");
 const fileRoute = require("./routes/fileRoutes");
 const createPayment = require("./routes/createPaymentRoute");
-const https = require('https');
-const fs = require('fs');
 
 //environment variables
 env.config();
@@ -37,12 +35,7 @@ app.use("/api/report", reportRoute);
 app.use("/api", fileRoute);
 app.use("/api", createPayment);
 
-const options = {
-    cert: fs.readFileSync('/etc/letsencrypt/live/naqlee.com/fullchain.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/naqlee.com/privkey.pem'),
-};
 
-https.createServer(options, app).listen(4000, () => {
-    console.log('Backend running on https://10.0.2.29:4000');
-});
-
+app.listen(process.env.PORT, '0.0.0.0', () =>
+  console.log(`Server running on http://0.0.0.0:${process.env.PORT}`)
+);
