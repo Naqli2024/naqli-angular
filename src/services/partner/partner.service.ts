@@ -8,7 +8,7 @@ import { Partner } from '../../models/partnerData.model';
 })
 export class PartnerService {
   private partnerDetails: any;
-  private baseUrl = 'https://prod.naqlee.com/api/partner';
+  private baseUrl = 'https://10.0.2.29:4001/api/partner';
 
   constructor(private http: HttpClient) {}
 

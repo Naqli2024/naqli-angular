@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CommissionService {
-  private baseUrl = 'https://prod.naqlee.com/api/admin'; 
+  private baseUrl = 'https://10.0.2.29:4001/api/admin'; 
 
   constructor(private http: HttpClient) {}
 

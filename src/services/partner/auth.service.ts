@@ -8,7 +8,7 @@ import { throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'https://prod.naqlee.com/api/partner';
+  private baseUrl = 'https://10.0.2.29:4001/api/partner';
 
   constructor(private http: HttpClient) {}
 

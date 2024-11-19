@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ReportSupportService {
-  private apiUrl = 'https://prod.naqlee.com/api/report' 
+  private apiUrl = 'https://10.0.2.29:4001/api/report' 
 
   constructor(private http: HttpClient) {}
 
