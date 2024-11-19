@@ -56,7 +56,7 @@ const userLogin = async (req, res) => {
         { userId: existEmail._id },
         process.env.JSON_WEB_TOKEN,
         {
-          expiresIn: "365d",
+          expiresIn: "1h",
         }
       );
       const loggedInUser = await user.findById(existEmail._id);

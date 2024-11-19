@@ -22,7 +22,11 @@ env.config();
 connectDb();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:4200', 'https://naqlee.com'], // Allow only your frontend's domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
+  credentials: true, // Include cookies if needed
+}));
 app.use("/api", userRoutes);
 app.use("/api", insertDataRoutes);
 app.use("/api", getInsertedUnitsRoutes);
