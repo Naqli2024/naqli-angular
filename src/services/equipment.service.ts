@@ -9,7 +9,7 @@ import { Equipment } from '../models/equipment-booking';
 })
 export class EquipmentService {
 
-  private apiUrl = 'https://10.0.2.29:4001/api/equipments'; 
+  private apiUrl = 'https://prod.naqlee.com:443/api/equipments'; 
 
   constructor(private http: HttpClient) {}
 

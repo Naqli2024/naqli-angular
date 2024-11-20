@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class checkoutService {
-  private apiUrl = 'https://10.0.2.29:4001/api/checkout';
-  private baseUrl = 'https://10.0.2.29:4001/api';
+  private apiUrl = 'https://prod.naqlee.com:443/api/checkout';
+  private baseUrl = 'https://prod.naqlee.com:443/api';
 
 
   constructor(private http: HttpClient) {}

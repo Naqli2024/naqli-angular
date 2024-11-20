@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class OperatorService {
-  private baseUrl = 'https://10.0.2.29:4001/api/partner';
+  private baseUrl = 'https://prod.naqlee.com:443/api/partner';
 
   constructor(private http: HttpClient) {}
 

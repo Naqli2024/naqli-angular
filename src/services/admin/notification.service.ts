@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class NotificationService {
 
-  private apiUrl = 'https://10.0.2.29:4001/api/admin';
+  private apiUrl = 'https://prod.naqlee.com:443/api/admin';
 
   constructor(private http: HttpClient) { }
 

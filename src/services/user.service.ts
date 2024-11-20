@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 })
 export class UserService {
   private userDetails: any; 
-  private apiUrl = 'https://10.0.2.29:4001/api'; 
+  private apiUrl = 'https://prod.naqlee.com:443/api'; 
 
   constructor(private http: HttpClient) {}
 
