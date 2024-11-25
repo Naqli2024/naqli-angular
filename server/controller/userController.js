@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator");
 require("dotenv").config();
 const twilio = require("twilio");
 const axios = require("axios");
+const querystring = require('querystring');
 
 /*****************************************
             User registration
@@ -138,42 +139,29 @@ const userRegister = async (req, res) => {
 /*****************************************
             Send OTP 
  *****************************************/
-// Initialize Twilio client
-const client = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
 
 // Function to send OTP to the user's contact number using Twilio
 const sendOTP = async (contactNumber, otp) => {
-  const from = "+12563716772";
-  const to = `+${contactNumber}`;
-  const text = `Your verification code is ${otp}`;
-  console.log(to);
-
-  try {
-    const message = await client.messages.create({
-      body: text,
-      from: from,
-      to: to,
+  const url = "https://api.oursms.com/api-a/msgs";
+    const payload = querystring.stringify({
+        src: process.env.src,
+        dests: contactNumber,
+        body: `Your OTP is ${otp}. It is valid for 5 minutes.`,
+        priority: 1,
+        dlr: 1,
     });
 
-    console.log("Message sent successfully");
-    console.log(message);
+    const headers = {
+        "Authorization": `Bearer ${process.env.OURSMS_API_TOKEN}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+    };
 
-    return {
-      message: `OTP sent to ${contactNumber}`,
-      success: true,
-      data: { messageId: message.sid },
-    };
-  } catch (error) {
-    console.error("Error sending OTP:", error);
-    return {
-      message: "Error sending OTP",
-      success: false,
-      data: null,
-    };
-  }
+    try {
+        const response = await axios.post(url, payload, { headers });
+        console.log("Message sent successfully:", response.data);
+    } catch (error) {
+        console.error("Error sending message:", error.response?.data || error.message);
+    }
 };
 
 /********************************************
@@ -321,6 +309,63 @@ const updateUserStatus = async (req, res) => {
   }
 };
 
+const editUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const {
+      firstName,
+      lastName,
+      emailAddress,
+      password,
+      confirmPassword,
+      contactNumber,
+      address1,
+      city,
+      govtId,
+      idNumber,
+    } = req.body;
+
+    if (password && password !== confirmPassword) {
+      return res.status(500).json({ message: "Passwords do not match" });
+    }
+
+    const updateUser = {
+      firstName,
+      lastName,
+      emailAddress,
+      contactNumber,
+      address1,
+      city,
+      govtId,
+      idNumber,
+    };
+
+    if (password) {
+      updateUser.password = await bcrypt.hash(password, 10);
+      updateUser.confirmPassword = await bcrypt.hash(confirmPassword, 10);
+    }
+
+    //Remove the keys if getting undefined
+    Object.keys(updateUser).forEach((key) => {
+      if (updateUser[key] === undefined) {
+        delete updateUser[key];
+      }
+    });
+    const editedUser = await user.findByIdAndUpdate(userId, updateUser, {
+      new: true,
+    });
+
+    if (!editedUser) {
+      return res.status(500).json({ message: "User not found" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Profile Updated!", data: editedUser });
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
 exports.userRegister = userRegister;
 exports.verifyOTP = verifyOTP;
 exports.resendOTP = resendOTP;
@@ -328,3 +373,4 @@ exports.sendOTP = sendOTP;
 exports.getUserById = getUserById;
 exports.getAllUsers = getAllUsers;
 exports.updateUserStatus = updateUserStatus;
+exports.editUser = editUser;

@@ -4,11 +4,12 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { OpenGetEstimateComponent } from './open-get-estimate/open-get-estimate.component';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Carousel01Component } from './carousel/carousel01.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, OpenGetEstimateComponent, TranslateModule],
+  imports: [CommonModule, RouterModule, OpenGetEstimateComponent, TranslateModule, Carousel01Component],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
