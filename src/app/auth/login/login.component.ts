@@ -44,6 +44,7 @@ export class LoginComponent {
   isAdmin: boolean = false;
   passwordVisible: boolean = false;
   confirmPasswordVisible: boolean = false;
+  termsAccepted: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -143,6 +144,13 @@ export class LoginComponent {
   register() {
     this.spinnerService.show();
     localStorage.setItem('emailAddress', this.user.emailAddress);
+
+    if (!this.termsAccepted) {
+      this.spinnerService.hide();
+      this.toastr.error('Please accept the terms and conditions', 'Error');
+      return;
+    }
+    
     if (this.user.password !== this.user.confirmPassword) {
       this.spinnerService.hide();
       this.toastr.error('Passwords do not match', 'Error');

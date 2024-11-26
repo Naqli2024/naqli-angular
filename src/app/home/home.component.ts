@@ -9,7 +9,7 @@ import { Carousel01Component } from './carousel/carousel01.component';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, OpenGetEstimateComponent, TranslateModule, Carousel01Component],
+  imports: [CommonModule, RouterModule, TranslateModule, Carousel01Component],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {

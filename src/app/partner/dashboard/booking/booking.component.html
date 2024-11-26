@@ -8,7 +8,6 @@
       style="  
         overflow-y: auto !important;
         margin-top: 30px;
-        max-height: 550px !important;
       "
     >
       <table
@@ -33,7 +32,7 @@
         <tbody *ngIf="bookings.length > 0">
           <ng-container *ngFor="let booking of bookings">
             <tr *ngIf="users[booking.user]">
-              <td class="text-wrap">
+              <td>
                 {{ users[booking.user]?.firstName }}
                 {{ users[booking.user]?.lastName }}
               </td>
@@ -68,10 +67,10 @@
               <td>
                 {{ booking.time }}
               </td>
-              <td class="text-wrap">
+              <td>
                 {{ getTranslatedName(booking.name) }}
               </td>
-              <td class="text-wrap">
+              <td>
                 <div
                   class="location-item"
                   *ngIf="booking.pickup"

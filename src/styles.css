@@ -262,6 +262,10 @@ body {
   }
 }
 /**********Login Page***********/
+.login-container {
+  width: 100%;
+  margin: auto;
+}
 .login-form {
   max-width: 480px;
   width: 100%;
@@ -271,7 +275,7 @@ body {
 }
 .register {
   width: 100%;
-  padding: 0px 0px;
+  padding: 0px 10px;
   margin: 0 auto;
   max-width: 980px;
   border-bottom: 1px solid #000000;
@@ -282,13 +286,22 @@ body {
   font-weight: 700;
   margin: 50px 0;
 }
+.register-bottom {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center;
+  padding: 0 10px;
+  margin: 10px 0px !important;
+  gap: 10px;
+}
 .register-bottom p {
-  text-align: center;
-  font-size: 14px;
-  margin: 10px 0px 50px 0px;
+  margin: 0;
+  display: inline-block;
 }
 .register-bottom span {
   color: #6a66d1 !important;
+  cursor: pointer;
 }
 .login-form h2 {
   text-align: center;
@@ -438,8 +451,11 @@ body {
     width: 100%;
     padding: 0;
   }
+  .custom-row {
+    padding: 0px 20px !important;
+  }
   .login-logo {
-    margin-bottom: 20px;
+    max-width: 200px;
   }
   .col-md-6.left-logo {
     background-color: #6a66d1;
@@ -457,6 +473,13 @@ body {
   .buttons button {
     width: 50%;
   }
+  .register {
+    width: 100% !important;
+    padding: 0px 20px;
+    margin: 0 auto !important;
+    border-bottom: 1px solid #000000;
+    overflow-y: scroll;
+  }
 }
 @media (max-width: 576px) {
   .left-logo img {
@@ -467,9 +490,15 @@ body {
   }
   .register {
     overflow-y: scroll;
+    width: 100% !important;
   }
   .register-bottom {
-    padding: 0 10px;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: wrap;
+    padding: 0px 10px;
+    gap: 10px;
+    margin: 10px 0px !important;
   }
   .custom-row {
     margin: 0 !important;
@@ -487,29 +516,58 @@ body {
 }
 
 .custom-slider {
-  background-color: #6a66d1;
-  height: 50%;
+  position: absolute; /* Makes sure it sits behind the content */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 50%; /* Make the slider take up 50% of the container height */
+  z-index: -1;
+}
+
+mdb-carousel {
   width: 100%;
+  height: 100% !important;
+}
+
+mdb-carousel-item img {
+  width: 100%;
+  height: auto !important;
+}
+
+@media (max-width: 768px) {
+  .custom-slider {
+    bottom: 0; /* Reset the height on small screens */
+  }
+
+  mdb-carousel {
+    max-height: none !important; /* Allow the carousel to grow to its natural height */
+  }
+
+  mdb-carousel-item img {
+    height: auto !important; /* Ensure images are responsive */
+  }
 }
 
 .home-body {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  background-color: #fff;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 50px;
-  width: 70%;
+  padding: 20px;
+  width: 80%;
   margin-left: auto;
   margin-right: auto;
-  margin-top: -140px;
+  margin-top: auto;
+  top: 50%;
   gap: 20px;
   border-radius: 10px;
+  position: relative;
+  z-index: 1;
 }
 .home-body > div {
   width: calc(33.33% - 40px);
   padding: 10px;
-  margin-bottom: 10px;
+  text-align: center;
 }
 
 .item {
@@ -518,7 +576,7 @@ body {
   cursor: pointer;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding-bottom: 20px !important;
+  padding-bottom: 30px !important;
 }
 
 .item a {
@@ -534,11 +592,10 @@ body {
 }
 .line {
   margin: 0 0 5px 0;
-  height: 2px;
+  height: 1px;
   background-color: black;
 }
 .item-name {
-  padding-bottom: 15px !important;
   font-size: 14px;
   font-weight: 600;
 }
@@ -558,20 +615,72 @@ body {
 .home-container::-webkit-scrollbar-thumb:hover {
   background: #ccc;
 }
+@media (max-width: 1025px) {
+  .home-body {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    width: 90%; 
+    top: 30px;
+  }
+
+  .home-body > div {
+    width: calc(50% - 40px); /* Adjust to fit 2 items per row */
+  }
+
+  .item img {
+    max-height: 150px;
+    max-width: 150px;
+  }
+
+  .estimate-container {
+    width: 100%;
+    padding: 25px;
+  }
+}
+
+/* Tablet and mobile devices */
+@media (max-width: 1024px) {
+  .home-body {
+    flex-direction: column;
+    width: 90%;
+    padding: 15px;
+    top: 50%;
+  }
+
+  .home-body > div {
+    width: 100%; /* Take full width */
+    margin-bottom: 15px;
+  }
+
+  .item img {
+    max-height: 130px;
+    max-width: 130px;
+  }
+
+  .estimate-container {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .estimate-text {
+    font-size: 16px;
+  }
+}
+/* Small devices (below 768px) */
 @media (max-width: 768px) {
   .home-container {
     overflow-y: scroll;
   }
   .home-body {
     flex-direction: column;
+    flex-wrap: wrap !important;
     align-items: center;
-    width: 80%;
+    width: 90%;
     padding: 15px;
-    margin-bottom: 30px;
-    margin-top: -150px;
+    top: 30%;
   }
   .home-body > div {
-    width: calc(100% - 30px);
+    width: 100%;
     margin-bottom: 15px;
   }
   .item {
@@ -583,8 +692,8 @@ body {
   .item img {
     width: 100%;
     height: auto;
-    max-height: 150px;
-    max-width: 150px;
+    max-height: 130px;
+    max-width: 130px;
   }
   .estimate-image {
     max-width: 400px;
@@ -611,10 +720,10 @@ body {
   .home-body {
     flex-direction: column;
     align-items: center;
-    width: 70%;
+    flex-wrap: wrap !important;
     padding: 10px;
-    margin-bottom: 20px;
-    margin-top: -200px;
+    top: 20%;
+    gap: 15px;
   }
   .home-body > div {
     width: calc(100% - 20px);
@@ -724,7 +833,7 @@ body {
   border-right: none;
 }
 .booking-container {
-  margin-top: -320px;
+  margin-top: 120px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -977,7 +1086,7 @@ input[type="checkbox"] {
   display: flex;
   height: 80vh;
   background: #f7f6ff;
-  overflow: hidden;
+  overflow: visible;
   margin: 50px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -1018,18 +1127,36 @@ input[type="checkbox"] {
 .mainbar {
   flex: 1; /* Take the remaining space */
   margin: 30px;
-  /* overflow-y: auto; */
+  overflow-y: auto;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
 
+@media (max-width: 1295px) {
+  .sidebar {
+    flex: 0 0 30%; 
+  }
+  .layout-container {
+    margin: 50px !important;
+  }
+  .dashboard-booking-container .input-field {
+    padding: 5px !important;
+  }
+  .mainbar {
+    padding: 3px !important;
+    margin: 15px !important;
+  }
+}
+
+
 @media (max-width: 992px) {
   .layout-container {
     flex-direction: column;
     height: 80vh;
-    overflow-y: scroll !important;
+    overflow-y: auto !important;
+    margin: 0px !important;
   }
 
   .sidebar {
@@ -1053,7 +1180,7 @@ input[type="checkbox"] {
   text-align: center;
   background: #fff;
   width: 100%;
-  padding: 50px 0px 50px 0px;
+  padding: 30px 0px 30px 0px;
   background-image: url("/assets/images/profile-background.svg");
   background-size: cover;
   background-position: center;
@@ -1105,6 +1232,11 @@ input[type="checkbox"] {
 @media (max-width: 767.98px) {
   .profile-container {
     width: 100%;
+  }
+}
+@media (min-width: 1302px) and (max-width: 1411px) {
+  .profile-container {
+    padding: 22px 0px 22px 0px;
   }
 }
 
@@ -1301,6 +1433,9 @@ input[type="checkbox"] {
     align-items: flex-start;
     padding: 10px;
   }
+  .dashboard-booking-container .input-field label {
+    padding: 0px 10px;
+  }
 }
 
 /****************Booking Cancel and payment Modal***************/
@@ -1474,7 +1609,7 @@ input[type="checkbox"] {
   width: 100% !important;
   border-collapse: collapse;
   text-align: center;
-  margin: 30px 0px;
+  margin: 0px 0px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   white-space: nowrap;
   overflow-x: auto !important;
@@ -1503,7 +1638,7 @@ input[type="checkbox"] {
     width: 100% !important;
     border-collapse: collapse;
     text-align: center;
-    margin: 60px 0px !important;
+    margin: 0px 0px !important;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   .head-element h2 {
@@ -1517,9 +1652,9 @@ input[type="checkbox"] {
   td {
     font-size: 14px;
   }
-  .table-container {
+  .booking-history .table-container {
     width: 100%;
-    overflow-x: scroll !important;
+    overflow-x: auto !important;
   }
 }
 
@@ -2112,12 +2247,12 @@ input[type="checkbox"] {
 /***********Login partner***********/
 .partner-login {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: -300px !important;
+  margin-top: 100px !important;
   background-color: #fff;
 }
 @media (max-width: 768px) {
   .partner-login {
-    margin-top: -300px !important;
+    margin-top: 40px !important;
   }
 }
 /************partner booking page**************/
@@ -2163,10 +2298,6 @@ input[type="checkbox"] {
   vertical-align: middle !important;
 }
 
-.partner-booking-page {
-  overflow-x: auto !important;
-}
-
 .bookingId {
   text-decoration: underline;
   color: #7b0864 !important;
@@ -2178,16 +2309,6 @@ input[type="checkbox"] {
   white-space: nowrap;
   text-align: center;
   vertical-align: middle;
-}
-
-.text-wrap {
-  white-space: normal; /* Allows text to wrap */
-  word-break: break-word; /* Breaks long words to fit within the cell */
-}
-/* Make sure the table is scrollable on all screen sizes */
-.table-responsive {
-  overflow-x: auto; /* Ensures horizontal scroll bar appears if needed */
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on touch devices */
 }
 
 .send-btn {
@@ -2299,6 +2420,13 @@ input[type="checkbox"] {
   border-bottom-left-radius: 10px !important;
   border-bottom-right-radius: 10px !important;
   margin: 15px 0px !important;
+}
+
+
+@media (max-width: 768px) {
+  .form-check-inline {
+    display: block !important;
+  }
 }
 
 /***************google map component***************/
@@ -2980,6 +3108,9 @@ table .make-disable.disabled td:not(:first-child) {
 .request-support-body {
   padding: 30px;
   margin: 0px 70px !important;
+  height: auto;
+  max-height: 93vh;
+  overflow-y: auto !important;
 }
 .request-support-body h2 {
   text-align: center;
@@ -3044,6 +3175,25 @@ table .make-disable.disabled td:not(:first-child) {
   .report-container h2,
   p {
     text-align: center;
+  }
+  .request-support-body {
+    padding: 10px !important;
+    margin: 0px 10px !important;
+    max-height: 70vh;
+    overflow-y: auto !important;
+  }
+}
+@media (max-width: 480px) {
+  .request-support-body {
+    margin: 0px 10px !important; /* Adjust margin more for very small screens */
+  }
+
+  .request-support-body-p p {
+    font-size: 12px !important; /* Ensure the font doesn't overflow */
+  }
+  
+  .request-support-body h2 {
+    font-size: 18px; /* Reduce font size for headings */
   }
 }
 
@@ -3246,6 +3396,7 @@ table .make-disable.disabled td:not(:first-child) {
   width: 100%;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 .multiple-unit-dashboard {
   display: flex;
@@ -3254,6 +3405,7 @@ table .make-disable.disabled td:not(:first-child) {
   padding: 10px 20px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   margin: 30px 0px !important;
+  flex-wrap: wrap;
 }
 .multiple-unit-dashboard-head {
   display: flex;
@@ -3290,6 +3442,7 @@ table .make-disable.disabled td:not(:first-child) {
 .chart-table-container {
   display: flex !important;
   justify-content: space-between !important;
+  flex-wrap: wrap;
 }
 .chart-table-container .col-md-5 {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -3299,6 +3452,8 @@ table .make-disable.disabled td:not(:first-child) {
   max-height: 450px;
   overflow-x: hidden;
   overflow-y: auto;
+  flex: 1 1 45%;
+  max-width: 48%;
 }
 .operator-list {
   display: flex;
@@ -3327,6 +3482,23 @@ table .make-disable.disabled td:not(:first-child) {
 .btn-success {
   background: #004907 !important;
   border: 1px solid #ddd !important;
+}
+/* Media Queries for Better Responsiveness */
+@media (max-width: 1024px) {
+  .chart-table-container .col-md-5 {
+    flex: 1 1 100%; /* Cards take full width */
+    max-width: 100%;
+  }
+
+  .multiple-unit-dashboard {
+    flex-direction: column; /* Stack dashboard items vertically */
+  }
+
+  .multiple-unit-dashboard-head {
+    flex-direction: column; /* Align items vertically */
+    justify-content: center;
+    margin: 10px 0;
+  }
 }
 @media (max-width: 768px) {
   .multiple-unit-dashboard-container {
@@ -3363,7 +3535,13 @@ table .make-disable.disabled td:not(:first-child) {
   }
   .chart-table-container {
     display: flex !important;
+    flex-direction: column;
     justify-content: center !important;
+  }
+  .chart-table-container .col-md-5 {
+    flex: 1 1 100%;
+    max-width: 100%;
+    margin: 10px 0; /* Adjust spacing for smaller screens */
   }
 }
 
@@ -3829,14 +4007,12 @@ table .make-disable.disabled td:not(:first-child) {
   border-radius: 0px !important;
   width: 90% !important;
   position: absolute;
-  top: 50%;
   transform: translate(-50%, -50%);
-  top: 50%;
+  top: 150%;
   left: 50%;
   background: rgba(255, 255, 255);
   padding: 10px 0px;
   height: 550px !important;
-  margin-top: 18%;
   overflow-y: auto !important;
 }
 .help-component {
@@ -3903,21 +4079,11 @@ table .make-disable.disabled td:not(:first-child) {
   margin-left: auto; /* Pushes icon to the right side */
 }
 @media (max-width: 768px) {
-  .help-body {
-    width: 95% !important;
-    height: 550px !important;
-    margin-top: 50% !important;
-  }
+
 }
 
 @media (max-width: 576px) {
-  .help-body {
-    width: 100% !important;
-    height: 550px !important;
-    padding: 15px;
-    margin-top: 30% !important;
-    top: 130%;
-  }
+ 
 }
 
 /* Custom scrollbar styling for WebKit browsers */
