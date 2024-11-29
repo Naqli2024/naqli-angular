@@ -5,6 +5,7 @@ import { User } from '../../../models/user.model';
 import { ToastrService } from 'ngx-toastr';
 import { Partner } from '../../../models/partnerData.model';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -14,14 +15,15 @@ import { CommonModule } from '@angular/common';
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent {
-  profilePhoto: string = 'assets/images/Group 6.svg';
+  profilePhoto: string | ArrayBuffer | null = null;
   users: User | null = null;
   partner: Partner | null = null;
 
   constructor(
     private userService: UserService,
     private partnerService: PartnerService,
-    public toastr: ToastrService
+    public toastr: ToastrService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +42,9 @@ export class ProfileComponent {
     this.userService.getUserById(userId).subscribe(
       (response: User) => {
         this.users = response;
+        if (response.userProfile?.fileName) {
+          this.profilePhoto = `https://prod.naqlee.com:443/uploads/userProfile/${response.userProfile.fileName}`;
+        }
       },
       (error) => {
         this.toastr.error(
@@ -62,5 +67,9 @@ export class ProfileComponent {
         );
       }
     );
+  }
+
+  navigateToEditProfile() {
+    this.router.navigate(['/home/user/dashboard/edit-profile'])
   }
 }

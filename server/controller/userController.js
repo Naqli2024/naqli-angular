@@ -4,7 +4,7 @@ const { validationResult } = require("express-validator");
 require("dotenv").config();
 const twilio = require("twilio");
 const axios = require("axios");
-const querystring = require('querystring');
+const querystring = require("querystring");
 
 /*****************************************
             User registration
@@ -140,28 +140,43 @@ const userRegister = async (req, res) => {
             Send OTP 
  *****************************************/
 
-// Function to send OTP to the user's contact number using Twilio
+// Function to send OTP to the user's contact number 
 const sendOTP = async (contactNumber, otp) => {
-  const url = "https://api.oursms.com/api-a/msgs";
-    const payload = querystring.stringify({
-        src: process.env.src,
-        dests: contactNumber,
-        body: `Your OTP is ${otp}. It is valid for 5 minutes.`,
-        priority: 1,
-        dlr: 1,
+
+  if (!contactNumber.startsWith('966')) {
+    contactNumber = '966' + contactNumber.replace(/^0/, ''); // Remove leading 0 and add '966'
+  }
+
+  // Set the API URL and the token
+  const apiUrl = "https://api.oursms.com";
+  const apiToken = process.env.OURSMS_API_TOKEN;
+  const messageBody = `Your OTP is: ${otp}`;
+
+  const data = {
+    src: "oursms",
+    dests: [contactNumber],
+    body: messageBody,
+    priority: 0,
+    delay: 0,
+    validity: 0,
+    maxParts: 0,
+    dlr: 0,
+    prevDups: 0,
+    msgClass: "transactional",
+  };
+  try {
+    const response = await axios.post(`${apiUrl}/msgs/sms`, data, {
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
     });
-
-    const headers = {
-        "Authorization": `Bearer ${process.env.OURSMS_API_TOKEN}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-    };
-
-    try {
-        const response = await axios.post(url, payload, { headers });
-        console.log("Message sent successfully:", response.data);
-    } catch (error) {
-        console.error("Error sending message:", error.response?.data || error.message);
-    }
+    console.log("OTP sent successfully:", response);
+    return response.data; // Return the OTP for future verification
+  } catch (error) {
+    console.error("Error sending OTP:", error.response.data);
+    throw new Error("Failed to send OTP");
+  }
 };
 
 /********************************************
@@ -325,8 +340,22 @@ const editUser = async (req, res) => {
       idNumber,
     } = req.body;
 
-    if (password && password !== confirmPassword) {
-      return res.status(500).json({ message: "Passwords do not match" });
+    if (password || confirmPassword) {
+      if (!password || !confirmPassword) {
+        return res.status(400).json({ message: "Both passwords are required" });
+      }
+
+      if (password !== confirmPassword) {
+        return res.status(400).json({ message: "Passwords do not match" });
+      }
+    }
+
+    let userProfile;
+    if (req.file) {
+      userProfile = {
+        contentType: req.file.mimetype,
+        fileName: req.file.filename,
+      };
     }
 
     const updateUser = {
@@ -338,11 +367,11 @@ const editUser = async (req, res) => {
       city,
       govtId,
       idNumber,
+      userProfile,
     };
 
     if (password) {
       updateUser.password = await bcrypt.hash(password, 10);
-      updateUser.confirmPassword = await bcrypt.hash(confirmPassword, 10);
     }
 
     //Remove the keys if getting undefined

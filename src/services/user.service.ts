@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { map } from 'rxjs/operators';
@@ -35,5 +35,11 @@ export class UserService {
 
   updateUserStatus(userId: string, status: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/users/${userId}/status`, status);
+  }
+
+  editUserProfile(userId: string, formData: FormData): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${this.apiUrl}/users/edit-profile/${userId}`, formData, { headers });
   }
 }

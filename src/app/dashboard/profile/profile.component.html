@@ -5,17 +5,14 @@
   </div>
 
   <div class="profile-photo">
-    <label for="upload-photo">
-      <img [src]="profilePhoto" alt="Profile Photo" id="profile-img" />
-    </label>
-    <input type="file" id="upload-photo" accept="image/*" />
+      <img [src]="profilePhoto || 'assets/images/Group 6.svg'" alt="Profile Photo" id="profile-img" />
   </div>
 
   <div style="color: #8f8e97; font-size: 12px; margin-bottom: 5px">
     ID No: {{ users._id }}
   </div>
 
-  <div class="edit-profile"><i class="fas fa-edit"></i> Edit Profile</div>
+  <div class="edit-profile" (click)="navigateToEditProfile()"><i class="fas fa-edit"></i> Edit Profile</div>
 </div>
 
 <ng-template #partnerName>

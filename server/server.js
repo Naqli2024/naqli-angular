@@ -14,6 +14,7 @@ const adminRoute = require("./routes/adminRoute");
 const reportRoute = require("./routes/reportRoute");
 const fileRoute = require("./routes/fileRoutes");
 const createPayment = require("./routes/createPaymentRoute");
+const path = require('path');
 
 //environment variables
 env.config();
@@ -38,6 +39,11 @@ app.use("/api/admin", adminRoute);
 app.use("/api/report", reportRoute);
 app.use("/api", fileRoute);
 app.use("/api", createPayment);
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// If you want to serve only the 'userProfile' folder
+app.use('/uploads/images/userProfile', express.static(path.join(__dirname, 'uploads/images/userProfile')));
 
 
 app.listen(process.env.PORT, '0.0.0.0', () =>

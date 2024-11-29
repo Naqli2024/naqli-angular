@@ -103,7 +103,7 @@
     </div>
     <h2>{{ "REGISTER.TITLE" | translate }}</h2>
     <form (ngSubmit)="register()">
-      <div class="row mb-3">
+      <div class="row mb-1">
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="firstName" class="form-label mb-1">{{
             "REGISTER.FIRST_NAME" | translate
@@ -133,7 +133,7 @@
           />
         </div>
       </div>
-      <div class="row mb-3">
+      <div class="row mb-1">
         <div class="col-md-12 d-flex flex-column align-items-start">
           <label for="email" class="form-label mb-1 me-3">{{
             "REGISTER.EMAIL_ADDRESS" | translate
@@ -149,7 +149,7 @@
           />
         </div>
       </div>
-      <div class="row mb-3">
+      <div class="row mb-1">
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="password" class="form-label mb-1 me-3">{{
             "REGISTER.PASSWORD" | translate
@@ -205,7 +205,7 @@
           </div>
         </div>
       </div>
-      <div class="row mb-3">
+      <div class="row mb-1">
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="contactNumber" class="form-label mb-1 me-3">{{
             "REGISTER.CONTACT_NUMBER" | translate
@@ -234,7 +234,7 @@
           />
         </div>
       </div>
-      <div class="row mb-3">
+      <div class="row mb-1">
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="address1" class="form-label mb-1 me-3">{{
             "REGISTER.ADDRESS_1" | translate
@@ -263,7 +263,7 @@
           />
         </div>
       </div>
-      <div class="row mb-3">
+      <div class="row mb-1">
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="city" class="form-label mb-1 me-3">{{
             "REGISTER.CITY" | translate
@@ -304,7 +304,7 @@
           </select>
         </div>
       </div>
-      <div class="row mb-3">
+      <div class="row mb-1">
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="govtId" class="form-label mb-1 me-3">{{
             "REGISTER.GOVT_ID" | translate
@@ -342,7 +342,7 @@
           />
         </div>
       </div>
-      <div class="row justify-content-center mb-3">
+      <div class="row justify-content-center mb-3 mt-3">
         <div class="col-md-6 d-flex justify-content-center">
           <button
             type="submit"
@@ -355,6 +355,7 @@
             type="button"
             class="btn btn-secondary me-2"
             style="width: 50%"
+            (click)="activeModal.dismiss()"
           >
             {{ "REGISTER.CANCEL" | translate }}
           </button>
@@ -363,10 +364,230 @@
     </form>
   </div>
   <div class="register-bottom">
-    <input type="checkbox" id="termsCheckbox" [(ngModel)]="termsAccepted"/>
+    <input type="checkbox" id="termsCheckbox" [(ngModel)]="termsAccepted" />
     <p>
       {{ "REGISTER.TERMS_PRIVACY" | translate }}
-      <span>{{ "REGISTER.PRIVACY" | translate }}</span>
+      <span (click)="togglePrivacyPolicy()">{{
+        "REGISTER.PRIVACY" | translate
+      }}</span>
     </p>
+  </div>
+  <div *ngIf="showPrivacyPolicy" class="privacy-policy">
+    <p>
+      This Privacy Policy sets out the basis on which we will handle any
+      personal data, including but not limited to payment information and other
+      data that we collect from you or from other sources or that you provide to
+      us (“Data”) in connection with your access and use of our website and/or
+      Naqlee mobile application (collectively, the “Site”), services and
+      applications (collectively, the “Services”). We understand the importance
+      of this data and are committed to protecting and respecting your privacy.
+      Please read the following carefully to understand our data practices. By
+      using our Services, you agree to handle data in accordance with this
+      Privacy Policy.
+    </p>
+    <p>
+      References to “we” (or similar) in this Privacy Policy are references to
+      Computer Data Corporation (Naqlee) and references to “you” or “user” are
+      references to you as an individual or legal entity, as applicable.
+    </p>
+    <h4>Naqlee Application Terms of Use</h4>
+    <div class="terms">
+      <h6>1. Introduction</h6>
+      <span>
+        a. These terms set out the rules governing your use of the Naqlee
+        application. By using the application, you agree to be bound by these
+        terms.
+      </span>
+    </div>
+    <div class="terms">
+      <h6>2. Modifications to the terms</h6>
+      <span>
+        a. We reserve the right to modify these terms at any time. You will be
+        notified of any changes via the application or by email.
+      </span>
+    </div>
+    <div class="terms">
+      <h6>3. Permitted Use</h6>
+      <span> a. The application must be used only for lawful purposes. </span
+      ><span
+        >b. The application must not be used for fraudulent or abusive
+        purposes.</span
+      >
+    </div>
+    <div class="terms">
+      <h6>4. Account Creation</h6>
+      <span>a. You must create an account to use the application services.</span
+      ><span>
+        b. You are responsible for maintaining the confidentiality of your
+        account information.</span
+      >
+    </div>
+    <div class="terms">
+      <h6>5. Services Provided</h6>
+      <span>
+        a. The Naqlee application provides transportation services, and you must
+        comply with all instructions while using the service.
+      </span>
+    </div>
+    <div class="terms">
+      <h6>6. Fees and Payment</h6>
+      <span> a. Fees may be imposed for transportation services. </span
+      ><span
+        >b. All payments must be made through approved payment methods. </span
+      ><span>
+        c. The customer must pay the dues and any breach or change thereof and
+        all payments must be made through approved payment methods
+      </span>
+    </div>
+    <div class="terms">
+      <h6>7. Liability</h6>
+      <span>
+        a. Naqlee is not responsible for any damages resulting from the use of
+        the application and during the transportation process and what happens
+        between the carrier and the customer or the inability to use it.</span
+      >
+      <span>
+        b. Naqlee is an intermediary institution between the carrier and the
+        customer only. The carrier is obligated to provide the service in the
+        required manner and not to tamper with or neglect the property and must
+        preserve it. The user is obligated to provide the correct information to
+        the carrier and also provide it through the Naqlee application or
+        website</span
+      >
+    </div>
+    <div class="terms">
+      <h6>8. Termination of use</h6>
+      <span>
+        a. We may terminate or suspend your account at any time if you violate
+        these terms or the terms governing the country in which you operate
+      </span>
+    </div>
+    <div class="terms">
+      <h6>9. Applicable law</h6>
+      <span>a. These terms are subject to applicable laws</span>
+    </div>
+    <div class="terms">
+      <h6>10. Financial transactions</h6>
+      <span>
+        a. Naqlee is a platform for connecting customers and users and has the
+        right to take a commission as it deems appropriate with the requirements
+        of the work. This may include a deduction from the amount for partners
+        due to bank transfer fees
+      </span>
+    </div>
+    <div class="terms">
+      <h6>11. Contact us</h6>
+      <span>
+        If you have any questions regarding these terms, you can contact us via
+        [sales&#64;naqlee.com]
+      </span>
+    </div>
+    <div class="terms">
+      <h6>1. What data may we collect from you?</h6>
+      <p>
+        We may collect and process the following data:
+        <span>
+          a. Data that you provide by filling in forms on the Site, including
+          data provided when registering to use the Site and other shared
+          registrations (for example, social media logins), subscribing to our
+          services, posting material or requesting other services.
+        </span>
+        <span
+          >b. Data that you provide when entering a competition or promotion on
+          our Site, completing a survey or poll, or providing reviews,
+          testimonials or feedback.</span
+        >
+        <span
+          >c. Data that you provide to us, or that we may collect from you, when
+          you report any difficulty you are experiencing in using our Site.
+        </span>
+        <span>d. Correspondence records if you contact us. </span>
+        <span>e. General, aggregated, demographic and non-personal data.</span>
+        <span
+          >f. If you download or use our mobile application, we may have access
+          to details relating to your location and the location of your mobile
+          device, including your device’s unique identifier.
+        </span>
+        <span
+          >g. Details of transactions you have made through our Site and details
+          of our processing and delivery of goods you have ordered.
+        </span>
+        <span
+          >h. Details about your computer, including, for example, your IP
+          address, operating system and browser type, as well as data relating
+          to your general internet usage (for example, by using technology that
+          stores or accesses data on your device, such as cookies, conversion
+          tracking code, web beacons, etc. (collectively, “Cookies”)).</span
+        >
+        <span
+          >i. Your email address, which has been provided to us by third parties
+          who have confirmed to us that they have obtained your consent to share
+          your email address.
+        </span>
+        <span
+          >j. Any other data we consider necessary to enhance your experience of
+          using the Site.</span
+        >
+      </p>
+    </div>
+    <div class="terms">
+      <h6>2. How will we use your data?</h6>
+      <p>
+        We may use data in the following circumstances:
+        <span
+          >a. To provide you with information, products or services that you
+          request from us or in which we think you may be interested, and where
+          you have consented to being contacted for such purposes.
+        </span>
+        <span
+          >b. To provide you with services based on where you are located, such
+          as advertising, search results and other content tailored to you.
+        </span>
+        <span
+          >c. To carry out obligations arising from any contracts entered into
+          between you and any other party using our Site, or between you and us.
+        </span>
+        <span
+          >d. To improve our services and to provide better and more
+          personalized services.
+        </span>
+        <span
+          >e. To ensure that our site content is presented in the most effective
+          manner for you and the device you are using to access our site.</span
+        >
+        <span>f. To notify you of changes to our site. </span>
+        <span
+          >g. For any other reason we deem necessary to enhance your browsing
+          experience on the site.
+        </span>
+        <span
+          >h. To administer incentive programs and fulfill your requests for
+          such incentives, and/or to allow you to participate in competitions
+          and notify you if you win.
+        </span>
+      </p>
+    </div>
+    <div class="terms">
+      <h6>3. What security measures do we apply?</h6>
+      <span>
+        a. We take the necessary technical, commercial, technical and
+        administrative steps to ensure that data is treated securely and in
+        accordance with this Privacy Policy, in order to protect data from
+        unauthorized access, alteration, disclosure or destruction. For example,
+        we may use encrypted electronic technology to protect data during
+        transmission to our site, in addition to an external electronic
+        firewall, and electronic firewall technology on the computer hosting our
+        site so that we can repel malicious attacks on the network. Only
+        employees, service providers and agents who need to know the data in
+        order to carry out their work will be granted access to it.
+      </span>
+      <span>
+        b. It is important for you to ensure that your password and the device
+        you use to access our site are protected to prevent unauthorized access
+        by third parties. You are solely responsible for keeping your password
+        confidential, for example, by ensuring that you log out after each
+        session.
+      </span>
+    </div>
   </div>
 </ng-template>

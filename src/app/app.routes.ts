@@ -49,7 +49,7 @@ import { TriggerBookingComponent } from './dashboard/trigger-booking/trigger-boo
 import { BookingManagerComponent } from './dashboard/booking-manager/booking-manager.component';
 import { SuperUserPaymentsComponent } from './dashboard/super-user-payments/super-user-payments.component';
 import { PaymentSuccessfulComponent } from './dashboard/booking/payment-successful/payment-successful.component';
-
+import { EditProfileComponent } from './dashboard/profile/edit-profile/edit-profile.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -105,6 +105,7 @@ export const routes: Routes = [
       { path: 'payments', component: PaymentsComponent },
       { path: 'report', component: ReportComponent },
       { path: 'help', component: HelpComponent },
+      { path: 'edit-profile', component: EditProfileComponent },
       {
         path: 'admin/overview',
         component: OverviewComponent,
@@ -121,18 +122,27 @@ export const routes: Routes = [
       },
       { path: 'admin/naqlee-user', component: NaqleeUserComponent },
       { path: 'admin/commission', component: CommissionComponent },
-      { path: 'super-user/dashboard', component: SuperUserDashboardComponent, canActivate: [AuthGuard], },
-      { path: 'super-user/trigger-booking', component: TriggerBookingComponent },
-      { path: 'super-user/booking-manager', component: BookingManagerComponent },
+      {
+        path: 'super-user/dashboard',
+        component: SuperUserDashboardComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'super-user/trigger-booking',
+        component: TriggerBookingComponent,
+      },
+      {
+        path: 'super-user/booking-manager',
+        component: BookingManagerComponent,
+      },
       { path: 'super-user/payments', component: SuperUserPaymentsComponent },
-      { path: 'help', component: HelpComponent}
-
+      { path: 'help', component: HelpComponent },
     ],
   },
   { path: 'home/partner', component: PartnerComponent },
   { path: 'home/partner/register', component: RegisterComponent },
   { path: 'home/partner/operator', component: OperatorComponent },
-  { path: 'home/partner/company-details', component: CompanyDetailsComponent},
+  { path: 'home/partner/company-details', component: CompanyDetailsComponent },
   { path: 'home/partner/login', component: LoginComponent },
   {
     path: 'home/partner/dashboard',
@@ -145,7 +155,10 @@ export const routes: Routes = [
       { path: 'payments', component: PartnerPaymentComponent },
       { path: 'report', component: PartnerReportComponent },
       { path: 'help', component: PartnerHelpComponent },
-      { path: 'multiple-unit-dashboard', component: MultipleUnitDashboardComponent },
+      {
+        path: 'multiple-unit-dashboard',
+        component: MultipleUnitDashboardComponent,
+      },
       { path: 'bookings', component: PartnerBookingComponent },
       { path: 'booking-management', component: BookingManagementComponent },
       { path: 'contract', component: ContractComponent },

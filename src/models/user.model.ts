@@ -23,5 +23,9 @@ export interface User {
     lastNotification:  Notification | null;
     createdAt: string;
     updatedAt: string;
-    selected?:boolean
+    selected?:boolean;
+    userProfile: {
+      contentType: string;
+      fileName: string;
+    };
   }

@@ -4,11 +4,14 @@
   box-sizing: border-box;
 }
 body {
-  height: 100vh !important;
-  overflow-y: hidden;
+  min-height: 100vh !important;
   font-family: "Roboto", sans-serif;
   font-weight: 700;
   font-style: normal;
+  font-size: 14px !important;
+}
+.btn {
+  font-size: 14px !important;
 }
 
 /**********navbar**********/
@@ -17,10 +20,10 @@ body {
   align-items: center;
   justify-content: space-between;
   background-color: #fff;
-  padding: 1rem 2rem;
+  padding: 1rem 5%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
-  font-size: 14px;
+  flex-wrap: wrap;
 }
 
 .navbar .container {
@@ -31,8 +34,9 @@ body {
 }
 
 .navbar-brand svg {
-  width: 121.983px;
-  height: 56.258px;
+  width: 20%;
+  max-width: 122px;
+  height: auto;
 }
 
 .centered-links {
@@ -42,14 +46,13 @@ body {
 }
 
 .right-side-elements > * {
-  padding: 0px 20px;
+  padding: 0px 1rem;
 }
 
 .nav-link {
-  margin: 0 10px;
+  margin: 0 0.5rem;
   text-decoration: none;
   color: #000;
-  font-size: 14px;
   cursor: pointer;
 }
 
@@ -59,9 +62,9 @@ body {
 
 .vertical-line {
   width: 2px;
-  height: 30px;
+  height: 2rem;
   background-color: #ddd;
-  margin: 0 10px;
+  margin: 0 0.5rem;
 }
 
 .right-side-elements {
@@ -70,18 +73,20 @@ body {
 }
 
 .notification-icon {
-  font-size: 20px !important;
+  font-size: 1.25rem !important;
   display: inline-block !important;
   position: relative !important;
 }
 .notification-icon .badge {
-  font-size: 10px;
-  width: 18px;
-  height: 18px;
+  font-size: 0.7rem;
+  width: 1rem;
+  height: 1rem;
   text-align: center;
   border-radius: 50%;
-  margin-left: -18px;
-  margin-top: 3px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
 }
 .notification-icon:hover {
   cursor: pointer;
@@ -99,9 +104,9 @@ body {
 
 .hamburger .bar {
   height: 3px;
-  width: 25px;
+  width: 1.5rem;
   background-color: #000;
-  margin: 4px 0;
+  margin: 0.3rem 0;
   transition: all 0.3s;
 }
 
@@ -127,7 +132,7 @@ body {
 .hamburger-menu .notification-icon {
   text-align: center;
   width: 100%;
-  padding: 0.5rem 0;
+  padding: 0.5rem;
 }
 
 .dropdown {
@@ -140,7 +145,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 3px 10px;
+  padding: 0.3rem 0.6rem;
 }
 
 .dropdown-content {
@@ -158,7 +163,7 @@ body {
 
 .dropdown-item {
   color: black;
-  padding: 12px 16px;
+  padding: 0.5rem 1rem;
   text-decoration: none;
   display: block;
 }
@@ -191,9 +196,9 @@ body {
   background-color: white;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  width: 450px; /* Adjust width as needed */
-  margin-top: 20px;
-  max-height: 400px;
+  width: 400px; /* Adjust width as needed */
+  margin-top: 1rem;
+  max-height: 50vh;
   overflow-y: auto;
 }
 
@@ -202,7 +207,7 @@ body {
 }
 
 .notification-item {
-  padding: 10px;
+  padding: 0.5rem;
   border-bottom: 1px solid #ccc;
   font-size: 14px;
 }
@@ -213,7 +218,7 @@ body {
 
 @media (max-width: 768px) {
   .navbar {
-    padding: 1rem;
+    padding: 1rem 3%;
   }
 
   .centered-links {
@@ -248,52 +253,72 @@ body {
   }
 
   .notification-icon .badge {
-    font-size: 9px;
-    width: 16px;
-    height: 16px;
-    text-align: center;
-    border-radius: 50%;
-    margin-left: -8px;
-    margin-top: 11px;
+    font-size: 0.6rem;
+    width: 1rem;
+    height: 1rem;
   }
   .notifications-dropdown {
-    width: 250px;
-    margin-top: 10px;
+    width: 250px; 
+    max-height: 30vh; 
+    margin-top: 0.5rem; 
   }
+}
+
+@media (max-width: 1024px) {
+  .notifications-dropdown {
+    width: 400px;
+    max-height: 40vh; 
+    margin-top: 0.8rem; 
+  }
+}
+
+@media (max-width: 576px) {
+  .notifications-dropdown {
+    width: 200px; 
+    max-height: 25vh; 
+    margin-top: 0.3rem; 
+  }
+}
+
+/**********Modal***************/
+.modal-dialog-scrollable .modal-content {
+  max-height: 100% !important;
+  overflow-y: auto !important;
 }
 /**********Login Page***********/
 .login-container {
   width: 100%;
   margin: auto;
+  padding: 0 5%;
 }
 .login-form {
-  max-width: 480px;
+  max-width: 90%; 
   width: 100%;
-  padding: 150px 0px;
+  padding: 10vh 0; 
   margin: 0 auto;
   position: relative;
 }
 .register {
   width: 100%;
-  padding: 0px 10px;
+  padding: 0 2%; 
   margin: 0 auto;
-  max-width: 980px;
-  border-bottom: 1px solid #000000;
+  max-width: 90%; 
+  border-bottom: 1px solid #000;
+  position: relative;
 }
 .register h2 {
   text-align: center;
-  font-size: 30px;
+  font-size: 1.8rem; 
   font-weight: 700;
-  margin: 50px 0;
+  margin: 2rem 0;
 }
 .register-bottom {
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: center !important;
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: center;
   align-items: center;
-  padding: 0 10px;
-  margin: 10px 0px !important;
-  gap: 10px;
+  padding: 0 2%;
+  gap: 1rem;
 }
 .register-bottom p {
   margin: 0;
@@ -303,11 +328,35 @@ body {
   color: #6a66d1 !important;
   cursor: pointer;
 }
+.terms span {
+  display: block;
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+}
+.privacy-policy {
+  padding: 1rem !important;    
+  background-color: #f9f9f9; 
+  border: 1px solid #ddd;  
+  border-radius: 5px;        
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
+  height: 100%;
+  max-height: 50vh !important;
+  overflow-y: auto; 
+}
+.privacy-policy h4,
+.privacy-policy h6 {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+.privacy-policy p {
+  margin-bottom: 1rem;
+  line-height: 1.6; 
+}
 .login-form h2 {
   text-align: center;
-  font-size: 30px;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin: 20px 0;
+  margin: 1rem 0;
 }
 .login-form input.form-control:focus,
 .login-form select.form-select:focus {
@@ -344,7 +393,6 @@ body {
 }
 .forgot-password {
   text-decoration: none;
-  font-size: 13px;
   color: #6a66d1;
 }
 .send-btn:hover {
@@ -520,8 +568,9 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 50%; /* Make the slider take up 50% of the container height */
+  bottom: 50%;
   z-index: -1;
+  background-color: #6a66d1;;
 }
 
 mdb-carousel {
@@ -534,9 +583,16 @@ mdb-carousel-item img {
   height: auto !important;
 }
 
+@media (max-width: 1024px) {
+  .custom-slider {
+    background: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   .custom-slider {
     bottom: 0; /* Reset the height on small screens */
+    background: none !important;
   }
 
   mdb-carousel {
@@ -620,7 +676,7 @@ mdb-carousel-item img {
     flex-wrap: nowrap;
     justify-content: space-between;
     width: 90%; 
-    top: 30px;
+    top: 20% !important;
   }
 
   .home-body > div {
@@ -1098,7 +1154,9 @@ input[type="checkbox"] {
 .sidebar {
   flex: 0 0 20%; /* 25% width for sidebar */
   background-color: #f0edfa !important;
-  height: 100%;
+  height: 80vh;
+  max-height: 730px;
+  overflow-y: auto;
   padding-right: 0px !important;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
@@ -1107,6 +1165,10 @@ input[type="checkbox"] {
   list-style-type: none;
   padding: 0;
   margin: 10px 0px;
+  height: auto;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .sidebar li {
@@ -1117,6 +1179,7 @@ input[type="checkbox"] {
   text-decoration: none;
   color: #333;
   border-bottom: 1px solid #ebeaea;
+  font-size: 14px;
 }
 
 .sidebar a.active {
@@ -1175,6 +1238,20 @@ input[type="checkbox"] {
   }
 }
 
+@media (max-width: 768px) {
+  .sidebar ul {
+    min-height: 150px; 
+    max-height: 300px; 
+  }
+}
+
+@media (max-width: 576px) {
+  .sidebar ul {
+    min-height: 120px; 
+    max-height: 250px; 
+  }
+}
+
 /**************profile**************/
 .profile-container {
   text-align: center;
@@ -1189,6 +1266,8 @@ input[type="checkbox"] {
 
 .profile-photo {
   margin-bottom: 10px;
+  position: relative;
+  display: inline-block;
 }
 
 .profile-photo img {
@@ -1202,6 +1281,19 @@ input[type="checkbox"] {
 
 .profile-photo input {
   display: none;
+}
+
+.edit-profile-container {
+  background-image: none !important;
+  padding: 0px 0px 0px 0px !important;
+}
+
+#upload-photo {
+  display: none;
+}
+
+.form-container label, input {
+  font-size: 14px !important;
 }
 
 .username {
@@ -2332,7 +2424,7 @@ input[type="checkbox"] {
 
 .partner-booking-page .close-icon {
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px !important;
   color: #fff;
   margin: auto 0px !important;
   background-color: rgb(255, 0, 0);

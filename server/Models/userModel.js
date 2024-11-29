@@ -55,9 +55,9 @@ const userSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    messageId: {
+    resetOTP: {
       type: String,
-      required: false,
+      required: true,
     },
     otpExpiry: {
       type: Date,
@@ -76,6 +76,10 @@ const userSchema = new mongoose.Schema(
       default: false
     },
     isVerified: { type: Boolean, default: false },
+    userProfile: {
+      contentType: { type: String },
+      fileName: { type: String }, 
+    },
     notifications: [
       {
         messageTitle: {

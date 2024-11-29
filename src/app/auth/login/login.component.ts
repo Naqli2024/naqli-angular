@@ -45,6 +45,7 @@ export class LoginComponent {
   passwordVisible: boolean = false;
   confirmPasswordVisible: boolean = false;
   termsAccepted: boolean = false;
+  showPrivacyPolicy: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -217,5 +218,10 @@ export class LoginComponent {
       emailAddress: '',
       password: '',
     };
+  }
+
+  togglePrivacyPolicy(): void {
+    console.log("privacy policy clicked")
+    this.showPrivacyPolicy = !this.showPrivacyPolicy
   }
 }
