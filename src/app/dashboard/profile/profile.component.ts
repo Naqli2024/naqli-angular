@@ -6,11 +6,12 @@ import { ToastrService } from 'ngx-toastr';
 import { Partner } from '../../../models/partnerData.model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
@@ -43,7 +44,7 @@ export class ProfileComponent {
       (response: User) => {
         this.users = response;
         if (response.userProfile?.fileName) {
-          this.profilePhoto = `https://prod.naqlee.com:443/uploads/userProfile/${response.userProfile.fileName}`;
+          this.profilePhoto = `http://localhost:4000/uploads/userProfile/${response.userProfile.fileName}`;
         }
       },
       (error) => {

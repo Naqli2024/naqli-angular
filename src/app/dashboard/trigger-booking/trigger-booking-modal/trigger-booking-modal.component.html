@@ -57,50 +57,7 @@
           </div>
         </div>
       </div>
-
-      <div class="row justify-content-center">
-        <div
-          style="
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-          "
-        >
-          <button
-            type="button"
-            class="btn btn-payNow"
-            style="width: 200px !important"
-            (click)="
-              makePayment(
-                $event,
-                (vendor.price || 0) / 2,
-                'HalfPaid',
-                vendor.partnerId,
-                vendor.oldQuotePrice
-              )
-            "
-          >
-            Pay Advance: {{ vendor.price / 2 }} SAR
-          </button>
-          <button
-            type="button"
-            class="btn btn-payNow"
-            style="width: 200px !important"
-            (click)="
-              makePayment(
-                $event,
-                vendor.price,
-                'Paid',
-                vendor.partnerId,
-                vendor.oldQuotePrice
-              )
-            "
-          >
-            Pay: {{ vendor.price }} SAR
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 </div>
+

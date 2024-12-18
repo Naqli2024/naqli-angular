@@ -66,6 +66,7 @@ router.put('/updateNaqleeUser/:id', upload.single('userPhoto'), async(req, res) 
 router.post('/add-notification', notificationController.addNotification);
 router.get('/all-notifications', notificationController.getAllNotifications);
 router.put('/update/:notificationId', notificationController.updateNotification);
+router.put('/notifications/seen/:notificationId', notificationController.updateNotificationSeen);
 router.delete('/delete/:notificationId', notificationController.deleteNotification);
 router.get('/getNotificationById/:id', notificationController.getNotificationById);
 router.post('/create-commission', commissionController.createCommission);

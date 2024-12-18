@@ -6,11 +6,12 @@ import { BookingService } from '../../../../services/booking.service';
 import { ToastrService } from 'ngx-toastr';
 import { GoogleMapsService } from '../../../../services/googlemap.service';
 import { MapService } from '../../../../services/map.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-booking-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './edit-booking-modal.component.html',
   styleUrl: './edit-booking-modal.component.css',
 })

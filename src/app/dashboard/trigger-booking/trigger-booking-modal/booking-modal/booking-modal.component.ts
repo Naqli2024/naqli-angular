@@ -1,12 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-booking-modal',
   standalone: true,
-  imports: [],
+  imports: [TranslateModule],
   templateUrl: './booking-modal.component.html',
-  styleUrl: './booking-modal.component.css'
+  styleUrl: './booking-modal.component.css',
 })
 export class BookingModalComponent {
   @Input() bookingId!: string;
@@ -17,7 +18,7 @@ export class BookingModalComponent {
     // Automatically close the modal and navigate after 2 seconds
     setTimeout(() => {
       this.closeModalAndNavigate();
-    }, 2000); 
+    }, 2000);
   }
 
   closeModalAndNavigate(): void {

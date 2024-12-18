@@ -4,11 +4,12 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ReportSupportService } from '../../../../services/report/report.service';
 import { SpinnerService } from '../../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ticket-modal',
   standalone: true,
-  imports: [],
+  imports: [TranslateModule],
   templateUrl: './ticket-modal.component.html',
   styleUrl: './ticket-modal.component.css',
 })

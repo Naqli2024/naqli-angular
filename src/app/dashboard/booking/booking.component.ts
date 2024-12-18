@@ -63,13 +63,14 @@ export class BookingComponent implements OnInit {
   checkoutId: string | null = null;
   integrity: string = '';
   showPaymentForm: boolean = false;
-  shopperResultUrl: string = 'https://naqlee.com/home/user/payment-result';
+  shopperResultUrl: string = 'http://localhost:4200/home/user/payment-result';
   selectedBrand: string = '';
   showPaymentOptions: boolean = false;
   amount: number | undefined;
   status: string | undefined;
   partnerId: string | undefined;
   oldQuotePrice: number | undefined;
+
 
   constructor(
     private modalService: NgbModal,
@@ -120,6 +121,19 @@ export class BookingComponent implements OnInit {
     if (currentStatus === 'Payment Successful!') {
       this.updateBookingPaymentStatus();
     }
+
+     // Define the wpwlOptions in TypeScript
+     window['wpwlOptions'] = {
+      billingAddress: {},
+      mandatoryBillingFields: {
+        country: true,
+        state: true,
+        city: true,
+        postcode: true,
+        street1: true,
+        street2: false
+      }
+    };
   }
 
   ngAfterViewInit(): void {
@@ -557,6 +571,7 @@ export class BookingComponent implements OnInit {
     this.showPaymentOptions = false;
     this.showPaymentForm = true;
     const details = this.paymentService.getPaymentDetails();
+    const userId: any = localStorage.getItem('userId');
 
     if (details) {
       // Access individual properties
@@ -576,17 +591,17 @@ export class BookingComponent implements OnInit {
     }
 
     // Check if `amount` and `selectedBrand` are defined before proceeding
-    if (this.amount && this.selectedBrand) {
+    if (this.amount && this.selectedBrand && userId) {
       console.log(this.amount, this.selectedBrand);
-      this.processPayment(this.amount, this.selectedBrand);
+      this.processPayment(this.amount, this.selectedBrand, userId);
     } else {
       this.toastr.error('Missing payment details');
     }
   }
 
-  processPayment(amount: number, paymentBrand: string) {
+  processPayment(amount: number, paymentBrand: string, userId: any) {
     console.log(amount, paymentBrand);
-    this.checkout.createPayment(amount, paymentBrand).subscribe(
+    this.checkout.createPayment(amount, paymentBrand, userId).subscribe(
       (data: any) => {
         this.checkoutId = data.id; // Adjust according to your response structure
         localStorage.setItem('paymentBrand', paymentBrand);

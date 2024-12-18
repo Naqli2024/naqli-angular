@@ -2,7 +2,7 @@
   <div class="container">
     <!-- Brand/logo -->
     <a class="navbar-brand" href="#">
-      <img src="assets/images/naqlee-logo.svg" />
+      <img src="assets/images/naqlee-logo.svg" alt="naqlee-logo" />
     </a>
 
     <!-- Centered Links -->
@@ -67,11 +67,17 @@
               class="notification-item"
             >
               <b>{{ notification.messageTitle }}</b
-              >: &nbsp;<span>{{ notification.messageBody }}</span>
+              >: &nbsp;<span>{{ notification.messageBody }}</span> &nbsp;<span
+                style="color: green; text-align: right; background: #e8e8e8"
+                *ngIf="notification.seen === false"
+                >New</span
+              >
             </div>
           </div>
           <ng-template #noNotifications>
-            <div class="notification-item">No notifications</div>
+            <div class="notification-item">
+              {{ "No notifications" | translate }}
+            </div>
           </ng-template>
         </div>
       </div>
@@ -155,8 +161,11 @@
               class="notification-item"
             >
               <b>{{ notification.messageTitle }}</b
-              >: &nbsp;
-              <p>{{ notification.messageBody }}</p>
+              >: &nbsp;<span>{{ notification.messageBody }}</span> &nbsp;<span
+                style="color: green; text-align: right; background: #e8e8e8"
+                *ngIf="notification.seen === false"
+                >New</span
+              >
             </div>
           </div>
           <ng-template #noNotifications>

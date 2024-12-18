@@ -1,8 +1,10 @@
 const https = require("https");
 const querystring = require("querystring");
+const userModel = require("../Models/userModel");
+
 
 const createPayment = async (req, res) => {
-  let { amount, paymentBrand } = req.body;
+  let { amount, paymentBrand, userId } = req.body;
 
     // Ensure amount is a number and round it to the nearest whole number
   if (typeof amount !== "number") {
@@ -19,6 +21,22 @@ const createPayment = async (req, res) => {
       .json({ error: "Invalid amount format. Must be a valid whole number." });
   }
   
+// Fetch user details
+let user;
+try {
+  user = await userModel.findById(userId);
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+} catch (error) {
+  return res.status(500).json({ error: "Error fetching user details", message: error.message });
+}
+
+// Generate a random merchantTransactionId
+const merchantTransactionId = Array(24)
+  .fill(null)
+  .map(() => Math.random().toString(36).charAt(2)) // Random letters and numbers
+  .join("");
 
   // Determine entityId based on paymentBrand
   let entityId;
@@ -35,6 +53,10 @@ const createPayment = async (req, res) => {
     currency: "SAR",
     paymentType: "DB",
     integrity: "true",
+    "customer.givenName": user.firstName,
+    "customer.surname": user.lastName,
+    "customer.email": user.emailAddress,
+    merchantTransactionId: merchantTransactionId,
   });
 
   const options = {

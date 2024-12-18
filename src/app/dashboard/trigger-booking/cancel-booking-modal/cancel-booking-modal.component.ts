@@ -3,11 +3,12 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpinnerService } from '../../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { BookingService } from '../../../../services/booking.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cancel-booking-modal',
   standalone: true,
-  imports: [],
+  imports: [TranslateModule],
   templateUrl: './cancel-booking-modal.component.html',
   styleUrl: './cancel-booking-modal.component.css',
 })
@@ -31,8 +32,8 @@ export class CancelBookingModalComponent {
         this.closeModalAndNavigate();
         this.toastr.success(response.message);
         if (this.fetchBookings && this.bookingId) {
-          this.fetchBookings();  
-        } 
+          this.fetchBookings();
+        }
       },
       (error) => {
         this.spinnerService.hide();

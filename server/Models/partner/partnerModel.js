@@ -281,6 +281,10 @@ const partnerSchema = new mongoose.Schema(
           type: Date,
           default: Date.now,
         },
+        seen: {
+          type: Boolean,
+          default: false
+        }
       },
     ],
     reportRequest: [

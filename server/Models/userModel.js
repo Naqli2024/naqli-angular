@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema(
     },
     resetOTP: {
       type: String,
-      required: true,
+      required: false,
     },
     otpExpiry: {
       type: Date,
@@ -94,6 +94,10 @@ const userSchema = new mongoose.Schema(
           type: Date,
           default: Date.now,
         },
+        seen: {
+          type: Boolean,
+          default: false
+        }
       },
     ],
     reportRequest: [

@@ -78,15 +78,13 @@ body {
   position: relative !important;
 }
 .notification-icon .badge {
-  font-size: 0.7rem;
-  width: 1rem;
-  height: 1rem;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
   text-align: center;
   border-radius: 50%;
-  position: absolute;
-  top: 0;
-  right: 0;
-  transform: translate(50%, -50%);
+  margin-left: -15px;
+  margin-top: 3px;
 }
 .notification-icon:hover {
   cursor: pointer;
@@ -191,12 +189,13 @@ body {
 .notifications-dropdown {
   display: none;
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  left: auto;
+  right: 0;
   background-color: white;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  width: 400px; /* Adjust width as needed */
+  min-width: 200px;
+  max-width: 90vw; 
   margin-top: 1rem;
   max-height: 50vh;
   overflow-y: auto;
@@ -256,17 +255,18 @@ body {
     font-size: 0.6rem;
     width: 1rem;
     height: 1rem;
+    margin-left: -10px;
+    margin-top: 9px;
   }
   .notifications-dropdown {
-    width: 250px; 
-    max-height: 30vh; 
-    margin-top: 0.5rem; 
+    min-width: 250px;
+    max-width: 400px; 
   }
 }
 
 @media (max-width: 1024px) {
   .notifications-dropdown {
-    width: 400px;
+    width: 350px;
     max-height: 40vh; 
     margin-top: 0.8rem; 
   }
@@ -1271,8 +1271,10 @@ input[type="checkbox"] {
 }
 
 .profile-photo img {
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  height: auto;
+  max-width: 120px;
+  max-height: 120px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
@@ -1319,6 +1321,18 @@ input[type="checkbox"] {
 
 .edit-profile i {
   margin-right: 5px;
+}
+
+.edit-icon {
+  position: absolute;
+  bottom: 0px; 
+  right: 5px; 
+  background-color: #fff; 
+  border-radius: 50%; 
+  padding: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #3769ce;
 }
 
 @media (max-width: 767.98px) {
@@ -3758,7 +3772,9 @@ table .make-disable.disabled td:not(:first-child) {
 .trigger-booking-td-1 .p2 {
   margin-bottom: 0px !important;
   font-size: 13px !important;
-  color: #818181 !important;
+  color: #6a66d1 !important;
+  text-decoration: underline;
+  cursor: pointer;
 }
 .trigger-booking-td input[type="checkbox"] {
   height: 18px !important;

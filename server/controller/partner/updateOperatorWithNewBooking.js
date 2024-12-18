@@ -53,6 +53,40 @@ const updateOperatorsWithNewBooking = async (booking, isCanceled = false) => {
             },
           }
         );
+
+         // Add a notification for the new booking request
+         await partner.updateOne(
+          { _id: p._id },
+          {
+            $push: {
+              notifications: {
+                messageTitle: "New Booking Request",
+                messageBody: "You have a new Booking Request.",
+              },
+            },
+          }
+        );
+
+        // Check if the newly added bookingRequest contains a paymentStatus field
+        const updatedPartner = await partner.findById(p._id);
+        const matchingRequest = updatedPartner.bookingRequest.find(
+          (request) => request.bookingId.toString() === booking._id.toString() && request.paymentStatus
+        );
+
+        if (matchingRequest) {
+          // Add notification for the confirmed booking with paymentStatus
+          await partner.updateOne(
+            { _id: p._id },
+            {
+              $push: {
+                notifications: {
+                  messageTitle: "Booking Confirmed",
+                  messageBody: `User has paid and confirmed booking with bookingId: ${matchingRequest.bookingId}`,
+                },
+              },
+            }
+          );
+        }
       }
     }
   } catch (error) {

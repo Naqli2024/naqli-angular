@@ -23,117 +23,212 @@
 </div>
 
 <div class="container mt-4">
-    <div class="form-container login-form register" style="border-bottom: none !important;">
-      <form>
-        <!-- Row 1 -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="first-name" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="first-name" [(ngModel)]="user.firstName" name="firstName"/>
-          </div>
-          <div class="col-md-6">
-            <label for="last-name" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="last-name" [(ngModel)]="user.lastName" name="lastName"/>
+  <div
+    class="form-container login-form register"
+    style="border-bottom: none !important"
+  >
+    <form>
+      <!-- Row 1 -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="first-name" class="form-label">{{
+            "REGISTER.FIRST_NAME" | translate
+          }}</label>
+          <input
+            type="text"
+            class="form-control"
+            id="first-name"
+            [(ngModel)]="user.firstName"
+            name="firstName"
+          />
+        </div>
+        <div class="col-md-6">
+          <label for="last-name" class="form-label">{{
+            "REGISTER.LAST_NAME" | translate
+          }}</label>
+          <input
+            type="text"
+            class="form-control"
+            id="last-name"
+            [(ngModel)]="user.lastName"
+            name="lastName"
+          />
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="email" class="form-label">{{
+            "REGISTER.EMAIL_ADDRESS" | translate
+          }}</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            [(ngModel)]="user.emailAddress"
+            name="emailAddress"
+          />
+        </div>
+        <div class="col-md-6">
+          <label for="password" class="form-label">{{
+            "REGISTER.PASSWORD" | translate
+          }}</label>
+          <div class="input-with-icon" style="position: relative">
+            <input
+              [type]="passwordVisible ? 'text' : 'password'"
+              class="form-control"
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="{{ 'REGISTER.PASSWORD' | translate }}"
+            />
+            <i
+              class="fas"
+              [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+              (click)="togglePasswordVisibility()"
+              style="
+                position: absolute;
+                right: 10px;
+                top: 38px;
+                cursor: pointer;
+              "
+            ></i>
           </div>
         </div>
-  
-        <!-- Row 2 -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="email" class="form-label">Email Address</label>
-            <input type="email" class="form-control" id="email" [(ngModel)]="user.emailAddress" name="emailAddress"/>
-          </div>
-          <div class="col-md-6">
-            <label for="password" class="form-label">Password</label>
-            <div class="input-with-icon" style="position: relative">
-              <input
-                [type]="passwordVisible ? 'text' : 'password'"
-                class="form-control"
-                id="password"
-                name="password"
-                [(ngModel)]="password"
-                placeholder="Enter New Password"
-              />
-              <i
-                class="fas"
-                [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
-                (click)="togglePasswordVisibility()"
-                style="position: absolute; right: 10px; top: 38px; cursor: pointer;"
-              ></i>
-            </div>
-          </div>
-        </div>
-  
-        <!-- Row 3 -->
-        <div class="row mb-3">
-          <div class="col-md-6 d-flex flex-column align-items-start">
-            <label for="confirmPassword" class="form-label mb-1 me-3">{{ "REGISTER.CONFIRM_PASSWORD" | translate }}</label>
-            <div class="input-with-icon" style="position: relative">
-              <input
-                [type]="confirmPasswordVisible ? 'text' : 'password'"
-                class="form-control"
-                id="confirmPassword"
-                placeholder="{{ 'REGISTER.CONFIRM_PASSWORD' | translate }}"
-                name="confirmPassword"
-                [(ngModel)]="confirmPassword"
-                placeholder="Enter New Confirm Password"
-              />
-              <i
-                class="fas"
-                [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
-                (click)="toggleConfirmPasswordVisibility()"
-                style="position: absolute; right: 10px; top: 38px; cursor: pointer;"
-              ></i>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <label for="contact-number" class="form-label">Contact Number</label>
-            <input type="text" class="form-control" id="contact-number" [(ngModel)]="user.contactNumber" name="contactNumber"/>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="row mb-3">
+        <div class="col-md-6 d-flex flex-column align-items-start">
+          <label for="confirmPassword" class="form-label mb-1 me-3">{{
+            "REGISTER.CONFIRM_PASSWORD" | translate
+          }}</label>
+          <div class="input-with-icon" style="position: relative">
+            <input
+              [type]="confirmPasswordVisible ? 'text' : 'password'"
+              class="form-control"
+              id="confirmPassword"
+              placeholder="{{ 'REGISTER.CONFIRM_PASSWORD' | translate }}"
+              name="confirmPassword"
+              [(ngModel)]="confirmPassword"
+            />
+            <i
+              class="fas"
+              [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+              (click)="toggleConfirmPasswordVisibility()"
+              style="
+                position: absolute;
+                right: 10px;
+                top: 38px;
+                cursor: pointer;
+              "
+            ></i>
           </div>
         </div>
-  
-        <!-- Row 4 -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="address1" class="form-label">Address 1</label>
-            <input type="text" class="form-control" id="address1" [(ngModel)]="user.address1" name="address1"/>
-          </div>
-          <div class="col-md-6">
-            <label for="address2" class="form-label">Address 2</label>
-            <input type="text" class="form-control" id="address2" [(ngModel)]="user.address2" name="address2"/>
-          </div>
+        <div class="col-md-6">
+          <label for="contact-number" class="form-label">{{
+            "REGISTER.CONTACT_NUMBER" | translate
+          }}</label>
+          <input
+            type="text"
+            class="form-control"
+            id="contact-number"
+            [(ngModel)]="user.contactNumber"
+            name="contactNumber"
+          />
         </div>
-  
-        <!-- Row 5 -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="city" class="form-label">City</label>
-            <input type="text" class="form-control" id="city" [(ngModel)]="user.city" name="city"/>
-          </div>
-          <div class="col-md-6">
-            <label for="govt-id" class="form-label">Government ID</label>
-            <select class="form-select" id="govtId" name="govtId" [(ngModel)]="user.govtId">
-              <option selected disabled>{{ "REGISTER.GOVT_ID" | translate }}</option>
-              <option value="iqama No">{{ "REGISTER.GOVT_ID_OPTIONS.IQAMA" | translate }}</option>
-              <option value="national ID">{{ "REGISTER.GOVT_ID_OPTIONS.NATIONAL_ID" | translate }}</option>
-            </select>
-          </div>
+      </div>
+
+      <!-- Row 4 -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="address1" class="form-label">{{
+            "REGISTER.ADDRESS_1" | translate
+          }}</label>
+          <input
+            type="text"
+            class="form-control"
+            id="address1"
+            [(ngModel)]="user.address1"
+            name="address1"
+          />
         </div>
-  
-        <!-- Row 6 -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="id-number" class="form-label">ID Number</label>
-            <input type="text" class="form-control" id="id-number" [(ngModel)]="user.idNumber" name="idNumber"/>
-          </div>
+        <div class="col-md-6">
+          <label for="address2" class="form-label">{{
+            "REGISTER.ADDRESS_2" | translate
+          }}</label>
+          <input
+            type="text"
+            class="form-control"
+            id="address2"
+            [(ngModel)]="user.address2"
+            name="address2"
+          />
         </div>
-  
-        <!-- Edit Profile Button -->
-        <div class="row mt-3">
-          <div class="col-12 text-center">
-            <button type="submit" class="btn btn-pay" (click)="saveProfile()">Save</button>
-          </div>
+      </div>
+
+      <!-- Row 5 -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="city" class="form-label">{{
+            "REGISTER.CITY" | translate
+          }}</label>
+          <input
+            type="text"
+            class="form-control"
+            id="city"
+            [(ngModel)]="user.city"
+            name="city"
+          />
         </div>
-      </form>
-    </div>
+        <div class="col-md-6">
+          <label for="govt-id" class="form-label">{{
+            "REGISTER.GOVT_ID" | translate
+          }}</label>
+          <select
+            class="form-select"
+            id="govtId"
+            name="govtId"
+            [(ngModel)]="user.govtId"
+          >
+            <option selected disabled>
+              {{ "REGISTER.GOVT_ID" | translate }}
+            </option>
+            <option value="iqama No">
+              {{ "REGISTER.GOVT_ID_OPTIONS.IQAMA" | translate }}
+            </option>
+            <option value="national ID">
+              {{ "REGISTER.GOVT_ID_OPTIONS.NATIONAL_ID" | translate }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 6 -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="id-number" class="form-label">{{
+            "REGISTER.ID_NUMBER" | translate
+          }}</label>
+          <input
+            type="text"
+            class="form-control"
+            id="id-number"
+            [(ngModel)]="user.idNumber"
+            name="idNumber"
+          />
+        </div>
+      </div>
+
+      <!-- Edit Profile Button -->
+      <div class="row mt-3">
+        <div class="col-12 text-center">
+          <button type="submit" class="btn btn-pay" (click)="saveProfile()">
+            {{ "Save" | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
+</div>

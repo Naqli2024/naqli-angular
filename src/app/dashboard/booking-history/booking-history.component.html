@@ -27,7 +27,7 @@
           <tr *ngFor="let booking of bookings">
             <td>{{ booking._id }}</td>
             <td>{{ booking.date }}</td>
-            <td>{{ "unitTypes." + booking.name | translate }}</td>
+            <td>{{ "unitTypes." + booking.unitType | translate }}</td>
             <td>{{ booking.paymentStatus }}</td>
           </tr>
         </tbody>

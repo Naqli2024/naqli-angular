@@ -73,7 +73,7 @@ export class EditProfileComponent {
       (response: User) => {
         this.user = response;
         if (response.userProfile?.fileName) {
-          this.profilePhoto = `https://prod.naqlee.com:443/uploads/userProfile/${response.userProfile.fileName}`;
+          this.profilePhoto = `http://localhost:4000/uploads/userProfile/${response.userProfile.fileName}`;
         }
       },
       (error) => {
@@ -84,19 +84,20 @@ export class EditProfileComponent {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-
+  
     if (input.files && input.files[0]) {
       const file = input.files[0];
-
+  
       if (file.type.startsWith('image/')) {
+        this.selectedFile = file;  
         const reader = new FileReader();
-
+  
         reader.onload = () => {
           this.zone.run(() => {
-            this.profilePhoto = reader.result;
+            this.profilePhoto = reader.result;  
           });
         };
-
+  
         reader.readAsDataURL(file);
       } else {
         console.error('Invalid file type.');
@@ -122,7 +123,7 @@ export class EditProfileComponent {
   
     // Add profile picture if selected
     if (this.selectedFile) {
-      formData.append('userProfile', this.selectedFile);
+      formData.append('userProfile', this.selectedFile, this.selectedFile.name);
     }
   
     if (this.password && this.confirmPassword) {

@@ -8,11 +8,12 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { SpinnerService } from '../../../../../services/spinner.service';
 import { PartnerService } from '../../../../../services/partner/partner.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-company-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, TranslateModule],
   templateUrl: './company-details.component.html',
   styleUrl: './company-details.component.css',
 })

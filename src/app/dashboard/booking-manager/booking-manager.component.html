@@ -120,6 +120,71 @@
   </div>
 </div>
 
+<!-- Payment options for user to select a payment brand -->
+<div *ngIf="showPaymentOptions" class="payment-options-container">
+  <div class="payment-options">
+    <!-- Close button -->
+    <button
+      type="button"
+      class="btn-close close-button"
+      (click)="closePaymentOptions()"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+    <!-- Option for MADA -->
+    <button
+      type="button"
+      class="btn btn-pay-mada"
+      (click)="selectPaymentBrand('MADA')"
+    >
+      Pay using MADA
+      <img src="assets/images/Mada_Logo.svg" alt="MADA Icon" />
+    </button>
+
+    <!-- Option for Other Cards -->
+    <button
+      type="button"
+      class="btn btn-pay-other"
+      (click)="selectPaymentBrand('OTHER')"
+    >
+      Pay using Other Card Types
+      <img src="assets/images/visa-mastercard.svg" alt="Other Cards Icon" />
+    </button>
+  </div>
+</div>
+
+<div *ngIf="showPaymentForm">
+  <div class="modal-overlay" (click)="closePaymentForm()"></div>
+  <!-- Payment form -->
+  <!-- Payment Form for MADA -->
+  <div
+    class="centered-payment-form"
+    *ngIf="selectedBrand === 'MADA' && showPaymentForm"
+    (click)="$event.stopPropagation()"
+  >
+    <form
+      [action]="shopperResultUrl"
+      (ngSubmit)="onPaymentFormSubmit()"
+      class="paymentWidgets"
+      data-brands="MADA"
+    ></form>
+  </div>
+
+  <!-- Payment Form for Other Cards -->
+  <div
+    class="centered-payment-form"
+    *ngIf="selectedBrand === 'OTHER' && showPaymentForm"
+    (click)="$event.stopPropagation()"
+  >
+    <form
+      [action]="shopperResultUrl"
+      (ngSubmit)="onPaymentFormSubmit()"
+      class="paymentWidgets"
+      data-brands="VISA MASTER AMEX"
+    ></form>
+  </div>
+</div>
+
 <div class="dropdown-container booking-manager-dropdown">
   <select
     class="form-select"

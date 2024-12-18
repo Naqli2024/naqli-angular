@@ -1,9 +1,16 @@
 <div class="payment-result-container">
-  <h1>Payment Status</h1>
+  <h1>{{ "terms.Payment Status" | translate }}</h1>
 
   <!-- Display "Please wait" message while the payment is in process -->
   <div *ngIf="!paymentStatus" class="waiting-message">
-    <div style="display: flex; align-items: center; justify-content: center; min-height: 2vh;">
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2vh;
+      "
+    >
       <div class="dot-container">
         <div class="circle"></div>
       </div>
@@ -36,8 +43,14 @@
       </div>
     </div>
     <p style="color: #616161; margin-top: 15px">
-      <span style="color: rgb(42, 42, 235)">Please wait !!,</span>Your payment
-      is in process... Do not refresh or close the page.
+      <span style="color: rgb(42, 42, 235)">{{
+        "Please wait !!" | translate
+      }}</span
+      >,
+      {{
+        "Your payment is in process... Do not refresh or close the page."
+          | translate
+      }}
     </p>
   </div>
 
@@ -58,15 +71,20 @@
       *ngIf="paymentStatus === 'Payment Successful!'"
       class="redirect-message"
     >
-      <p>You will be redirected to the dashboard by clicking this.</p>
+      <p>
+        {{
+          "You will be redirected to the dashboard by clicking this."
+            | translate
+        }}
+      </p>
     </div>
 
     <!-- Button to manually go to dashboard -->
     <button
       class="goTo-dashboard-btn"
-      (click)="router.navigate(['home/user/dashboard/booking'])"
+      (click)="goToDashboard()"
     >
-      Go to Dashboard
+      {{ "Go to Dashboard" | translate }}
     </button>
   </div>
 </div>

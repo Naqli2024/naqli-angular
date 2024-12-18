@@ -7,12 +7,13 @@ import { NgOtpInputModule } from 'ng-otp-input';
 import { SpinnerService } from '../../../../services/spinner.service';
 import { AuthService } from '../../../../services/partner/auth.service';
 import { AccountVerificationComponent } from '../account-verification/account-verification.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-otp-verification',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgOtpInputModule],
+  imports: [CommonModule, FormsModule, NgOtpInputModule, TranslateModule],
   templateUrl: './otp-verification.component.html',
   styleUrl: './otp-verification.component.css',
 })

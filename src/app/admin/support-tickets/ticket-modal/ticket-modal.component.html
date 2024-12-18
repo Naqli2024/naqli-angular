@@ -14,21 +14,21 @@
 
     <div class="delete-modal-body">
       <i class="fas fa-info-circle" style="color: #efb21b; font-size: 40px"></i>
-      <p>Are you sure?</p>
+      <p>{{ "Are you sure?" | translate }}/p></p>
       <div style="display: flex; flex-direction: row !important">
         <button
           class="status-open"
           (click)="onDelete()"
           style="border: none; margin: 0px 10px; padding: 5px 20px !important"
         >
-          Yes
+          {{ "Yes" | translate }}
         </button>
         <button
           class="status-closed"
           (click)="closeModalAndNavigate()"
           style="border: none; margin: 0px 10px; padding: 5px 20px !important"
         >
-          No
+          {{ "No" | translate }}
         </button>
       </div>
     </div>

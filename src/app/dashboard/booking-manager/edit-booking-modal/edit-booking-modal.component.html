@@ -1,7 +1,9 @@
 <div class="row">
   <div class="col-md-12">
     <div class="booking-modal">
-      <h2 style="text-align: left; margin-left: 20px">Edit</h2>
+      <h2 style="text-align: left; margin-left: 20px">
+        {{ "Edit" | translate }}
+      </h2>
       <div class="modal-close">
         <button
           type="button"
@@ -55,7 +57,7 @@
       <!-- second row -->
       <div class="row container">
         <div class="col-md-3 edit-model-row-2">
-          <label>Mode</label>
+          <label>{{ "Mode" | translate }}</label>
           <select
             class="form-select"
             [(ngModel)]="bookingData.name"
@@ -68,7 +70,7 @@
           class="col-md-5 edit-model-row-2"
           *ngIf="bookingData.type?.length > 0"
         >
-          <label>Mode Classification</label>
+          <label>{{ "Mode Classification" | translate }}</label>
           <select
             class="form-select"
             [(ngModel)]="bookingData.type[0].typeName"
@@ -80,9 +82,9 @@
           </select>
         </div>
         <div class="col-md-4 edit-model-row-2">
-          <label>Contract Type</label>
+          <label>{{ "ContractType" | translate }}</label>
           <select class="form-select" style="width: 200px !important" disabled>
-            <option>Contract</option>
+            <option>{{ "Contract" | translate }}/option></option>
           </select>
         </div>
       </div>
@@ -92,7 +94,7 @@
           class="col-md-3 edit-model-row-2"
           style="border-right: 1px solid #ccc"
         >
-          <label>Date</label>
+          <label>{{ "terms.Date" | translate }}</label>
           <div class="booking-inputs" style="width: 200px !important">
             <input
               type="date"
@@ -103,9 +105,9 @@
           </div>
         </div>
         <div class="col-md-1 pickup-drop">
-          <img src="assets/images/pickup.svg" />
+          <img src="assets/images/pickup.svg" alt="pickup" />
           <div class="dotted"></div>
-          <img src="assets/images/dropPoint.svg" />
+          <img src="assets/images/dropPoint.svg" alt="dropPoint" />
         </div>
         <div
           class="col-md-4 edit-model-row-2"
@@ -214,9 +216,9 @@
                 (change)="toggleAdditionalLabour($event)"
                 [checked]="additionalLabourEnabled"
               />
-              <label for="additionalLabourCheckbox"
-                >Need any additional labour</label
-              >
+              <label for="additionalLabourCheckbox">{{
+                "needAdditionalLabour" | translate
+              }}</label>
             </div>
             <div
               class="radio-container"
@@ -261,7 +263,7 @@
           (click)="updateBooking()"
           style="width: 150px; margin: 20px 15px !important"
         >
-          Save
+          {{ "Save" | translate }}
         </button>
       </div>
     </div>

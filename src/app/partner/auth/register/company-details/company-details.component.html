@@ -3,7 +3,9 @@
   <div class="container booking-container company-details-form-2">
     <div class="row">
       <div class="col-md-12">
-        <h2 class="text-center mb-3" style="color: #6a66d1">Multiple Units</h2>
+        <h2 class="text-center mb-3" style="color: #6a66d1">
+          {{ "Multiple Units" | translate }}
+        </h2>
         <form (ngSubmit)="onSubmit()">
           <div class="row">
             <div class="col-md-6 col-form-label-1">
@@ -84,9 +86,11 @@
                 name="companyType"
                 [(ngModel)]="companyDetails.companyType"
               >
-                <option value="">Select</option>
-                <option value="logistics">Logistics</option>
-                <option value="transportation">Transportation</option>
+                <option value="">{{ "select" | translate }}</option>
+                <option value="logistics">{{ "Logistics" | translate }}</option>
+                <option value="transportation">
+                  {{ "Transportation" | translate }}
+                </option>
               </select>
             </div>
             <div class="col-md-6 col-form-label-1">
@@ -103,7 +107,7 @@
           <div class="row col-form-label-1">
             <div class="col-md-12">
               <label class="col-form-label" style="font-size: 14px">
-                Partner Name/ID
+                {{ "PartnerName" | translate }}
               </label>
               <div
                 class="input-group create-operator"
@@ -136,7 +140,7 @@
                 type="submit"
                 class="btn custom-register-btn company-details-btn-1"
               >
-                Create Account
+                {{ "REGISTER.CREATE_ACCOUNT" | translate }}
               </button>
               <button
                 type="button"
@@ -144,7 +148,7 @@
                 class="btn custom-register-btn company-details-btn-1"
                 style="background: #707070 !important"
               >
-                Cancel
+                {{ "CANCEL" | translate }}
               </button>
             </div>
           </div>

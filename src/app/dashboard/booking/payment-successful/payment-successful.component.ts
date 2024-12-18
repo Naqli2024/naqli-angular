@@ -6,11 +6,14 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { SpinnerService } from '../../../../services/spinner.service';
 import { PaymentService } from '../../../../services/payment.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { UserService } from '../../../../services/user.service';
+import { PaymentNotificationService } from '../../../../services/payment-notification.service';
 
 @Component({
   selector: 'app-payment-successful',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './payment-successful.component.html',
   styleUrl: './payment-successful.component.css',
 })
@@ -18,14 +21,15 @@ export class PaymentSuccessfulComponent {
   checkoutId: string | null = null;
   paymentStatus: string = '';
 
-
   constructor(
     private route: ActivatedRoute,
     private checkoutService: checkoutService,
     private toastr: ToastrService,
     public router: Router,
     private paymentService: PaymentService,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private userService: UserService,
+    private paymentNotificationService: PaymentNotificationService
   ) {}
 
   ngOnInit(): void {
@@ -38,8 +42,6 @@ export class PaymentSuccessfulComponent {
 
   checkPaymentStatus() {
     const paymentBrand = localStorage.getItem('paymentBrand');
-    console.log(this.checkoutId)
-    console.log(paymentBrand)
     if (!this.checkoutId || !paymentBrand) {
       this.toastr.warning('Missing data to initiate payment process.');
       return;
@@ -76,5 +78,27 @@ export class PaymentSuccessfulComponent {
         this.paymentService.setPaymentStatus(this.paymentStatus); // Set status in service
       }
     );
+  }
+
+  goToDashboard() {
+    const userId = localStorage.getItem('userId'); 
+    if (userId) {
+      this.userService.getUserById(userId).subscribe(
+        (user) => {
+          if (user.accountType === 'Single User') {
+            this.router.navigate(['home/user/dashboard/booking']);
+          } else if (user.accountType === 'Super User') {
+            this.router.navigate(['home/user/dashboard/super-user/trigger-booking']);
+          } else {
+            console.error('Unknown account type:', user.accountType);
+          }
+        },
+        (error) => {
+          console.error('Failed to fetch user details:', error);
+        }
+      );
+    } else {
+      console.error('No userId found in localStorage');
+    }
   }
 }

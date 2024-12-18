@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class checkoutService {
-  private apiUrl = 'https://prod.naqlee.com:443/api/checkout';
-  private baseUrl = 'https://prod.naqlee.com:443/api';
+  private apiUrl = 'http://localhost:4000/api/checkout';
+  private baseUrl = 'http://localhost:4000/api';
 
 
   constructor(private http: HttpClient) {}
@@ -22,10 +22,11 @@ export class checkoutService {
     );
   }
 
-  createPayment(amount: number, paymentBrand: string): Observable<any> {
+  createPayment(amount: number, paymentBrand: string, userId: any): Observable<any> {
     const body = {
       amount: amount,
-      paymentBrand: paymentBrand
+      paymentBrand: paymentBrand,
+      userId: userId
     }
     return this.http.post(`${this.baseUrl}/create-payment`, body);
   }

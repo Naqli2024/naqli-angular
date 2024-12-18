@@ -278,6 +278,7 @@ const getNotificationById = async (req, res) => {
         createdAt: notification.createdAt,
         userId: user._id,
         userName: `${user.firstName} ${user.lastName}`,
+        seen: notification.seen
       }));
 
       return res.status(200).json({ success: true, data: userNotifications });
@@ -293,6 +294,7 @@ const getNotificationById = async (req, res) => {
         createdAt: notification.createdAt,
         partnerId: partner._id,
         partnerName: partner.partnerName,
+        seen: notification.seen
       }));
 
       return res.status(200).json({ success: true, data: partnerNotifications });
@@ -306,8 +308,63 @@ const getNotificationById = async (req, res) => {
   }
 };
 
+const updateNotificationSeen = async (req, res) => {
+  const { notificationId } = req.params;
+  const { seen } = req.body; // Extract `seen` from the request body
+
+  if (!mongoose.Types.ObjectId.isValid(notificationId)) {
+    return res.status(400).json({ error: "Invalid notification ID" });
+  }
+
+  if (typeof seen !== "boolean") {
+    return res.status(400).json({ error: "Invalid or missing 'seen' value" });
+  }
+
+  try {
+    let notificationUpdated = false;
+
+    // Update User notifications
+    const userNotification = await User.findOne({
+      "notifications._id": notificationId,
+    });
+    if (userNotification) {
+      await User.updateOne(
+        { "notifications._id": notificationId },
+        { $set: { "notifications.$.seen": seen } }
+      );
+      notificationUpdated = true;
+    }
+
+    // Update Partner notifications
+    const partnerNotification = await Partner.findOne({
+      "notifications._id": notificationId,
+    });
+    if (partnerNotification) {
+      await Partner.updateOne(
+        { "notifications._id": notificationId },
+        { $set: { "notifications.$.seen": seen } }
+      );
+      notificationUpdated = true;
+    }
+
+    if (!notificationUpdated) {
+      return res.status(404).json({ error: "Notification not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Notification seen status updated successfully" });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while updating the notification" });
+  }
+};
+
 exports.addNotification = addNotification;
 exports.getAllNotifications = getAllNotifications;
 exports.updateNotification = updateNotification;
 exports.deleteNotification = deleteNotification;
 exports.getNotificationById = getNotificationById;
+exports.updateNotificationSeen =  updateNotificationSeen;

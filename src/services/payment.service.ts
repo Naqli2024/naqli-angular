@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class PaymentService {
-  private apiUrl = 'https://prod.naqlee.com:443/api/api';
+  private apiUrl = 'http://localhost:4000/api/api';
   private paymentDetails: {
     amount: number;
     status: string;
@@ -54,13 +54,22 @@ export class PaymentService {
   // Get payment details
   getPaymentDetails() {
     const storedDetails = localStorage.getItem('details');
-    console.log(storedDetails)
     return storedDetails ? JSON.parse(storedDetails) : null;
+  }
+
+  setRemainingPaymentDetails(details: {
+    amount: number;
+    status: string;
+    partnerId: string;
+    bookingId: string;
+  }) {
+    localStorage.setItem('details', JSON.stringify(details));
   }
 
   // Clear payment details if needed
   clearPaymentDetails() {
     this.paymentDetails = null;
     localStorage.removeItem('details');
+    localStorage.removeItem('bookingId');
   }
 }

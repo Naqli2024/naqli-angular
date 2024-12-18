@@ -143,8 +143,11 @@ const userRegister = async (req, res) => {
 // Function to send OTP to the user's contact number 
 const sendOTP = async (contactNumber, otp) => {
 
-  if (!contactNumber.startsWith('966')) {
-    contactNumber = '966' + contactNumber.replace(/^0/, ''); // Remove leading 0 and add '966'
+   // Convert the number to a string for manipulation
+   let contactNumberStr = contactNumber.toString();
+
+  if (!contactNumberStr.startsWith('966')) {
+    contactNumberStr = '966' + contactNumberStr.replace(/^0/, ''); // Remove leading 0 and add '966'
   }
 
   // Set the API URL and the token
@@ -154,7 +157,7 @@ const sendOTP = async (contactNumber, otp) => {
 
   const data = {
     src: "oursms",
-    dests: [contactNumber],
+    dests: [contactNumberStr],
     body: messageBody,
     priority: 0,
     delay: 0,
@@ -172,7 +175,11 @@ const sendOTP = async (contactNumber, otp) => {
       },
     });
     console.log("OTP sent successfully:", response);
-    return response.data; // Return the OTP for future verification
+    if (response.data) {
+      return { success: true, data: response.data };
+    } else {
+      return { success: false, message: "Failed to send OTP" };
+    }
   } catch (error) {
     console.error("Error sending OTP:", error.response.data);
     throw new Error("Failed to send OTP");
@@ -209,11 +216,11 @@ const resendOTP = async (req, res) => {
     // Send new OTP to user's contact number
     const otpResponse = await sendOTP(existUser.contactNumber, newOTP); // Use your sendOTP function
 
-    if (otpResponse.success) {
+    if (otpResponse) {
       return res.status(200).json({
         message: "New OTP sent successfully",
         success: true,
-        data: { messageId: otpResponse.data.messageId }, // Optionally, you can include message ID or other data
+        data: otpResponse.data 
       });
     } else {
       return res.status(500).json({

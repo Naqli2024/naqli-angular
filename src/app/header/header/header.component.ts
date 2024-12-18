@@ -6,7 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NotificationService } from '../../../services/admin/notification.service';
 import { MatBadgeModule } from '@angular/material/badge';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { LanguageService } from '../../../services/language.service';
 
@@ -22,7 +22,6 @@ export interface User {
   standalone: true,
   imports: [
     CommonModule,
-    LoginComponent,
     RouterModule,
     MatBadgeModule,
     TranslateModule,
@@ -31,7 +30,7 @@ export interface User {
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent  implements OnInit{
+export class HeaderComponent implements OnInit {
   isDropdownOpen: boolean = false;
   isMenuOpen: boolean = false;
   isNotificationsDropdownOpen: boolean = false;
@@ -43,15 +42,15 @@ export class HeaderComponent  implements OnInit{
   notifications: any[] = [];
   notificationCount: number = 0;
   selectedLanguage: string = 'en';
+  newNotification: number = 0;
   private languageService = inject(LanguageService);
 
   constructor(
     private modalService: NgbModal,
     private router: Router,
     private toastr: ToastrService,
-    private notificationService: NotificationService,
-  ) {
-  }
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.updateUserState();
@@ -70,12 +69,26 @@ export class HeaderComponent  implements OnInit{
     }
     this.notificationService.getNotificationById(id).subscribe(
       (data) => {
-        this.notifications = data.data;
-        this.notificationCount = this.notifications.length;
+        // Sort notifications in descending order based on the 'createdAt' field
+        this.notifications = data.data.sort(
+          (a: any, b: any) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
+        // Reset the newNotification count
+        this.newNotification = 0;
+
+        // Filter notifications where seen is false and count them
+        this.notificationCount = this.notifications.filter((notification) => {
+          if (notification.seen === false) {
+            this.newNotification++; // Increment the newNotification counter
+            return true; // Return true to keep this notification in the filtered array
+          }
+          return false; // Return false to exclude this notification from the filtered array
+        }).length;
       },
       (error) => {
         this.toastr.error('Failed to fetch notifications');
-        console.error(error);
       }
     );
   }
@@ -128,6 +141,38 @@ export class HeaderComponent  implements OnInit{
 
   toggleNotificationDropdown() {
     this.isNotificationsDropdownOpen = !this.isNotificationsDropdownOpen;
+    
+    // Reset the new notification count
+    if (this.isNotificationsDropdownOpen) {
+      this.newNotification = 0;
+  
+      // Mark notifications as seen and update the count for new notifications
+      this.notifications.forEach((notification) => {
+        if (notification.seen === false) {
+          // Increment newNotification count for unseen notifications
+          this.newNotification++;
+          
+          // Call API to update the seen status of the notification
+          this.notificationService
+            .updateNotificationSeen(notification.notificationId, true)
+            .subscribe(
+              (response) => {
+                this.notificationCount = 0;
+                console.log(
+                  `Notification ${notification.notificationId} marked as seen on the server`,
+                  response
+                );
+              },
+              (error) => {
+                console.error(
+                  `Error marking notification ${notification.notificationId} as seen`,
+                  error
+                );
+              }
+            );
+        }
+      });
+    }
   }
 
   selectLanguage(language: string) {
@@ -150,7 +195,7 @@ export class HeaderComponent  implements OnInit{
       });
     } else if (currentRoute.includes('/home/partner')) {
       this.router.navigate(['home/partner/login']);
-      return; 
+      return;
     }
 
     if (modalRef) {

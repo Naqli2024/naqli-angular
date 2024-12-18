@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class NotificationService {
 
-  private apiUrl = 'https://prod.naqlee.com:443/api/admin';
+  private apiUrl = 'http://localhost:4000/api/admin';
 
   constructor(private http: HttpClient) { }
 
@@ -21,6 +21,10 @@ export class NotificationService {
 
   updateNotification(notificationId: string, notificationData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/update/${notificationId}`, notificationData);
+  }
+
+  updateNotificationSeen(notificationId: string, seen: boolean): Observable<any> {
+    return this.http.put(`${this.apiUrl}/notifications/seen/${notificationId}`, { seen });
   }
 
   deleteNotification(notificationId: string): Observable<any> {
