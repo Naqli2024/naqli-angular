@@ -707,7 +707,7 @@ const sendOTP = async (mobileNo, otp) => {
   const messageBody = `Your OTP is: ${otp}`;
 
   const data = {
-    src: "oursms",
+    src: "Naqlee",
     dests: [contactNumberStr],
     body: messageBody,
     priority: 0,
