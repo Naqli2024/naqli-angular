@@ -5,20 +5,45 @@
     </div>
     <div style="margin-top: 20px">
       <div class="tab-buttons">
-        <button
-          class="tab-button"
-          [class.active]="isInitialPayoutTab"
-          (click)="selectTab('initialPayout')"
-        >
-          {{ "InitialPayout" | translate }}
-        </button>
-        <button
-          class="tab-button"
-          [class.active]="!isInitialPayoutTab"
-          (click)="selectTab('finalPayout')"
-        >
-          {{ "FinalPayout" | translate }}
-        </button>
+        <div>
+          <button
+            class="tab-button"
+            [class.active]="isAllTab"
+            (click)="selectTimeRange('all')"
+          >
+            All
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="isHourlyTab"
+            (click)="selectTimeRange('hourly')"
+          >
+            Hourly
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="isWeeklyTab"
+            (click)="selectTimeRange('weekly')"
+          >
+            Weekly
+          </button>
+        </div>
+        <div>
+          <button
+            class="tab-button"
+            [class.active]="isInitialPayoutTab"
+            (click)="selectTab('initialPayout')"
+          >
+            {{ "InitialPayout" | translate }}
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="!isInitialPayoutTab"
+            (click)="selectTab('finalPayout')"
+          >
+            {{ "FinalPayout" | translate }}
+          </button>
+        </div>
       </div>
       <div
         class="table-container booking-manager-table"
@@ -33,70 +58,67 @@
           >
             <tr>
               <ng-container *ngIf="isInitialPayoutTab">
+                <th>
+                  <input type="checkbox" />
+                </th>
                 <th>{{ "UserName" | translate }}</th>
                 <th>{{ "terms.BookingID" | translate }}</th>
                 <th>{{ "Date" | translate }}</th>
-                <th>{{ "TotalPayout" | translate }}</th>
-                <th>{{ "InitialPayout" | translate }}</th>
+                <th>{{ "Initial amount" | translate }}</th>
                 <th>{{ "PartnerName" | translate }}</th>
-                <th>{{ "Account Number" | translate }}</th>
-                <th>{{ "Transaction Id" | translate }}</th>
-                <th>{{ "Action" | translate }}</th>
+                <th>Region</th>
+                <th>City</th>
+                <th>Bank name</th>
+                <th>Company</th>
+                <th>IBAN</th>
               </ng-container>
 
               <ng-container *ngIf="!isInitialPayoutTab">
+                <th><input type="checkbox" /></th>
                 <th>{{ "PartnerName" | translate }}</th>
+                <th>Region</th>
+                <th>City</th>
+                <th>Bank name</th>
+                <th>Company</th>
+                <th>IBAN</th>
                 <th>{{ "Pending Amount" | translate }}</th>
                 <th>{{ "ExtraCharges" | translate }}</th>
                 <th>{{ "Refunds" | translate }}</th>
                 <th>{{ "Commission" | translate }}</th>
                 <th>{{ "FinalPayout" | translate }}</th>
-                <th>{{ "Account Number" | translate }}</th>
-                <th>{{ "Transaction Id" | translate }}</th>
-                <th>{{ "Action" | translate }}</th>
               </ng-container>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let booking of bookings">
+            <tr *ngFor="let booking of filteredBookings">
               <ng-container *ngIf="isInitialPayoutTab">
+                <td><input type="checkbox" /></td>
                 <td>
                   {{ users[booking.user]?.firstName }}
                   {{ users[booking.user]?.lastName }}
                 </td>
                 <td>{{ booking._id }}</td>
                 <td>{{ booking.date }}</td>
-                <td>{{ booking.payout }} SAR</td>
                 <td>{{ booking.initialPayout }} SAR</td>
                 <td>{{ partners[booking.partner]?.partnerName }}</td>
-                <td></td>
-                <td></td>
-                <td>
-                  <!-- <fa-icon
-                    [icon]="faEdit"
-                    class="icon"
-                    style="color: #727272; padding: 0px 5px"
-                  ></fa-icon> -->
-                  <button
-                    type="button"
-                    class="btn btn-paid"
-                    style="
-                      margin: 0px 10px;
-                      padding: 3px 20px !important;
-                      font-size: 13px;
-                    "
-                    (click)="openTransactionModal()"
-                  >
-                    Paid
-                  </button>
-                </td>
+                <td>{{ partners[booking.partner]?.region }}</td>
+                <td>{{ partners[booking.partner]?.city }}</td>
+                <td>{{ partners[booking.partner]?.bankName }}</td>
+                <td>{{ partners[booking.partner]?.company }}</td>
+                <td>{{ partners[booking.partner]?.ibanNumber }}</td>
               </ng-container>
               <ng-container *ngIf="!isInitialPayoutTab">
+                <td><input type="checkbox" /></td>
                 <td>{{ partners[booking.partner]?.partnerName }}</td>
+                <td>{{ partners[booking.partner]?.region }}</td>
+                <td>{{ partners[booking.partner]?.city }}</td>
+                <td>{{ partners[booking.partner]?.bankName }}</td>
+                <td>{{ partners[booking.partner]?.company }}</td>
+                <td>{{ partners[booking.partner]?.ibanNumber }}</td>
                 <td>{{ booking.remainingBalance }} SAR</td>
                 <td>
                   {{ booking.additionalCharges }} SAR
-                  <span *ngIf="booking.additionalChargesReason.length > 0">
+                  <!-- <span *ngIf="booking.additionalChargesReason.length > 0">
                     (Reasons:
                     <ng-container
                       *ngFor="
@@ -107,37 +129,30 @@
                       {{ reason }}<span *ngIf="!isLast">, </span>
                     </ng-container>
                     )
-                  </span>
+                  </span> -->
                 </td>
                 <td></td>
                 <td>{{ booking.adminCommission }} SAR</td>
                 <td>{{ booking.finalPayout }} SAR</td>
-                <td></td>
-                <td></td>
-                <td>
-                  <!-- <fa-icon
-                    [icon]="faEdit"
-                    class="icon"
-                    style="color: #727272; padding: 0px 5px"
-                  ></fa-icon> -->
-                  <button
-                    type="button"
-                    class="btn btn-paid"
-                    style="
-                      margin: 0px 10px;
-                      padding: 3px 20px !important;
-                      font-size: 13px;
-                    "
-                    (click)="openTransactionModal()"
-                  >
-                    Paid
-                  </button>
-                </td>
               </ng-container>
             </tr>
           </tbody>
         </table>
       </div>
+      <ng-container *ngIf="isInitialPayoutTab">
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-payNow btn-payout">
+            <i class="fas fa-download"></i> Processing initial amount
+          </button>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!isInitialPayoutTab">
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-payNow btn-payout">
+            <i class="fas fa-download"></i> Processing Completed amount
+          </button>
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>

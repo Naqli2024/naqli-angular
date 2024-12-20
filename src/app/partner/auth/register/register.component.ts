@@ -24,6 +24,11 @@ export class RegisterComponent {
     mobileNo: '',
     email: '',
     password: '',
+    region: '',
+    city: '',
+    bank: '',
+    company: '',
+    ibanNumber: '',
   };
   passwordVisible: boolean = false;
   confirmPasswordVisible: boolean = false;
@@ -32,15 +37,15 @@ export class RegisterComponent {
     private router: Router,
     private toastr: ToastrService,
     private authService: AuthService,
-    private spinnerService: SpinnerService, 
+    private spinnerService: SpinnerService,
     private partnerService: PartnerService,
-    private modalService: NgbModal,
+    private modalService: NgbModal
   ) {}
 
   register() {
     this.spinnerService.show();
     localStorage.setItem('emailAddress', this.formData.email);
-   
+
     this.authService.register(this.formData).subscribe(
       (response) => {
         this.spinnerService.hide();
@@ -61,7 +66,6 @@ export class RegisterComponent {
     );
   }
 
-  
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;
   }
@@ -87,7 +91,11 @@ export class RegisterComponent {
       mobileNo: '',
       email: '',
       password: '',
+      region: '',
+      city: '',
+      bank: '',
+      company: '',
+      ibanNumber: '',
     };
   }
-
 }

@@ -41,5 +41,10 @@ export interface Partner {
   partnerProfile: {
     contentType: string;
     fileName: string;
-  }
+  },
+  region: string,
+  city: string,
+  bankName: string,
+  company: string,
+  ibanNumber: string
 }

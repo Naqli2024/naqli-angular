@@ -62,66 +62,149 @@
           </div>
         </div>
         <div class="partner-register">
-          <label for="partnerName">{{ "Partner Name" | translate }}</label>
-          <input
-            type="text"
-            class="form-control"
-            id="partnerName"
-            name="partnerName"
-            placeholder="{{ 'Enter your Name' | translate }}"
-            [(ngModel)]="formData.partnerName"
-            required
-          />
-        </div>
-        <div class="partner-register">
-          <label for="mobileNo">{{ "Mobile No" | translate }}</label>
-          <input
-            type="text"
-            class="form-control"
-            id="mobileNo"
-            name="mobileNo"
-            placeholder="{{ 'Enter your Mobile Number' | translate }}"
-            [(ngModel)]="formData.mobileNo"
-            required
-          />
-        </div>
-        <div class="partner-register">
-          <label for="email">{{ "Email" | translate }}</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            name="email"
-            placeholder="{{ 'Enter your Email' | translate }}"
-            [(ngModel)]="formData.email"
-            required
-          />
-        </div>
-        <div class="partner-register">
-          <label for="password">{{ "Password" | translate }}</label>
-          <div class="input-with-icon" style="position: relative">
-            <input
-              [type]="passwordVisible ? 'text' : 'password'"
-              class="form-control"
-              id="password"
-              name="password"
-              placeholder="{{ 'Enter your Password' | translate }}"
-              [(ngModel)]="formData.password"
-              required
-            />
-            <i
-              class="fas"
-              [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
-              (click)="togglePasswordVisibility()"
-              style="
-                position: absolute;
-                right: 10px;
-                top: 38px;
-                cursor: pointer;
-              "
-            ></i>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="partnerName">{{ "Partner Name" | translate }}</label>
+              <input
+                type="text"
+                class="form-control"
+                id="partnerName"
+                name="partnerName"
+                placeholder="{{ 'Enter your Name' | translate }}"
+                [(ngModel)]="formData.partnerName"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="mobileNo">{{ "Mobile No" | translate }}</label>
+              <input
+                type="text"
+                class="form-control"
+                id="mobileNo"
+                name="mobileNo"
+                placeholder="{{ 'Enter your Mobile Number' | translate }}"
+                [(ngModel)]="formData.mobileNo"
+                required
+              />
+            </div>
           </div>
         </div>
+        
+        <div class="partner-register">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="email">{{ "Email" | translate }}</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="{{ 'Enter your Email' | translate }}"
+                [(ngModel)]="formData.email"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="password">{{ "Password" | translate }}</label>
+              <div class="input-with-icon" style="position: relative">
+                <input
+                  [type]="passwordVisible ? 'text' : 'password'"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="{{ 'Enter your Password' | translate }}"
+                  [(ngModel)]="formData.password"
+                  required
+                />
+                <i
+                  class="fas"
+                  [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+                  (click)="togglePasswordVisibility()"
+                  style="position: absolute; right: 10px; top: 38px; cursor: pointer"
+                ></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr/>
+
+        <div class="partner-register">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="region">Region</label>
+              <input
+                type="text"
+                class="form-control"
+                id="region"
+                name="region"
+                placeholder="Enter your region"
+                [(ngModel)]="formData.region"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="city">City</label>
+              <div class="input-with-icon" style="position: relative">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="city"
+                  name="city"
+                  placeholder="Enter your city"
+                  [(ngModel)]="formData.city"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="partner-register">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="bank">Bank</label>
+              <input
+                type="text"
+                class="form-control"
+                id="bank"
+                name="bank"
+                placeholder="Enter your Bank name"
+                [(ngModel)]="formData.bank"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="company">Company</label>
+              <input
+                type="text"
+                class="form-control"
+                id="company"
+                name="company"
+                placeholder="Enter your company"
+                [(ngModel)]="formData.company"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="partner-register">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="IBAN Number">IBAN Number</label>
+              <input
+                type="text"
+                class="form-control"
+                id="IBAN Number"
+                name="IBAN Number"
+                placeholder="Enter your IBAN Number"
+                [(ngModel)]="formData.ibanNumber"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      
         <div class="text-center">
           <button
             type="submit"

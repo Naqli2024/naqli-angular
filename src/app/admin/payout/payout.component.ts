@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Booking } from '../../../models/booking.model';
@@ -23,20 +23,21 @@ import { TransactionInputComponent } from './transaction-input/transaction-input
   templateUrl: './payout.component.html',
   styleUrl: './payout.component.css',
 })
-export class PayoutComponent {
+
+export class PayoutComponent implements OnInit {
   isInitialPayoutTab: boolean = true;
-  bookings: Booking[] = [];
-  users: { [key: string]: User | undefined } = {};
-  partners: { [key: string]: Partner | undefined } = {};
-  faEdit = faEdit;
-  faTrashAlt = faTrashAlt;
+  isHourlyTab: boolean = false; // To track which tab is selected
+  isWeeklyTab: boolean = false; // To track weekly tab selection
+  isAllTab: boolean = true; // Set All tab as default
+  bookings: any[] = [];
+  filteredBookings: any[] = []; // To store filtered bookings
+  users: { [key: string]: any } = {};
+  partners: { [key: string]: any } = {};
 
   constructor(
     private bookingService: BookingService,
     private userService: UserService,
-    private partnerService: PartnerService,
-    private toastr: ToastrService,
-    private modalService: NgbModal
+    private partnerService: PartnerService
   ) {}
 
   ngOnInit() {
@@ -45,7 +46,6 @@ export class PayoutComponent {
       .pipe(
         switchMap((bookings) => {
           this.bookings = bookings;
-
           const userRequests = bookings.map((booking) =>
             this.userService.getUserById(booking.user).pipe(
               catchError((error) => {
@@ -74,11 +74,11 @@ export class PayoutComponent {
       )
       .subscribe((results) => {
         const userResults = results.slice(0, this.bookings.length) as (
-          | User
+          | any
           | undefined
         )[];
         const partnerResults = results.slice(this.bookings.length) as (
-          | { success: boolean; data: Partner }
+          | { success: boolean; data: any }
           | undefined
         )[];
 
@@ -91,20 +91,57 @@ export class PayoutComponent {
             this.partners[this.bookings[index].partner] = partnerResponse.data;
           }
         });
+
+        // Initially load all bookings
+        this.filteredBookings = this.bookings;
       });
+
+    // Set default to 'All' tab to show all bookings
+    this.selectTimeRange('all');
   }
 
   selectTab(tab: string) {
     this.isInitialPayoutTab = tab === 'initialPayout';
   }
 
-  openTransactionModal(): void {
-    const modalRef = this.modalService.open(TransactionInputComponent, {
-      size: 'md',
-      centered: true,
-      backdrop: true,
-      scrollable: true,
-      windowClass: 'no-background',
+  selectTimeRange(range: string) {
+    if (range === 'hourly') {
+      this.isHourlyTab = true;
+      this.isWeeklyTab = false;
+      this.isAllTab = false;
+      this.filterBookingsByTime('hourly');
+    } else if (range === 'weekly') {
+      this.isWeeklyTab = true;
+      this.isHourlyTab = false;
+      this.isAllTab = false;
+      this.filterBookingsByTime('weekly');
+    } else if (range === 'all') {
+      this.isAllTab = true;
+      this.isHourlyTab = false;
+      this.isWeeklyTab = false;
+      this.showAllBookings(); // Show all bookings
+    }
+  }
+
+  filterBookingsByTime(range: string) {
+    const now = new Date().getTime();
+    let timeLimit;
+
+    if (range === 'hourly') {
+      timeLimit = now - 60 * 60 * 1000; // 1 hour ago
+    } else if (range === 'weekly') {
+      timeLimit = now - 7 * 24 * 60 * 60 * 1000; // 7 days ago
+    }
+
+    // Filter bookings based on the createdAt timestamp
+    this.filteredBookings = this.bookings.filter((booking) => {
+      const createdAt = new Date(booking.createdAt).getTime();
+      return createdAt >= timeLimit;
     });
+  }
+
+  showAllBookings() {
+    // Show all bookings without filtering
+    this.filteredBookings = this.bookings;
   }
 }
