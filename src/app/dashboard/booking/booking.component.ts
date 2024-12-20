@@ -63,7 +63,7 @@ export class BookingComponent implements OnInit {
   checkoutId: string | null = null;
   integrity: string = '';
   showPaymentForm: boolean = false;
-  shopperResultUrl: string = 'http://localhost:4200/home/user/payment-result';
+  shopperResultUrl: string = 'https://naqlee.com/home/user/payment-result';
   selectedBrand: string = '';
   showPaymentOptions: boolean = false;
   amount: number | undefined;

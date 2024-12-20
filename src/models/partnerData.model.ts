@@ -38,4 +38,8 @@ export interface Partner {
   selected?:boolean;
   bookingRequest: BookingRequest[];
   extraOperators: ExtraOperator[]; 
+  partnerProfile: {
+    contentType: string;
+    fileName: string;
+  }
 }

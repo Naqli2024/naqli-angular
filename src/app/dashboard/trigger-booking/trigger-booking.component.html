@@ -13,7 +13,7 @@
         >
           <tr class="trigger-booking-table">
             <th>{{ "dashboardItems.Trigger Booking" | translate }}</th>
-            <th style="text-align: center !important">
+            <th style="text-align: left !important">
               {{ "Action" | translate }}
             </th>
           </tr>
@@ -31,7 +31,12 @@
                     {{ "unitTypes." + booking.unitType | translate }}
                   </p>
                   <p>
-                    Booking ID: <span class="p2" (click)="openBookingDetailsModal(booking)">{{ booking._id }}</span>
+                    Booking ID:
+                    <span
+                      class="p2 trigger"
+                      (click)="openBookingDetailsModal(booking)"
+                      >{{ booking._id }}</span
+                    >
                   </p>
                 </div>
 
@@ -59,7 +64,7 @@
               </td>
 
               <!-- Actions Column -->
-              <td style="text-align: center !important">
+              <td style="text-align: left !important">
                 <button
                   type="button"
                   class="btn btn-payNow"
@@ -74,7 +79,8 @@
                     )
                   "
                 >
-                  Pay Advance: {{ selectedVendor[booking._id]?.price / 2 }} SAR
+                  Pay Advance:
+                  {{ (selectedVendor[booking._id]?.price || 0) / 2 }} SAR
                 </button>
                 <button
                   type="button"
@@ -90,7 +96,7 @@
                     )
                   "
                 >
-                  Pay: {{ selectedVendor[booking._id]?.price }} SAR
+                  Pay: {{ selectedVendor[booking._id]?.price || 0 }} SAR
                 </button>
                 <fa-icon
                   [icon]="faTrashAlt"

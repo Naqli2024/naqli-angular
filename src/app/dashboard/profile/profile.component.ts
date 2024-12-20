@@ -44,7 +44,7 @@ export class ProfileComponent {
       (response: User) => {
         this.users = response;
         if (response.userProfile?.fileName) {
-          this.profilePhoto = `http://localhost:4000/uploads/userProfile/${response.userProfile.fileName}`;
+          this.profilePhoto = `https://prod.naqlee.com:443/uploads/userProfile/${response.userProfile.fileName}`;
         }
       },
       (error) => {
@@ -60,6 +60,9 @@ export class ProfileComponent {
     this.partnerService.getPartnerDetails(partnerId).subscribe(
       (response) => {
         this.partner = response.data;
+        if (response.data.partnerProfile?.fileName) {
+          this.profilePhoto = `http://localhost:4000/uploads/partnerProfile/${response.data.partnerProfile.fileName}`;
+        }
       },
       (error) => {
         this.toastr.error(
@@ -72,5 +75,9 @@ export class ProfileComponent {
 
   navigateToEditProfile() {
     this.router.navigate(['/home/user/dashboard/edit-profile'])
+  }
+
+  navigateToEditProfilePartner() {
+    this.router.navigate(['/home/partner/dashboard/edit-profile/partner'])
   }
 }

@@ -602,10 +602,11 @@ const assignOperator = async (req, res) => {
             req.bookingId.toString() !== booking._id.toString()
         );
 
-         // Check if the unit is assigned and the booking status is not 'Completed'
-         const isUnitAvailable = partnerFound.bookingRequest.some(
+        // Check if the unit is assigned and the booking status is not 'Completed'
+        const isUnitAvailable = partnerFound.bookingRequest.some(
           (req) =>
-            req.assignedOperator?.unit === unit && req.bookingStatus !== 'Completed'
+            req.assignedOperator?.unit === unit &&
+            req.bookingStatus !== "Completed"
         );
 
         if (
@@ -617,9 +618,11 @@ const assignOperator = async (req, res) => {
             .json({ message: "This operator is not available" });
         }
 
-         // Check if the unit is already assigned to another booking and not completed
-         if (isUnitAvailable) {
-          return res.status(400).json({ message: "This unit is not available" });
+        // Check if the unit is already assigned to another booking and not completed
+        if (isUnitAvailable) {
+          return res
+            .status(400)
+            .json({ message: "This unit is not available" });
         }
 
         // Remove "Not available" status from the previously assigned operator
@@ -662,18 +665,14 @@ const assignOperator = async (req, res) => {
           operatorId: newOperatorId,
         };
 
-       
-
         // Save the updated partner document
         await partnerFound.save();
 
-        res
-          .status(200)
-          .json({
-            message: "Operator assigned successfully",
-            partnerFound,
-            bookingId,
-          });
+        res.status(200).json({
+          message: "Operator assigned successfully",
+          partnerFound,
+          bookingId,
+        });
       } else {
         res.status(404).json({ message: "Operator not found" });
       }
@@ -691,40 +690,51 @@ const assignOperator = async (req, res) => {
 /*****************************************
             Send OTP 
  *****************************************/
-// Initialize Twilio client
-const client = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
 
-// Function to send OTP to the partner's mobile number using Twilio
+// Function to send OTP to the partner's mobile number 
 const sendOTP = async (mobileNo, otp) => {
-  const from = "+12563716772"; // Replace with your Twilio phone number
-  const to = `+${mobileNo}`;
-  const text = `Your verification code is ${otp}`;
+
+  // Convert the number to a string for manipulation
+  let contactNumberStr = mobileNo.toString();
+
+  if (!contactNumberStr.startsWith('966')) {
+    contactNumberStr = '966' + contactNumberStr.replace(/^0/, ''); // Remove leading 0 and add '966'
+  }
+
+  // Set the API URL and the token
+  const apiUrl = "https://api.oursms.com";
+  const apiToken = process.env.OURSMS_API_TOKEN;
+  const messageBody = `Your OTP is: ${otp}`;
+
+  const data = {
+    src: "oursms",
+    dests: [contactNumberStr],
+    body: messageBody,
+    priority: 0,
+    delay: 0,
+    validity: 0,
+    maxParts: 0,
+    dlr: 0,
+    prevDups: 0,
+    msgClass: "transactional",
+  };
 
   try {
-    const message = await client.messages.create({
-      body: text,
-      from: from,
-      to: to,
-    });
-
-    console.log("Message sent successfully");
-    console.log(message);
-
-    return {
-      message: `OTP sent to ${mobileNo}`,
-      success: true,
-      data: { messageId: message.sid },
-    };
+     const response = await axios.post(`${apiUrl}/msgs/sms`, data, {
+         headers: {
+           Authorization: `Bearer ${apiToken}`,
+           "Content-Type": "application/json",
+         },
+       });
+       console.log("OTP sent successfully:", response);
+       if (response.data) {
+        return { success: true, data: response.data };
+      } else {
+        return { success: false, message: "Failed to send OTP" };
+      }
   } catch (error) {
-    console.error("Error sending OTP:", error);
-    return {
-      message: "Error sending OTP",
-      success: false,
-      data: null,
-    };
+    console.error("Error sending OTP:", error.response.data);
+    throw new Error("Failed to send OTP");
   }
 };
 
@@ -827,6 +837,67 @@ const verifyOTP = async (req, res) => {
   }
 };
 
+const editPartner = async (req, res) => {
+  try {
+    const { partnerId } = req.params;
+    const {
+      partnerName,
+      email,
+      password,
+      confirmPassword,
+      mobileNo,
+    } = req.body;
+
+    // Password validation (if present)
+    if (password || confirmPassword) {
+      if (password !== confirmPassword) {
+        return res.status(400).json({ message: "Passwords do not match" });
+      }
+    }
+
+    let partnerProfile;
+    if (req.file) {
+      partnerProfile = {
+        contentType: req.file.mimetype,
+        fileName: req.file.filename,
+      };
+    }
+
+    // Prepare the update object
+    let updatePartner = {
+      partnerName,
+      email,
+      mobileNo,
+      partnerProfile
+    };
+
+    if (password) {
+      updatePartner.password = await bcrypt.hash(password, 10);
+    }
+
+    // Remove undefined fields from the update object
+    Object.keys(updatePartner).forEach((key) => {
+      if (updatePartner[key] === undefined) {
+        delete updatePartner[key];
+      }
+    });
+
+    // Find and update the existing partner
+    const editedPartner = await partner.findByIdAndUpdate(partnerId, updatePartner, {
+      new: true, 
+    });
+
+    if (!editedPartner) {
+      return res.status(404).json({ message: "Partner not found" });
+    }
+
+    return res.status(200).json({ message: "Partner Profile Updated!", data: editedPartner });
+  } catch (error) {
+    console.error(error);  // For debugging
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
 exports.partnerRegister = partnerRegister;
 exports.verifyOTP = verifyOTP;
 exports.resendOTP = resendOTP;
@@ -841,3 +912,4 @@ exports.getAllPartners = getAllPartners;
 exports.updatePartnerStatus = updatePartnerStatus;
 exports.addCompanyDetails = addCompanyDetails;
 exports.assignOperator = assignOperator;
+exports.editPartner = editPartner;

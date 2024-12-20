@@ -13,6 +13,8 @@ import { switchMap, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TransactionInputComponent } from './transaction-input/transaction-input.component';
 
 @Component({
   selector: 'app-payout',
@@ -33,53 +35,76 @@ export class PayoutComponent {
     private bookingService: BookingService,
     private userService: UserService,
     private partnerService: PartnerService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit() {
-    this.bookingService.getAllBookings().pipe(
-      switchMap((bookings) => {
-        this.bookings = bookings;
-  
-        const userRequests = bookings.map((booking) =>
-          this.userService.getUserById(booking.user).pipe(
-            catchError((error) => {
-              console.error(`Failed to fetch user ${booking.user}`, error);
-              return of(undefined);
-            })
-          )
-        );
-  
-        const partnerRequests = bookings.map((booking) =>
-          booking.partner
-            ? this.partnerService.getPartnerDetails(booking.partner).pipe(
-                catchError((error) => {
-                  console.error(`Failed to fetch partner ${booking.partner}`, error);
-                  return of(undefined);
-                })
-              )
-            : of(undefined)
-        );
-  
-        return forkJoin([...userRequests, ...partnerRequests]);
-      })
-    ).subscribe((results) => {
-      const userResults = results.slice(0, this.bookings.length) as (User | undefined)[];
-      const partnerResults = results.slice(this.bookings.length) as ({ success: boolean, data: Partner } | undefined)[];
-  
-      userResults.forEach((user, index) => {
-        if (user) this.users[this.bookings[index].user] = user;
+    this.bookingService
+      .getAllBookings()
+      .pipe(
+        switchMap((bookings) => {
+          this.bookings = bookings;
+
+          const userRequests = bookings.map((booking) =>
+            this.userService.getUserById(booking.user).pipe(
+              catchError((error) => {
+                console.error(`Failed to fetch user ${booking.user}`, error);
+                return of(undefined);
+              })
+            )
+          );
+
+          const partnerRequests = bookings.map((booking) =>
+            booking.partner
+              ? this.partnerService.getPartnerDetails(booking.partner).pipe(
+                  catchError((error) => {
+                    console.error(
+                      `Failed to fetch partner ${booking.partner}`,
+                      error
+                    );
+                    return of(undefined);
+                  })
+                )
+              : of(undefined)
+          );
+
+          return forkJoin([...userRequests, ...partnerRequests]);
+        })
+      )
+      .subscribe((results) => {
+        const userResults = results.slice(0, this.bookings.length) as (
+          | User
+          | undefined
+        )[];
+        const partnerResults = results.slice(this.bookings.length) as (
+          | { success: boolean; data: Partner }
+          | undefined
+        )[];
+
+        userResults.forEach((user, index) => {
+          if (user) this.users[this.bookings[index].user] = user;
+        });
+
+        partnerResults.forEach((partnerResponse, index) => {
+          if (partnerResponse && partnerResponse.success) {
+            this.partners[this.bookings[index].partner] = partnerResponse.data;
+          }
+        });
       });
-  
-      partnerResults.forEach((partnerResponse, index) => {
-        if (partnerResponse && partnerResponse.success) {
-          this.partners[this.bookings[index].partner] = partnerResponse.data;
-        }
-      });
-    });
   }
 
   selectTab(tab: string) {
     this.isInitialPayoutTab = tab === 'initialPayout';
+  }
+
+  openTransactionModal(): void {
+    const modalRef = this.modalService.open(TransactionInputComponent, {
+      size: 'md',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
   }
 }

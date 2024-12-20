@@ -39,8 +39,11 @@
                 <th>{{ "TotalPayout" | translate }}</th>
                 <th>{{ "InitialPayout" | translate }}</th>
                 <th>{{ "PartnerName" | translate }}</th>
+                <th>{{ "Account Number" | translate }}</th>
+                <th>{{ "Transaction Id" | translate }}</th>
                 <th>{{ "Action" | translate }}</th>
               </ng-container>
+
               <ng-container *ngIf="!isInitialPayoutTab">
                 <th>{{ "PartnerName" | translate }}</th>
                 <th>{{ "Pending Amount" | translate }}</th>
@@ -48,6 +51,8 @@
                 <th>{{ "Refunds" | translate }}</th>
                 <th>{{ "Commission" | translate }}</th>
                 <th>{{ "FinalPayout" | translate }}</th>
+                <th>{{ "Account Number" | translate }}</th>
+                <th>{{ "Transaction Id" | translate }}</th>
                 <th>{{ "Action" | translate }}</th>
               </ng-container>
             </tr>
@@ -64,6 +69,8 @@
                 <td>{{ booking.payout }} SAR</td>
                 <td>{{ booking.initialPayout }} SAR</td>
                 <td>{{ partners[booking.partner]?.partnerName }}</td>
+                <td></td>
+                <td></td>
                 <td>
                   <!-- <fa-icon
                     [icon]="faEdit"
@@ -72,14 +79,15 @@
                   ></fa-icon> -->
                   <button
                     type="button"
-                    class="btn btn-balance"
+                    class="btn btn-paid"
                     style="
                       margin: 0px 10px;
                       padding: 3px 20px !important;
                       font-size: 13px;
                     "
+                    (click)="openTransactionModal()"
                   >
-                    Pay: {{ booking.initialPayout }} SAR
+                    Paid
                   </button>
                 </td>
               </ng-container>
@@ -104,6 +112,8 @@
                 <td></td>
                 <td>{{ booking.adminCommission }} SAR</td>
                 <td>{{ booking.finalPayout }} SAR</td>
+                <td></td>
+                <td></td>
                 <td>
                   <!-- <fa-icon
                     [icon]="faEdit"
@@ -112,14 +122,15 @@
                   ></fa-icon> -->
                   <button
                     type="button"
-                    class="btn btn-balance"
+                    class="btn btn-paid"
                     style="
                       margin: 0px 10px;
                       padding: 3px 20px !important;
                       font-size: 13px;
                     "
+                    (click)="openTransactionModal()"
                   >
-                    Pay: {{ booking.finalPayout }} SAR
+                    Paid
                   </button>
                 </td>
               </ng-container>

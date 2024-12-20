@@ -17,7 +17,7 @@ const bookingRequestSchema = new mongoose.Schema({
   },
   bookingStatus: {
     type: String,
-    required: false
+    required: false,
   },
   assignedOperator: {
     bookingId: {
@@ -37,7 +37,7 @@ const bookingRequestSchema = new mongoose.Schema({
       type: String,
       required: false,
     },
-    operatorId: {  
+    operatorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "operatorDetail",
       required: false,
@@ -60,7 +60,7 @@ const operatorDetailSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   mobileNo: {
     type: String,
@@ -101,8 +101,8 @@ const operatorDetailSchema = new mongoose.Schema({
   mode: {
     type: String,
     enum: ["online", "offline"],
-    default: "offline"
-  }
+    default: "offline",
+  },
 });
 
 const operatorSchema = new mongoose.Schema({
@@ -171,7 +171,7 @@ const extraOperatorSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   mobileNo: {
     type: String,
@@ -212,8 +212,31 @@ const extraOperatorSchema = new mongoose.Schema({
   mode: {
     type: String,
     enum: ["online", "offline"],
-    default: "offline"
-  }
+    default: "offline",
+  },
+});
+
+const payoutSchema = new mongoose.Schema({
+  bookingId: { type: String },
+  totalPayout: { type: Number, default: 0 },
+  initialPayout: {
+    type: Number,
+    default: 0,
+    status: {
+      type: String,
+      enum: ["NotPaid", "Paid"],
+      default: "NotPaid",
+    },
+  },
+  finalPayout: {
+    type: Number,
+    default: 0,
+    status: {
+      type: String,
+      enum: ["NotPaid", "Paid"],
+      default: "NotPaid",
+    },
+  },
 });
 
 const partnerSchema = new mongoose.Schema(
@@ -283,8 +306,8 @@ const partnerSchema = new mongoose.Schema(
         },
         seen: {
           type: Boolean,
-          default: false
-        }
+          default: false,
+        },
       },
     ],
     reportRequest: [
@@ -331,6 +354,11 @@ const partnerSchema = new mongoose.Schema(
     ],
     bookingRequest: { type: [bookingRequestSchema], default: [] },
     extraOperators: [extraOperatorSchema],
+    payout: [payoutSchema],
+    partnerProfile: {
+      contentType: { type: String },
+      fileName: { type: String }, 
+    },
   },
   {
     timestamps: true,
@@ -338,7 +366,7 @@ const partnerSchema = new mongoose.Schema(
 );
 
 // Pre-save hook to prevent duplicate booking requests
-partnerSchema.pre('save', async function (next) {
+partnerSchema.pre("save", async function (next) {
   const partner = this;
 
   // Filter out the requests that have valid bookingId (not null)
@@ -352,7 +380,9 @@ partnerSchema.pre('save', async function (next) {
 
   if (uniqueBookingIds.size !== validBookingRequests.length) {
     return next(
-      new Error("Duplicate booking requests are not allowed for the same partner.")
+      new Error(
+        "Duplicate booking requests are not allowed for the same partner."
+      )
     );
   }
 

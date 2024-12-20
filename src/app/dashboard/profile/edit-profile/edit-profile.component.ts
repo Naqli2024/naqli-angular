@@ -73,7 +73,7 @@ export class EditProfileComponent {
       (response: User) => {
         this.user = response;
         if (response.userProfile?.fileName) {
-          this.profilePhoto = `http://localhost:4000/uploads/userProfile/${response.userProfile.fileName}`;
+          this.profilePhoto = `https://prod.naqlee.com:443/uploads/userProfile/${response.userProfile.fileName}`;
         }
       },
       (error) => {

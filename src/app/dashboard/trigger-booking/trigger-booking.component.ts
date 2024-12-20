@@ -31,7 +31,7 @@ export class TriggerBookingComponent {
   checkoutId: string | null = null;
   integrity: string = '';
   showPaymentForm: boolean = false;
-  shopperResultUrl: string = 'http://localhost:4200/home/user/payment-result';
+  shopperResultUrl: string = 'https://naqlee.com/home/user/payment-result';
   selectedBrand: string = '';
   showPaymentOptions: boolean = false;
   amount: number | undefined;
@@ -181,6 +181,12 @@ export class TriggerBookingComponent {
   ) {
     event.preventDefault();
     localStorage.setItem('bookingId', bookingId);
+
+    const selectedVendor = this.selectedVendor[bookingId];
+    if (!selectedVendor) {
+      this.toastr.warning('Please select a vendor');
+      return;
+    }
 
     if (typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid payment amount or status');

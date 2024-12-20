@@ -1335,8 +1335,42 @@ input[type="checkbox"] {
   color: #3769ce;
 }
 
+.radio-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-btn label {
+  padding: 20px;
+}
+
+.partner-edit-content {
+  padding: 20px 50px;
+}
+
+.edit-textfield {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  margin: 30px 0px;
+}
+
+.edit-profile-partner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 50%;
+  padding: 20px; 
+  margin: 0px auto;
+}
+
+
 @media (max-width: 767.98px) {
   .profile-container {
+    width: 100%;
+  }
+  .edit-profile-partner {
     width: 100%;
   }
 }
@@ -2959,6 +2993,18 @@ h2 {
   height: 180px !important;
   width: 180px !important;
 }
+.btn-paid {
+  border: 1px solid #ddd !important;
+}
+.transaction-number-h2 {
+  text-align: left !important;
+  background-color: #4B3D52 !important;
+}
+.transaction-input {
+  width: 100%;
+  margin: 10px 0px !important;
+  padding: 0px 50px !important;
+}
 @media (max-width: 1024px) {
   .chart-container {
     flex-direction: row !important;
@@ -3772,6 +3818,8 @@ table .make-disable.disabled td:not(:first-child) {
 .trigger-booking-td-1 .p2 {
   margin-bottom: 0px !important;
   font-size: 13px !important;
+}
+.trigger {
   color: #6a66d1 !important;
   text-decoration: underline;
   cursor: pointer;
@@ -3787,10 +3835,10 @@ table .make-disable.disabled td:not(:first-child) {
 }
 .trigger-booking-td-2 .input-field {
   border: 1px solid #ddd;
-  margin: 0px 15px !important;
+  margin: 0px 6px !important;
   border-radius: 20px;
   padding: 5px 15px;
-  width: 250px;
+  width: max-content;
 }
 .trigger-booking-td-2 .input-field:nth-child(1) {
   background-color: #c8fbfd; /* Light Blue */
@@ -3819,7 +3867,8 @@ table .make-disable.disabled td:not(:first-child) {
   border-radius: 20px !important;
   color: #fff !important;
   font-size: 14px !important;
-  padding: 5px 20px !important;
+  padding: 3px 20px !important;
+  margin-right: 5px;
 }
 .booking-history .table-container::-webkit-scrollbar {
   width: 10px !important;
@@ -3845,7 +3894,8 @@ table .make-disable.disabled td:not(:first-child) {
   border-bottom-right-radius: 10px !important;
 }
 .trigger-booking-table svg {
-  margin: 55px 0px !important;
+  margin: 0px 0px !important;
+  font-size: 16px;
 }
 @media (max-width: 1600px) {
   .booking-history .table-container {

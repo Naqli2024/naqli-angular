@@ -2,7 +2,6 @@ const user = require("../Models/userModel");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 require("dotenv").config();
-const twilio = require("twilio");
 const axios = require("axios");
 const querystring = require("querystring");
 

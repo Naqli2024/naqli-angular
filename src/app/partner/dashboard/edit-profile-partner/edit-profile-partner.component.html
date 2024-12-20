@@ -1,0 +1,116 @@
+<div class="profile-container edit-profile-container">
+  <div class="profile-photo">
+    <label for="upload-photo">
+      <img
+        [src]="profilePhoto || 'assets/images/Group 6.svg'"
+        alt="Profile Photo"
+        id="profile-img"
+      />
+    </label>
+    <input
+      type="file"
+      id="upload-photo"
+      (change)="onFileSelected($event)"
+      accept="image/*"
+      style="display:none" 
+    />
+    <fa-icon
+      [icon]="faEdit"
+      class="edit-icon"
+      (click)="onEditIconClick()"
+    ></fa-icon>
+  </div>
+</div>
+
+<form class="edit-profile-partner">
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "Email ID" | translate }}</label>
+      <input
+        type="email"
+        class="form-control"
+        [(ngModel)]="formData.email"
+        name="email"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "Password" | translate }}</label>
+      <div class="input-with-icon" style="position: relative">
+        <input
+          [type]="passwordVisible ? 'text' : 'password'"
+          class="form-control"
+          id="password"
+          name="password"
+          [(ngModel)]="formData.password"
+          placeholder="{{ 'REGISTER.PASSWORD' | translate }}"
+        />
+        <i
+          class="fas"
+          [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+          (click)="togglePasswordVisibility()"
+          style="position: absolute; right: 10px; top: 38px; cursor: pointer"
+        ></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "Confirm Password" | translate }}</label>
+      <div class="input-with-icon" style="position: relative">
+        <input
+          [type]="confirmPasswordVisible ? 'text' : 'password'"
+          class="form-control"
+          id="confirmPassword"
+          placeholder="{{ 'REGISTER.CONFIRM_PASSWORD' | translate }}"
+          name="confirmPassword"
+          [(ngModel)]="formData.confirmPassword"
+        />
+        <i
+          class="fas"
+          [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+          (click)="toggleConfirmPasswordVisibility()"
+          style="position: absolute; right: 10px; top: 38px; cursor: pointer"
+        ></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "Mobile No" | translate }}</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formData.mobileNo"
+        name="mobileNo"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "Partner Name/ID" | translate }}</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formData.partnerName"
+        name="partnerName"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-12 text-center">
+      <button type="submit" class="btn custom-register-btn" (click)="saveProfile()">
+        {{ "Save" | translate }}
+      </button>
+    </div>
+  </div>
+</form>

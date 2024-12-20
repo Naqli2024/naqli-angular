@@ -8,7 +8,7 @@ import { Partner } from '../../models/partnerData.model';
 })
 export class PartnerService {
   private partnerDetails: any;
-  private baseUrl = 'http://localhost:4000/api/partner';
+  private baseUrl = 'https://prod.naqlee.com:443/api/partner';
 
   constructor(private http: HttpClient) {}
 
@@ -70,4 +70,9 @@ export class PartnerService {
     return this.http.post(`${this.baseUrl}/assign-operator/${bookingId}`, { unit, operatorName });
   }
 
+  editPartnerProfile(partnerId: string, formData: FormData): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${this.baseUrl}/edit-partner/${partnerId}`, formData, { headers });
+  }
 }

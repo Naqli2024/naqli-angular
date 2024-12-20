@@ -50,6 +50,7 @@ import { BookingManagerComponent } from './dashboard/booking-manager/booking-man
 import { SuperUserPaymentsComponent } from './dashboard/super-user-payments/super-user-payments.component';
 import { PaymentSuccessfulComponent } from './dashboard/booking/payment-successful/payment-successful.component';
 import { EditProfileComponent } from './dashboard/profile/edit-profile/edit-profile.component';
+import { EditProfilePartnerComponent } from './partner/dashboard/edit-profile-partner/edit-profile-partner.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -155,6 +156,7 @@ export const routes: Routes = [
       { path: 'payments', component: PartnerPaymentComponent },
       { path: 'report', component: PartnerReportComponent },
       { path: 'help', component: PartnerHelpComponent },
+      { path: 'edit-profile/partner', component: EditProfilePartnerComponent },
       {
         path: 'multiple-unit-dashboard',
         component: MultipleUnitDashboardComponent,
