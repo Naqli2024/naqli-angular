@@ -4538,3 +4538,115 @@ h1 {
   padding: 10px 10px !important;
   border-radius: 5px !important;
 }
+
+/******************Invoice*****************/
+.invoice-id {
+  cursor: pointer;
+  color: #3969CA !important;
+  text-decoration: underline;
+}
+.action-container {
+  display: flex !important;
+  align-items: center;
+  border: 1px solid #ddd;  /* Outer border for the entire row */
+  padding: 10px;
+  margin: 10px;
+}
+
+/* Styling for individual action buttons */
+.action-btn {
+  display: flex;
+  align-items: center;
+  padding: 5px 15px;
+  white-space: nowrap;
+}
+
+/* Styling for the icons */
+.action-icon {
+  margin: 0px 8px !important;  /* Space between icon and text */
+}
+
+/* Divider between buttons */
+.divider {
+  width: 1px;
+  background-color: #ddd; /* Divider color */
+  height: 30px;  /* Adjust height to fit the buttons */
+  margin: 0 10px;
+}
+
+/* Optional: Adding hover effect */
+.action-btn:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+.create-invoice-outer-card {
+  margin: 0;
+  margin-left: 30px;
+  margin-right: 30px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+.create-invoice-content {
+  margin: 0px 10%;
+}
+.invoice-heading {
+  justify-content: center;
+  display: flex;
+  font-weight: bold;
+  padding: 30px;
+}
+.invoice-content {
+  display: flex;
+  flex-direction: row;
+  font-size: 14px;
+  align-items: center !important;
+}
+.invoice-table {
+  overflow-y:  auto !important;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 14px;
+  margin: 30px 1px;
+}
+.table-content th, 
+.table-content td {
+  border-left: none; 
+  border-right: none;
+  border-bottom: 1px solid #ddd; 
+}
+.table-content tr:last-child td {
+  border-bottom: none; 
+}
+.table-bottom-content {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-end; 
+  text-align: justify;
+}
+.table-bottom-content .col-md-5 {
+  padding: 10px;
+  font-size: 14px;
+}
+@media (max-width: 1160px) {
+  .invoice-table {
+    overflow-x: scroll;
+  }
+  .table-bottom-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+@media (max-width: 768px) {
+  .invoice-content {
+    justify-content: space-between;
+  }
+}
+@media (max-width: 580px) {
+  .invoice-content {
+    flex-direction: column;
+  }
+}

@@ -51,6 +51,7 @@ import { SuperUserPaymentsComponent } from './dashboard/super-user-payments/supe
 import { PaymentSuccessfulComponent } from './dashboard/booking/payment-successful/payment-successful.component';
 import { EditProfileComponent } from './dashboard/profile/edit-profile/edit-profile.component';
 import { EditProfilePartnerComponent } from './partner/dashboard/edit-profile-partner/edit-profile-partner.component';
+import { InvoiceComponent } from './admin/invoice/invoice.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -123,6 +124,7 @@ export const routes: Routes = [
       },
       { path: 'admin/naqlee-user', component: NaqleeUserComponent },
       { path: 'admin/commission', component: CommissionComponent },
+      { path: 'admin/invoice', component: InvoiceComponent },
       {
         path: 'super-user/dashboard',
         component: SuperUserDashboardComponent,

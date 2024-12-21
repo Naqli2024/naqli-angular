@@ -24,7 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
     PaymentsComponent,
     ReportComponent,
     HelpComponent,
-    TranslateModule
+    TranslateModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
@@ -74,9 +74,9 @@ export class DashboardComponent {
         },
         { name: 'Naqlee User', route: 'admin/naqlee-user' },
         { name: 'Commission', route: 'admin/commission' },
+        { name: 'Invoice', route: 'admin/invoice' },
       ];
-    } 
-    else {
+    } else {
       this.menuItems = [
         { name: 'Booking', route: 'booking' },
         { name: 'Booking History', route: 'booking-history' },
