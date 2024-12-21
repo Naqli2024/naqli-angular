@@ -39,7 +39,7 @@ export class BookingManagerComponent {
   checkoutId: string | null = null;
   integrity: string = '';
   showPaymentForm: boolean = false;
-  shopperResultUrl: string = 'http://localhost:4200/home/user/payment-result';
+  shopperResultUrl: string = 'https://naqlee.com/home/user/payment-result';
   amount: number | undefined;
   status: string | undefined;
   partnerId: string | undefined;

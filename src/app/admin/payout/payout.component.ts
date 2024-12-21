@@ -15,6 +15,8 @@ import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TransactionInputComponent } from './transaction-input/transaction-input.component';
+import { jsPDF } from 'jspdf';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-payout',
@@ -33,6 +35,7 @@ export class PayoutComponent implements OnInit {
   filteredBookings: any[] = []; // To store filtered bookings
   users: { [key: string]: any } = {};
   partners: { [key: string]: any } = {};
+  selectAll: boolean = false;
 
   constructor(
     private bookingService: BookingService,
@@ -143,5 +146,66 @@ export class PayoutComponent implements OnInit {
   showAllBookings() {
     // Show all bookings without filtering
     this.filteredBookings = this.bookings;
+  }
+
+  toggleSelectAll() {
+    // Toggle all checkboxes based on the header checkbox
+    this.filteredBookings.forEach((booking) => {
+      booking.selected = this.selectAll;
+    });
+  }
+
+  generatePDFOrExcel() {
+    const selectedBookings = this.filteredBookings.filter((booking) => booking.selected);
+
+    if (selectedBookings.length > 0) {
+      if (this.isInitialPayoutTab) {
+        this.generatePDF(selectedBookings);
+      } else {
+        this.generateExcel(selectedBookings);
+      }
+    } else {
+      alert('Please select at least one item.');
+    }
+  }
+
+  generatePDF(selectedBookings: any[]) {
+    const doc = new jsPDF();
+    let y = 10;
+    
+    selectedBookings.forEach((booking, index) => {
+      const isLastBooking = index === selectedBookings.length - 1;
+  
+      // Add booking details as text
+      doc.text(`Booking ID: ${booking._id}`, 10, y);
+      doc.text(`User: ${this.users[booking.user]?.firstName} ${this.users[booking.user]?.lastName}`, 10, y + 10);
+      doc.text(`Date: ${booking.date}`, 10, y + 20);
+      doc.text(`Initial Payout: ${booking.initialPayout} SAR`, 10, y + 30);
+  
+      // Draw the underline for each line except the last one
+      if (!isLastBooking) {
+        // Underline after the last line (Initial Payout)
+        doc.line(10, y + 35, 200, y + 35);  // adjust x2 to match the page width
+      }
+  
+      // Move the vertical position (y-coordinate) down for the next booking
+      y += 40;
+  
+      // Add a new page if we reach the bottom of the page
+      if (y > 270) {
+        doc.addPage();
+        y = 10;
+      }
+    });
+  
+    // Save the PDF document
+    doc.save('selected-bookings.pdf');
+  }
+
+  generateExcel(selectedBookings: any[]) {
+    const ws = XLSX.utils.json_to_sheet(selectedBookings);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'selected-bookings.xlsx');
   }
 }

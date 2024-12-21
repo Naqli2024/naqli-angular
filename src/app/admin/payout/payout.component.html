@@ -59,7 +59,11 @@
             <tr>
               <ng-container *ngIf="isInitialPayoutTab">
                 <th>
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="selectAll"
+                    (change)="toggleSelectAll()"
+                  />
                 </th>
                 <th>{{ "UserName" | translate }}</th>
                 <th>{{ "terms.BookingID" | translate }}</th>
@@ -74,7 +78,13 @@
               </ng-container>
 
               <ng-container *ngIf="!isInitialPayoutTab">
-                <th><input type="checkbox" /></th>
+                <th>
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="selectAll"
+                    (change)="toggleSelectAll()"
+                  />
+                </th>
                 <th>{{ "PartnerName" | translate }}</th>
                 <th>Region</th>
                 <th>City</th>
@@ -92,7 +102,9 @@
           <tbody>
             <tr *ngFor="let booking of filteredBookings">
               <ng-container *ngIf="isInitialPayoutTab">
-                <td><input type="checkbox" /></td>
+                <td>
+                  <input type="checkbox" [(ngModel)]="booking.selected" />
+                </td>
                 <td>
                   {{ users[booking.user]?.firstName }}
                   {{ users[booking.user]?.lastName }}
@@ -108,7 +120,9 @@
                 <td>{{ partners[booking.partner]?.ibanNumber }}</td>
               </ng-container>
               <ng-container *ngIf="!isInitialPayoutTab">
-                <td><input type="checkbox" /></td>
+                <td>
+                  <input type="checkbox" [(ngModel)]="booking.selected" />
+                </td>
                 <td>{{ partners[booking.partner]?.partnerName }}</td>
                 <td>{{ partners[booking.partner]?.region }}</td>
                 <td>{{ partners[booking.partner]?.city }}</td>
@@ -139,20 +153,19 @@
           </tbody>
         </table>
       </div>
-      <ng-container *ngIf="isInitialPayoutTab">
-        <div class="d-flex justify-content-end">
-          <button class="btn btn-payNow btn-payout">
-            <i class="fas fa-download"></i> Processing initial amount
-          </button>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="!isInitialPayoutTab">
-        <div class="d-flex justify-content-end">
-          <button class="btn btn-payNow btn-payout">
-            <i class="fas fa-download"></i> Processing Completed amount
-          </button>
-        </div>
-      </ng-container>
+      <div class="d-flex justify-content-end">
+        <button
+          class="btn btn-payNow btn-payout"
+          (click)="generatePDFOrExcel()"
+        >
+          <i class="fas fa-download"></i>
+          {{
+            isInitialPayoutTab
+              ? "Processing initial amount"
+              : "Processing Completed amount"
+          }}
+        </button>
+      </div>
     </div>
   </div>
 </div>
