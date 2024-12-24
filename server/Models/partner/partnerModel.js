@@ -270,23 +270,18 @@ const partnerSchema = new mongoose.Schema(
     },
     region: {
       type: String,
-      required: true,
     },
     city: {
       type: String,
-      required: true,
     },
     bank: {
       type: String,
-      required: true,
     },
     company: {
       type: String,
-      required: true,
     },
     ibanNumber: {
       type: String,
-      required: true
     },
     resetOTP: {
       type: String,

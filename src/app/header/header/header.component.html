@@ -7,17 +7,26 @@
 
     <!-- Centered Links -->
     <div class="centered-links" (click)="logout()">
-      <a [routerLink]="'/home/user'" routerLinkActive="active" class="nav-link">
-        {{ "NAVBAR.USER" | translate }}
-      </a>
-      <span class="vertical-line"></span>
-      <a
-        [routerLink]="'/home/partner'"
-        routerLinkActive="active"
-        class="nav-link"
-      >
-        {{ "NAVBAR.PARTNER" | translate }}
-      </a>
+      <ng-container *ngIf="!isAdmin">
+        <a
+          [routerLink]="'/home/user'"
+          routerLinkActive="active"
+          class="nav-link"
+        >
+          {{ "NAVBAR.USER" | translate }}
+        </a>
+        <span class="vertical-line"></span>
+        <a
+          [routerLink]="'/home/partner'"
+          routerLinkActive="active"
+          class="nav-link"
+        >
+          {{ "NAVBAR.PARTNER" | translate }}
+        </a>
+      </ng-container>
+      <ng-container *ngIf="isAdmin">
+        <a class="nav-link"> <b>Admin</b> </a>
+      </ng-container>
     </div>
 
     <!-- Navbar right-side elements -->

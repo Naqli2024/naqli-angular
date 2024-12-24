@@ -71,7 +71,6 @@ export class BookingComponent implements OnInit {
   partnerId: string | undefined;
   oldQuotePrice: number | undefined;
 
-
   constructor(
     private modalService: NgbModal,
     private router: Router,
@@ -122,8 +121,8 @@ export class BookingComponent implements OnInit {
       this.updateBookingPaymentStatus();
     }
 
-     // Define the wpwlOptions in TypeScript
-     window['wpwlOptions'] = {
+    // Define the wpwlOptions in TypeScript
+    window['wpwlOptions'] = {
       billingAddress: {},
       mandatoryBillingFields: {
         country: true,
@@ -131,8 +130,8 @@ export class BookingComponent implements OnInit {
         city: true,
         postcode: true,
         street1: true,
-        street2: false
-      }
+        street2: false,
+      },
     };
   }
 
@@ -567,7 +566,6 @@ export class BookingComponent implements OnInit {
 
   selectPaymentBrand(brand: string) {
     this.selectedBrand = brand;
-    console.log(this.selectedBrand);
     this.showPaymentOptions = false;
     this.showPaymentForm = true;
     const details = this.paymentService.getPaymentDetails();
@@ -658,6 +656,7 @@ export class BookingComponent implements OnInit {
 
   private updateBookingPaymentStatus() {
     const details = this.paymentService.getPaymentDetails();
+    const brand = localStorage.getItem('paymentBrand') ?? 'Unknown';
     console.log(details);
 
     this.spinnerService.show();
@@ -684,7 +683,27 @@ export class BookingComponent implements OnInit {
               'Booking payment status updated successfully:',
               response
             );
+            if (response && response.booking && response.booking._id) {
+              // Call the second API to update the payment brand
+              this.bookingService.updateBookingForPaymentBrand(response.booking._id, brand)
+                .subscribe(
+                  (brandResponse) => {
+                    console.log('Booking payment brand updated successfully:', brandResponse);
+                  },
+                  (brandError) => {
+                    console.error('Error updating booking payment brand:', brandError);
+                    this.toastr.error(
+                      brandError.error?.message || 'Failed to update booking payment brand',
+                      'Error'
+                    );
+                  }
+                );
+            } else {
+              console.error('Invalid response structure:', response);
+              this.toastr.error('Failed to retrieve booking ID from the response', 'Error');
+            }
             this.paymentService.clearPaymentDetails();
+            localStorage.removeItem('paymentBrand');
           },
           (error) => {
             console.error('Error updating booking payment status:', error);
@@ -829,31 +848,44 @@ export class BookingComponent implements OnInit {
   }
 
   getTranslatedName(name: string): string {
-    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    const categories = [
+      'vehicleName',
+      'busNames',
+      'equipmentName',
+      'specialUnits',
+    ];
     for (let category of categories) {
       const translationKey = `${category}.${name}`;
       if (this.translate.instant(translationKey) !== translationKey) {
         return this.translate.instant(translationKey);
       }
     }
-    return name; 
+    return name;
   }
 
   getTranslatedTypeName(unitSubClassificationName: string): string {
     if (!unitSubClassificationName) {
-      return ''; 
+      return '';
     }
-  
+
     // Check if the type exists in typeNames
-    if (this.translate.instant('typeNames.' + unitSubClassificationName) !== 'typeNames.' + unitSubClassificationName) {
+    if (
+      this.translate.instant('typeNames.' + unitSubClassificationName) !==
+      'typeNames.' + unitSubClassificationName
+    ) {
       return 'typeNames.' + unitSubClassificationName;
     }
-  
+
     // Check if the type exists in equipmentTypeName
-    if (this.translate.instant('equipmentTypeName.' + unitSubClassificationName) !== 'equipmentTypeName.' + unitSubClassificationName) {
+    if (
+      this.translate.instant(
+        'equipmentTypeName.' + unitSubClassificationName
+      ) !==
+      'equipmentTypeName.' + unitSubClassificationName
+    ) {
       return 'equipmentTypeName.' + unitSubClassificationName;
     }
-  
-    return ''; 
+
+    return '';
   }
 }

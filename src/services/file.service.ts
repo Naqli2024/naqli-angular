@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class FileService {
-  private baseUrl = 'http://localhost:4000/api/files'; 
+  private baseUrl = 'https://prod.naqlee.com:443/api/files'; 
   
   constructor(private http: HttpClient) {}
 

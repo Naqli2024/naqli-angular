@@ -5,11 +5,11 @@
     </div>
     <div *ngIf="isInvoiceTableVisible">
       <div class="notification-bar">
-        <input 
-          type="text" 
-          placeholder="Search by Invoice ID, Date, User, Partner" 
-          class="search-bar" 
-          [(ngModel)]="searchTerm" 
+        <input
+          type="text"
+          placeholder="Search by Invoice ID, Date, User, Partner"
+          class="search-bar"
+          [(ngModel)]="searchTerm"
           (input)="onSearchInputChange()"
         />
       </div>
@@ -27,7 +27,7 @@
             <tr>
               <th>Invoice id</th>
               <th>Date</th>
-              <th>User</th>
+              <th>Booking Id</th>
               <th>Partner</th>
               <th>Unit type</th>
               <th>Amount</th>
@@ -40,12 +40,9 @@
               </td>
               <td>{{ booking.date | date : "dd/MM/yyyy" }}</td>
               <td>
-                {{ booking.userDetails?.firstName }}
-                {{ booking.userDetails?.lastName }}
+                {{ booking._id }}
               </td>
-              <!-- Display user name -->
               <td>{{ booking.partnerDetails?.partnerName || "Loading..." }}</td>
-              <!-- Display partner name -->
               <td>{{ booking.unitType }}</td>
               <td>{{ booking.paymentAmount }}</td>
             </tr>
@@ -57,8 +54,12 @@
 </div>
 
 <ng-container *ngIf="!isInvoiceTableVisible">
-  <button class="back-button" (click)="goBackToList()" style="margin: 10px 10px !important">
-    <fa-icon [icon]="faArrowLeft"></fa-icon>&nbsp; {{"Back"|translate}}
+  <button
+    class="back-button"
+    (click)="goBackToList()"
+    style="margin: 10px 10px !important"
+  >
+    <fa-icon [icon]="faArrowLeft"></fa-icon>&nbsp; {{ "Back" | translate }}
   </button>
   <div class="action-container">
     <div class="action-btn">
@@ -78,7 +79,6 @@
   </div>
 
   <div class="create-invoice-outer-card" id="invoice-container">
-    <!-- <div class="invoice-heading">INVOICE</div> -->
     <div
       class="create-invoice-content"
       *ngFor="let booking of detailedBookings"
@@ -87,7 +87,6 @@
         <div class="bill-row">
           <div class="mt-4 billto-left">
             <img src="assets/images/naqlee-logo.svg" alt="naqlee-logo" />
-
             <div class="invoice-from">
               <p>PIANNAT AL-HASIB</p>
               <p>3455 al-dammam</p>
@@ -102,7 +101,9 @@
           </div>
           <div class="mt-4 billto-right">
             <h5>Invoice</h5>
-            <p><b>Invoice date:</b> <span>{{ booking.invoiceDate }}</span></p>
+            <p>
+              <b>Invoice date:</b> <span>{{ booking.invoiceDate }}</span>
+            </p>
             <p><b>Invoice id:</b> {{ booking.invoiceId }}</p>
             <div class="invoice-partner-detail">
               <p>
@@ -112,7 +113,7 @@
                 }}</span>
               </p>
               <p>
-                <b>Unit type:</b> <span>{{ booking.name }}</span>
+                <b>Unit type:</b> <span>{{ booking.unitType }}</span>
               </p>
               <p>
                 <b>Booking id:</b> <span>{{ booking._id }}</span>
@@ -150,13 +151,14 @@
             <div class="col-8">
               <!-- Left content (if any) can go here -->
             </div>
-          
+
             <div class="col-md-4 col-sm-12">
               <p class="d-flex justify-content-between">
                 <b>Subtotal:</b> <span>{{ booking.paymentAmount }}</span>
               </p>
               <p class="d-flex justify-content-between">
-                <b>Labour charge:</b> <span>{{ booking.labourCharge || 0 }}</span>
+                <b>Labour charge:</b>
+                <span>{{ booking.labourCharge || 0 }}</span>
               </p>
               <p class="d-flex justify-content-between">
                 <b>VAT:</b> <span>0%</span>

@@ -459,6 +459,9 @@ const updateBookingPaymentStatus = async (req, res) => {
 
     if (booking.tripStatus === "Completed" && booking.remainingBalance === 0) {
       booking.bookingStatus = "Completed";
+
+      // Call the function to generate and save the invoice ID when the booking status is completed
+      const invoiceId = await generateInvoiceId(booking._id);
     }
 
     // Save the updated booking
@@ -498,6 +501,35 @@ const updateBookingPaymentStatus = async (req, res) => {
       message: "Failed to update booking payment status",
     });
   }
+};
+
+const generateInvoiceId = async (bookingId) => {
+  // Get the current date in YYYYMMDD format
+  const today = new Date();
+  const dateStr = today.toISOString().split("T")[0].replace(/-/g, ""); // YYYYMMDD
+
+  // Generate a 6-character alphanumeric random string
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let uniquePart = "";
+
+  for (let i = 0; i < 6; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    uniquePart += characters[randomIndex];
+  }
+
+  // Combine the prefix, date, and unique part to form the invoice ID
+  const invoiceId = `INV-${dateStr}-${uniquePart}`;
+
+  // Assuming your Booking model has an 'invoiceId' field
+  const booking = await Booking.findById(bookingId);
+  if (booking) {
+    // Store the generated invoice ID in the booking document
+    booking.invoiceId = invoiceId;
+    await booking.save();
+  }
+
+  return invoiceId;
 };
 
 const bookingCompleted = async (req, res) => {
@@ -697,6 +729,9 @@ const updateBookingStatus = async (req, res) => {
         booking.remainingBalance === 0
       ) {
         booking.bookingStatus = "Completed";
+
+        // Call the function to generate and save the invoice ID when the booking status is completed
+        const invoiceId = await generateInvoiceId(booking._id);
       }
       await booking.save();
 
@@ -866,6 +901,63 @@ const getUnitDetails = async (req, res) => {
   }
 };
 
+const updateBookingForPaymentBrand = async (req, res) => {
+  const { bookingId, brand } = req.body; 
+
+  try {
+    // Find the booking by ID
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ success: false, message: "Booking not found" });
+    }
+
+    // Update the paymentType field with the brand
+    booking.paymentType = brand;
+
+    // Save the updated booking
+    const updatedBooking = await booking.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Booking payment type updated successfully",
+      booking: updatedBooking,
+    });
+  } catch (error) {
+    console.error("Error updating booking payment type:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update booking payment type",
+    });
+  }
+};
+
+const getBookingsWithInvoice = async (req, res) => {
+  try {
+    // Query the bookings collection for bookings that have an invoiceId field
+    const bookingsWithInvoice = await Booking.find({ invoiceId: { $exists: true, $ne: null } });
+
+    if (bookingsWithInvoice.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No bookings found with an invoiceId.',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Bookings with invoiceId fetched successfully.',
+      bookings: bookingsWithInvoice,
+    });
+  } catch (error) {
+    console.error('Error fetching bookings with invoiceId:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch bookings with invoiceId.',
+    });
+  }
+};
+
 module.exports = {
   createBooking,
   editBooking,
@@ -879,4 +971,6 @@ module.exports = {
   updateBookingStatus,
   getBookingsWithPendingPayment,
   getUnitDetails,
+  updateBookingForPaymentBrand,
+  getBookingsWithInvoice
 };

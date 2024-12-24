@@ -289,6 +289,7 @@ export class BookingManagerComponent {
 
   private updateBookingPaymentStatus() {
     const details = this.paymentService.getPaymentDetails();
+    const brand = localStorage.getItem('paymentBrand') ?? 'Unknown';
     console.log(details);
 
     this.spinnerService.show();
@@ -315,7 +316,27 @@ export class BookingManagerComponent {
               'Booking payment status updated successfully:',
               response
             );
+            if (response && response.booking && response.booking._id) {
+              // Call the second API to update the payment brand
+              this.bookingService.updateBookingForPaymentBrand(response.booking._id, brand)
+                .subscribe(
+                  (brandResponse) => {
+                    console.log('Booking payment brand updated successfully:', brandResponse);
+                  },
+                  (brandError) => {
+                    console.error('Error updating booking payment brand:', brandError);
+                    this.toastr.error(
+                      brandError.error?.message || 'Failed to update booking payment brand',
+                      'Error'
+                    );
+                  }
+                );
+            } else {
+              console.error('Invalid response structure:', response);
+              this.toastr.error('Failed to retrieve booking ID from the response', 'Error');
+            }
             this.paymentService.clearPaymentDetails();
+            localStorage.removeItem('paymentBrand');
           },
           (error) => {
             console.error('Error updating booking payment status:', error);

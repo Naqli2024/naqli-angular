@@ -2,11 +2,6 @@ import { Component } from '@angular/core';
 import { ProfileComponent } from '../profile/profile.component';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { BookingComponent } from '../booking/booking.component';
-import { BookingHistoryComponent } from '../booking-history/booking-history.component';
-import { PaymentsComponent } from '../payments/payments.component';
-import { ReportComponent } from '../report/report.component';
-import { HelpComponent } from '../help/help.component';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user.model';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,11 +14,6 @@ import { TranslateModule } from '@ngx-translate/core';
     RouterModule,
     CommonModule,
     ProfileComponent,
-    BookingComponent,
-    BookingHistoryComponent,
-    PaymentsComponent,
-    ReportComponent,
-    HelpComponent,
     TranslateModule,
   ],
   templateUrl: './dashboard.component.html',
@@ -59,6 +49,7 @@ export class DashboardComponent {
         { name: 'Payments', route: 'super-user/payments' },
         { name: 'Report', route: 'report' },
         { name: 'Help', route: 'help' },
+        { name: 'Invoice', route: 'invoice' },
       ];
     } else if (this.isAdmin) {
       this.menuItems = [
@@ -83,6 +74,7 @@ export class DashboardComponent {
         { name: 'Payments', route: 'payments' },
         { name: 'Report', route: 'report' },
         { name: 'Help', route: 'help' },
+        { name: 'Invoice', route: 'invoice' },
       ];
     }
   }

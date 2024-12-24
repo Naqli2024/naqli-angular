@@ -12,7 +12,9 @@ const {
   addAdditionalCharges,
   updateBookingStatus,
   getBookingsWithPendingPayment,
-  getUnitDetails
+  getUnitDetails,
+  updateBookingForPaymentBrand,
+  getBookingsWithInvoice
 } = require("../controller/bookingController");
 const { protect } = require("../middlewares/authMiddleware");
 
@@ -28,5 +30,7 @@ router.post("/bookings/:bookingId/additional-charges", protect, addAdditionalCha
 router.post("/bookings/update-booking-status", protect, updateBookingStatus);
 router.get("/bookings/getBookingsWithPendingPayment/:id", protect, getBookingsWithPendingPayment);
 router.get('/bookings/getUnitDetails/:bookingId', getUnitDetails);
+router.post('/updateBookingForPaymentBrand', protect, updateBookingForPaymentBrand);
+router.get('/bookings-with-invoice', getBookingsWithInvoice);
 
 module.exports = router;

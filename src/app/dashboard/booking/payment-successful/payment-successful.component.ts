@@ -59,7 +59,6 @@ export class PaymentSuccessfulComponent {
             this.paymentStatus = 'Payment Successful!';
             this.toastr.success(resultDescription);
             this.paymentService.setPaymentStatus(this.paymentStatus); // Set status in service
-            localStorage.removeItem('paymentBrand');
           } else {
             this.paymentStatus = 'Payment failed. Please try again.';
             this.toastr.error(resultDescription || 'Payment failed.');

@@ -10,6 +10,6 @@ export class VehicleService {
   constructor(private http: HttpClient) {}
 
   getVehicles(): Observable<Vehicle[]> {
-    return this.http.get<Vehicle[]>('http://localhost:4000/api/vehicles');
+    return this.http.get<Vehicle[]>('https://prod.naqlee.com:443/api/vehicles');
   }
 }

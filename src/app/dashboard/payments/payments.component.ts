@@ -30,7 +30,7 @@ export class PaymentsComponent implements OnInit {
   checkoutId: string | null = null;
   integrity: string = '';
   showPaymentForm: boolean = false;
-  shopperResultUrl: string = 'http://localhost:4200/home/user/payment-result';
+  shopperResultUrl: string = 'https://naqlee.com/home/user/payment-result';
   amount: number | undefined;
   status: string | undefined;
   partnerId: string | undefined;
@@ -217,6 +217,7 @@ export class PaymentsComponent implements OnInit {
 
   private updateBookingPaymentStatus() {
     const details = this.paymentService.getPaymentDetails();
+    const brand = localStorage.getItem('paymentBrand') ?? 'Unknown';
     console.log(details);
 
     this.spinnerService.show();
@@ -243,7 +244,27 @@ export class PaymentsComponent implements OnInit {
               'Booking payment status updated successfully:',
               response
             );
+            if (response && response.booking && response.booking._id) {
+              // Call the second API to update the payment brand
+              this.bookingService.updateBookingForPaymentBrand(response.booking._id, brand)
+                .subscribe(
+                  (brandResponse) => {
+                    console.log('Booking payment brand updated successfully:', brandResponse);
+                  },
+                  (brandError) => {
+                    console.error('Error updating booking payment brand:', brandError);
+                    this.toastr.error(
+                      brandError.error?.message || 'Failed to update booking payment brand',
+                      'Error'
+                    );
+                  }
+                );
+            } else {
+              console.error('Invalid response structure:', response);
+              this.toastr.error('Failed to retrieve booking ID from the response', 'Error');
+            }
             this.paymentService.clearPaymentDetails();
+            localStorage.removeItem('paymentBrand');
           },
           (error) => {
             console.error('Error updating booking payment status:', error);

@@ -4560,6 +4560,9 @@ h1 {
   padding: 5px 15px;
   white-space: nowrap;
 }
+.action-btn p {
+  margin: 0px 5px;
+}
 
 /* Styling for the icons */
 .action-icon {
@@ -4589,7 +4592,7 @@ h1 {
   margin-bottom: 30px;
 }
 .create-invoice-content {
-  margin: 0px 10%;
+  margin: 0px 20px;
 }
 .invoice-heading {
   justify-content: center;
@@ -4599,37 +4602,77 @@ h1 {
 }
 .invoice-content {
   display: flex;
-  flex-direction: row;
   font-size: 14px;
-  align-items: center !important;
+  align-items: left;
+  justify-content: space-between !important; 
+}
+.bill-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px 0px;
+}
+.invoice-table-border {
+  border: 1px solid #ddd;
+  margin: 30px 0px !important;
+  border-radius: 5px;
 }
 .invoice-table {
   overflow-y:  auto !important;
-  border: 1px solid #ddd;
   border-radius: 5px;
   overflow: hidden;
   font-size: 14px;
-  margin: 30px 1px;
+}
+.table-content thead {
+  background-color: #4B3D52;
+  color: white;
 }
 .table-content th, 
 .table-content td {
-  border-left: none; 
-  border-right: none;
-  border-bottom: 1px solid #ddd; 
+  padding: 20px;
+  border: 1px solid #ddd;
 }
-.table-content tr:last-child td {
-  border-bottom: none; 
-}
-.table-bottom-content {
+.table-bottom {
   display: flex;
-  flex-direction: column; 
-  align-items: flex-end; 
-  text-align: justify;
+  flex-direction: row;
+  justify-content:flex-end;  
+  align-items: flex-end;  
+  margin-top: auto; 
+  padding: 10px 0;  
+  width: 100%; 
 }
-.table-bottom-content .col-md-5 {
-  padding: 10px;
-  font-size: 14px;
+.table-bottom .col-4 p {
+  margin-bottom: 10px;  
 }
+.table-bottom .col-4 b {
+  width: 50%; 
+  text-align: left; 
+}
+.table-bottom .col-4 span {
+  width: 50%; 
+  text-align: right; 
+}
+.billto-right span {
+  margin: 0px 10px;
+}
+.billto-left img {
+  margin-bottom: 20px;
+  width: 100%;
+  min-width: 100px !important;
+  height: auto;
+  object-fit: contain;
+}
+.billto-right h5 {
+  margin-bottom: 20px !important;
+  font-size: 44px !important;
+}
+.invoice-from {
+  margin-bottom: 30px !important;
+}
+.invoice-partner-detail {
+  margin-top: 65px !important;
+}
+
 @media (max-width: 1160px) {
   .invoice-table {
     overflow-x: scroll;
@@ -4644,9 +4687,72 @@ h1 {
   .invoice-content {
     justify-content: space-between;
   }
+  .bill-row {
+    display: flex;
+    align-items: left;
+  }
+  .invoice-content {
+    align-items: left !important;
+  }
+  .table-bottom .col-4 b,
+  .table-bottom .col-4 span {
+    width: 100% !important;  
+    text-align: left; 
+  }
+  .table-bottom .col-md-4 {
+    margin-right: -10px !important;
+  }
+  .table-bottom .col-4 p {
+    margin-bottom: 8px;  
+  }
+  .billto-left img {
+    max-width: 120px; 
+    margin: 15px 15px;
+  }
+  .billto-right h5 {
+    margin: 10px 15px;
+    font-size: 35px !important;
+  }
+  .invoice-from {
+    margin-bottom: 20px !important;
+  }
+  .invoice-partner-detail {
+    margin-top: 35px !important;
+  }
+  .bill-row p {
+    text-align: left !important;
+  }
 }
 @media (max-width: 580px) {
   .invoice-content {
     flex-direction: column;
+    align-items: left !important;
+  }
+  .bill-row {
+    display: flex;
+    flex-direction: column;
+    align-items: left !important;
+    justify-content: left !important;
+  }
+  .create-invoice-content {
+    margin: 0px 0px !important;
+  }
+  .create-invoice-outer-card {
+    margin: 30px 10px !important;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  .billto-left p {
+    text-align: left; 
+    margin: 0px 15px;
+  }
+  .billto-right p {
+    text-align: left; 
+    margin: 0px 15px;
+  }
+  .table-bottom .col-4 b,
+  .table-bottom .col-4 span {
+    width: 100% !important;  
+    text-align: left; 
   }
 }

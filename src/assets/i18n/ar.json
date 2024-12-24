@@ -26,18 +26,18 @@
     "bus": "حافلة",
     "equipment": "معدات",
     "special": "خاص",
-    "others": "آخرون",
+    "others": "آخرى",
     "All": "الكل"
   },
   "ESTIMATE": {
-    "GET_ESTIMATE": "احصل على تقدير"
+    "GET_ESTIMATE": "احصل على تسعيرة"
   },
   "AUTH": {
     "EMAIL": "البريد الإلكتروني",
     "PASSWORD": "كلمة المرور",
-    "FORGOT_PASSWORD": "هل نسيت كلمة السر؟",
-    "NO_ACCOUNT": "ليس لديك حساب؟ قم بإنشاء واحد!",
-    "CREATE_ONE": "استخدم بدون تسجيل الدخول"
+    "FORGOT_PASSWORD": "هل نسيت كلمة المرور؟",
+    "NO_ACCOUNT": "ليس لديك حساب؟!",
+    "CREATE_ONE": "قم بإنشاء واحد"
   },
   "REGISTER": {
     "TITLE": "إنشاء حسابك",
@@ -96,27 +96,27 @@
     "Lorry": "شاحنة",
     "Diana": "ديانا",
     "Pick Up": "بيك أب",
-    "Tow Truck": "شاحنة سحب"
+    "Tow Truck": "سطحه"
   },
   "typeNames": {
-    "Short slides": "شرائح قصيرة",
-    "Curtain": "ستارة",
+    "Short slides": "شاحنة ذات شرائح قصيرة",
+    "Curtain": "شاحنة ذات ستارة",
     "Refrigerator": "ثلاجة",
-    "Faltbed": "سطح مسطح",
-    "High Slides": "شرائح عالية",
+    "Faltbed": "شاحنة ذات سطح مسطح",
+    "High Slides": "شاحنة ذات شرائح عالية",
     "Freezer": "مجمد",
-    "Slide": "شريحة",
+    "Slide": "شاحنة ذات شريحة",
     "Lorry 7 metres": "شاحنة 7 أمتار",
     "Closed": "مغلق",
     "closed": "مغلق",
     "Crane 5 TON": "رافعة 5 طن",
     "Crane 7 TON": "رافعة 7 طن",
     "Crane": "رافعة",
-    "Slides": "شرائح",
+    "Slides": "شاحنة ذات شرائح",
     "Pick Up": "بيك أب",
     "Regular": "عادي",
     "hydraulic": "هيدروليكي",
-    "VIP": "كبار الشخصيات",
+    "VIP": "VIP",
     "Two Cars": "سيارتين",
     "Trucks": "شاحنات"
   },
@@ -144,21 +144,21 @@
   "enterCityName": "أدخل اسم المدينة",
   "enterYourAddress": "أدخل عنوانك",
   "equipmentName": {
-    "Loaders": "محملات",
+    "Loaders": "لوادر",
     "Excavator": "حفارة",
-    "Cranes": "الرافعات ",
+    "Cranes": "كرين ",
     "Others": "أخرى"
   },
   "equipmentTypeName": {
     "Back hoe": "حفارة",
     "Front hoe": "مجرفة أمامية",
-    "Skid steer": "انزلاق التوجيه",
+    "Skid steer": "لودر بسير انزلاقي",
     "Excavator": "حفارة",
     "Crawler crane": "رافعة مجنزرة",
     "Mobile crane": "رافعة متحركة",
     "Compactors": "الضاغطات",
     "Bulldozers": "الجرافات",
-    "Graders": "المصنفات",
+    "Graders": "ممهدات الطرق",
     "Dump truck": "شاحنة قلابة",
     "Forklift": "رافعة شوكية",
     "Scissorlift": "رافعة مقصية"
@@ -192,7 +192,8 @@
     "Payout": "دفع",
     "Notification Management": "إدارة الإشعارات",
     "Naqlee User": "مستخدم النقل",
-    "Commission": "عمولة"
+    "Commission": "عمولة",
+    "Invoice": "فاتورة"
   },
   "support": {
     "Report": "تقرير",
@@ -605,7 +606,5 @@
   "Transportation": "النقل",
   "Additional charges added successfully!! Please wait for response!": "تمت إضافة الرسوم الإضافية بنجاح!! يرجى انتظار الرد!",
   "To ensure we give you the best Possible service, kindly fill out the Information": "",
-  "No notifications": "",
-  "Account Number": "رقم الحساب",
-  "Transaction Id": ""
+  "No notifications": ""
 }

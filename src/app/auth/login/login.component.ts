@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ForgetPasswordComponent, FormsModule, ToastrModule, TranslateModule],
+  imports: [CommonModule, FormsModule, ToastrModule, TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -56,6 +56,10 @@ export class LoginComponent {
     private userService: UserService,
     private router: Router
   ) {}
+
+  get language(): string {
+    return localStorage.getItem('language') || 'en';
+  }
 
   login() {
     if (localStorage.getItem('userId') || localStorage.getItem('partnerId')) {

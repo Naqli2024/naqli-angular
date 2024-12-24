@@ -9,6 +9,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { LanguageService } from '../../../services/language.service';
+import { UserService } from '../../../services/user.service';
 
 export interface User {
   authToken: string;
@@ -44,12 +45,14 @@ export class HeaderComponent implements OnInit {
   selectedLanguage: string = 'en';
   newNotification: number = 0;
   private languageService = inject(LanguageService);
+  isAdmin: boolean = false;
 
   constructor(
     private modalService: NgbModal,
     private router: Router,
     private toastr: ToastrService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -62,6 +65,13 @@ export class HeaderComponent implements OnInit {
     const userId = localStorage.getItem('userId');
     const partnerId = localStorage.getItem('partnerId');
     const id = userId || partnerId; // Use userId if it exists, otherwise use partnerId
+
+    if (userId) {
+      this.userService.getUserById(userId).subscribe((user: any) => {
+        this.userDetails = user;
+        this.isAdmin = user.isAdmin; 
+      });
+    }
 
     if (!id) {
       console.log('No user ID or partner ID found.');

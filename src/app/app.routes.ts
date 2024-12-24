@@ -52,6 +52,7 @@ import { PaymentSuccessfulComponent } from './dashboard/booking/payment-successf
 import { EditProfileComponent } from './dashboard/profile/edit-profile/edit-profile.component';
 import { EditProfilePartnerComponent } from './partner/dashboard/edit-profile-partner/edit-profile-partner.component';
 import { InvoiceComponent } from './admin/invoice/invoice.component';
+import { InvoiceUserComponent } from './dashboard/invoice/invoiceUser.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -108,6 +109,7 @@ export const routes: Routes = [
       { path: 'report', component: ReportComponent },
       { path: 'help', component: HelpComponent },
       { path: 'edit-profile', component: EditProfileComponent },
+      { path: 'invoice', component: InvoiceUserComponent },
       {
         path: 'admin/overview',
         component: OverviewComponent,

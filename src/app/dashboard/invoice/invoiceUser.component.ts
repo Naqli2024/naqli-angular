@@ -1,26 +1,26 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEdit, faPrint, faDownload, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { BookingService } from '../../../services/booking.service';
 import { SpinnerService } from '../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { PartnerService } from '../../../services/partner/partner.service';
 import { UserService } from '../../../services/user.service';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import jsPDF from 'jspdf';
 import html2pdf from 'html2pdf.js';
 import html2canvas from 'html2canvas';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-invoice',
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, FormsModule, TranslateModule],
-  templateUrl: './invoice.component.html',
-  styleUrl: './invoice.component.css',
+  templateUrl: './invoiceUser.component.html',
+  styleUrl: './invoice.component.css'
 })
-export class InvoiceComponent {
+export class InvoiceUserComponent {
   isInvoiceTableVisible = true;
   faEdit = faEdit;
   faPrint = faPrint;
@@ -60,8 +60,19 @@ export class InvoiceComponent {
       (response) => {
         this.spinnerService.hide();
         if (response.success) {
-          this.bookingsWithInvoice = response.bookings; // Assign bookings to the array
-          this.enrichBookingsWithDetails(); // Start fetching partner and user details for each booking
+          // Fetch all bookings first
+          const allBookings = response.bookings;
+  
+          // Filter bookings that belong to the logged-in user and have a valid invoiceId
+          const loggedInUserId = localStorage.getItem('userId');
+          this.bookingsWithInvoice = allBookings.filter((booking) => 
+            booking.user === loggedInUserId && booking.invoiceId
+          );
+  
+          // Start fetching partner and user details for each filtered booking
+          this.enrichBookingsWithDetails();
+  
+          // Optionally, update filteredBookings based on a search term or other criteria
           this.filteredBookings = this.bookingsWithInvoice;
         } else {
           this.toastr.error(response.message);
@@ -107,37 +118,42 @@ export class InvoiceComponent {
   }
 
   enrichBookingsWithDetails(): void {
-    // Iterate over all bookings and fetch partner and user details
+    const loggedInUserId = localStorage.getItem('userId'); 
+
+    // Iterate over all bookings
     this.bookingsWithInvoice.forEach((booking) => {
-      const partnerId = booking.partner;  // Extract partnerId from booking
-      const userId = booking.user;  // Extract userId from booking
-      booking.invoiceDate = this.getInvoiceDate(booking.invoiceId);
+      // Process only the bookings made by the logged-in user and that have an invoiceId
+      if (booking.user === loggedInUserId && booking.invoiceId) {
+        const partnerId = booking.partner;  
+        const userId = booking.user;  
+        booking.invoiceDate = this.getInvoiceDate(booking.invoiceId);
 
-      // Fetch partner details
-      this.partnerService.getPartnerDetails(partnerId).subscribe(
-        (partner) => {
-          booking.partnerDetails = partner.data;  // Store partner details in the booking
-          this.checkIfBookingIsComplete(booking);
-        },
-        (error) => {
-          console.error('Error fetching partner details', error);
-          this.toastr.error('Failed to fetch partner details');
-        }
-      );
+        // Fetch partner details
+        this.partnerService.getPartnerDetails(partnerId).subscribe(
+          (partner) => {
+            booking.partnerDetails = partner.data;  
+            this.checkIfBookingIsComplete(booking);
+          },
+          (error) => {
+            console.error('Error fetching partner details', error);
+            this.toastr.error('Failed to fetch partner details');
+          }
+        );
 
-      // Fetch user details
-      this.userService.getUserById(userId).subscribe(
-        (user) => {
-          booking.userDetails = user;  // Store user details in the booking
-          this.checkIfBookingIsComplete(booking);
-        },
-        (error) => {
-          console.error('Error fetching user details', error);
-          this.toastr.error('Failed to fetch user details');
-        }
-      );
+        // Fetch user details for the logged-in user
+        this.userService.getUserById(userId).subscribe(
+          (user) => {
+            booking.userDetails = user;  
+            this.checkIfBookingIsComplete(booking);
+          },
+          (error) => {
+            console.error('Error fetching user details', error);
+            this.toastr.error('Failed to fetch user details');
+          }
+        );
+      }
     });
-  }
+}
 
   // Helper method to check if both partner and user details are loaded
   private checkIfBookingIsComplete(booking: any): void {

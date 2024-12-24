@@ -8,7 +8,7 @@ import { Booking } from '../models/booking.model';
 })
 export class BookingService {
   private bookingId: string | null = null;
-  private apiUrl = 'http://localhost:4000/api';
+  private apiUrl = 'https://prod.naqlee.com:443/api';
 
   constructor(private http: HttpClient) {}
 
@@ -139,5 +139,21 @@ export class BookingService {
     return this.http.get(
       `${this.apiUrl}/bookings/getUnitDetails/${bookingId}`
     );
+  }
+
+  updateBookingForPaymentBrand(bookingId: string, brand: string): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const requestBody = { bookingId, brand };
+    console.log(requestBody)
+
+    return this.http.post(
+     `${this.apiUrl}/updateBookingForPaymentBrand`, requestBody,
+      { headers }
+    );
+  }
+
+  getBookingsWithInvoice(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/bookings-with-invoice`);
   }
 }
