@@ -17,7 +17,7 @@ const bookingSchema = new mongoose.Schema(
     image: String,
     pickup: String,
     dropPoints: [String],
-    productValue: Number,
+    productValue: String,
     date: String,
     time: String,
     additionalLabour: Number,

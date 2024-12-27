@@ -6,11 +6,12 @@ import { Vehicle, VehicleType } from '../../../../models/vehicle-booking';
 import { VehicleService } from '../../../../services/vehicle.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-vechile-estimate',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, HttpClientModule, FormsModule, TranslateModule],
   templateUrl: './vechile-estimate.component.html',
   styleUrl: './vechile-estimate.component.css'
 })

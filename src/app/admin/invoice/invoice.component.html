@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>Invoice</h2>
+      <h2>{{"dashboardItems.Invoice"|translate}}</h2>
     </div>
     <div *ngIf="isInvoiceTableVisible">
       <div class="notification-bar">
@@ -26,10 +26,10 @@
           >
             <tr>
               <th>Invoice id</th>
-              <th>Date</th>
-              <th>User</th>
-              <th>Partner</th>
-              <th>Unit type</th>
+              <th>{{"terms.Date"|translate}}</th>
+              <th>{{"dashboardItems.User"|translate}}</th>
+              <th>{{"dashboardItems.Partner"|translate}}</th>
+              <th>{{"terms.Unit Type"|translate}}</th>
               <th>Amount</th>
             </tr>
           </thead>
@@ -46,7 +46,7 @@
               <!-- Display user name -->
               <td>{{ booking.partnerDetails?.partnerName || "Loading..." }}</td>
               <!-- Display partner name -->
-              <td>{{ booking.unitType }}</td>
+              <td>{{ "unitTypes." + booking.unitType | translate }}</td>
               <td>{{ booking.paymentAmount }}</td>
             </tr>
           </tbody>

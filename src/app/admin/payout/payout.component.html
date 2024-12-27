@@ -27,6 +27,13 @@
           >
             Weekly
           </button>
+          <button
+            class="tab-button"
+            [class.active]="isDailyTab"
+            (click)="selectTimeRange('daily')"
+          >
+            Daily
+          </button>
         </div>
         <div>
           <button

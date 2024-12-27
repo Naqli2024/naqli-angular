@@ -10,13 +10,12 @@ import { CommonModule } from '@angular/common';
 import { PartnerService } from '../../../../services/partner/partner.service';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
-import { PaymentConfirmationComponent } from './payment-confirmation/payment-confirmation.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-booking',
   standalone: true,
-  imports: [CommonModule, FormsModule, PaymentConfirmationComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './booking.component.html',
   styleUrl: './booking.component.css',
 })
@@ -70,7 +69,7 @@ export class PartnerBookingComponent implements OnInit {
               });
             }
           });
-  
+
           if (this.bookingRequests.length) {
             this.getBookingsByBookingId();
           }
@@ -83,35 +82,41 @@ export class PartnerBookingComponent implements OnInit {
       }
     );
   }
-  
+
   getBookingsByBookingId() {
     const bookingObservables = this.bookingRequests.map((bookingId: string) =>
       this.bookingService.getBookingsByBookingId(bookingId)
     );
-  
+
     forkJoin(bookingObservables).subscribe(
       (responses: any[]) => {
         this.spinnerService.hide(); // Hide spinner once response is received
         // Flatten the bookings from all responses
         this.bookings = responses.map((response) => response.data).flat();
-  
+
+        // Sort the bookings by createdAt in descending order
+        this.bookings.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
         // Loop through bookings to check the condition for calling navigate or showing table
         this.bookings.forEach((booking) => {
           if (
-            this.partner.type === 'singleUnit + operator' && 
+            this.partner.type === 'singleUnit + operator' &&
             booking.bookingStatus !== 'Completed' &&
             (booking.paymentStatus === 'HalfPaid' ||
-              booking.paymentStatus === 'Paid' || 
+              booking.paymentStatus === 'Paid' ||
               booking.paymentStatus === 'Completed')
           ) {
             this.navigateToConfirmPayment(booking._id);
           }
         });
-  
+
         if (this.bookings.length > 0) {
-          this.fetchUsers(); 
+          this.fetchUsers();
         } else {
-          this.spinnerService.hide(); 
+          this.spinnerService.hide();
         }
       },
       (error) => {
@@ -126,12 +131,12 @@ export class PartnerBookingComponent implements OnInit {
     const userIds = this.bookings
       .map((booking) => booking.user)
       .filter((value, index, self) => value && self.indexOf(value) === index);
-  
+
     if (userIds.length > 0) {
       const userObservables = userIds.map((userId) =>
         this.userService.getUserById(userId)
       );
-  
+
       forkJoin(userObservables).subscribe(
         (users: any[]) => {
           this.spinnerService.hide(); // Hide spinner after users are fetched
@@ -244,13 +249,18 @@ export class PartnerBookingComponent implements OnInit {
   }
 
   getTranslatedName(name: string): string {
-    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    const categories = [
+      'vehicleName',
+      'busNames',
+      'equipmentName',
+      'specialUnits',
+    ];
     for (let category of categories) {
       const translationKey = `${category}.${name}`;
       if (this.translate.instant(translationKey) !== translationKey) {
         return this.translate.instant(translationKey);
       }
     }
-    return name; 
+    return name;
   }
 }

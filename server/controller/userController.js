@@ -30,6 +30,15 @@ const userRegister = async (req, res) => {
       idNumber,
     } = req.body;
 
+    // Check if the user has selected "Enterprise User"
+    if (accountType === 'Enterprise User') {
+      return res.status(400).json({
+        message: "The 'Enterprise User' option is currently unavailable. This feature will be available in upcoming releases.",
+        success: false,
+        data: null,
+      });
+    }
+
     // Check for existing users with any of the fields
     const existUserByEmail = await user.findOne({ emailAddress });
     const existUserByIdNumber = await user.findOne({ idNumber });
@@ -300,7 +309,7 @@ const getUserById = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await user.find();
+    const users = await user.find().sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: users });
   } catch (error) {
     res.status(500).json({ message: "Error fetching users", error });

@@ -29,8 +29,6 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     HttpClientModule,
     FormsModule,
-    BookingModalComponent,
-    MapComponent,
     NgbTimepickerModule,
     TranslateModule
   ],

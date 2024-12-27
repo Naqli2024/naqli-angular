@@ -17,6 +17,15 @@ const partnerRegister = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
+    // Check if partner selected "enterprise" as the type
+    if (req.body.type === "enterprise") {
+      return res.status(400).json({
+        message: "The 'Enterprise' partner type is currently unavailable. This feature will be available in upcoming releases.",
+        success: false,
+        data: null,
+      });
+    }
+
     const existPartner = await partner.findOne({ email: req.body.email });
     if (existPartner) {
       return res.status(400).json({

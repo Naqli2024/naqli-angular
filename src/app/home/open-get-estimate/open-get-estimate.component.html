@@ -1,7 +1,7 @@
 <div class="container" style="background-color: #fff">
   <div class="row">
     <div class="col-md-4 col-sm-12 get-an-estimate">
-      <h2>Get an Estimate</h2>
+      <h2>{{"ESTIMATE.GET_ESTIMATE"|translate}}</h2>
       <p>
         To ensure we give you the best Possible service, kindly fill out the
         Information
@@ -24,7 +24,7 @@
           <img [src]="item.image" alt="{{ item.name }}" />
           <hr class="line" />
           <!-- Horizontal line -->
-          <p>{{ item.name }}</p>
+          <p>{{ 'ITEMS.' + item.name | translate }}</p>
         </a>
       </div>
     </div>

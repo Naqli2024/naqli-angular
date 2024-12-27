@@ -6,11 +6,12 @@ import { Equipment, EquipmentType } from '../../../../models/equipment-booking';
 import { EquipmentService } from '../../../../services/equipment.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-equipment-estimate',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, HttpClientModule, FormsModule, TranslateModule],
   templateUrl: './equipment-estimate.component.html',
   styleUrl: './equipment-estimate.component.css',
 })

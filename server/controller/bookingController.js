@@ -539,7 +539,7 @@ const bookingCompleted = async (req, res) => {
     const bookings = await Booking.find({
       user: userId,
       paymentStatus: { $in: ["Completed", "HalfPaid", "Paid"] },
-    });
+    }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: bookings });
   } catch (error) {
     console.error("Error fetching bookings:", error);
@@ -559,7 +559,7 @@ const getBookingsById = async (req, res) => {
   }
 
   try {
-    const booking = await Booking.find({ user: userId });
+    const booking = await Booking.find({ user: userId }).sort({ createdAt: -1 });
     if (!booking.length) {
       return res.status(404).json({ message: "Booking not found" });
     }
@@ -576,7 +576,7 @@ const getBookingsByBookingId = async (req, res) => {
     return res.status(400).json({ message: "Invalid booking ID format" });
   }
   try {
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(bookingId).sort({ createdAt: -1 });
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
@@ -589,7 +589,7 @@ const getBookingsByBookingId = async (req, res) => {
 
 const getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find();
+    const bookings = await Booking.find().sort({ createdAt: -1 });
     res.status(200).json(bookings);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -602,7 +602,7 @@ const addAdditionalCharges = async (req, res) => {
 
   try {
     // Find the booking by ID
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(bookingId).sort({ createdAt: -1 });
     if (!booking) {
       return res
         .status(404)
@@ -935,7 +935,7 @@ const updateBookingForPaymentBrand = async (req, res) => {
 const getBookingsWithInvoice = async (req, res) => {
   try {
     // Query the bookings collection for bookings that have an invoiceId field
-    const bookingsWithInvoice = await Booking.find({ invoiceId: { $exists: true, $ne: null } });
+    const bookingsWithInvoice = await Booking.find({ invoiceId: { $exists: true, $ne: null } }).sort({ createdAt: -1 });
 
     if (bookingsWithInvoice.length === 0) {
       return res.status(404).json({

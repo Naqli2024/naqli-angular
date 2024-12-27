@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { BusService } from '../../../../services/bus.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bus-estimate',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, HttpClientModule, FormsModule, TranslateModule],
   templateUrl: './bus-estimate.component.html',
   styleUrl: './bus-estimate.component.css'
 })

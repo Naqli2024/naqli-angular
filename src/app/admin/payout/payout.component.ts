@@ -31,6 +31,7 @@ export class PayoutComponent implements OnInit {
   isHourlyTab: boolean = false; // To track which tab is selected
   isWeeklyTab: boolean = false; // To track weekly tab selection
   isAllTab: boolean = true; // Set All tab as default
+  isDailyTab: boolean = false;
   bookings: any[] = [];
   filteredBookings: any[] = []; // To store filtered bookings
   users: { [key: string]: any } = {};
@@ -118,6 +119,12 @@ export class PayoutComponent implements OnInit {
       this.isHourlyTab = false;
       this.isAllTab = false;
       this.filterBookingsByTime('weekly');
+    } else if (range === 'daily') {
+      this.isDailyTab = true;
+      this.isHourlyTab = false;
+      this.isWeeklyTab = false;
+      this.isAllTab = false;
+      this.filterBookingsByTime('daily');
     } else if (range === 'all') {
       this.isAllTab = true;
       this.isHourlyTab = false;
@@ -127,19 +134,21 @@ export class PayoutComponent implements OnInit {
   }
 
   filterBookingsByTime(range: string) {
-    const now = new Date().getTime();
-    let timeLimit;
+    const now = new Date();
+    let startOfDay: Date;
 
     if (range === 'hourly') {
-      timeLimit = now - 60 * 60 * 1000; // 1 hour ago
+      startOfDay = new Date(now.getTime() - 60 * 60 * 1000); // 1 hour ago
     } else if (range === 'weekly') {
-      timeLimit = now - 7 * 24 * 60 * 60 * 1000; // 7 days ago
+      startOfDay = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
+    } else if (range === 'daily') {
+      startOfDay = new Date(now.setHours(0, 0, 0, 0)); // Start of today
     }
 
     // Filter bookings based on the createdAt timestamp
     this.filteredBookings = this.bookings.filter((booking) => {
       const createdAt = new Date(booking.createdAt).getTime();
-      return createdAt >= timeLimit;
+      return createdAt >= startOfDay.getTime();
     });
   }
 
