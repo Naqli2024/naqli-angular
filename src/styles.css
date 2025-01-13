@@ -1049,6 +1049,11 @@ input[type="checkbox"] {
 .suggestion-item:hover {
   background-color: #f0f0f0;
 }
+.edit-modal-suggestion {
+  height: auto;
+  max-height: 120px !important;
+  overflow-y: auto !important;
+}
 .centered-container {
   display: flex;
   flex-direction: column;

@@ -58,6 +58,8 @@ export class EditBookingModalComponent {
   public pickupSuggestions: google.maps.places.AutocompletePrediction[] = [];
   public dropPointSuggestions: google.maps.places.AutocompletePrediction[][] =
     [];
+    public cityNameSuggestions: google.maps.places.AutocompletePrediction[] = [];
+  public addressSuggestions: google.maps.places.AutocompletePrediction[] = [];
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -141,6 +143,23 @@ export class EditBookingModalComponent {
     }
   }
 
+  onCityNameInputChange(): void {
+    if (this.bookingData.cityName) {
+      this.autocompleteService.getPlacePredictions(
+        { input: this.bookingData.cityName }, 
+        (predictions, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            this.cityNameSuggestions = predictions || [];
+          } else {
+            this.cityNameSuggestions = [];
+          }
+        }
+      );
+    } else {
+      this.cityNameSuggestions = [];
+    }
+  }
+
   // Autocomplete for Drop Points
   onDropPointInputChange(index: number): void {
     const input = this.bookingData.dropPoints[index];
@@ -166,6 +185,23 @@ export class EditBookingModalComponent {
     }
   }
 
+  onAddressInputChange(): void {
+    if (this.bookingData.address) {
+      this.autocompleteService.getPlacePredictions(
+        { input: this.bookingData.address },
+        (predictions, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            this.addressSuggestions = predictions || [];
+          } else {
+            this.addressSuggestions = [];
+          }
+        }
+      );
+    } else {
+      this.addressSuggestions = [];
+    }
+  }
+
   // Select Pickup Suggestion
   selectPickupSuggestion(
     suggestion: google.maps.places.AutocompletePrediction
@@ -181,6 +217,18 @@ export class EditBookingModalComponent {
   ): void {
     this.bookingData.dropPoints[index] = suggestion.description;
     this.dropPointSuggestions[index] = [];
+  }
+
+   // Select City Name Suggestion
+   selectCityNameSuggestion(suggestion: google.maps.places.AutocompletePrediction): void {
+    this.bookingData.cityName = suggestion.description;
+    this.cityNameSuggestions = [];
+  }
+
+  // Select Address Suggestion
+  selectAddressSuggestion(suggestion: google.maps.places.AutocompletePrediction): void {
+    this.bookingData.address = suggestion.description;
+    this.addressSuggestions = [];
   }
 
   addInputField(): void {

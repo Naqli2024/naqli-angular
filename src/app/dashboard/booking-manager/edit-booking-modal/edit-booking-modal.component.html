@@ -118,6 +118,7 @@
             margin: 0px 5px;
           "
         >
+          <!-- Conditional input field for Pickup or City Name -->
           <div
             class="input-field"
             style="
@@ -131,15 +132,42 @@
             "
           >
             <input
+              *ngIf="
+                bookingData.unitType === 'equipment' ||
+                  bookingData.unitType === 'special';
+                else pickupInput
+              "
               type="text"
-              placeholder="Enter pickup location"
-              [(ngModel)]="bookingData.pickup"
-              (input)="onPickupInputChange()"
+              placeholder="Enter city name"
+              [(ngModel)]="bookingData.cityName"
+              (input)="onCityNameInputChange()"
               required
             />
-            <!-- Pickup Suggestions -->
+            <!-- Suggestions Dropdown for City Name -->
             <div
-              class="suggestions-dropdown"
+              class="suggestions-dropdown edit-modal-suggestion"
+              *ngIf="cityNameSuggestions.length > 0"
+            >
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of cityNameSuggestions"
+                (click)="selectCityNameSuggestion(suggestion)"
+              >
+                {{ suggestion.description }}
+              </div>
+            </div>
+            <ng-template #pickupInput>
+              <input
+                type="text"
+                placeholder="Enter pickup location"
+                [(ngModel)]="bookingData.pickup"
+                (input)="onPickupInputChange()"
+                required
+              />
+            </ng-template>
+            <!-- Suggestions Dropdown -->
+            <div
+              class="suggestions-dropdown edit-modal-suggestion"
               *ngIf="pickupSuggestions.length > 0"
             >
               <div
@@ -151,56 +179,65 @@
               </div>
             </div>
           </div>
+
+          <!-- Single Address Input Field -->
           <div
-            *ngFor="
-              let dropPoint of bookingData.dropPoints;
-              let i = index;
-              trackBy: trackByIndex
-            "
             class="input-field"
             style="
               border: 1px solid #ddd !important;
               padding: 5px 20px;
-              display: flex;
-              align-items: center;
               border-radius: 10px;
+              position: relative;
               width: 100%;
               max-width: 330px;
+              margin: 10px 0px;
             "
           >
             <input
+              *ngIf="
+                bookingData.unitType === 'equipment' ||
+                  bookingData.unitType === 'special';
+                else dropPointInput
+              "
               type="text"
-              [placeholder]="'Drop point location ' + (i + 1)"
-              [(ngModel)]="bookingData.dropPoints[i]"
-              (input)="onDropPointInputChange(i)"
+              placeholder="Enter address"
+              [(ngModel)]="bookingData.address"
+              (input)="onAddressInputChange()"
               required
             />
+            <!-- Suggestions Dropdown for Address -->
             <div
-              class="circle"
-              *ngIf="i === 0 && bookingData.dropPoints.length === 1"
-              (click)="addInputField()"
-              style="margin-bottom: 8px"
+              class="suggestions-dropdown edit-modal-suggestion"
+              *ngIf="addressSuggestions.length > 0"
             >
-              <i class="fas fa-plus"></i>
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of addressSuggestions"
+                (click)="selectAddressSuggestion(suggestion)"
+              >
+                {{ suggestion.description }}
+              </div>
             </div>
+            <ng-template #dropPointInput>
+              <input
+                type="text"
+                placeholder="Enter drop point location"
+                [(ngModel)]="bookingData.dropPoints[0]"
+                (input)="onDropPointInputChange(0)"
+                required
+              />
+            </ng-template>
+            <!-- Suggestions Dropdown -->
             <div
-              class="circle"
-              *ngIf="i !== 0"
-              (click)="removeInputField(i)"
-              style="margin-bottom: 8px"
-            >
-              <i class="fas fa-times"></i>
-            </div>
-            <div
-              class="suggestions-dropdown"
+              class="suggestions-dropdown edit-modal-suggestion"
               *ngIf="
-                dropPointSuggestions[i] && dropPointSuggestions[i].length > 0
+                dropPointSuggestions[0] && dropPointSuggestions[0].length > 0
               "
             >
               <div
                 class="suggestion-item"
-                *ngFor="let suggestion of dropPointSuggestions[i]"
-                (click)="selectDropPointSuggestion(suggestion, i)"
+                *ngFor="let suggestion of dropPointSuggestions[0]"
+                (click)="selectDropPointSuggestion(suggestion, 0)"
               >
                 {{ suggestion.description }}
               </div>

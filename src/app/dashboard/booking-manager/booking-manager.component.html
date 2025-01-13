@@ -5,7 +5,7 @@
   <ng-container *ngFor="let booking of filteredBookings; let i = index">
     <div class="col-md-5 booking-history" *ngIf="filteredBookings.length > 0">
       <div class="table-container booking-manager-table">
-        <table class="table" style="margin: 0px 0px !important">
+        <table class="table" style="margin-bottom: 0 !important; border-bottom: 1px solid #ddd;">
           <thead>
             <tr class="trigger-booking-table">
               <th>{{ "BookingWithNumber" | translate : { number: i + 1 } }}</th>
@@ -32,8 +32,21 @@
             <tr class="trigger-booking-table">
               <td class="trigger-booking-td">
                 <div class="trigger-booking-td-1">
-                  <p class="p1">{{ booking.pickup }}</p>
-                  <p class="p2">{{ booking.dropPoints.join(", ") }}</p>
+                  <!-- Conditionally render based on booking.unitType -->
+                  <ng-container
+                    *ngIf="
+                      booking.unitType === 'equipment' ||
+                        booking.unitType === 'special';
+                      else defaultContent
+                    "
+                  >
+                    <p class="p1">{{ booking.cityName }}</p>
+                    <p class="p2">{{ booking.address }}</p>
+                  </ng-container>
+                  <ng-template #defaultContent>
+                    <p class="p1">{{ booking.pickup }}</p>
+                    <p class="p2">{{ booking.dropPoints.join(", ") }}</p>
+                  </ng-template>
                 </div>
               </td>
               <td>
@@ -101,7 +114,7 @@
                 width="82.998"
                 height="89.999"
                 viewBox="0 0 82.998 89.999"
-                style="margin: 50px 0px !important"
+                style="margin: 48px 0px !important;"
               >
                 <path
                   id="Union_1"

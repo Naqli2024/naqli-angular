@@ -165,7 +165,7 @@ const createBooking = async (req, res) => {
 
 const editBooking = async (req, res) => {
   const { bookingId } = req.params;
-  const { date, pickup, dropPoints, additionalLabour } = req.body;
+  const { date, pickup, dropPoints, additionalLabour, cityName, address } = req.body;
 
   try {
     // Find the booking by bookingId
@@ -195,7 +195,12 @@ const editBooking = async (req, res) => {
     if (additionalLabour) {
       booking.additionalLabour = additionalLabour;
     }
-
+    if(cityName) {
+      booking.cityName = cityName
+    }
+    if(address) {
+      booking.address = address
+    }
     // Save the updated booking
     const updatedBooking = await booking.save();
 

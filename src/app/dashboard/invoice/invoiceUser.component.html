@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12 booking-history">
     <div class="head-element">
-      <h2>{{"dashboardItems.Invoice"|translate}}</h2>
+      <h2>{{ "dashboardItems.Invoice" | translate }}</h2>
     </div>
     <div *ngIf="isInvoiceTableVisible">
       <div class="notification-bar">
@@ -25,12 +25,12 @@
             style="position: sticky; top: 0; z-index: 1; background-color: #fff"
           >
             <tr>
-              <th>Invoice id</th>
-              <th>{{"terms.Date"|translate}}</th>
+              <th>{{ "Invoice Id" | translate }}</th>
+              <th>{{ "terms.Date" | translate }}</th>
               <th>Booking Id</th>
-              <th>{{"dashboardItems.Partner"|translate}}</th>
-              <th>{{"terms.Unit Type"|translate}}</th>
-              <th>Amount</th>
+              <th>{{ "dashboardItems.Partner" | translate }}</th>
+              <th>{{ "terms.Unit Type" | translate }}</th>
+              <th>{{ "Total amount" | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -59,22 +59,23 @@
     (click)="goBackToList()"
     style="margin: 10px 10px !important"
   >
-    <fa-icon [icon]="faArrowLeft"></fa-icon>&nbsp; {{ "Back" | translate }}
+    <fa-icon [icon]="faArrowLeft"></fa-icon>&nbsp; {{ "back" | translate }}
   </button>
   <div class="action-container">
     <div class="action-btn">
       <fa-icon [icon]="faEdit"></fa-icon>
-      <p>Edit</p>
+      <p>{{ "Edit" | translate }}</p>
     </div>
     <div class="divider"></div>
     <div class="action-btn" (click)="printInvoice()">
       <fa-icon [icon]="faPrint"></fa-icon>
-      <p>Print</p>
+      <p>{{ "print" | translate }}</p>
     </div>
+
     <div class="divider"></div>
     <div class="action-btn" (click)="downloadInvoice()">
       <fa-icon [icon]="faDownload"></fa-icon>
-      <p>Download</p>
+      <p>{{ "download" | translate }}</p>
     </div>
   </div>
 
@@ -92,7 +93,9 @@
               <p>3455 al-dammam</p>
               <p>34264-7932 3</p>
             </div>
-            <p><b>Bill to:</b></p>
+            <p>
+              <b>{{ "Bill to" | translate }}</b>
+            </p>
             <p>
               {{ booking.userDetails?.firstName }}
               {{ booking.userDetails?.lastName }}
@@ -100,26 +103,31 @@
             <p>{{ booking.userDetails?.address1 }}</p>
           </div>
           <div class="mt-4 billto-right">
-            <h5>Invoice</h5>
+            <h5>{{ "Invoice" | translate }}</h5>
             <p>
-              <b>Invoice date:</b> <span>{{ booking.invoiceDate }}</span>
+              <b>{{ "Invoice Date" | translate }}</b>
+              <span>{{ booking.invoiceDate }}</span>
             </p>
-            <p><b>Invoice id:</b> {{ booking.invoiceId }}</p>
+            <p>
+              <b>{{ "Invoice Id" | translate }}</b> {{ booking.invoiceId }}
+            </p>
             <div class="invoice-partner-detail">
               <p>
-                <b>Partner:</b>
+                <b>{{ "dashboardItems.Partner" | translate }}:</b>
                 <span>{{
                   booking.partnerDetails?.partnerName || "Loading..."
                 }}</span>
               </p>
               <p>
-                <b>Unit type:</b> <span>{{ booking.unitType }}</span>
+                <b>{{ "terms.Unit Type" | translate }}</b>
+                <span>{{ booking.unitType }}</span>
               </p>
               <p>
                 <b>Booking id:</b> <span>{{ booking._id }}</span>
               </p>
               <p>
-                <b>Payment type:</b> <span>{{ booking.paymentType }}</span>
+                <b>{{ "terms.Payment" | translate }}:</b>
+                <span>{{ booking.paymentType }}</span>
               </p>
             </div>
           </div>
@@ -129,11 +137,11 @@
             <Table class="table-content">
               <thead>
                 <tr>
-                  <th>S.No</th>
-                  <th>Description</th>
-                  <th>Qty</th>
-                  <th>Unit price</th>
-                  <th>Amount</th>
+                  <th>{{ "Sl.NO" | translate }}</th>
+                  <th>{{ "Description" | translate }}</th>
+                  <th>{{ "quantity" | translate }}</th>
+                  <th>{{ "Unit price" | translate }}</th>
+                  <th>{{ "Total amount" | translate }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -154,17 +162,19 @@
 
             <div class="col-md-4 col-sm-12">
               <p class="d-flex justify-content-between">
-                <b>Subtotal:</b> <span>{{ booking.paymentAmount }}</span>
+                <b>{{ "Subtotal" | translate }}</b>
+                <span>{{ booking.paymentAmount }}</span>
               </p>
               <p class="d-flex justify-content-between">
-                <b>Labour charge:</b>
+                <b>{{ "Labour charge" | translate }}</b>
                 <span>{{ booking.labourCharge || 0 }}</span>
               </p>
               <p class="d-flex justify-content-between">
                 <b>VAT:</b> <span>0%</span>
               </p>
               <p class="d-flex justify-content-between">
-                <b>Total amount:</b> <span>{{ booking.paymentAmount }}</span>
+                <b>{{ "Total amount" | translate }}</b>
+                <span>{{ booking.paymentAmount }}</span>
               </p>
             </div>
           </div>
