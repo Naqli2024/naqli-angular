@@ -12,11 +12,12 @@ import jsPDF from 'jspdf';
 import html2pdf from 'html2pdf.js';
 import html2canvas from 'html2canvas';
 import { FormsModule } from '@angular/forms';
+import { QRCodeModule } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-invoice',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FontAwesomeModule, FormsModule, TranslateModule, QRCodeModule],
   templateUrl: './invoice.component.html',
   styleUrl: './invoice.component.css',
 })
@@ -31,6 +32,7 @@ export class InvoiceComponent {
   selectedInvoiceId: string | null = null;
   searchTerm: string = '';
   filteredBookings: any[] = [];
+  qrCodeData: string = '';
 
     constructor(
       private bookingService: BookingService,
@@ -48,6 +50,29 @@ export class InvoiceComponent {
   createInvoice(bookingId: string): void {
     this.selectedInvoiceId = bookingId;
     this.isInvoiceTableVisible = false;
+
+    // Find the selected booking from the detailedBookings
+    const booking = this.detailedBookings.find(
+      (b) => b.invoiceId === bookingId
+    );
+    if (booking) {
+      // Generate a URL with query parameters for the booking details
+      const baseUrl = 'https://naqlee.com/home/user/invoice-data';
+      const queryParams = new URLSearchParams({
+        InvoiceId: booking.invoiceId,
+        InvoiceDate: booking.invoiceDate,
+        CustomerName: `${booking.userDetails?.firstName} ${booking.userDetails?.lastName}`,
+        PaymentAmount: booking.paymentAmount.toString(),
+        Address: booking.userDetails?.address1 || '',
+        bookingId: booking._id,
+        unitType: booking.unitType,
+        partnerName: booking.partnerDetails?.partnerName,
+        paymentType: booking.paymentType
+      });
+
+      // Encode the URL into the QR code
+      this.qrCodeData = `${baseUrl}?${queryParams.toString()}`;
+    }
   }
 
   goBackToList() {
@@ -60,8 +85,8 @@ export class InvoiceComponent {
       (response) => {
         this.spinnerService.hide();
         if (response.success) {
-          this.bookingsWithInvoice = response.bookings; // Assign bookings to the array
-          this.enrichBookingsWithDetails(); // Start fetching partner and user details for each booking
+          this.bookingsWithInvoice = response.bookings; 
+          this.enrichBookingsWithDetails(); 
           this.filteredBookings = this.bookingsWithInvoice;
         } else {
           this.toastr.error(response.message);
@@ -75,15 +100,15 @@ export class InvoiceComponent {
   }
 
   filterBookings(): void {
-    const searchTermLower = this.searchTerm.toLowerCase();  // Convert search term to lowercase for case-insensitive comparison
+    const searchTermLower = this.searchTerm.toLowerCase();  
 
     this.filteredBookings = this.bookingsWithInvoice.filter((booking) => {
       return (
-        booking.invoiceId.toLowerCase().includes(searchTermLower) || // Filter by Invoice id
-        (booking.date && booking.date.toLowerCase().includes(searchTermLower)) || // Filter by Date (if the format is string)
-        (booking.userDetails?.firstName && booking.userDetails?.firstName.toLowerCase().includes(searchTermLower)) || // Filter by User first name
-        (booking.userDetails?.lastName && booking.userDetails?.lastName.toLowerCase().includes(searchTermLower)) || // Filter by User last name
-        (booking.partnerDetails?.partnerName && booking.partnerDetails?.partnerName.toLowerCase().includes(searchTermLower)) // Filter by Partner name
+        booking.invoiceId.toLowerCase().includes(searchTermLower) ||
+        (booking.date && booking.date.toLowerCase().includes(searchTermLower)) || 
+        (booking.userDetails?.firstName && booking.userDetails?.firstName.toLowerCase().includes(searchTermLower)) || 
+        (booking.userDetails?.lastName && booking.userDetails?.lastName.toLowerCase().includes(searchTermLower)) || 
+        (booking.partnerDetails?.partnerName && booking.partnerDetails?.partnerName.toLowerCase().includes(searchTermLower)) 
       );
     });
   }

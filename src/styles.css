@@ -195,7 +195,7 @@ body {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   min-width: 200px;
-  max-width: 90vw; 
+  max-width: 90vw;
   margin-top: 1rem;
   max-height: 50vh;
   overflow-y: auto;
@@ -260,23 +260,23 @@ body {
   }
   .notifications-dropdown {
     min-width: 250px;
-    max-width: 400px; 
+    max-width: 400px;
   }
 }
 
 @media (max-width: 1024px) {
   .notifications-dropdown {
     width: 350px;
-    max-height: 40vh; 
-    margin-top: 0.8rem; 
+    max-height: 40vh;
+    margin-top: 0.8rem;
   }
 }
 
 @media (max-width: 576px) {
   .notifications-dropdown {
-    width: 200px; 
-    max-height: 25vh; 
-    margin-top: 0.3rem; 
+    width: 200px;
+    max-height: 25vh;
+    margin-top: 0.3rem;
   }
 }
 
@@ -292,29 +292,29 @@ body {
   padding: 0 5%;
 }
 .login-form {
-  max-width: 90%; 
+  max-width: 90%;
   width: 100%;
-  padding: 10vh 0; 
+  padding: 10vh 0;
   margin: 0 auto;
   position: relative;
 }
 .register {
   width: 100%;
-  padding: 0 2%; 
+  padding: 0 2%;
   margin: 0 auto;
-  max-width: 90%; 
+  max-width: 90%;
   border-bottom: 1px solid #000;
   position: relative;
 }
 .register h2 {
   text-align: center;
-  font-size: 1.8rem; 
+  font-size: 1.8rem;
   font-weight: 700;
   margin: 2rem 0;
 }
 .register-bottom {
   display: flex;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   padding: 0 2%;
@@ -334,14 +334,14 @@ body {
   padding-left: 1.5rem;
 }
 .privacy-policy {
-  padding: 1rem !important;    
-  background-color: #f9f9f9; 
-  border: 1px solid #ddd;  
-  border-radius: 5px;        
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
+  padding: 1rem !important;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   height: 100%;
   max-height: 50vh !important;
-  overflow-y: auto; 
+  overflow-y: auto;
 }
 .privacy-policy h4,
 .privacy-policy h6 {
@@ -350,7 +350,7 @@ body {
 }
 .privacy-policy p {
   margin-bottom: 1rem;
-  line-height: 1.6; 
+  line-height: 1.6;
 }
 .login-form h2 {
   text-align: center;
@@ -570,7 +570,7 @@ body {
   right: 0;
   bottom: 50%;
   z-index: -1;
-  background-color: #6a66d1;;
+  background-color: #6a66d1;
 }
 
 mdb-carousel {
@@ -675,7 +675,7 @@ mdb-carousel-item img {
   .home-body {
     flex-wrap: nowrap;
     justify-content: space-between;
-    width: 90%; 
+    width: 90%;
     top: 20% !important;
   }
 
@@ -1204,7 +1204,7 @@ input[type="checkbox"] {
 
 @media (max-width: 1295px) {
   .sidebar {
-    flex: 0 0 30%; 
+    flex: 0 0 30%;
   }
   .layout-container {
     margin: 50px !important;
@@ -1217,7 +1217,6 @@ input[type="checkbox"] {
     margin: 15px !important;
   }
 }
-
 
 @media (max-width: 992px) {
   .layout-container {
@@ -1245,15 +1244,15 @@ input[type="checkbox"] {
 
 @media (max-width: 768px) {
   .sidebar ul {
-    min-height: 150px; 
-    max-height: 300px; 
+    min-height: 150px;
+    max-height: 300px;
   }
 }
 
 @media (max-width: 576px) {
   .sidebar ul {
-    min-height: 120px; 
-    max-height: 250px; 
+    min-height: 120px;
+    max-height: 250px;
   }
 }
 
@@ -1299,7 +1298,8 @@ input[type="checkbox"] {
   display: none;
 }
 
-.form-container label, input {
+.form-container label,
+input {
   font-size: 14px !important;
 }
 
@@ -1330,10 +1330,10 @@ input[type="checkbox"] {
 
 .edit-icon {
   position: absolute;
-  bottom: 0px; 
-  right: 5px; 
-  background-color: #fff; 
-  border-radius: 50%; 
+  bottom: 0px;
+  right: 5px;
+  background-color: #fff;
+  border-radius: 50%;
   padding: 5px;
   cursor: pointer;
   font-size: 18px;
@@ -1366,10 +1366,9 @@ input[type="checkbox"] {
   flex-direction: column;
   justify-content: center;
   width: 50%;
-  padding: 20px; 
+  padding: 20px;
   margin: 0px auto;
 }
-
 
 @media (max-width: 767.98px) {
   .profile-container {
@@ -1792,6 +1791,7 @@ input[type="checkbox"] {
     font-size: 18px;
     padding: 5px 0px;
     text-align: start !important;
+    margin-top: 10px;
   }
   .table th,
   td {
@@ -1806,12 +1806,12 @@ input[type="checkbox"] {
 /*****************payment Page********************/
 .payment-status-head {
   top: 0;
-  width: 100%; 
+  width: 100%;
   max-height: 250px !important;
-  overflow-y: auto; 
+  overflow-y: auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
-  background-color: #fff; 
-  z-index: 1000; 
+  background-color: #fff;
+  z-index: 1000;
 }
 
 .payment-status {
@@ -2567,7 +2567,6 @@ input[type="checkbox"] {
   margin: 15px 0px !important;
 }
 
-
 @media (max-width: 768px) {
   .form-check-inline {
     display: block !important;
@@ -2802,9 +2801,12 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .tab-buttons {
+  margin-bottom: 10px;
+}
+
+.payout-tab {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
 }
 
 .tab-button {
@@ -2867,8 +2869,14 @@ input[type="number"]::-webkit-inner-spin-button {
   text-align: right;
 }
 .notification-table {
-  max-height: 500px !important;
+  /* max-height: 500px !important; */
   overflow-y: auto !important;
+}
+.notification-table table thead {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1 !important;
+  background-color: #fff !important;
 }
 #customerChart {
   height: 180px !important;
@@ -3003,7 +3011,7 @@ h2 {
 }
 .transaction-number-h2 {
   text-align: left !important;
-  background-color: #4B3D52 !important;
+  background-color: #4b3d52 !important;
 }
 .transaction-input {
   width: 100%;
@@ -3348,7 +3356,7 @@ table .make-disable.disabled td:not(:first-child) {
   .request-support-body-p p {
     font-size: 12px !important; /* Ensure the font doesn't overflow */
   }
-  
+
   .request-support-body h2 {
     font-size: 18px; /* Reduce font size for headings */
   }
@@ -4242,11 +4250,9 @@ table .make-disable.disabled td:not(:first-child) {
   margin-left: auto; /* Pushes icon to the right side */
 }
 @media (max-width: 768px) {
-
 }
 
 @media (max-width: 576px) {
- 
 }
 
 /* Custom scrollbar styling for WebKit browsers */
@@ -4547,13 +4553,13 @@ h1 {
 /******************Invoice*****************/
 .invoice-id {
   cursor: pointer;
-  color: #3969CA !important;
+  color: #3969ca !important;
   text-decoration: underline;
 }
 .action-container {
   display: flex !important;
   align-items: center;
-  border: 1px solid #ddd;  /* Outer border for the entire row */
+  border: 1px solid #ddd; /* Outer border for the entire row */
   padding: 10px;
   margin: 10px;
 }
@@ -4571,14 +4577,14 @@ h1 {
 
 /* Styling for the icons */
 .action-icon {
-  margin: 0px 8px !important;  /* Space between icon and text */
+  margin: 0px 8px !important; /* Space between icon and text */
 }
 
 /* Divider between buttons */
 .divider {
   width: 1px;
   background-color: #ddd; /* Divider color */
-  height: 30px;  /* Adjust height to fit the buttons */
+  height: 30px; /* Adjust height to fit the buttons */
   margin: 0 10px;
 }
 
@@ -4609,12 +4615,13 @@ h1 {
   display: flex;
   font-size: 14px;
   align-items: left;
-  justify-content: space-between !important; 
+  justify-content: space-between !important;
 }
 .bill-row {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   padding: 10px 0px;
 }
 .invoice-table-border {
@@ -4623,16 +4630,16 @@ h1 {
   border-radius: 5px;
 }
 .invoice-table {
-  overflow-y:  auto !important;
+  overflow-y: auto !important;
   border-radius: 5px;
   overflow: hidden;
   font-size: 14px;
 }
 .table-content thead {
-  background-color: #4B3D52;
+  background-color: #4b3d52;
   color: white;
 }
-.table-content th, 
+.table-content th,
 .table-content td {
   padding: 20px;
   border: 1px solid #ddd;
@@ -4640,22 +4647,22 @@ h1 {
 .table-bottom {
   display: flex;
   flex-direction: row;
-  justify-content:flex-end;  
-  align-items: flex-end;  
-  margin-top: auto; 
-  padding: 10px 0;  
-  width: 100%; 
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-top: auto;
+  padding: 10px 0;
+  width: 100%;
 }
 .table-bottom .col-4 p {
-  margin-bottom: 10px;  
+  margin-bottom: 10px;
 }
 .table-bottom .col-4 b {
-  width: 50%; 
-  text-align: left; 
+  width: 50%;
+  text-align: left;
 }
 .table-bottom .col-4 span {
-  width: 50%; 
-  text-align: right; 
+  width: 50%;
+  text-align: right;
 }
 .billto-right span {
   margin: 0px 10px;
@@ -4663,7 +4670,7 @@ h1 {
 .billto-left img {
   margin-bottom: 20px;
   width: 100%;
-  min-width: 100px !important;
+  min-width: 50px !important;
   height: auto;
   object-fit: contain;
 }
@@ -4701,17 +4708,17 @@ h1 {
   }
   .table-bottom .col-4 b,
   .table-bottom .col-4 span {
-    width: 100% !important;  
-    text-align: left; 
+    width: 100% !important;
+    text-align: left;
   }
   .table-bottom .col-md-4 {
     margin-right: -10px !important;
   }
   .table-bottom .col-4 p {
-    margin-bottom: 8px;  
+    margin-bottom: 8px;
   }
   .billto-left img {
-    max-width: 120px; 
+    max-width: 120px;
     margin: 15px 15px;
   }
   .billto-right h5 {
@@ -4748,16 +4755,254 @@ h1 {
     border-radius: 5px;
   }
   .billto-left p {
-    text-align: left; 
+    text-align: left;
     margin: 0px 15px;
   }
   .billto-right p {
-    text-align: left; 
+    text-align: left;
     margin: 0px 15px;
   }
   .table-bottom .col-4 b,
   .table-bottom .col-4 span {
-    width: 100% !important;  
-    text-align: left; 
+    width: 100% !important;
+    text-align: left;
+  }
+}
+
+/***************Invoice Details Scanning***************/
+.invoice-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 80vh;
+  background: linear-gradient(to bottom, #6269fe 50%, #ffffff 50%);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.invoice-container {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+  padding: 20px;
+  margin-top: 5%;
+}
+
+.invoice-flex-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.invoice-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.invoice-head img {
+  max-width: 150px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.invoice-from {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Invoice Content */
+.invoice-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.invoice-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  margin: 5px 0;
+  color: #333;
+}
+
+.invoice-row strong {
+  color: #000;
+}
+
+.invoice-row span {
+  margin-left: 10px;
+}
+
+/* Invoice Table */
+.invoice-table-border {
+  margin-top: 20px;
+}
+
+.table-content {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-content th,
+.table-content td {
+  text-align: left;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.table-content th {
+  font-weight: bold;
+}
+
+.table-content td {
+  font-size: 14px;
+}
+
+/* Summary Table */
+.table-bottom p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.table-bottom b {
+  color: #000;
+}
+
+.table-bottom span {
+  color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .invoice-flex-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .invoice-container {
+    max-width: 95%;
+    padding: 15px;
+  }
+  .invoice-container p {
+    text-align: left !important;
+  }
+}
+/***************Invoice modal**************/
+.qr-code-container {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  height: 200px;
+}
+
+.qr-code-blur img {
+  filter: blur(2px); /* Apply the blur effect */
+  width: 100%;
+  height: 100%;
+}
+
+.qr-code-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent overlay */
+  z-index: 1; /* Ensure it is above the QR code */
+}
+
+.tick-icon {
+  color: green;
+  font-size: 36px !important;
+}
+
+.verified-text {
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+.horizontal-line {
+  width: 100%;
+  height: 1px;
+  background-color: #ddd;
+  margin: 10px 0;
+}
+.invoice-info {
+  display: flex;
+  align-items: stretch;
+  text-align: center;
+  flex-wrap: wrap;
+}
+.invoice-info .col-md-3 {
+  flex: 1; 
+  border-right: 1px solid #ddd; 
+  padding: 15px; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+}
+.invoice-info .col-md-3:last-child {
+  border-right: none;
+}
+.invoice-info .date {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.user-info {
+  margin: 60px 0px !important; 
+  display: flex;
+  flex-wrap: wrap;
+}
+.user-info .col-md-3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #ddd;
+  padding: 15px;
+}
+.user-info .col-md-3:last-child {
+  border-right: none;
+}
+@media (max-width: 768px) {
+  .invoice-info {
+    flex-direction: column; 
+    justify-content: flex-start !important;
+  }
+  .invoice-info .col-md-3 {
+    border-right: none; /* Remove vertical borders */
+    padding: 10px !important;
+    align-items:start !important;
+    margin-left: 15px;
+  }
+  .invoice-info .col-md-3:last-child {
+    border-bottom: none; 
+  }
+  .user-info {
+    flex-direction: column; 
+    margin: 0px 0px !important; 
+    align-items: start !important;
+  }
+  .user-info .col-md-3 {
+    border-right: none; 
+    align-items: start !important;
+  }
+  .user-info .col-md-3:last-child {
+    border-bottom: none;
   }
 }

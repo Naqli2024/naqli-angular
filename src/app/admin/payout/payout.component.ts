@@ -212,7 +212,14 @@ export class PayoutComponent implements OnInit {
   }
 
   generateExcel(selectedBookings: any[]) {
-    const ws = XLSX.utils.json_to_sheet(selectedBookings);
+    const filteredData = selectedBookings.map(booking => ({
+      _id: booking._id,
+      name: booking.name,
+      pickup: booking.pickup,
+      dropPoints: Array.isArray(booking.dropPoints) ? booking.dropPoints.join(", ") : booking.dropPoints,
+      finalPayout: booking.finalPayout
+    }));
+    const ws = XLSX.utils.json_to_sheet(filteredData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'selected-bookings.xlsx');

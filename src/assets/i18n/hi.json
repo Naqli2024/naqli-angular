@@ -635,5 +635,9 @@
   "download": "डाउनलोड",
   "Sl.NO": "क्रम संख्या",
   "quantity": "मात्रा",
-  "Unit price": "इकाई मूल्य"
+  "Unit price": "इकाई मूल्य",
+  "Customer Name": "ग्राहक का नाम",
+  "Payment Amount": "भुगतान राशि",
+  "taxInvoice": "कर चालान",
+  "dateAndTime": "दिनांक और समय"
 }

@@ -633,5 +633,9 @@
   "download": "تحميل",
   "Sl.NO": "رقم التسلسل",
   "quantity": "الكمية",
-  "Unit price": "سعر الوحدة"
+  "Unit price": "سعر الوحدة",
+  "Customer Name": "اسم العميل",
+  "Payment Amount": "مبلغ الدفع",
+  "taxInvoice": "فاتورة ضريبية",
+  "dateAndTime": "التاريخ والوقت"
 }

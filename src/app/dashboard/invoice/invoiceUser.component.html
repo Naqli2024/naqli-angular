@@ -62,11 +62,10 @@
     <fa-icon [icon]="faArrowLeft"></fa-icon>&nbsp; {{ "back" | translate }}
   </button>
   <div class="action-container">
-    <div class="action-btn">
+    <!-- <div class="action-btn">
       <fa-icon [icon]="faEdit"></fa-icon>
       <p>{{ "Edit" | translate }}</p>
-    </div>
-    <div class="divider"></div>
+    </div> -->
     <div class="action-btn" (click)="printInvoice()">
       <fa-icon [icon]="faPrint"></fa-icon>
       <p>{{ "print" | translate }}</p>
@@ -86,50 +85,60 @@
     >
       <div *ngIf="booking.invoiceId === selectedInvoiceId">
         <div class="bill-row">
-          <div class="mt-4 billto-left">
+          <div class="qr-code-section mt-4 col-md-3">
+            <qrcode
+              [qrdata]="qrCodeData"
+              [width]="200"
+              [errorCorrectionLevel]="'M'"
+            ></qrcode>
+          </div>
+          <div class="mt-4 billto-left col-md-3">
             <img src="assets/images/naqlee-logo.svg" alt="naqlee-logo" />
             <div class="invoice-from">
               <p>PIANNAT AL-HASIB</p>
               <p>3455 al-dammam</p>
               <p>34264-7932 3</p>
             </div>
-            <p>
-              <b>{{ "Bill to" | translate }}</b>
-            </p>
-            <p>
-              {{ booking.userDetails?.firstName }}
-              {{ booking.userDetails?.lastName }}
-            </p>
-            <p>{{ booking.userDetails?.address1 }}</p>
           </div>
-          <div class="mt-4 billto-right">
-            <h5>{{ "Invoice" | translate }}</h5>
-            <p>
-              <b>{{ "Invoice Date" | translate }}</b>
-              <span>{{ booking.invoiceDate }}</span>
-            </p>
+          <!-- Add QR Code Section -->
+
+          <div class="mt-4 billto-right col-md-3">
+            <h5>{{"taxInvoice"|translate}}</h5>
             <p>
               <b>{{ "Invoice Id" | translate }}</b> {{ booking.invoiceId }}
             </p>
-            <div class="invoice-partner-detail">
-              <p>
-                <b>{{ "dashboardItems.Partner" | translate }}:</b>
-                <span>{{
-                  booking.partnerDetails?.partnerName || "Loading..."
-                }}</span>
-              </p>
-              <p>
-                <b>{{ "terms.Unit Type" | translate }}</b>
-                <span>{{ booking.unitType }}</span>
-              </p>
-              <p>
-                <b>Booking id:</b> <span>{{ booking._id }}</span>
-              </p>
-              <p>
-                <b>{{ "terms.Payment" | translate }}:</b>
-                <span>{{ booking.paymentType }}</span>
-              </p>
-            </div>
+          </div>
+        </div>
+        <div class="horizontal-line"></div>
+        <div class="row invoice-info">
+          <div class="col-md-3">
+            <b>{{"terms.Date"|translate}}</b>
+            <span>{{ booking.invoiceDate }}</span>
+          </div>
+          <div class="col-md-3">
+            <b>Booking id</b> 
+            <span>{{ booking._id }}</span>
+          </div>
+          <div class="col-md-3">
+            <b>{{ "terms.Unit Type" | translate }}</b>
+            <span>{{ booking.unitType }}</span>
+          </div>
+          <div class="col-md-3">
+            <b>{{ "terms.Payment" | translate }}</b>
+            <span>{{ booking.paymentType }}</span>
+          </div>
+        </div>
+        <div class="row user-info">
+          <div class="col-md-3">
+            <b>{{"Name"|translate}}</b>
+            <span>
+              {{ booking.userDetails?.firstName }}
+              {{ booking.userDetails?.lastName }}
+            </span>
+          </div>
+          <div class="col-md-3">
+            <b>{{"Address"|translate}}</b>
+            <span>{{ booking.userDetails?.address1 }}</span>
           </div>
         </div>
         <div class="invoice-table-border">
@@ -164,10 +173,6 @@
               <p class="d-flex justify-content-between">
                 <b>{{ "Subtotal" | translate }}</b>
                 <span>{{ booking.paymentAmount }}</span>
-              </p>
-              <p class="d-flex justify-content-between">
-                <b>{{ "Labour charge" | translate }}</b>
-                <span>{{ booking.labourCharge || 0 }}</span>
               </p>
               <p class="d-flex justify-content-between">
                 <b>VAT:</b> <span>0%</span>

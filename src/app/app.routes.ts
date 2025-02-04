@@ -53,6 +53,8 @@ import { EditProfileComponent } from './dashboard/profile/edit-profile/edit-prof
 import { EditProfilePartnerComponent } from './partner/dashboard/edit-profile-partner/edit-profile-partner.component';
 import { InvoiceComponent } from './admin/invoice/invoice.component';
 import { InvoiceUserComponent } from './dashboard/invoice/invoiceUser.component';
+import { InvoiceModalComponent } from './dashboard/invoice/invoice-modal/invoice-modal.component';
+import { LoaderComponent } from './mobileLoader/loader.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -90,6 +92,7 @@ export const routes: Routes = [
     path: 'home/user/payment-result',
     component: PaymentSuccessfulComponent,
   },
+  { path: 'home/user/invoice-data', component: InvoiceModalComponent },
   { path: 'home/user/vehicle-estimate', component: VechileEstimateComponent },
   { path: 'home/user/bus-estimate', component: BusEstimateComponent },
   {
@@ -110,6 +113,7 @@ export const routes: Routes = [
       { path: 'help', component: HelpComponent },
       { path: 'edit-profile', component: EditProfileComponent },
       { path: 'invoice', component: InvoiceUserComponent },
+
       {
         path: 'admin/overview',
         component: OverviewComponent,
@@ -126,8 +130,7 @@ export const routes: Routes = [
       },
       { path: 'admin/naqlee-user', component: NaqleeUserComponent },
       { path: 'admin/commission', component: CommissionComponent },
-      { path: 'admin/invoice', component: InvoiceComponent },
-      {
+      { path: 'admin/invoice', component: InvoiceComponent },      {
         path: 'super-user/dashboard',
         component: SuperUserDashboardComponent,
         canActivate: [AuthGuard],
@@ -174,4 +177,5 @@ export const routes: Routes = [
       },
     ],
   },
+  { path: 'payment/results', component: LoaderComponent },
 ];

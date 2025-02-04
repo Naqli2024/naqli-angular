@@ -638,5 +638,9 @@
   "donwload": "Download",
   "Sl.NO": "Sl.No",
   "quantity": "Qty",
-  "Unit price": "Unit price"
+  "Unit price": "Unit price",
+  "Customer Name": "Customer Name",
+  "Payment Amount": "Payment Amount",
+  "dateAndTime": "Date & Time",
+  "taxInvoice": "Tax Invoice"
 }
