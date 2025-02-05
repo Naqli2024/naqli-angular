@@ -49,12 +49,16 @@ export class AppComponent {
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.showHeader = event.url !== '/payment/results';
+        this.showHeader = !event.url.startsWith('/payment/results');
       }
     });
   }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.showHeader = !this.router.url.startsWith('/payment/results');
+    }, 100);
+    
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         if (event.urlAfterRedirects === '/home/partner') {
