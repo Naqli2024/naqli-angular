@@ -55,6 +55,7 @@ import { InvoiceComponent } from './admin/invoice/invoice.component';
 import { InvoiceUserComponent } from './dashboard/invoice/invoiceUser.component';
 import { InvoiceModalComponent } from './dashboard/invoice/invoice-modal/invoice-modal.component';
 import { LoaderComponent } from './mobileLoader/loader.component';
+import { PrivacyPolicyComponent } from './auth/privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -91,6 +92,10 @@ export const routes: Routes = [
   {
     path: 'home/user/payment-result',
     component: PaymentSuccessfulComponent,
+  },
+  {
+    path: 'home/user/privacy-policy',
+    component: PrivacyPolicyComponent
   },
   { path: 'home/user/invoice-data', component: InvoiceModalComponent },
   { path: 'home/user/vehicle-estimate', component: VechileEstimateComponent },

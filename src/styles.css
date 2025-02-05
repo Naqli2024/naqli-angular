@@ -22,8 +22,10 @@ body {
   background-color: #fff;
   padding: 1rem 5%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
+  position: sticky !important;
   flex-wrap: wrap;
+  top: 0;
+  left: 0
 }
 
 .navbar .container {
@@ -317,7 +319,7 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  padding: 0 2%;
+  padding: 5px 2%;
   gap: 1rem;
 }
 .register-bottom p {
@@ -563,6 +565,24 @@ body {
   overflow-y: auto;
 }
 
+.home-container > div:last-child {
+  text-align: center;
+  padding: 10px;
+  margin-top: auto;
+  cursor: pointer;
+}
+
+.footer-content {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  color: #6a66d1;
+  text-decoration: underline;
+}
+
 .custom-slider {
   position: absolute; /* Makes sure it sits behind the content */
   top: 0;
@@ -604,7 +624,7 @@ mdb-carousel-item img {
   }
 }
 
-.home-body {
+.home-body-1 {
   display: flex;
   justify-content: space-between;
   background-color: rgba(255, 255, 255, 0.8);
@@ -620,7 +640,7 @@ mdb-carousel-item img {
   position: relative;
   z-index: 1;
 }
-.home-body > div {
+.home-body-1 > div {
   width: calc(33.33% - 40px);
   padding: 10px;
   text-align: center;
@@ -672,14 +692,14 @@ mdb-carousel-item img {
   background: #ccc;
 }
 @media (max-width: 1025px) {
-  .home-body {
+  .home-body-1 {
     flex-wrap: nowrap;
     justify-content: space-between;
     width: 90%;
     top: 20% !important;
   }
 
-  .home-body > div {
+  .home-body-1 > div {
     width: calc(50% - 40px); /* Adjust to fit 2 items per row */
   }
 
@@ -696,14 +716,14 @@ mdb-carousel-item img {
 
 /* Tablet and mobile devices */
 @media (max-width: 1024px) {
-  .home-body {
+  .home-body-1 {
     flex-direction: column;
     width: 90%;
     padding: 15px;
     top: 50%;
   }
 
-  .home-body > div {
+  .home-body-1 > div {
     width: 100%; /* Take full width */
     margin-bottom: 15px;
   }
@@ -727,7 +747,7 @@ mdb-carousel-item img {
   .home-container {
     overflow-y: scroll;
   }
-  .home-body {
+  .home-body-1 {
     flex-direction: column;
     flex-wrap: wrap !important;
     align-items: center;
@@ -735,7 +755,7 @@ mdb-carousel-item img {
     padding: 15px;
     top: 30%;
   }
-  .home-body > div {
+  .home-body-1 > div {
     width: 100%;
     margin-bottom: 15px;
   }
@@ -773,7 +793,7 @@ mdb-carousel-item img {
   .home-container {
     overflow-y: scroll;
   }
-  .home-body {
+  .home-body-1 {
     flex-direction: column;
     align-items: center;
     flex-wrap: wrap !important;
@@ -781,7 +801,7 @@ mdb-carousel-item img {
     top: 20%;
     gap: 15px;
   }
-  .home-body > div {
+  .home-body-1 > div {
     width: calc(100% - 20px);
     margin-bottom: 10px;
   }
@@ -5005,4 +5025,15 @@ h1 {
   .user-info .col-md-3:last-child {
     border-bottom: none;
   }
+}
+
+/**************Privacy policy*************/
+.terms-conditions {
+  margin: 30px auto !important;
+}
+.terms-conditions>div {
+  text-align: justify;
+}
+.terms-conditions p {
+  text-align: justify !important;
 }
