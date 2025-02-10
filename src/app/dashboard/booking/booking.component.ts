@@ -116,7 +116,6 @@ export class BookingComponent implements OnInit {
 
     // Optionally get the current payment status synchronously
     const currentStatus = this.paymentService.getPaymentStatus();
-    console.log('Current Payment Status:', currentStatus);
     if (currentStatus === 'Payment Successful!') {
       this.updateBookingPaymentStatus();
     }
@@ -480,7 +479,6 @@ export class BookingComponent implements OnInit {
   onSelect(vendor: any) {
     if (this.fetchedVendors) {
       this.selectedVendor = vendor;
-      console.log('Selected vendor:', vendor);
     }
   }
 
@@ -577,20 +575,12 @@ export class BookingComponent implements OnInit {
       this.status = details.status;
       this.partnerId = details.partnerId;
       this.oldQuotePrice = details.oldQuotePrice;
-
-      console.log('Payment Details:', {
-        amount: this.amount,
-        status: this.status,
-        partnerId: this.partnerId,
-        oldQuotePrice: this.oldQuotePrice,
-      });
     } else {
-      console.log('No payment details available');
+      // console.log('No payment details available');
     }
 
     // Check if `amount` and `selectedBrand` are defined before proceeding
     if (this.amount && this.selectedBrand && userId) {
-      console.log(this.amount, this.selectedBrand);
       this.processPayment(this.amount, this.selectedBrand, userId);
     } else {
       this.toastr.error('Missing payment details');
@@ -598,7 +588,6 @@ export class BookingComponent implements OnInit {
   }
 
   processPayment(amount: number, paymentBrand: string, userId: any) {
-    console.log(amount, paymentBrand);
     this.checkout.createPayment(amount, paymentBrand, userId).subscribe(
       (data: any) => {
         this.checkoutId = data.id; // Adjust according to your response structure
@@ -657,7 +646,6 @@ export class BookingComponent implements OnInit {
   private updateBookingPaymentStatus() {
     const details = this.paymentService.getPaymentDetails();
     const brand = localStorage.getItem('paymentBrand') ?? 'Unknown';
-    console.log(details);
 
     this.spinnerService.show();
     if (details.status == 'HalfPaid') {
@@ -679,16 +667,12 @@ export class BookingComponent implements OnInit {
           (response) => {
             this.spinnerService.hide();
             this.bookingInformation = true;
-            console.log(
-              'Booking payment status updated successfully:',
-              response
-            );
             if (response && response.booking && response.booking._id) {
               // Call the second API to update the payment brand
               this.bookingService.updateBookingForPaymentBrand(response.booking._id, brand)
                 .subscribe(
                   (brandResponse) => {
-                    console.log('Booking payment brand updated successfully:', brandResponse);
+                    // console.log('Booking payment brand updated successfully:', brandResponse);
                   },
                   (brandError) => {
                     console.error('Error updating booking payment brand:', brandError);
@@ -771,7 +755,6 @@ export class BookingComponent implements OnInit {
           unitSubClassificationName: operator.subClassification,
         },
       };
-      console.log(this.combinedDetails);
     } else {
       this.combinedDetails = {
         booking: this.bookingDetails,
@@ -788,8 +771,6 @@ export class BookingComponent implements OnInit {
     bookingRequests: any[],
     bookingId: string
   ): string {
-    console.log('Booking Requests:', bookingRequests);
-    console.log('Looking for Booking ID:', bookingId);
 
     if (!bookingRequests) {
       console.warn('Booking requests are null or undefined');
@@ -800,9 +781,9 @@ export class BookingComponent implements OnInit {
       (request) => request.bookingId === bookingId
     );
 
-    console.log('Found Booking:', booking);
+    // console.log('Found Booking:', booking);
     if (booking && booking.assignedOperator) {
-      console.log('Assigned Operator:', booking.assignedOperator);
+      // console.log('Assigned Operator:', booking.assignedOperator);
     } else {
       console.warn(
         'Assigned Operator details are missing for booking ID:',
@@ -827,7 +808,7 @@ export class BookingComponent implements OnInit {
     );
 
     if (booking && booking.assignedOperator) {
-      console.log('Assigned Operator:', booking.assignedOperator);
+      // console.log('Assigned Operator:', booking.assignedOperator);
     } else {
       console.warn(
         'Assigned Operator details are missing for booking ID:',
