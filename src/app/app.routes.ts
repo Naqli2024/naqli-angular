@@ -62,6 +62,7 @@ import { DeleteAccountInfoComponent } from './home/delete-account-info/delete-ac
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
   { path: '', redirectTo: '/home/user', pathMatch: 'full' },
+  {path: 'delete-account', component: DeleteAccountInfoComponent},
   {
     path: 'home/user',
     component: HomeComponent,
@@ -99,7 +100,6 @@ export const routes: Routes = [
     path: 'home/user/privacy-policy',
     component: PrivacyPolicyComponent,
   },
-  {path: 'home/user/delete-account', component: DeleteAccountInfoComponent},
   { path: 'home/user/invoice-data', component: InvoiceModalComponent },
   { path: 'home/user/vehicle-estimate', component: VechileEstimateComponent },
   { path: 'home/user/bus-estimate', component: BusEstimateComponent },
