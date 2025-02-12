@@ -56,6 +56,7 @@ import { InvoiceUserComponent } from './dashboard/invoice/invoiceUser.component'
 import { InvoiceModalComponent } from './dashboard/invoice/invoice-modal/invoice-modal.component';
 import { LoaderComponent } from './mobileLoader/loader.component';
 import { PrivacyPolicyComponent } from './auth/privacy-policy/privacy-policy.component';
+import { DeleteUserComponent } from './dashboard/delete-user/delete-user.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -95,7 +96,7 @@ export const routes: Routes = [
   },
   {
     path: 'home/user/privacy-policy',
-    component: PrivacyPolicyComponent
+    component: PrivacyPolicyComponent,
   },
   { path: 'home/user/invoice-data', component: InvoiceModalComponent },
   { path: 'home/user/vehicle-estimate', component: VechileEstimateComponent },
@@ -118,6 +119,7 @@ export const routes: Routes = [
       { path: 'help', component: HelpComponent },
       { path: 'edit-profile', component: EditProfileComponent },
       { path: 'invoice', component: InvoiceUserComponent },
+      { path: 'deleteUser', component: DeleteUserComponent },
 
       {
         path: 'admin/overview',
@@ -135,7 +137,8 @@ export const routes: Routes = [
       },
       { path: 'admin/naqlee-user', component: NaqleeUserComponent },
       { path: 'admin/commission', component: CommissionComponent },
-      { path: 'admin/invoice', component: InvoiceComponent },      {
+      { path: 'admin/invoice', component: InvoiceComponent },
+      {
         path: 'super-user/dashboard',
         component: SuperUserDashboardComponent,
         canActivate: [AuthGuard],

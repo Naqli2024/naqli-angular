@@ -50,6 +50,7 @@ export class DashboardComponent {
         { name: 'Report', route: 'report' },
         { name: 'Help', route: 'help' },
         { name: 'Invoice', route: 'invoice' },
+        { name: 'deleteAccount', route: 'deleteUser' },
       ];
     } else if (this.isAdmin) {
       this.menuItems = [
@@ -75,6 +76,7 @@ export class DashboardComponent {
         { name: 'Report', route: 'report' },
         { name: 'Help', route: 'help' },
         { name: 'Invoice', route: 'invoice' },
+        { name: 'deleteAccount', route: 'deleteUser' },
       ];
     }
   }

@@ -31,9 +31,10 @@ const userRegister = async (req, res) => {
     } = req.body;
 
     // Check if the user has selected "Enterprise User"
-    if (accountType === 'Enterprise User') {
+    if (accountType === "Enterprise User") {
       return res.status(400).json({
-        message: "The 'Enterprise User' option is currently unavailable. This feature will be available in upcoming releases.",
+        message:
+          "The 'Enterprise User' option is currently unavailable. This feature will be available in upcoming releases.",
         success: false,
         data: null,
       });
@@ -148,14 +149,13 @@ const userRegister = async (req, res) => {
             Send OTP 
  *****************************************/
 
-// Function to send OTP to the user's contact number 
+// Function to send OTP to the user's contact number
 const sendOTP = async (contactNumber, otp) => {
+  // Convert the number to a string for manipulation
+  let contactNumberStr = contactNumber.toString();
 
-   // Convert the number to a string for manipulation
-   let contactNumberStr = contactNumber.toString();
-
-  if (!contactNumberStr.startsWith('966')) {
-    contactNumberStr = '966' + contactNumberStr.replace(/^0/, ''); // Remove leading 0 and add '966'
+  if (!contactNumberStr.startsWith("966")) {
+    contactNumberStr = "966" + contactNumberStr.replace(/^0/, ""); // Remove leading 0 and add '966'
   }
 
   // Set the API URL and the token
@@ -228,7 +228,7 @@ const resendOTP = async (req, res) => {
       return res.status(200).json({
         message: "New OTP sent successfully",
         success: true,
-        data: otpResponse.data 
+        data: otpResponse.data,
       });
     } else {
       return res.status(500).json({
@@ -410,6 +410,31 @@ const editUser = async (req, res) => {
   }
 };
 
+const deleteUser = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const userFound = await user.findOneAndDelete({ _id: userId });
+    if (!userFound) {
+      return res.status(404).json({
+        success: false,
+        data: null,
+        message: "User not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: userFound,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      data: null,
+      message: error.message,
+    });
+  }
+};
+
 exports.userRegister = userRegister;
 exports.verifyOTP = verifyOTP;
 exports.resendOTP = resendOTP;
@@ -418,3 +443,4 @@ exports.getUserById = getUserById;
 exports.getAllUsers = getAllUsers;
 exports.updateUserStatus = updateUserStatus;
 exports.editUser = editUser;
+exports.deleteUser = deleteUser;

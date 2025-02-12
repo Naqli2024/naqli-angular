@@ -34,5 +34,6 @@ router.get('/users/:id', userController.getUserById);
 router.get('/users', userController.getAllUsers);
 router.put('/users/:id/status', userController.updateUserStatus);
 router.put('/users/edit-profile/:userId', protect, upload.single('userProfile'), userController.editUser);
+router.delete('/deleteUser', protect, userController.deleteUser);
 
 module.exports = router;

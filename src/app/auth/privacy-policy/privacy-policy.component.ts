@@ -9,6 +9,8 @@ import { Component } from '@angular/core';
   styleUrl: './privacy-policy.component.css',
 })
 export class PrivacyPolicyComponent {
+  activeTab: string = 'terms';
+  
   get language(): string {
     return localStorage.getItem('language') || 'en';
   }

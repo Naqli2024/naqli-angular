@@ -569,8 +569,8 @@ body {
 }
 
 .home-container > div:last-child {
-  text-align: center;
-  padding: 10px;
+  text-align: left;
+  /* padding: 10px; */
   /* margin-top: auto; */
   cursor: pointer;
 }
@@ -580,7 +580,7 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  text-align: center;
+  text-align: center !important;
   padding: 10px;
   color: #6a66d1;
   text-decoration: underline;
@@ -781,7 +781,7 @@ mdb-carousel-item img {
     max-width: 200px;
   }
   .get-an-estimate {
-    padding: 40px;
+    padding: 20px;
     overflow-y: scroll;
     max-height: 350px;
   }
@@ -2147,20 +2147,24 @@ input {
 }
 .get-an-estimate {
   background-color: #c3c3ff;
-  padding: 50px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  
 }
 .get-an-estimate h2 {
   color: #080202 !important;
   font-weight: 500;
-  font-size: 50px;
+  font-size: 40px;
   padding: 0px 30px;
-  margin: 30px 0px;
+  margin: 15px 0px;
+  text-align: center;
 }
 .get-an-estimate p {
   color: #050101 !important;
   font-size: 15px;
   padding: 0px 30px;
-  margin: 40px 0px;
+  margin: 20px 0px;
+  text-align: justify;
 }
 .estimate-image {
   width: 100%;
@@ -2170,7 +2174,7 @@ input {
   align-items: center !important;
   margin: 20px auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: #fff !important;
+  background-color: #f7f7f7 !important;
 }
 .estimate-image {
   text-decoration: none !important;
@@ -2184,6 +2188,21 @@ input {
 .estimate-image p {
   margin: auto 60px;
   padding-top: 25px;
+}
+.contact-form {
+  margin: 0px 30px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+}
+.contact-form h5 {
+  text-align: center;
+}
+.contact-form button {
+  display: block;
+  margin: 0 auto;  
+  width: 25%;
+  background-color: #010CDA;
 }
 @media (max-width: 768px) {
   .get-an-estimate {
@@ -5039,4 +5058,135 @@ h1 {
 }
 .terms-conditions p {
   text-align: justify !important;
+}
+.unique-tabs-container {
+  margin: 10px auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.unique-tabs-nav {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  background: white;
+  padding: 5px;
+  gap: 10px;
+  list-style: none;
+}
+
+.unique-tab-btn {
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  transition: 0.3s;
+}
+
+.unique-tab-btn:hover,
+.unique-active {
+  color: #007bff;
+  font-weight: bold;
+  border-bottom: 3px solid #007bff;
+}
+
+.unique-tabs-content {
+  margin-top: 10px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+}
+
+.unique-tab-pane {
+  display: none;
+}
+
+.unique-tab-pane p {
+  text-align: justify;
+}
+
+.unique-show {
+  display: block;
+}
+/****************Delete User******************/
+.deleteUser-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal box */
+.deleteUser-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal header */
+.deleteUser-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+/* Close button */
+.deleteUser-modal-close {
+  cursor: pointer;
+  font-size: 24px;
+  color: #666;
+  margin-top: -10px;
+}
+
+/* Modal footer with centered buttons */
+.deleteUser-modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+/* Buttons inside the modal */
+.deleteUser-modal-footer button {
+  padding: 5px 25px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 10px 5px;
+}
+
+.deleteUser-modal-body {
+   text-align: left !important;
+}
+
+/* Centered Delete Account section */
+.deleteUser-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+}
+
+/* Styling for the descriptive text */
+.deleteUser-text {
+  font-size: 16px;
 }

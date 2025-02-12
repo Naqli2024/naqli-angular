@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { OpenGetEstimateComponent } from './open-get-estimate/open-get-estimate.component';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Carousel01Component } from './carousel/carousel01.component';
 
@@ -13,7 +13,7 @@ import { Carousel01Component } from './carousel/carousel01.component';
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
-  constructor(private modalService: NgbModal, private translateService: TranslateService) {}
+  constructor(private modalService: NgbModal, private translateService: TranslateService, private router: Router) {}
 
   items = [
     {
@@ -48,5 +48,9 @@ export class HomeComponent {
       windowClass: 'no-background',
       backdropClass: 'no-background-backdrop',
     });
+  }
+
+  navigateToPrivacy() {
+    this.router.navigate(['home/user/privacy-policy']);
   }
 }

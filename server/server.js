@@ -14,6 +14,7 @@ const adminRoute = require("./routes/adminRoute");
 const reportRoute = require("./routes/reportRoute");
 const fileRoute = require("./routes/fileRoutes");
 const createPayment = require("./routes/createPaymentRoute");
+const estimate = require("./routes/estimateRoute");
 const path = require('path');
 
 //environment variables
@@ -41,6 +42,7 @@ app.use("/api", fileRoute);
 app.use("/api", createPayment);
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api', estimate);
 
 app.listen(process.env.PORT, '0.0.0.0', () =>
   console.log(`Server running on http://0.0.0.0:${process.env.PORT}`)

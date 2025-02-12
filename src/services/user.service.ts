@@ -5,11 +5,11 @@ import { User } from '../models/user.model';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-  private userDetails: any; 
-  private apiUrl = 'https://prod.naqlee.com:443/api'; 
+  private userDetails: any;
+  private apiUrl = 'https://prod.naqlee.com:443/api';
 
   constructor(private http: HttpClient) {}
 
@@ -29,8 +29,10 @@ export class UserService {
     return this.http.get<User>(`${this.apiUrl}/users/${userId}`);
   }
 
-  getAllUsers():Observable<User[]> {
-    return this.http.get<{ success: boolean, data: User[] }>(`${this.apiUrl}/users`).pipe(map(response => response.data));
+  getAllUsers(): Observable<User[]> {
+    return this.http
+      .get<{ success: boolean; data: User[] }>(`${this.apiUrl}/users`)
+      .pipe(map((response) => response.data));
   }
 
   updateUserStatus(userId: string, status: any): Observable<any> {
@@ -40,6 +42,20 @@ export class UserService {
   editUserProfile(userId: string, formData: FormData): Observable<any> {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.put<any>(`${this.apiUrl}/users/edit-profile/${userId}`, formData, { headers });
+    return this.http.put<any>(
+      `${this.apiUrl}/users/edit-profile/${userId}`,
+      formData,
+      { headers }
+    );
+  }
+
+  deleteUser(userId: string): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.delete<any>(`${this.apiUrl}/deleteUser`, {
+      headers,
+      body: { userId },
+    });
   }
 }

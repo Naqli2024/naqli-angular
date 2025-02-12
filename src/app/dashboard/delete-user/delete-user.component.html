@@ -1,0 +1,31 @@
+<div class="deleteUser-container">
+  <p class="deleteUser-text">
+    {{ "deleteAccountMessage" | translate }}
+  </p>
+  <button class="btn btn-danger" (click)="openModal()">
+    {{ "dashboardItems.deleteAccount" | translate }}
+  </button>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div *ngIf="isModalOpen" class="deleteUser-modal-overlay">
+  <div class="deleteUser-modal">
+    <div class="deleteUser-modal-header">
+      <h5 class="deleteUser-modal-title">
+        {{ "confirmDeletion" | translate }}
+      </h5>
+      <span class="deleteUser-modal-close" (click)="closeModal()">&times;</span>
+    </div>
+    <div class="deleteUser-modal-body">
+      <p>{{ "deleteConfirmationMessage" | translate }}</p>
+    </div>
+    <div class="deleteUser-modal-footer">
+      <button class="btn btn-secondary" (click)="closeModal()">
+        {{ "No" | translate }}
+      </button>
+      <button class="btn btn-danger" (click)="deleteUser()">
+        {{ "Yes" | translate }}
+      </button>
+    </div>
+  </div>
+</div>

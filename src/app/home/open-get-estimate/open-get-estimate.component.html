@@ -1,20 +1,76 @@
-<div class="container" style="background-color: #fff">
+<div class="container" style="background-color: #fff;">
   <div class="row">
     <div class="col-md-7 col-sm-12 get-an-estimate">
-      <h2>{{"ESTIMATE.GET_ESTIMATE"|translate}}</h2>
+      <h2>{{ "ESTIMATE.GET_ESTIMATE" | translate }}</h2>
       <p>
-        To ensure we give you the best Possible service, kindly fill out the
-        Information
+        {{ "NAQLEE_DESCRIPTION" | translate }}
       </p>
+      <p>
+        {{ "EXCLUSIVE_QUOTE_DESCRIPTION" | translate }}
+      </p>
+      <div class="contact-form">
+        <h5>{{ "CONTACT_US" | translate }}</h5>
+        <form [formGroup]="userForm" (ngSubmit)="submitForm()">
+          <!-- Name Field -->
+          <div class="mb-3">
+            <label for="name" class="form-label">{{
+              "Name" | translate
+            }}</label>
+            <input
+              type="text"
+              id="name"
+              class="form-control"
+              formControlName="name"
+            />
+          </div>
+
+          <!-- Email Field -->
+          <div class="mb-3">
+            <label for="email" class="form-label">{{
+              "EMAIL_ID" | translate
+            }}</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              formControlName="email"
+            />
+          </div>
+
+          <!-- Phone No Field -->
+          <div class="mb-3">
+            <label for="phone" class="form-label">{{
+              "MOBILE_NO" | translate
+            }}</label>
+            <input
+              type="tel"
+              id="mobile"
+              class="form-control"
+              formControlName="mobile"
+            />
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="userForm.invalid"
+          >
+            {{ "Submit" | translate }}
+          </button>
+        </form>
+      </div>
     </div>
-    <div class="col-md-5 col-sm-12">
+    <div
+      class="col-md-5 col-sm-12 get-an-estimate"
+      style="background-color: #f7f7f7 !important;"
+    >
       <div class="modal-close">
         <button
           type="button"
           class="close"
           aria-label="Close"
           (click)="activeModal.dismiss()"
-          
         >
           <span aria-hidden="true">&times;</span>
         </button>
@@ -24,7 +80,7 @@
           <img [src]="item.image" alt="{{ item.name }}" />
           <hr class="line" />
           <!-- Horizontal line -->
-          <p>{{ 'ITEMS.' + item.name | translate }}</p>
+          <p>{{ "ITEMS." + item.name | translate }}</p>
         </div>
       </div>
     </div>
