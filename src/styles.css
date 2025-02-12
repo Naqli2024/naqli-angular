@@ -5190,3 +5190,38 @@ h1 {
 .deleteUser-text {
   font-size: 16px;
 }
+.delete-account-container {
+  margin: 40px auto;
+  padding: 20px;
+}
+.delete-account-container h1 {
+  color: #3969ca;
+  margin-bottom: 20px;
+}
+.delete-account-container h2 {
+  margin-top: 30px;
+}
+.delete-account-container p, li {
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: justify;
+  margin: 5px 0px;
+}
+.delete-account-container a {
+  color: #0275d8;
+  text-decoration: none;
+}
+.delete-account-container a:hover {
+  text-decoration: underline;
+}
+.delete-account-info-icon i {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .delete-account-info-icon i {
+    margin-top: 15px;
+    margin-left: 10px;
+  }
+}

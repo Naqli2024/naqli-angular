@@ -94,7 +94,7 @@ export class BookingComponent implements OnInit {
     const userId: any = localStorage.getItem('userId');
 
     if (!userId) {
-      this.toastr.error('User ID not found');
+      this.toastr.error('User ID not found. Please login');
       this.openLoginModal();
       return;
     } else {

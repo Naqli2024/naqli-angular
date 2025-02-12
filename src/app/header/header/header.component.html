@@ -92,6 +92,9 @@
           </ng-template>
         </div>
       </div>
+      <div class="delete-account-info-icon">
+        <i class="fas fa-info-circle" (click)="navigateToDeleteAccountInfo()"></i>
+      </div>
       <button
         *ngIf="isAuthenticated"
         type="button"
@@ -183,6 +186,9 @@
             <div class="notification-item">No notifications</div>
           </ng-template>
         </div>
+      </div>
+      <div class="delete-account-info-icon">
+        <i class="fas fa-info-circle" (click)="navigateToDeleteAccountInfo()"></i>
       </div>
       <button
         *ngIf="isAuthenticated"

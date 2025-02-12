@@ -219,4 +219,8 @@ export class HeaderComponent implements OnInit {
       );
     }
   }
-}
+
+  navigateToDeleteAccountInfo() {
+    this.router.navigate(['home/user/delete-account']);
+  }
+ }

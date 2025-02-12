@@ -802,7 +802,7 @@ const getBookingsWithPendingPayment = async (req, res) => {
 
     if (!user) {
       // If user is not found, throw an error
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found. Please login" });
     }
 
     // Find all bookings associated with the user where paymentStatus is 'NotPaid'
