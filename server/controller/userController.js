@@ -1,9 +1,11 @@
 const user = require("../Models/userModel");
+const Bookings = require("../Models/BookingModel");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 require("dotenv").config();
 const axios = require("axios");
 const querystring = require("querystring");
+const { cancelBooking } = require('./bookingController'); 
 
 /*****************************************
             User registration
@@ -421,10 +423,37 @@ const deleteUser = async (req, res) => {
         message: "User not found",
       });
     }
+    const userBookings = await Bookings.findOne({ user: userId });
+    if (userBookings.length === 0) {
+      return res.status(404).json({
+        success: false,
+        data: null,
+        message: `No bookings found for user ${userId}`,
+      });
+    }
+    // Cancel each booking associated with the user
+    for (const booking of userBookings) {
+      const bookingId = booking._id;
+
+      // Call the cancelBooking function by passing bookingId
+      const cancelBookingResponse = await cancelBooking(
+        { params: { bookingId } },
+        res
+      );
+
+      if (!cancelBookingResponse.success) {
+        // If cancellation fails for a particular booking, return the failure message
+        return res.status(500).json({
+          success: false,
+          data: null,
+          message: `Failed to cancel booking ${bookingId}.`,
+        });
+      }
+    }
     return res.status(200).json({
       success: true,
       data: userFound,
-      message: "User deleted successfully",
+      message: "User and associated bookings deleted successfully",
     });
   } catch (error) {
     return res.status(500).json({

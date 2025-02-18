@@ -203,7 +203,7 @@ export class PaymentsComponent implements OnInit {
   // Function to dynamically load the payment widget script
   loadPaymentScript() {
     const script = document.createElement('script');
-    script.src = `https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${this.checkoutId}`;
+    script.src = `https://eu-prod.oppwa.com/v1/paymentWidgets.js?checkoutId=${this.checkoutId}`;
     script.crossOrigin = 'anonymous';
     script.integrity = this.integrity;
 
@@ -218,7 +218,6 @@ export class PaymentsComponent implements OnInit {
   private updateBookingPaymentStatus() {
     const details = this.paymentService.getPaymentDetails();
     const brand = localStorage.getItem('paymentBrand') ?? 'Unknown';
-    console.log(details);
 
     this.spinnerService.show();
     if (details.status == 'HalfPaid') {
