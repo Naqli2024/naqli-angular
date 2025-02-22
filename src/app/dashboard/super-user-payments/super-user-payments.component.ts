@@ -246,7 +246,7 @@ export class SuperUserPaymentsComponent implements AfterViewInit {
   // Function to dynamically load the payment widget script
   loadPaymentScript() {
     const script = document.createElement('script');
-    script.src = `https://eu-prod.oppwa.com/v1/paymentWidgets.js?checkoutId=${this.checkoutId}`;
+    script.src = `https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${this.checkoutId}`;
     script.crossOrigin = 'anonymous';
     script.integrity = this.integrity;
 

@@ -24,7 +24,7 @@ export class VerifyEmailComponent {
     const token = this.route.snapshot.queryParamMap.get('token');
 
     // Send request to backend API for verification
-    this.http.get<any>(`http://localhost:4000/api/verify-email?token=${token}`).subscribe(
+    this.http.get<any>(`https://prod.naqlee.com:443/api/verify-email?token=${token}`).subscribe(
       (response) => {
         console.log('Verification response:', response);
         if (response.success) {
