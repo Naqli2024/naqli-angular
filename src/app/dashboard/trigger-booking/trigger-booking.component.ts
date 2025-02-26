@@ -57,7 +57,6 @@ export class TriggerBookingComponent {
     this.fetchBookings();
     // Optionally get the current payment status synchronously
     const currentStatus = this.paymentService.getPaymentStatus();
-    console.log('Current Payment Status:', currentStatus);
     if (currentStatus === 'Payment Successful!') {
       this.updateBookingPaymentStatus();
     }
@@ -207,7 +206,6 @@ export class TriggerBookingComponent {
 
   selectPaymentBrand(brand: string) {
     this.selectedBrand = brand;
-    console.log(this.selectedBrand);
     this.showPaymentOptions = false;
     this.showPaymentForm = true;
     const details = this.paymentService.getPaymentDetails();
@@ -220,19 +218,18 @@ export class TriggerBookingComponent {
       this.partnerId = details.partnerId;
       this.oldQuotePrice = details.oldQuotePrice;
 
-      console.log('Payment Details:', {
-        amount: this.amount,
-        status: this.status,
-        partnerId: this.partnerId,
-        oldQuotePrice: this.oldQuotePrice,
-      });
+      // console.log('Payment Details:', {
+      //   amount: this.amount,
+      //   status: this.status,
+      //   partnerId: this.partnerId,
+      //   oldQuotePrice: this.oldQuotePrice,
+      // });
     } else {
-      console.log('No payment details available');
+      // console.log('No payment details available');
     }
 
     // Check if `amount` and `selectedBrand` are defined before proceeding
     if (this.amount && this.selectedBrand && userId) {
-      console.log(this.amount, this.selectedBrand);
       this.processPayment(this.amount, this.selectedBrand, userId);
     } else {
       this.toastr.error('Missing payment details');
@@ -240,7 +237,6 @@ export class TriggerBookingComponent {
   }
 
   processPayment(amount: number, paymentBrand: string, userId: any) {
-    console.log(amount, paymentBrand);
     this.checkout.createPayment(amount, paymentBrand, userId).subscribe(
       (data: any) => {
         this.checkoutId = data.id; // Adjust according to your response structure
@@ -284,12 +280,12 @@ export class TriggerBookingComponent {
   // Function to dynamically load the payment widget script
   loadPaymentScript() {
     const script = document.createElement('script');
-    script.src = `https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${this.checkoutId}`;
+    script.src = `https://eu-prod.oppwa.com/v1/paymentWidgets.js?checkoutId=${this.checkoutId}`;
     script.crossOrigin = 'anonymous';
     script.integrity = this.integrity;
 
     script.onload = () => {
-      console.log('Payment widget script loaded');
+      // console.log('Payment widget script loaded');
     };
 
     // Append script to body or a specific element where the form will be displayed
