@@ -42,7 +42,7 @@ export class ReportSupportComponent {
           this.emailAddress = user.emailAddress;
         },
         (error) => {
-          console.error('Error fetching user data:', error);
+          // console.error('Error fetching user data:', error);
         }
       );
     } else if (this.partnerId) {
@@ -51,11 +51,11 @@ export class ReportSupportComponent {
           this.emailAddress = partner?.data?.email;
         },
         (error) => {
-          console.error('Error fetching data:', error);
+          // console.error('Error fetching data:', error);
         }
       );
     } else {
-      console.error('Neither userId nor partnerId found');
+      // console.error('Neither userId nor partnerId found');
     }
   }
 

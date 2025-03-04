@@ -28,10 +28,10 @@ export class AccountVerificationComponent {
       this.partnerService.getPartnerDetails(partnerId).subscribe(
         (partnerDetails) => {
           this.partnerDetails = partnerDetails.data;
-          console.log(this.partnerDetails); 
+          // console.log(this.partnerDetails); 
         },
         (error) => {
-          console.error('Error fetching partner details:', error);
+          // console.error('Error fetching partner details:', error);
         }
       );
     }
@@ -43,7 +43,7 @@ export class AccountVerificationComponent {
     } else if (this.partnerDetails && this.partnerDetails.type === "multipleUnits") {
       this.router.navigate(['home/partner/company-details']);
     } else {
-      console.warn("Unknown partner type:", this.partnerDetails?.type);
+      // console.warn("Unknown partner type:", this.partnerDetails?.type);
     }
     this.activeModal.dismiss(); 
   }

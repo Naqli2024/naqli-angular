@@ -66,11 +66,11 @@ export class AdminNotificationManagementComponent implements OnInit {
           this.filteredPartners = [...this.partners];
           this.fetchPartnersLastNotifications();
         } else {
-          console.error('Invalid response format from backend');
+          // console.error('Invalid response format from backend');
         }
       },
       (error: any) => {
-        console.error('Error fetching partner details:', error);
+        // console.error('Error fetching partner details:', error);
       }
     );
   }
@@ -83,7 +83,7 @@ export class AdminNotificationManagementComponent implements OnInit {
         this.filterNotifications();
       },
       (error) => {
-        console.error('Error fetching notifications', error);
+        // console.error('Error fetching notifications', error);
       }
     );
   }
@@ -256,7 +256,6 @@ export class AdminNotificationManagementComponent implements OnInit {
       },
       (error) => {
         this.toastr.error('Error deleting notification');
-        console.error(error);
       }
     );
   }

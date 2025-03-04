@@ -181,7 +181,7 @@ export class CustomerChartComponent {
   renderAnnotations(labels: string[], values: number[], colors: string[]) {
     const annotationsElement = document.getElementById('customer-chart-annotations');
     if (!annotationsElement) {
-      console.error('Annotations element not found');
+      // console.error('Annotations element not found');
       return;
     }
 

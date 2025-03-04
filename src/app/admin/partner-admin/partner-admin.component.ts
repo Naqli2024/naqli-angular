@@ -31,10 +31,10 @@ export class PartnerAdminComponent {
         this.partners = response.data;
         this.updateSelectAllState(); // Update "Select All" checkbox state after loading partners
       } else {
-        console.error('Invalid response format from backend');
+        // console.error('Invalid response format from backend');
       }
     }, error => {
-      console.error('Error fetching partner details:', error);
+      // console.error('Error fetching partner details:', error);
     });
   }
 
@@ -71,7 +71,7 @@ export class PartnerAdminComponent {
       },
       (error) => {
         this.toastr.error('Error updating partner status.');
-        console.error(error);
+        // console.error(error);
       }
     );
   }

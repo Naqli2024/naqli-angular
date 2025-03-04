@@ -102,7 +102,7 @@ export class EquipmentBookingComponent {
         this.autocompleteService = new google.maps.places.AutocompleteService();
       })
       .catch((error) => {
-        console.error('Failed to load Google Maps script:', error);
+        // console.error('Failed to load Google Maps script:', error);
       });
   }
 
@@ -246,7 +246,7 @@ export class EquipmentBookingComponent {
           });
         },
         (error) => {
-          console.error('Error getting user location:', error);
+          // console.error('Error getting user location:', error);
         }
       );
     } else {
@@ -466,9 +466,9 @@ export class EquipmentBookingComponent {
                   // Check if there is an existing bookingId in localStorage
                   const existingBookingId = localStorage.getItem('bookingId');
                   if (existingBookingId) {
-                    console.log(
-                      `Replacing existing bookingId: ${existingBookingId} with new bookingId: ${response._id}`
-                    );
+                    // console.log(
+                    //   `Replacing existing bookingId: ${existingBookingId} with new bookingId: ${response._id}`
+                    // );
                   }
 
                   // Set the new bookingId in localStorage, replacing the old one
@@ -499,7 +499,7 @@ export class EquipmentBookingComponent {
                 const errorMessage =
                   error.error?.message || 'An error occurred';
                 this.toastr.error(errorMessage, 'Error');
-                console.error('Backend Error:', error);
+                // console.error('Backend Error:', error);
               }
             );
           },

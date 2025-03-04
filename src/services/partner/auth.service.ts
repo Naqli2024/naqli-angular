@@ -62,7 +62,7 @@ export class AuthService {
           localStorage.setItem('partnerName', response.data.partner.partnerName);
           localStorage.setItem('partnerId', response.data.partner._id)
         } else {
-          console.error('Invalid response format:', response);
+          // console.error('Invalid response format:', response);
         }
       })
     );

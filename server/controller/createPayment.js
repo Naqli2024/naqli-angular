@@ -41,9 +41,9 @@ const merchantTransactionId = Array(24)
   // Determine entityId based on paymentBrand
   let entityId;
   if (paymentBrand === "MADA") {
-    entityId = process.env.ENTITY_ID_MADA; // Use MADA-specific entityId
+    entityId = process.env.ENTITY_ID_MADA; 
   } else {
-    entityId = process.env.ENTITY_ID; // Use generic card (VISA, MasterCard, etc.) entityId
+    entityId = process.env.ENTITY_ID; 
   }
 
   const path = "/v1/checkouts";
@@ -67,7 +67,7 @@ const merchantTransactionId = Array(24)
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       "Content-Length": data.length,
-      Authorization: `Bearer ${process.env.BEARER_TOKEN}`, // Test Bearer token
+      Authorization: `Bearer ${process.env.BEARER_TOKEN}`,
     },
   };
 

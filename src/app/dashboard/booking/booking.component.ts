@@ -197,7 +197,7 @@ export class BookingComponent implements OnInit {
             localStorage.setItem('bookingId', this.bookingId);
             this.getTopPartners();
           } else {
-            console.error('bookingId is null or undefined');
+            // console.error('bookingId is null or undefined');
           }
 
           this.fetchBookings(); // Fetch bookings using the newly stored bookingId
@@ -219,7 +219,7 @@ export class BookingComponent implements OnInit {
         this.users = response;
       },
       (error) => {
-        console.error('Error fetching user:', error);
+        // console.error('Error fetching user:', error);
       }
     );
   }
@@ -244,15 +244,15 @@ export class BookingComponent implements OnInit {
     }
     // If neither condition is met, log an error
     else {
-      console.error(
-        'Either pickup and drop points, or address and cityName are required.'
-      );
+      // console.error(
+      //   'Either pickup and drop points, or address and cityName are required.'
+      // );
     }
   }
 
   getTopPartners() {
     if (!this.bookingId) {
-      console.error('Booking ID is not available.');
+      // console.error('Booking ID is not available.');
       return;
     }
 
@@ -467,7 +467,7 @@ export class BookingComponent implements OnInit {
         (error) => {
           this.spinnerService.hide();
           this.toastr.error('Failed to fetch bookings');
-          console.error('Error fetching bookings:', error);
+          // console.error('Error fetching bookings:', error);
         }
       );
     } else {
@@ -492,7 +492,7 @@ export class BookingComponent implements OnInit {
         }
       },
       (reason) => {
-        console.log('Modal dismissed:', reason);
+        // console.log('Modal dismissed:', reason);
       }
     );
   }
@@ -520,7 +520,7 @@ export class BookingComponent implements OnInit {
             error.error?.message || 'Failed to cancel booking',
             'Error'
           );
-          console.error('Error cancelling booking:', error);
+          // console.error('Error cancelling booking:', error);
         }
       );
     } else {
@@ -547,7 +547,7 @@ export class BookingComponent implements OnInit {
 
     if (typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid payment amount or status');
-      console.error('Invalid payment amount or status:', amount, status);
+      // console.error('Invalid payment amount or status:', amount, status);
       return;
     }
     // Store the payment details globally
@@ -675,7 +675,7 @@ export class BookingComponent implements OnInit {
                     // console.log('Booking payment brand updated successfully:', brandResponse);
                   },
                   (brandError) => {
-                    console.error('Error updating booking payment brand:', brandError);
+                    // console.error('Error updating booking payment brand:', brandError);
                     this.toastr.error(
                       brandError.error?.message || 'Failed to update booking payment brand',
                       'Error'
@@ -683,14 +683,14 @@ export class BookingComponent implements OnInit {
                   }
                 );
             } else {
-              console.error('Invalid response structure:', response);
+              // console.error('Invalid response structure:', response);
               this.toastr.error('Failed to retrieve booking ID from the response', 'Error');
             }
             this.paymentService.clearPaymentDetails();
             localStorage.removeItem('paymentBrand');
           },
           (error) => {
-            console.error('Error updating booking payment status:', error);
+            // console.error('Error updating booking payment status:', error);
             this.spinnerService.hide();
             this.toastr.error(
               error.error?.message || 'Failed to update booking payment status',

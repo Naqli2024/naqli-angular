@@ -293,7 +293,7 @@ export class MultipleUnitDashboardComponent implements OnInit {
   renderAnnotations(labels: string[], values: number[], colors: string[]) {
     const annotationsElement = document.getElementById('chart-annotations');
     if (!annotationsElement) {
-      console.error('Annotations element not found');
+      // console.error('Annotations element not found');
       return;
     }
 

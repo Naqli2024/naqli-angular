@@ -84,7 +84,7 @@ export class OperatorComponent implements OnInit {
           this.enableSubmitButton();
         },
         (error) => {
-          console.error('Error fetching partner details:', error);
+          // console.error('Error fetching partner details:', error);
         }
       );
     }

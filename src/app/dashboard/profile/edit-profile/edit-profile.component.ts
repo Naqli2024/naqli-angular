@@ -64,7 +64,7 @@ export class EditProfileComponent {
     if (this.userId) {
       this.getUserDetails(this.userId);
     } else {
-      console.error('User ID not found in localStorage');
+      // console.error('User ID not found');
     }
   }
 
@@ -77,7 +77,7 @@ export class EditProfileComponent {
         }
       },
       (error) => {
-        console.error('Error loading user data:', error);
+        // console.error('Error loading user data:', error);
       }
     );
   }
@@ -100,14 +100,14 @@ export class EditProfileComponent {
   
         reader.readAsDataURL(file);
       } else {
-        console.error('Invalid file type.');
+        // console.error('Invalid file type.');
       }
     }
   }
 
   saveProfile(): void {
     if (!this.userId) {
-      console.error('User ID is required for editing profile.');
+      // console.error('User ID is required for editing profile.');
       return;
     }
   

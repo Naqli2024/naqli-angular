@@ -75,7 +75,7 @@ export class BookingService {
       totalAmount: totalAmount,
       oldQuotePrice: oldQuotePrice,
     };
-    console.log(payload)
+    // console.log(payload)
     return this.http.put(
       `${this.apiUrl}/bookings/${bookingId}/payment`,
       payload,
@@ -145,7 +145,7 @@ export class BookingService {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const requestBody = { bookingId, brand };
-    console.log(requestBody)
+    // console.log(requestBody)
 
     return this.http.post(
      `${this.apiUrl}/updateBookingForPaymentBrand`, requestBody,

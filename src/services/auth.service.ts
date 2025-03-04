@@ -43,7 +43,7 @@ export class AuthService {
           localStorage.setItem('lastName', response.data.user.lastName);
           localStorage.setItem('userId', response.data.user._id);
         } else {
-          console.error('Invalid response format:', response);
+          // console.error('Invalid response format:', response);
         }
       })
     );

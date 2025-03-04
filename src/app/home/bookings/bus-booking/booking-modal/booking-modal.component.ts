@@ -41,13 +41,13 @@ export class BookingModalComponent implements OnInit {
           }
         },
         (error) => {
-          console.error('Error fetching user details:', error);
+          // console.error('Error fetching user details:', error);
           this.toastr.error('Unable to fetch user information', 'Error');
           this.closeModalAndNavigate(); // Handle navigation if user fetch fails
         }
       );
     } else {
-      console.error('User ID not found in localStorage');
+      // console.error('User ID not found in localStorage');
       this.toastr.error('User not found', 'Error');
       this.closeModalAndNavigate(); // Handle navigation if userId is missing
     }

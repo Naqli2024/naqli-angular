@@ -98,7 +98,7 @@ export class MapService {
   
         },
         (error) => {
-          console.error('Error getting user location:', error);
+          // console.error('Error getting user location:', error);
         }
       );
     } else {
@@ -175,8 +175,8 @@ export class MapService {
           const hours = Math.floor(totalDuration / 3600); // Total hours
           const minutes = Math.floor((totalDuration % 3600) / 60); // Remaining minutes
   
-          console.log(`Total Distance: ${(totalDistance / 1000).toFixed(2)} km`);
-          console.log(`Total Duration: ${hours} hours ${minutes} minutes`);
+          // console.log(`Total Distance: ${(totalDistance / 1000).toFixed(2)} km`);
+          // console.log(`Total Duration: ${hours} hours ${minutes} minutes`);
         } else {
           console.error('Directions request failed due to ', status);
         }

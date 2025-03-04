@@ -54,7 +54,7 @@ export class TriggerBookingModalComponent {
     this.getPartnerDetails();
      // Optionally get the current payment status synchronously
      const currentStatus = this.paymentService.getPaymentStatus();
-     console.log('Current Payment Status:', currentStatus);
+    //  console.log('Current Payment Status:', currentStatus);
      if (currentStatus === 'Payment Successful!') {
        this.updateBookingPaymentStatus();
      }
@@ -99,12 +99,12 @@ export class TriggerBookingModalComponent {
     bookingId: string
   ) {
     event.preventDefault();
-    console.log(bookingId)
+    // console.log(bookingId)
     localStorage.setItem('bookingId', bookingId);
 
     if (typeof amount !== 'number' || amount <= 0 || !status || isNaN(this.vendor.price)) {
       this.toastr.error('Invalid payment amount or status. Please wait for quote price..');
-      console.error('Invalid payment amount or status:', amount, status);
+      // console.error('Invalid payment amount or status:', amount, status);
       return;
     }
 
@@ -122,7 +122,7 @@ export class TriggerBookingModalComponent {
 
   selectPaymentBrand(brand: string) {
     this.selectedBrand = brand;
-    console.log(this.selectedBrand);
+    // console.log(this.selectedBrand);
     this.showPaymentOptions = false;
     this.showPaymentForm = true;
     const details = this.paymentService.getPaymentDetails();
@@ -135,19 +135,19 @@ export class TriggerBookingModalComponent {
       this.partnerId = details.partnerId;
       this.oldQuotePrice = details.oldQuotePrice;
 
-      console.log('Payment Details:', {
-        amount: this.amount,
-        status: this.status,
-        partnerId: this.partnerId,
-        oldQuotePrice: this.oldQuotePrice,
-      });
+      // console.log('Payment Details:', {
+      //   amount: this.amount,
+      //   status: this.status,
+      //   partnerId: this.partnerId,
+      //   oldQuotePrice: this.oldQuotePrice,
+      // });
     } else {
-      console.log('No payment details available');
+      // console.log('No payment details available');
     }
 
     // Check if `amount` and `selectedBrand` are defined before proceeding
     if (this.amount && this.selectedBrand && userId) {
-      console.log(this.amount, this.selectedBrand);
+      // console.log(this.amount, this.selectedBrand);
       this.processPayment(this.amount, this.selectedBrand, userId);
     } else {
       this.toastr.error('Missing payment details');
@@ -155,7 +155,7 @@ export class TriggerBookingModalComponent {
   }
 
   processPayment(amount: number, paymentBrand: string, userId: any) {
-    console.log(amount, paymentBrand);
+    // console.log(amount, paymentBrand);
     this.checkout.createPayment(amount, paymentBrand, userId).subscribe(
       (data: any) => {
         this.checkoutId = data.id; // Adjust according to your response structure
@@ -214,8 +214,8 @@ export class TriggerBookingModalComponent {
   private updateBookingPaymentStatus() {
     const details = this.paymentService.getPaymentDetails();
     this.bookingId = localStorage.getItem('bookingId') || '';
-    console.log(details);
-    console.log(this.bookingId);
+    // console.log(details);
+    // console.log(this.bookingId);
 
     this.spinnerService.show();
     if (details.status == 'HalfPaid') {
@@ -237,14 +237,14 @@ export class TriggerBookingModalComponent {
           (response) => {
             this.spinnerService.hide();
             this.bookingInformation = true;
-            console.log(
-              'Booking payment status updated successfully:',
-              response
-            );
+            // console.log(
+            //   'Booking payment status updated successfully:',
+            //   response
+            // );
             this.paymentService.clearPaymentDetails();
           },
           (error) => {
-            console.error('Error updating booking payment status:', error);
+            // console.error('Error updating booking payment status:', error);
             this.spinnerService.hide();
             this.toastr.error(
               error.error?.message || 'Failed to update booking payment status',

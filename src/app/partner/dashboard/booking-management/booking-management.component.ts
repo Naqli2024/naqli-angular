@@ -66,7 +66,7 @@ export class BookingManagementComponent implements OnInit {
         catchError((error) => {
           this.spinnerService.hide();
           this.toastr.error('Failed to fetch partner details');
-          console.error('Error fetching partner details', error);
+          // console.error('Error fetching partner details', error);
           return of(null);
         })
       )
@@ -100,7 +100,7 @@ export class BookingManagementComponent implements OnInit {
       this.bookingService.getBookingsByBookingId(bookingId).pipe(
         catchError((error) => {
           this.toastr.error(`Failed to fetch booking details for ${bookingId}`);
-          console.error('Error fetching bookings', error);
+          // console.error('Error fetching bookings', error);
           return of(null);
         })
       )
@@ -124,7 +124,7 @@ export class BookingManagementComponent implements OnInit {
         this.userService.getUserById(userId).pipe(
           catchError((error) => {
             this.toastr.error(`Failed to fetch user details for ${userId}`);
-            console.error('Error fetching user details', error);
+            // console.error('Error fetching user details', error);
             return of(null);
           })
         )

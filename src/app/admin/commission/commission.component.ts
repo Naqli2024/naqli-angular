@@ -196,7 +196,7 @@ export class CommissionComponent implements OnInit {
       },
       error: (error) => {
         this.spinnerService.hide();
-        console.error('Edit Commission Error:', error);
+        // console.error('Edit Commission Error:', error);
         const errorMessage = error.error?.message || 'Failed to edit commission';
         this.toastr.error(errorMessage);
       },

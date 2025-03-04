@@ -78,7 +78,7 @@ export class PartnerBookingComponent implements OnInit {
       (error) => {
         this.spinnerService.hide();
         this.toastr.error('Failed to fetch partner details');
-        console.error('Error fetching partner details', error);
+        // console.error('Error fetching partner details', error);
       }
     );
   }
@@ -122,7 +122,7 @@ export class PartnerBookingComponent implements OnInit {
       (error) => {
         this.spinnerService.hide();
         this.toastr.error('Error fetching bookings', 'Error');
-        console.error('Error fetching bookings', error);
+        // console.error('Error fetching bookings', error);
       }
     );
   }
@@ -148,7 +148,7 @@ export class PartnerBookingComponent implements OnInit {
         (error) => {
           this.spinnerService.hide();
           this.toastr.error('Failed to fetch user details');
-          console.error('Error fetching user details', error);
+          // console.error('Error fetching user details', error);
         }
       );
     } else {

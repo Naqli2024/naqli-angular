@@ -25,12 +25,12 @@ export class ShowBookingDetailsComponent {
   ngOnInit() {
     this.bookingService.getBookingsByBookingId(this.bookingId).subscribe(
       (response) => {
-        console.log(response)
+        // console.log(response)
         this.booking = response.data;
-        console.log(this.booking)
+        // console.log(this.booking)
       },
       (error) => {
-        console.error('Error fetching bookings:', error);
+        // console.error('Error fetching bookings:', error);
       }
     )
   }

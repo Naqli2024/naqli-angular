@@ -57,6 +57,7 @@ export class TriggerBookingComponent {
     this.fetchBookings();
     // Optionally get the current payment status synchronously
     const currentStatus = this.paymentService.getPaymentStatus();
+    console.log('Current Payment Status:', currentStatus);
     if (currentStatus === 'Payment Successful!') {
       this.updateBookingPaymentStatus();
     }
@@ -206,6 +207,7 @@ export class TriggerBookingComponent {
 
   selectPaymentBrand(brand: string) {
     this.selectedBrand = brand;
+    console.log(this.selectedBrand);
     this.showPaymentOptions = false;
     this.showPaymentForm = true;
     const details = this.paymentService.getPaymentDetails();
@@ -218,18 +220,19 @@ export class TriggerBookingComponent {
       this.partnerId = details.partnerId;
       this.oldQuotePrice = details.oldQuotePrice;
 
-      // console.log('Payment Details:', {
-      //   amount: this.amount,
-      //   status: this.status,
-      //   partnerId: this.partnerId,
-      //   oldQuotePrice: this.oldQuotePrice,
-      // });
+      console.log('Payment Details:', {
+        amount: this.amount,
+        status: this.status,
+        partnerId: this.partnerId,
+        oldQuotePrice: this.oldQuotePrice,
+      });
     } else {
-      // console.log('No payment details available');
+      console.log('No payment details available');
     }
 
     // Check if `amount` and `selectedBrand` are defined before proceeding
     if (this.amount && this.selectedBrand && userId) {
+      console.log(this.amount, this.selectedBrand);
       this.processPayment(this.amount, this.selectedBrand, userId);
     } else {
       this.toastr.error('Missing payment details');
@@ -237,6 +240,7 @@ export class TriggerBookingComponent {
   }
 
   processPayment(amount: number, paymentBrand: string, userId: any) {
+    console.log(amount, paymentBrand);
     this.checkout.createPayment(amount, paymentBrand, userId).subscribe(
       (data: any) => {
         this.checkoutId = data.id; // Adjust according to your response structure
@@ -285,7 +289,8 @@ export class TriggerBookingComponent {
     script.integrity = this.integrity;
 
     script.onload = () => {
-      // console.log('Payment widget script loaded');
+      console.log('Payment widget script loaded');
+      console.log(this.checkoutId)
     };
 
     // Append script to body or a specific element where the form will be displayed
@@ -317,19 +322,19 @@ export class TriggerBookingComponent {
           (response) => {
             this.spinnerService.hide();
             this.bookingInformation = true;
-            console.log(
-              'Booking payment status updated successfully:',
-              response
-            );
+            // console.log(
+            //   'Booking payment status updated successfully:',
+            //   response
+            // );
             if (response && response.booking && response.booking._id) {
               // Call the second API to update the payment brand
               this.bookingService.updateBookingForPaymentBrand(response.booking._id, brand)
                 .subscribe(
                   (brandResponse) => {
-                    console.log('Booking payment brand updated successfully:', brandResponse);
+                    // console.log('Booking payment brand updated successfully:', brandResponse);
                   },
                   (brandError) => {
-                    console.error('Error updating booking payment brand:', brandError);
+                    // console.error('Error updating booking payment brand:', brandError);
                     this.toastr.error(
                       brandError.error?.message || 'Failed to update booking payment brand',
                       'Error'
@@ -337,14 +342,14 @@ export class TriggerBookingComponent {
                   }
                 );
             } else {
-              console.error('Invalid response structure:', response);
+              // console.error('Invalid response structure:', response);
               this.toastr.error('Failed to retrieve booking ID from the response', 'Error');
             }
             this.paymentService.clearPaymentDetails();
             localStorage.removeItem('paymentBrand');
           },
           (error) => {
-            console.error('Error updating booking payment status:', error);
+            // console.error('Error updating booking payment status:', error);
             this.spinnerService.hide();
             this.toastr.error(
               error.error?.message || 'Failed to update booking payment status',

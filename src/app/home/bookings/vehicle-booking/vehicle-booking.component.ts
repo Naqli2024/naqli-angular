@@ -111,7 +111,7 @@ export class VehicleBookingComponent implements OnInit {
         });
       },
       (error) => {
-        console.error('Error loading vehicles:', error);
+        // console.error('Error loading vehicles:', error);
         this.toastr.error('Failed to load vehicle data');
       }
     );

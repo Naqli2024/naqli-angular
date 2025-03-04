@@ -109,7 +109,6 @@ export class NaqleeUserComponent {
           this.spinnerService.hide();
           const errorMessage = error.error?.message || 'An error occurred';
           this.toastr.error(errorMessage);
-          console.log(errorMessage);
         }
       );
     } else {
@@ -126,7 +125,6 @@ export class NaqleeUserComponent {
           this.spinnerService.hide();
           const errorMessage = error.error?.message || 'An error occurred';
           this.toastr.error(errorMessage);
-          console.log(errorMessage);
         }
       );
     }

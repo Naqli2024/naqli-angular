@@ -39,6 +39,7 @@ export class EditProfilePartnerComponent implements OnInit {
     if (partnerId) {
       this.partnerService.getPartnerDetails(partnerId).subscribe(
         (partnerDetails) => {
+          console.log(partnerDetails)
           this.formData.partnerName = partnerDetails.data.partnerName;
           this.formData.partnerId = partnerDetails.data._id;
           this.originalPartnerName = partnerDetails.data.partnerName;
@@ -46,14 +47,16 @@ export class EditProfilePartnerComponent implements OnInit {
           this.formData.mobileNo = partnerDetails.data.mobileNo;
 
           if (partnerDetails.data.partnerProfile?.fileName) {
-            this.profilePhoto = `https://prod.naqlee.com:443/uploads/partnerProfile/${partnerDetails.data.partnerProfile.fileName}`;
+            const fileName = partnerDetails.data.partnerProfile.fileName;
+            this.profilePhoto = `https://prod.naqlee.com:443/uploads/partnerProfile/${fileName}`;
           }
         },
         (error) => {
-          console.error('Error fetching partner details:', error);
+          // console.error('Error fetching partner details:', error);
         }
       );
     }
+    // console.log("Profile Photo URL:", this.profilePhoto);
   }
 
   // Handle file selection for profile photo
@@ -74,7 +77,7 @@ export class EditProfilePartnerComponent implements OnInit {
         };
         reader.readAsDataURL(file); // Read the file as a Data URL for preview
       } else {
-        console.error('Invalid file type.');
+        // console.error('Invalid file type.');
       }
     }
   }
@@ -119,7 +122,6 @@ export class EditProfilePartnerComponent implements OnInit {
         this.toastr.success('Partner Profile Updated Successfully!');
       },
       (error) => {
-        console.error('Error updating partner profile:', error);
         this.toastr.error('Error updating profile');
       }
     );

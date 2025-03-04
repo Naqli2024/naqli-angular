@@ -89,7 +89,7 @@ export class BusBookingComponent implements OnInit {
         this.autocompleteService = new google.maps.places.AutocompleteService();
       })
       .catch((error) => {
-        console.error('Failed to load Google Maps script:', error);
+        // console.error('Failed to load Google Maps script:', error);
       });
   }
 
@@ -251,7 +251,7 @@ export class BusBookingComponent implements OnInit {
           });
         },
         (error) => {
-          console.error('Error getting user location:', error);
+          // console.error('Error getting user location:', error);
         }
       );
     } else {
@@ -409,7 +409,7 @@ export class BusBookingComponent implements OnInit {
                 const errorMessage =
                   error.error?.message || 'An error occurred';
                 this.toastr.error(errorMessage, 'Error');
-                console.log('Backend Error:', error);
+                // console.log('Backend Error:', error);
               }
             );
           },

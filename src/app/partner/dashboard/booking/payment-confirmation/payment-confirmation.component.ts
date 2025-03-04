@@ -54,16 +54,16 @@ export class PaymentConfirmationComponent implements OnInit {
       this.bookingService.getBookingsByBookingId(this.bookingId).subscribe(
         (data) => {
           this.bookingDetails = data.data;
-          console.log(this.bookingDetails)
+          // console.log(this.bookingDetails)
           if (this.bookingDetails.user) {
             // Call service method to fetch user details
             this.user$ = this.userService.getUserById(this.bookingDetails.user);
           } else {
-            console.error('User ID not found in booking details');
+            // console.error('User ID not found in booking details');
           }
         },
         (error) => {
-          console.error('Error fetching booking details:', error);
+          // console.error('Error fetching booking details:', error);
         }
       );
     });

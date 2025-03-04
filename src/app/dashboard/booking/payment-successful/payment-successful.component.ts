@@ -55,7 +55,7 @@ export class PaymentSuccessfulComponent {
           const resultCode = statusResponse.result.code;
           const resultDescription = statusResponse.result.description;
 
-          if (resultCode === '000.100.110') {
+          if (resultCode === '000.000.000') {
             this.paymentStatus = 'Payment Successful!';
             this.toastr.success(resultDescription);
             this.paymentService.setPaymentStatus(this.paymentStatus); // Set status in service
@@ -89,15 +89,15 @@ export class PaymentSuccessfulComponent {
           } else if (user.accountType === 'Super User') {
             this.router.navigate(['home/user/dashboard/super-user/trigger-booking']);
           } else {
-            console.error('Unknown account type:', user.accountType);
+            // console.error('Unknown account type:', user.accountType);
           }
         },
         (error) => {
-          console.error('Failed to fetch user details:', error);
+          // console.error('Failed to fetch user details:', error);
         }
       );
     } else {
-      console.error('No userId found in localStorage');
+      // console.error('No userId found in localStorage');
     }
   }
 }

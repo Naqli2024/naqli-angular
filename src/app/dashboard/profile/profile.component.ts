@@ -61,7 +61,8 @@ export class ProfileComponent {
       (response) => {
         this.partner = response.data;
         if (response.data.partnerProfile?.fileName) {
-          this.profilePhoto = `https://prod.naqlee.com:443/uploads/partnerProfile/${response.data.partnerProfile.fileName}`;
+          const fileName = response.data.partnerProfile.fileName;
+          this.profilePhoto = `https://prod.naqlee.com:443/uploads/partnerProfile/${fileName}`;
         }
       },
       (error) => {

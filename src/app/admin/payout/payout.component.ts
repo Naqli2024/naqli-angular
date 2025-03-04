@@ -53,7 +53,7 @@ export class PayoutComponent implements OnInit {
           const userRequests = bookings.map((booking) =>
             this.userService.getUserById(booking.user).pipe(
               catchError((error) => {
-                console.error(`Failed to fetch user ${booking.user}`, error);
+                // console.error(`Failed to fetch user ${booking.user}`, error);
                 return of(undefined);
               })
             )
@@ -63,10 +63,10 @@ export class PayoutComponent implements OnInit {
             booking.partner
               ? this.partnerService.getPartnerDetails(booking.partner).pipe(
                   catchError((error) => {
-                    console.error(
-                      `Failed to fetch partner ${booking.partner}`,
-                      error
-                    );
+                    // console.error(
+                    //   `Failed to fetch partner ${booking.partner}`,
+                    //   error
+                    // );
                     return of(undefined);
                   })
                 )

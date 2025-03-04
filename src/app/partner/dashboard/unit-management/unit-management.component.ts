@@ -105,7 +105,7 @@ export class UnitManagementComponent implements OnInit {
           this.filteredOperators = this.partnerDetails?.operators || []; // Initialize filteredOperators
         },
         (error) => {
-          console.error('Error fetching partner details:', error);
+          // console.error('Error fetching partner details:', error);
         }
       );
     }

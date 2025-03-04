@@ -26,17 +26,14 @@ export class VerifyEmailComponent {
     // Send request to backend API for verification
     this.http.get<any>(`https://prod.naqlee.com:443/api/verify-email?token=${token}`).subscribe(
       (response) => {
-        console.log('Verification response:', response);
         if (response.success) {
           this.openLoginModal();
         } else {
           // Handle unsuccessful verification
-          console.error('Email verification failed:', response.message);
           this.router.navigate(['/home/user']); 
         }
       },
       (error) => {
-        console.error('Error verifying email:', error);
         this.router.navigate(['/error']);
       }
     );
@@ -53,9 +50,9 @@ export class VerifyEmailComponent {
 
     // Example of handling modal dismissal
     modalRef.result.then((result) => {
-      console.log('Modal closed with result:', result);
+      // console.log('Modal closed with result:', result);
     }, (reason) => {
-      console.log('Modal dismissed with reason:', reason);
+      // console.log('Modal dismissed with reason:', reason);
     });
   }
 }

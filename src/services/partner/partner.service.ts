@@ -24,7 +24,7 @@ export class PartnerService {
   }
 
   checkPartnerExists(partnerName: string): Observable<boolean> {
-    console.log(partnerName);
+    // console.log(partnerName);
     const url = `${this.baseUrl}/${encodeURIComponent(partnerName)}`;
     return this.http.get<boolean>(url);
   }

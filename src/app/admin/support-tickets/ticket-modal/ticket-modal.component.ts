@@ -29,7 +29,6 @@ export class TicketModalComponent {
   }
 
   onDelete() {
-    console.log(this.ticketId)
     this.spinnerService.show();
     this.reportService.deleteTicket(this.ticketId).subscribe(
       (response) => {

@@ -182,7 +182,7 @@ export class InvoiceUserComponent {
             this.checkIfBookingIsComplete(booking);
           },
           (error) => {
-            console.error('Error fetching partner details', error);
+            // console.error('Error fetching partner details', error);
             this.toastr.error('Failed to fetch partner details');
           }
         );
@@ -194,7 +194,7 @@ export class InvoiceUserComponent {
             this.checkIfBookingIsComplete(booking);
           },
           (error) => {
-            console.error('Error fetching user details', error);
+            // console.error('Error fetching user details', error);
             this.toastr.error('Failed to fetch user details');
           }
         );
@@ -277,14 +277,14 @@ export class InvoiceUserComponent {
           if (printWindow) {
             printWindow.print(); // Trigger the print dialog in the new window
           } else {
-            console.error('Failed to open print window');
+            // console.error('Failed to open print window');
           }
         })
         .catch((error) => {
-          console.error('Error capturing element:', error);
+          // console.error('Error capturing element:', error);
         });
     } else {
-      console.error('Invoice container not found');
+      // console.error('Invoice container not found');
     }
   }
 }

@@ -103,7 +103,7 @@ export class OperatorManagementComponent {
           this.enableSubmitButton();
         },
         (error) => {
-          console.error('Error fetching partner details:', error);
+          // console.error('Error fetching partner details:', error);
         }
       );
     }

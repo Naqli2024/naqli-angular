@@ -70,7 +70,7 @@ export class UserDetailsComponent implements OnInit {
       (response) => {
         if (response.success) {
           this.bookingDetails = response.data;
-          console.log('Booking Details:', this.bookingDetails); // Debugging
+          // console.log('Booking Details:', this.bookingDetails); // Debugging
           this.getPartnerDetails(this.bookingDetails.partner);
         } else {
           this.spinnerService.hide();
@@ -117,7 +117,7 @@ export class UserDetailsComponent implements OnInit {
         partner: this.partnerDetails
       };
   
-      console.log('Combined Details:', this.combinedDetails);
+      // console.log('Combined Details:', this.combinedDetails);
     } else {
       this.combinedDetails = {
         booking: this.bookingDetails,

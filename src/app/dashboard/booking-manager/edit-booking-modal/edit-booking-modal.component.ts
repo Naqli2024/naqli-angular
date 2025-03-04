@@ -99,7 +99,7 @@ export class EditBookingModalComponent {
         this.autocompleteService = new google.maps.places.AutocompleteService();
       })
       .catch((error) => {
-        console.error('Failed to load Google Maps script:', error);
+        // console.error('Failed to load Google Maps script:', error);
       });
   }
 

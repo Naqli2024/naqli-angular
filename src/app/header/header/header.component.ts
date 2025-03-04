@@ -74,7 +74,7 @@ export class HeaderComponent implements OnInit {
     }
 
     if (!id) {
-      console.log('No user ID or partner ID found.');
+      // console.log('No user ID or partner ID found.');
       return;
     }
     this.notificationService.getNotificationById(id).subscribe(
@@ -168,16 +168,16 @@ export class HeaderComponent implements OnInit {
             .subscribe(
               (response) => {
                 this.notificationCount = 0;
-                console.log(
-                  `Notification ${notification.notificationId} marked as seen on the server`,
-                  response
-                );
+                // console.log(
+                //   `Notification ${notification.notificationId} marked as seen on the server`,
+                //   response
+                // );
               },
               (error) => {
-                console.error(
-                  `Error marking notification ${notification.notificationId} as seen`,
-                  error
-                );
+                // console.error(
+                //   `Error marking notification ${notification.notificationId} as seen`,
+                //   error
+                // );
               }
             );
         }
