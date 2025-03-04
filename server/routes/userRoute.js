@@ -27,7 +27,7 @@ const upload = multer({ storage: storage });
 router.post('/register', userRegisterValidation, userController.userRegister);
 router.post('/verify-otp', userController.verifyOTP);
 router.post('/resend-otp', userController.resendOTP);
-router.post('/login', userLoginValidation, userLoginValidation, userLogin);
+router.post('/login', userLoginValidation, userLogin);
 router.post('/forgot-password', forgotPasswordValidation, forgotPassword.forgotPassword);
 router.post('/verify-otp-update-password', forgotPassword.verifyOTPAndUpdatePassword);
 router.get('/users/:id', userController.getUserById);

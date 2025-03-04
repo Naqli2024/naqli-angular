@@ -98,7 +98,7 @@ export class MapService {
   
         },
         (error) => {
-          // console.error('Error getting user location:', error);
+          console.error('Error getting user location:', error);
         }
       );
     } else {

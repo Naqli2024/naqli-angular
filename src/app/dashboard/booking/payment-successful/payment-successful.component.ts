@@ -87,7 +87,7 @@ export class PaymentSuccessfulComponent {
           if (user.accountType === 'Single User') {
             this.router.navigate(['home/user/dashboard/booking']);
           } else if (user.accountType === 'Super User') {
-            this.router.navigate(['home/user/dashboard/super-user/trigger-booking']);
+            this.router.navigate(['home/user/dashboard/super-user/dashboard']);
           } else {
             // console.error('Unknown account type:', user.accountType);
           }
