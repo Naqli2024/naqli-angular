@@ -9,7 +9,7 @@ import { BookingService } from '../../../services/booking.service';
 import { UserService } from '../../../services/user.service';
 import { PartnerService } from '../../../services/partner/partner.service';
 import { forkJoin, of } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { TranslateModule } from '@ngx-translate/core';
@@ -17,6 +17,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TransactionInputComponent } from './transaction-input/transaction-input.component';
 import { jsPDF } from 'jspdf';
 import * as XLSX from 'xlsx';
+import { SpinnerService } from '../../../services/spinner.service';
 
 @Component({
   selector: 'app-payout',
@@ -41,64 +42,65 @@ export class PayoutComponent implements OnInit {
   constructor(
     private bookingService: BookingService,
     private userService: UserService,
-    private partnerService: PartnerService
+    private partnerService: PartnerService,
+    private spinnerService: SpinnerService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
+    this.spinnerService.show();
+
     this.bookingService
       .getAllBookings()
       .pipe(
         switchMap((bookings) => {
           this.bookings = bookings;
+          
+          if (!bookings.length) {
+            this.spinnerService.hide(); 
+            return of([]); 
+          }
+
           const userRequests = bookings.map((booking) =>
             this.userService.getUserById(booking.user).pipe(
-              catchError((error) => {
-                // console.error(`Failed to fetch user ${booking.user}`, error);
-                return of(undefined);
-              })
+              catchError(() => of(undefined)) 
             )
           );
 
           const partnerRequests = bookings.map((booking) =>
             booking.partner
               ? this.partnerService.getPartnerDetails(booking.partner).pipe(
-                  catchError((error) => {
-                    // console.error(
-                    //   `Failed to fetch partner ${booking.partner}`,
-                    //   error
-                    // );
-                    return of(undefined);
-                  })
+                  catchError(() => of(undefined)) 
                 )
               : of(undefined)
           );
 
           return forkJoin([...userRequests, ...partnerRequests]);
-        })
+        }),
+        finalize(() => this.spinnerService.hide()) 
       )
-      .subscribe((results) => {
-        const userResults = results.slice(0, this.bookings.length) as (
-          | any
-          | undefined
-        )[];
-        const partnerResults = results.slice(this.bookings.length) as (
-          | { success: boolean; data: any }
-          | undefined
-        )[];
+      .subscribe(
+        (results) => {
+          const userResults = results.slice(0, this.bookings.length) as (any | undefined)[];
+          const partnerResults = results.slice(this.bookings.length) as ({ success: boolean; data: any } | undefined)[];
 
-        userResults.forEach((user, index) => {
-          if (user) this.users[this.bookings[index].user] = user;
-        });
+          userResults.forEach((user, index) => {
+            if (user) this.users[this.bookings[index].user] = user;
+          });
 
-        partnerResults.forEach((partnerResponse, index) => {
-          if (partnerResponse && partnerResponse.success) {
-            this.partners[this.bookings[index].partner] = partnerResponse.data;
-          }
-        });
+          partnerResults.forEach((partnerResponse, index) => {
+            if (partnerResponse && partnerResponse.success) {
+              this.partners[this.bookings[index].partner] = partnerResponse.data;
+            }
+          });
 
-        // Initially load all bookings
-        this.filteredBookings = this.bookings;
-      });
+          this.filteredBookings = this.bookings; // Load all bookings initially
+        },
+        (error) => {
+          console.error('Error fetching bookings:', error);
+          this.toastr.error('Failed to load booking details', 'Error');
+        }
+      );
 
     // Set default to 'All' tab to show all bookings
     this.selectTimeRange('all');

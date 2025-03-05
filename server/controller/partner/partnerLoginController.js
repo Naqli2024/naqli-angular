@@ -60,10 +60,10 @@ const partnerLogin = async (req, res) => {
 
       // Generate token
       const token = jwt.sign(
-        { partnerId: existPartner._id },
+        { partnerId: existPartner._id.toString() },
         process.env.JSON_WEB_TOKEN,
         {
-          expiresIn: "365d",
+          expiresIn: "1d",
         }
       );
 
@@ -76,7 +76,6 @@ const partnerLogin = async (req, res) => {
         },
       });
     } catch (error) {
-      console.error("Login error:", error.message);
       return res.status(500).send({
         message: error.message,
         success: false,

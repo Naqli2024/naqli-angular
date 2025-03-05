@@ -5,42 +5,62 @@ import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { finalize } from 'rxjs';
+import { SpinnerService } from '../../../services/spinner.service';
 
 @Component({
   selector: 'app-partner-admin',
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './partner-admin.component.html',
-  styleUrl: './partner-admin.component.css'
+  styleUrl: './partner-admin.component.css',
 })
-
 export class PartnerAdminComponent {
   partners: Partner[] = [];
-  options: string[] = ['MoreOptions', 'BlockPartner', 'SuspendPartner', 'ReactivatePartner'];
+  options: string[] = [
+    'MoreOptions',
+    'BlockPartner',
+    'SuspendPartner',
+    'ReactivatePartner',
+  ];
   isAllSelected: boolean = false; // Track the "Select All" checkbox state
 
-  constructor(private partnerService: PartnerService, private toastr: ToastrService) {}
+  constructor(
+    private partnerService: PartnerService,
+    private toastr: ToastrService,
+    private spinnerService: SpinnerService
+  ) {}
 
   ngOnInit(): void {
     this.loadPartners();
   }
 
   loadPartners(): void {
-    this.partnerService.getAllPartners().subscribe((response: any) => {
-      if (response && response.data) {
-        this.partners = response.data;
-        this.updateSelectAllState(); // Update "Select All" checkbox state after loading partners
-      } else {
-        // console.error('Invalid response format from backend');
-      }
-    }, error => {
-      // console.error('Error fetching partner details:', error);
-    });
+    this.spinnerService.show();
+
+    this.partnerService
+      .getAllPartners()
+      .pipe(finalize(() => this.spinnerService.hide()))
+      .subscribe(
+        (response: any) => {
+          if (response && response.data) {
+            this.partners = response.data;
+            this.updateSelectAllState();
+          } else {
+            this.toastr.error('Invalid response format from backend', 'Error');
+          }
+        },
+        (error) => {
+          this.toastr.error('Error fetching partner details', 'Error');
+        }
+      );
   }
 
   onActionSelected(event: any): void {
     const action = (event.target as HTMLSelectElement).value;
-    const selectedPartners = this.partners.filter(partner => partner.selected);
+    const selectedPartners = this.partners.filter(
+      (partner) => partner.selected
+    );
 
     if (selectedPartners.length === 0) {
       this.toastr.error('Please select at least one partner.');
@@ -55,7 +75,10 @@ export class PartnerAdminComponent {
         this.updatePartnerStatus(selectedPartners, { isSuspended: true });
         break;
       case 'Reactivate Partner':
-        this.updatePartnerStatus(selectedPartners, { isBlocked: false, isSuspended: false });
+        this.updatePartnerStatus(selectedPartners, {
+          isBlocked: false,
+          isSuspended: false,
+        });
         break;
       default:
         break;
@@ -63,7 +86,9 @@ export class PartnerAdminComponent {
   }
 
   updatePartnerStatus(partners: Partner[], status: any): void {
-    const updateRequests = partners.map(partner => this.partnerService.updatePartnerStatus(partner._id, status).toPromise());
+    const updateRequests = partners.map((partner) =>
+      this.partnerService.updatePartnerStatus(partner._id, status).toPromise()
+    );
     Promise.all(updateRequests).then(
       () => {
         this.toastr.success('Partner status updated successfully.');
@@ -78,11 +103,13 @@ export class PartnerAdminComponent {
 
   toggleSelectAll(event: any): void {
     const isChecked = event.target.checked;
-    this.partners.forEach(partner => partner.selected = isChecked);
+    this.partners.forEach((partner) => (partner.selected = isChecked));
     this.isAllSelected = isChecked;
   }
 
   updateSelectAllState(): void {
-    this.isAllSelected = this.partners.length > 0 && this.partners.every(partner => partner.selected);
+    this.isAllSelected =
+      this.partners.length > 0 &&
+      this.partners.every((partner) => partner.selected);
   }
 }

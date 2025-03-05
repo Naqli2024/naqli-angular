@@ -114,12 +114,6 @@ export class BookingComponent implements OnInit {
       this.initializeMap();
     };
 
-    // Optionally get the current payment status synchronously
-    const currentStatus = this.paymentService.getPaymentStatus();
-    if (currentStatus === 'Payment Successful!') {
-      this.updateBookingPaymentStatus();
-    }
-
     // Define the wpwlOptions in TypeScript
     window['wpwlOptions'] = {
       billingAddress: {},
@@ -641,64 +635,6 @@ export class BookingComponent implements OnInit {
 
     // Append script to body or a specific element where the form will be displayed
     document.body.appendChild(script);
-  }
-
-  private updateBookingPaymentStatus() {
-    const details = this.paymentService.getPaymentDetails();
-    const brand = localStorage.getItem('paymentBrand') ?? 'Unknown';
-
-    this.spinnerService.show();
-    if (details.status == 'HalfPaid') {
-      this.totalAmount = details.amount * 2;
-    } else {
-      this.totalAmount = details.amount;
-    }
-    if (details.partnerId && details.oldQuotePrice && this.bookingId) {
-      this.bookingService
-        .updateBookingPaymentStatus(
-          this.bookingId,
-          details.status,
-          details.amount,
-          details.partnerId,
-          this.totalAmount,
-          details.oldQuotePrice
-        )
-        .subscribe(
-          (response) => {
-            this.spinnerService.hide();
-            this.bookingInformation = true;
-            if (response && response.booking && response.booking._id) {
-              // Call the second API to update the payment brand
-              this.bookingService.updateBookingForPaymentBrand(response.booking._id, brand)
-                .subscribe(
-                  (brandResponse) => {
-                    // console.log('Booking payment brand updated successfully:', brandResponse);
-                  },
-                  (brandError) => {
-                    // console.error('Error updating booking payment brand:', brandError);
-                    this.toastr.error(
-                      brandError.error?.message || 'Failed to update booking payment brand',
-                      'Error'
-                    );
-                  }
-                );
-            } else {
-              // console.error('Invalid response structure:', response);
-              this.toastr.error('Failed to retrieve booking ID from the response', 'Error');
-            }
-            this.paymentService.clearPaymentDetails();
-            localStorage.removeItem('paymentBrand');
-          },
-          (error) => {
-            // console.error('Error updating booking payment status:', error);
-            this.spinnerService.hide();
-            this.toastr.error(
-              error.error?.message || 'Failed to update booking payment status',
-              'Error'
-            );
-          }
-        );
-    }
   }
 
   getBookings(bookingId: string): void {

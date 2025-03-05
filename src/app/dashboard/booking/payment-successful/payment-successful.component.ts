@@ -9,6 +9,7 @@ import { PaymentService } from '../../../../services/payment.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '../../../../services/user.service';
 import { PaymentNotificationService } from '../../../../services/payment-notification.service';
+import { BookingService } from '../../../../services/booking.service';
 
 @Component({
   selector: 'app-payment-successful',
@@ -29,7 +30,8 @@ export class PaymentSuccessfulComponent {
     private paymentService: PaymentService,
     private spinnerService: SpinnerService,
     private userService: UserService,
-    private paymentNotificationService: PaymentNotificationService
+    private paymentNotificationService: PaymentNotificationService,
+    private bookingService: BookingService
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +61,8 @@ export class PaymentSuccessfulComponent {
             this.paymentStatus = 'Payment Successful!';
             this.toastr.success(resultDescription);
             this.paymentService.setPaymentStatus(this.paymentStatus); // Set status in service
+            // Call updateBookingPaymentStatus before navigating
+            this.updateBookingPaymentStatus();
           } else {
             this.paymentStatus = 'Payment failed. Please try again.';
             this.toastr.error(resultDescription || 'Payment failed.');
@@ -77,6 +81,53 @@ export class PaymentSuccessfulComponent {
         this.paymentService.setPaymentStatus(this.paymentStatus); // Set status in service
       }
     );
+  }
+
+  private updateBookingPaymentStatus() {
+    const details = this.paymentService.getPaymentDetails();
+    const bookingId = localStorage.getItem('bookingId') || details.bookingId;
+    const brand = localStorage.getItem('paymentBrand') ?? 'Unknown';
+    const totalAmount = details.status === 'HalfPaid' ? details.amount * 2 : details.amount;
+    const oldQuotePrice = details.oldQuotePrice || 0
+
+    if (details.partnerId && bookingId) {
+      this.bookingService
+        .updateBookingPaymentStatus(
+          bookingId,
+          details.status,
+          details.amount,
+          details.partnerId,
+          totalAmount,
+          oldQuotePrice
+        )
+        .subscribe(
+          (response) => {
+            this.spinnerService.hide();
+            if (response?.booking?._id) {
+              this.bookingService.updateBookingForPaymentBrand(response.booking._id, brand).subscribe(
+                () => {},
+                (brandError) => {
+                  this.toastr.error(
+                    brandError.error?.message || 'Failed to update booking payment brand',
+                    'Error'
+                  );
+                }
+              );
+            } else {
+              this.toastr.error('Failed to retrieve booking ID from the response', 'Error');
+            }
+            this.paymentService.clearPaymentDetails();
+            localStorage.removeItem('paymentBrand');
+          },
+          (error) => {
+            this.spinnerService.hide();
+            this.toastr.error(
+              error.error?.message || 'Failed to update booking payment status',
+              'Error'
+            );
+          }
+        );
+    }
   }
 
   goToDashboard() {
