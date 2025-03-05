@@ -61,7 +61,7 @@ const merchantTransactionId = Array(24)
 
   const options = {
     port: 443,
-    host: "eu-test.oppwa.com",
+    host: "eu-prod.oppwa.com",
     path: path,
     method: "POST",
     headers: {
@@ -113,7 +113,7 @@ const getPaymentStatus = async (checkoutId, paymentBrand) => {
 
   const options = {
     port: 443,
-    host: "eu-test.oppwa.com",
+    host: "eu-prod.oppwa.com",
     path: path,
     method: "GET",
     headers: {
