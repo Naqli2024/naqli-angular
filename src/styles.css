@@ -533,6 +533,11 @@ body {
     border-bottom: 1px solid #000000;
     overflow-y: scroll;
   }
+  .forgot-password {
+    text-decoration: none;
+    color: #6a66d1;
+    text-align: right !important;
+  }
 }
 @media (max-width: 576px) {
   .left-logo img {
@@ -641,7 +646,6 @@ mdb-carousel-item img {
   gap: 20px;
   border-radius: 10px;
   position: relative;
-  z-index: 1;
 }
 .home-body-1 > div {
   width: calc(33.33% - 40px);
@@ -2353,6 +2357,13 @@ input {
   text-align: center;
   width: 300px !important;
 }
+@media (max-width: 768px) {
+.partner-login-options a,
+.partner-login-options i {
+  font-weight: bold;
+  font-size: 15px !important;
+}
+}
 
 /*******************Partner register form********************/
 .full-height-partner-container {
@@ -3817,6 +3828,11 @@ table .make-disable.disabled td:not(:first-child) {
   border-radius: 12px !important;
   font-size: 14px !important;
 }
+@media (max-width: 768px) {
+  .new-unit p {
+    text-align: left !important;
+  }
+}
 /***************Operator Management****************/
 .add-operator {
   width: 100% !important;
@@ -5223,5 +5239,12 @@ h1 {
   .delete-account-info-icon i {
     margin-top: 15px;
     margin-left: 10px;
+  }
+}
+
+/***********Partner dashboard page***********/
+@media (max-width: 768px) {
+  .operator-list h6 p {
+    text-align: left;
   }
 }

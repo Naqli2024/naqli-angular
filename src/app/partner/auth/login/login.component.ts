@@ -45,7 +45,7 @@ export class LoginComponent {
             this.router.navigate(['home/partner/dashboard']);
           } else if (response.data.partner.type === 'multipleUnits') {
             this.router.navigate([
-              'home/partner/dashboard/multiple-unit-dashboard',
+              'home/partner/dashboard/bookings',
             ]);
           }
         } else {

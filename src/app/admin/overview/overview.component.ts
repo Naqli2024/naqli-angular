@@ -33,6 +33,15 @@ export class OverviewComponent implements OnInit {
   constructor(private bookingService: BookingService) {}
 
   ngOnInit(): void {
+    if (!sessionStorage.getItem('pageReloaded')) {
+      sessionStorage.setItem('pageReloaded', 'true');
+      window.location.reload();
+    } else {
+      this.fetchBookings();
+    }
+  }
+  
+  fetchBookings() {
     this.bookingService.getAllBookings().subscribe((response) => {
       this.bookings = response;
       this.filterBookingsAndCount();
