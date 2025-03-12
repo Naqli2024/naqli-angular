@@ -153,6 +153,7 @@ const userRegister = async (req, res) => {
 
 // Function to send OTP to the user's contact number
 const sendOTP = async (contactNumber, otp) => {
+
   // Convert the number to a string for manipulation
   let contactNumberStr = contactNumber.toString();
 
@@ -184,7 +185,6 @@ const sendOTP = async (contactNumber, otp) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("OTP sent successfully:", response);
     if (response.data) {
       return { success: true, data: response.data };
     } else {

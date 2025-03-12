@@ -5,6 +5,7 @@ const Commission = require("../../Models/commissionModel");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const twilio = require("twilio");
+const { default: axios } = require("axios");
 
 /*****************************************
             Partner registration
@@ -20,7 +21,8 @@ const partnerRegister = async (req, res) => {
     // Check if partner selected "enterprise" as the type
     if (req.body.type === "enterprise") {
       return res.status(400).json({
-        message: "The 'Enterprise' partner type is currently unavailable. This feature will be available in upcoming releases.",
+        message:
+          "The 'Enterprise' partner type is currently unavailable. This feature will be available in upcoming releases.",
         success: false,
         data: null,
       });
@@ -54,6 +56,15 @@ const partnerRegister = async (req, res) => {
     try {
       const otpResponse = await sendOTP(req.body.mobileNo, otp);
 
+      if (!otpResponse.success) {
+        console.error("OTP sending failed:", otpResponse.message);
+        return res.status(500).json({
+          message: "Partner created but failed to send OTP.",
+          success: false,
+          data: otpResponse.message,
+        });
+      }
+
       res.status(200).json({
         message: "Partner created successfully. OTP sent to mobile number.",
         success: true,
@@ -63,10 +74,11 @@ const partnerRegister = async (req, res) => {
         },
       });
     } catch (otpError) {
+      console.error("OTP sending failed:", otpError);
       res.status(500).json({
         message: "Partner created but failed to send OTP.",
         success: false,
-        data: null,
+        data: otpError.message || null,
       });
     }
   } catch (error) {
@@ -700,14 +712,13 @@ const assignOperator = async (req, res) => {
             Send OTP 
  *****************************************/
 
-// Function to send OTP to the partner's mobile number 
+// Function to send OTP to the partner's mobile number
 const sendOTP = async (mobileNo, otp) => {
-
   // Convert the number to a string for manipulation
   let contactNumberStr = mobileNo.toString();
 
-  if (!contactNumberStr.startsWith('966')) {
-    contactNumberStr = '966' + contactNumberStr.replace(/^0/, ''); // Remove leading 0 and add '966'
+  if (!contactNumberStr.startsWith("966")) {
+    contactNumberStr = "966" + contactNumberStr.replace(/^0/, ""); // Remove leading 0 and add '966'
   }
 
   // Set the API URL and the token
@@ -729,21 +740,23 @@ const sendOTP = async (mobileNo, otp) => {
   };
 
   try {
-     const response = await axios.post(`${apiUrl}/msgs/sms`, data, {
-         headers: {
-           Authorization: `Bearer ${apiToken}`,
-           "Content-Type": "application/json",
-         },
-       });
-       console.log("OTP sent successfully:", response);
-       if (response.data) {
-        return { success: true, data: response.data };
-      } else {
-        return { success: false, message: "Failed to send OTP" };
-      }
+    const response = await axios.post(`${apiUrl}/msgs/sms`, data, {
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (response && response.data) {
+      return { success: true, data: response.data };
+    } else {
+      return { success: false, message: "Failed to send OTP" };
+    }
   } catch (error) {
-    console.error("Error sending OTP:", error.response.data);
-    throw new Error("Failed to send OTP");
+    return {
+      success: false,
+      message: "Failed to send OTP",
+      error: error.response?.data || error.message,
+    };
   }
 };
 
@@ -849,13 +862,8 @@ const verifyOTP = async (req, res) => {
 const editPartner = async (req, res) => {
   try {
     const { partnerId } = req.params;
-    const {
-      partnerName,
-      email,
-      password,
-      confirmPassword,
-      mobileNo,
-    } = req.body;
+    const { partnerName, email, password, confirmPassword, mobileNo } =
+      req.body;
 
     // Password validation (if present)
     if (password || confirmPassword) {
@@ -877,7 +885,7 @@ const editPartner = async (req, res) => {
       partnerName,
       email,
       mobileNo,
-      partnerProfile
+      partnerProfile,
     };
 
     if (password) {
@@ -892,17 +900,23 @@ const editPartner = async (req, res) => {
     });
 
     // Find and update the existing partner
-    const editedPartner = await partner.findByIdAndUpdate(partnerId, updatePartner, {
-      new: true, 
-    });
+    const editedPartner = await partner.findByIdAndUpdate(
+      partnerId,
+      updatePartner,
+      {
+        new: true,
+      }
+    );
 
     if (!editedPartner) {
       return res.status(404).json({ message: "Partner not found" });
     }
 
-    return res.status(200).json({ message: "Partner Profile Updated!", data: editedPartner });
+    return res
+      .status(200)
+      .json({ message: "Partner Profile Updated!", data: editedPartner });
   } catch (error) {
-    console.error(error);  // For debugging
+    console.error(error); // For debugging
     return res.status(500).json({ message: "Server Error" });
   }
 };

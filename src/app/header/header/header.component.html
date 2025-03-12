@@ -12,6 +12,8 @@
           [routerLink]="'/home/user'"
           routerLinkActive="active"
           class="nav-link"
+          [class.active]="activeTab === 'User'"
+          (click)="setActiveTab('User')"
         >
           {{ "NAVBAR.USER" | translate }}
         </a>
@@ -20,6 +22,8 @@
           [routerLink]="'/home/partner'"
           routerLinkActive="active"
           class="nav-link"
+          [class.active]="activeTab === 'Partner'"
+          (click)="setActiveTab('Partner')"
         >
           {{ "NAVBAR.PARTNER" | translate }}
         </a>

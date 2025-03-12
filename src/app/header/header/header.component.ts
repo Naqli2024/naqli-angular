@@ -46,6 +46,7 @@ export class HeaderComponent implements OnInit {
   newNotification: number = 0;
   private languageService = inject(LanguageService);
   isAdmin: boolean = false;
+  activeTab: string = 'User';
 
   constructor(
     private modalService: NgbModal,
@@ -59,6 +60,7 @@ export class HeaderComponent implements OnInit {
     this.updateUserState();
     this.getNotificationById();
     this.selectedLanguage = localStorage.getItem('language') || 'en';
+    this.updateActiveTab();
   }
 
   getNotificationById() {
@@ -69,7 +71,7 @@ export class HeaderComponent implements OnInit {
     if (userId) {
       this.userService.getUserById(userId).subscribe((user: any) => {
         this.userDetails = user;
-        this.isAdmin = user.isAdmin; 
+        this.isAdmin = user.isAdmin;
       });
     }
 
@@ -131,6 +133,18 @@ export class HeaderComponent implements OnInit {
     this.updateUserState();
   }
 
+  updateActiveTab() {
+    if (localStorage.getItem('partnerId')) {
+      this.activeTab = 'Partner';
+    } else if (localStorage.getItem('userId')) {
+      this.activeTab = 'User';
+    }
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
+  }
+
   @HostListener('document:click', ['$event'])
   clickOutside(event: MouseEvent) {
     const headerElement = document.querySelector('.navbar');
@@ -151,17 +165,17 @@ export class HeaderComponent implements OnInit {
 
   toggleNotificationDropdown() {
     this.isNotificationsDropdownOpen = !this.isNotificationsDropdownOpen;
-    
+
     // Reset the new notification count
     if (this.isNotificationsDropdownOpen) {
       this.newNotification = 0;
-  
+
       // Mark notifications as seen and update the count for new notifications
       this.notifications.forEach((notification) => {
         if (notification.seen === false) {
           // Increment newNotification count for unseen notifications
           this.newNotification++;
-          
+
           // Call API to update the seen status of the notification
           this.notificationService
             .updateNotificationSeen(notification.notificationId, true)
@@ -219,4 +233,4 @@ export class HeaderComponent implements OnInit {
       );
     }
   }
- }
+}
