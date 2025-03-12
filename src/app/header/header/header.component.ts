@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { LoginComponent } from '../../auth/login/login.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NotificationService } from '../../../services/admin/notification.service';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -60,6 +60,25 @@ export class HeaderComponent implements OnInit {
     this.updateUserState();
     this.getNotificationById();
     this.selectedLanguage = localStorage.getItem('language') || 'en';
+    this.updateActiveTab(); // Set active tab on component load
+
+    // Listen for route changes and update active tab dynamically
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.updateActiveTab();
+      }
+    });
+
+    // Listen for user change (detecting login switch)
+    window.addEventListener('storage', () => {
+      this.handleStorageChange();
+    });
+  }
+
+  // Function to handle changes (user switch)
+  handleStorageChange() {
+    this.updateUserState();
+    this.getNotificationById();
     this.updateActiveTab();
   }
 
@@ -67,6 +86,10 @@ export class HeaderComponent implements OnInit {
     const userId = localStorage.getItem('userId');
     const partnerId = localStorage.getItem('partnerId');
     const id = userId || partnerId; // Use userId if it exists, otherwise use partnerId
+
+    // Clear previous notifications when switching users
+    this.notifications = [];
+    this.notificationCount = 0;
 
     if (userId) {
       this.userService.getUserById(userId).subscribe((user: any) => {
@@ -76,7 +99,6 @@ export class HeaderComponent implements OnInit {
     }
 
     if (!id) {
-      // console.log('No user ID or partner ID found.');
       return;
     }
     this.notificationService.getNotificationById(id).subscribe(
@@ -92,7 +114,7 @@ export class HeaderComponent implements OnInit {
 
         // Filter notifications where seen is false and count them
         this.notificationCount = this.notifications.filter((notification) => {
-          if (notification.seen === false) {
+          if (!notification.seen) {
             this.newNotification++; // Increment the newNotification counter
             return true; // Return true to keep this notification in the filtered array
           }
@@ -107,14 +129,29 @@ export class HeaderComponent implements OnInit {
 
   updateUserState() {
     const token = localStorage.getItem('authToken');
-
-    if (token) {
+    const userId = localStorage.getItem('userId');
+    const partnerId = localStorage.getItem('partnerId');
+  
+    if (token && (userId || partnerId)) {
       this.isAuthenticated = true;
-      this.firstName = localStorage.getItem('firstName');
-      this.lastName = localStorage.getItem('lastName');
-      this.partnerName = localStorage.getItem('partnerName');
+      
+      if (userId) {
+        this.firstName = localStorage.getItem('firstName') || '';
+        this.lastName = localStorage.getItem('lastName') || '';
+        this.partnerName = ''; // Reset partner name if logged in as a user
+      } else if (partnerId) {
+        this.partnerName = localStorage.getItem('partnerName') || '';
+        this.firstName = '';
+        this.lastName = '';
+      }
     } else {
+      // If not authenticated, reset all values
       this.isAuthenticated = false;
+      this.firstName = '';
+      this.lastName = '';
+      this.partnerName = '';
+      this.notifications = [];
+      this.notificationCount = 0;
     }
   }
 
@@ -122,6 +159,9 @@ export class HeaderComponent implements OnInit {
     const currentUrl = this.router.url;
     localStorage.clear();
     sessionStorage.clear();
+
+    this.notifications = []; // Clear notifications in component state
+    this.notificationCount = 0; // Reset notification count
 
     // Navigate to the current active route
     if (currentUrl.includes('user')) {
@@ -134,10 +174,15 @@ export class HeaderComponent implements OnInit {
   }
 
   updateActiveTab() {
-    if (localStorage.getItem('partnerId')) {
+    const partnerId = localStorage.getItem('partnerId');
+    const userId = localStorage.getItem('userId');
+
+    if (partnerId) {
       this.activeTab = 'Partner';
-    } else if (localStorage.getItem('userId')) {
+    } else if (userId) {
       this.activeTab = 'User';
+    } else {
+      this.activeTab = '';
     }
   }
 
@@ -172,7 +217,7 @@ export class HeaderComponent implements OnInit {
 
       // Mark notifications as seen and update the count for new notifications
       this.notifications.forEach((notification) => {
-        if (notification.seen === false) {
+        if (!notification.seen) {
           // Increment newNotification count for unseen notifications
           this.newNotification++;
 

@@ -126,6 +126,10 @@ export class BookingComponent implements OnInit {
         street2: false,
       },
     };
+    if (!sessionStorage.getItem('booking')) {
+      sessionStorage.setItem('booking', 'true');
+      window.location.reload();
+    }
   }
 
   ngAfterViewInit(): void {

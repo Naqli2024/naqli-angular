@@ -70,6 +70,10 @@ export class SuperUserDashboardComponent {
     this.languageService.currentLanguage$.subscribe((lang) => {
       this.translateStatuses(lang); 
     });
+    if (!sessionStorage.getItem('booking')) {
+      sessionStorage.setItem('booking', 'true');
+      window.location.reload();
+    }
   }
 
   // Method to translate booking statuses

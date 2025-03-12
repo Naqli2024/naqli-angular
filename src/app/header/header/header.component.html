@@ -10,7 +10,6 @@
       <ng-container *ngIf="!isAdmin">
         <a
           [routerLink]="'/home/user'"
-          routerLinkActive="active"
           class="nav-link"
           [class.active]="activeTab === 'User'"
           (click)="setActiveTab('User')"
@@ -20,7 +19,6 @@
         <span class="vertical-line"></span>
         <a
           [routerLink]="'/home/partner'"
-          routerLinkActive="active"
           class="nav-link"
           [class.active]="activeTab === 'Partner'"
           (click)="setActiveTab('Partner')"
@@ -84,7 +82,7 @@
               <b>{{ notification.messageTitle }}</b
               >: &nbsp;<span>{{ notification.messageBody }}</span> &nbsp;<span
                 style="color: green; text-align: right; background: #e8e8e8"
-                *ngIf="notification.seen === false"
+                *ngIf="!notification.seen"
                 >New</span
               >
             </div>
@@ -117,17 +115,30 @@
   <!-- Hamburger menu content -->
   <div class="hamburger-menu" [class.active]="isMenuOpen">
     <div class="hamburger-centered-links" (click)="logout()">
-      <a [routerLink]="'/home/user'" routerLinkActive="active" class="nav-link">
-        {{ "NAVBAR.USER" | translate }}
-      </a>
-      <span class="vertical-line"></span>
-      <a
-        [routerLink]="'/home/partner'"
-        routerLinkActive="active"
-        class="nav-link"
-      >
-        {{ "NAVBAR.PARTNER" | translate }}
-      </a>
+      <ng-container *ngIf="!isAdmin">
+        <a
+          [routerLink]="'/home/user'"
+          class="nav-link"
+          [class.active]="activeTab === 'User'"
+          (click)="setActiveTab('User')"
+        >
+          {{ "NAVBAR.USER" | translate }}
+        </a>
+        <span class="vertical-line"></span>
+        <a
+          [routerLink]="'/home/partner'"
+          class="nav-link"
+          [class.active]="activeTab === 'Partner'"
+          (click)="setActiveTab('Partner')"
+        >
+          {{ "NAVBAR.PARTNER" | translate }}
+        </a>
+      </ng-container>
+      <ng-container *ngIf="isAdmin">
+        <a class="nav-link">
+          <b>{{ "Admin" | translate }}</b>
+        </a>
+      </ng-container>
     </div>
 
     <div class="hamburger-sub-links">

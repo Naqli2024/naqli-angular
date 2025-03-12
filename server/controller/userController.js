@@ -157,6 +157,9 @@ const sendOTP = async (contactNumber, otp) => {
   // Convert the number to a string for manipulation
   let contactNumberStr = contactNumber.toString();
 
+   // Remove any "+" at the start
+   contactNumberStr = contactNumberStr.replace(/^\+/, "");
+
   if (!contactNumberStr.startsWith("966")) {
     contactNumberStr = "966" + contactNumberStr.replace(/^0/, ""); // Remove leading 0 and add '966'
   }
