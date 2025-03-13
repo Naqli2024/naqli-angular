@@ -3570,12 +3570,12 @@ table .make-disable.disabled td:not(:first-child) {
   width: 100%;
   margin: 0;
   padding: 0;
-  position: relative;
+  /* position: relative; */
   height: 80vh;
 }
 .company-details-form-2 {
   padding: 30px 80px !important;
-  margin-top: -260px !important;
+  margin-top: 60px !important;
 }
 .col-form-label-1 {
   margin: 35px 0px;
@@ -3594,8 +3594,8 @@ table .make-disable.disabled td:not(:first-child) {
     overflow-y: scroll !important;
   }
   .company-details-form-2 {
-    padding: 30px 80px !important;
-    margin-top: -300px !important;
+    padding: 30px 30px !important;
+    margin-top: 30px !important;
   }
   .company-details-btn {
     display: flex;
