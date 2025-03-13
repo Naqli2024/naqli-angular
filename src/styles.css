@@ -2438,7 +2438,7 @@ input {
 
 @media (max-width: 768px) {
   .partner-operator-form {
-    margin-top: -300px !important;
+    margin-top: 20px !important;
     padding: 5px 20px !important;
   }
 }
