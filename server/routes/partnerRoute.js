@@ -77,5 +77,6 @@ router.put(
   upload.single("partnerProfile"),
   partnerController.editPartner
 );
+router.put("/edit-company-details/:partnerId", partnerController.editCompanyDetails);
 
 module.exports = router;

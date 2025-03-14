@@ -13,7 +13,7 @@
                 type="text"
                 class="form-control"
                 name="companyName"
-                placeholder="Company Name"
+                [placeholder]="'Company Name' | translate"
                 [(ngModel)]="companyDetails.companyName"
               />
             </div>
@@ -22,7 +22,7 @@
                 type="text"
                 class="form-control"
                 name="legalName"
-                placeholder="Legal Name"
+                [placeholder]="'Legal Name' | translate"
                 [(ngModel)]="companyDetails.legalName"
               />
             </div>
@@ -34,7 +34,7 @@
                 type="text"
                 class="form-control"
                 name="phoneNumber"
-                placeholder="Phone number"
+                [placeholder]="'PhoneNo'|translate"
                 [(ngModel)]="companyDetails.phoneNumber"
               />
             </div>
@@ -43,7 +43,7 @@
                 type="text"
                 class="form-control"
                 name="alternativePhoneNumber"
-                placeholder="Alternative Phone number"
+                [placeholder]="'Alternative Phone Number'|translate"
                 [(ngModel)]="companyDetails.alternativePhoneNumber"
               />
             </div>
@@ -55,7 +55,7 @@
                 type="text"
                 class="form-control"
                 name="address"
-                placeholder="Address"
+                [placeholder]="'Address'|translate"
                 [(ngModel)]="companyDetails.address"
               />
             </div>
@@ -64,7 +64,7 @@
                 type="text"
                 class="form-control"
                 name="city"
-                placeholder="City"
+                [placeholder]="'City'|translate"
                 [(ngModel)]="companyDetails.city"
               />
             </div>
@@ -73,7 +73,7 @@
                 type="text"
                 class="form-control"
                 name="zipCode"
-                placeholder="Zipcode"
+                [placeholder]="'Zipcode'|translate"
                 [(ngModel)]="companyDetails.zipCode"
               />
             </div>
@@ -98,7 +98,7 @@
                 type="text"
                 class="form-control"
                 name="companyIdNo"
-                placeholder="Company Id no"
+                [placeholder]="'Company Id No'|translate"
                 [(ngModel)]="companyDetails.companyIdNo"
               />
             </div>
@@ -148,7 +148,7 @@
                 class="btn custom-register-btn company-details-btn-1"
                 style="background: #707070 !important"
               >
-                {{ "CANCEL" | translate }}
+                {{ "REGISTER.CANCEL" | translate }}
               </button>
             </div>
           </div>

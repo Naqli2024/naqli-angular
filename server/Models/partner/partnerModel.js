@@ -196,7 +196,7 @@ const extraOperatorSchema = new mongoose.Schema({
   },
   aramcoLicense: {
     data: { type: Buffer },
-    contentType: { type: String, required: true },
+    contentType: { type: String, required: false },
     fileName: String,
   },
   nationalID: {
@@ -361,7 +361,7 @@ const partnerSchema = new mongoose.Schema(
         phoneNumber: { type: Number, required: true },
         alternativePhoneNumber: { type: Number, required: false },
         address: { type: String, required: true },
-        city: { type: String, required: true },
+        cityName: { type: String, required: true },
         zipCode: { type: Number, required: true },
         companyType: { type: String, required: true },
         companyIdNo: { type: Number, required: true },

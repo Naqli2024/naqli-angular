@@ -58,11 +58,12 @@ import { LoaderComponent } from './mobileLoader/loader.component';
 import { PrivacyPolicyComponent } from './auth/privacy-policy/privacy-policy.component';
 import { DeleteUserComponent } from './dashboard/delete-user/delete-user.component';
 import { DeleteAccountInfoComponent } from './home/delete-account-info/delete-account-info.component';
+import { EditCompanyDetailsComponent } from './partner/auth/register/company-details/edit-company-details/edit-company-details.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
   { path: '', redirectTo: '/home/user', pathMatch: 'full' },
-  {path: 'delete-account', component: DeleteAccountInfoComponent},
+  { path: 'delete-account', component: DeleteAccountInfoComponent },
   {
     path: 'home/user',
     component: HomeComponent,
@@ -174,6 +175,10 @@ export const routes: Routes = [
       { path: 'report', component: PartnerReportComponent },
       { path: 'help', component: PartnerHelpComponent },
       { path: 'edit-profile/partner', component: EditProfilePartnerComponent },
+      {
+        path: 'edit-profile/partner/edit-company-details',
+        component: EditCompanyDetailsComponent,
+      },
       {
         path: 'multiple-unit-dashboard',
         component: MultipleUnitDashboardComponent,

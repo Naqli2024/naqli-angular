@@ -39,7 +39,7 @@
                 {{ booking.invoiceId }}
               </td>
               <td>{{ booking.date | date : "dd/MM/yyyy" }}</td>
-              <td>
+              <td class="p2 trigger" (click)="showBookingDetails(booking._id)">
                 {{ booking._id }}
               </td>
               <td>{{ booking.partnerDetails?.partnerName || "Loading..." }}</td>

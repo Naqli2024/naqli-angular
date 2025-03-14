@@ -1,4 +1,9 @@
 <div class="profile-container edit-profile-container">
+  <div class="edit-compnay-details-btn text-end">
+    <button class="btn edit-company" (click)="editCompanyDetails()">
+      {{ "Edit Company Details" | translate }}  <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
   <div class="profile-photo">
     <label for="upload-photo">
       <img
@@ -101,6 +106,72 @@
         class="form-control"
         [(ngModel)]="formData.partnerName"
         name="partnerName"
+        required
+      />
+    </div>
+  </div>
+
+  <h5 style="margin-top: 20px">{{"Bank Details"|translate}}</h5>
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "City" | translate }}</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formData.city"
+        name="city"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "Company" | translate }}</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formData.company"
+        name="company"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "IBAN" | translate }}</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formData.ibanNumber"
+        name="ibanNumber"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "Region" | translate }}</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formData.region"
+        name="region"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "Bank name" | translate }}</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formData.bank"
+        name="bank"
         required
       />
     </div>

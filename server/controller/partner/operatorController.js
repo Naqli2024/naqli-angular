@@ -87,6 +87,13 @@ const createOperator = async (req, res) => {
       nationalID,
     } = req.files;
 
+    if(!req.body.partnerId) {
+      return res.status(404).json({
+        success: false,
+        message: "Partner ID/Name not found"
+      })
+    }
+
     // Validation for 10-digit fields
     const isValid10Digit = (value) => /^\d{10}$/.test(value);
 
@@ -346,7 +353,7 @@ const operatorLogin = async (req, res) => {
     const token = jwt.sign(
       { operatorId: operator._id, partnerId: partnerData._id },
       process.env.JSON_WEB_TOKEN,
-      { expiresIn: "365d" }
+      { expiresIn: "1d" }
     );
 
     const associatedPartnerId = partnerData._id;

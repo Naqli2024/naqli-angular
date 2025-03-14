@@ -118,7 +118,7 @@ export class OperatorComponent implements OnInit {
       this.formData.dateOfBirth &&
       this.formData.panelInformation &&
       this.formData.drivingLicense &&
-      this.formData.aramcoLicense &&
+      // this.formData.aramcoLicense &&
       this.formData.nationalID
     );
   }
@@ -171,7 +171,7 @@ export class OperatorComponent implements OnInit {
       this.formData.dateOfBirth &&
       this.formData.panelInformation &&
       this.formData.drivingLicense &&
-      this.formData.aramcoLicense &&
+      // this.formData.aramcoLicense &&
       this.formData.nationalID &&
       this.formData.pictureOfVehicle
     );

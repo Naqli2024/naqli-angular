@@ -648,5 +648,18 @@
   "EXCLUSIVE_QUOTE_DESCRIPTION": "'अनन्य अनुरोध पर उद्धरण' सुविधा उपभोक्ताओं को उनके विशिष्ट परिवहन आवश्यकताओं के आधार पर व्यक्तिगत मूल्य निर्धारण प्रदान करती है, जिससे निश्चित दरों के बजाय अनुकूलित समाधान मिलते हैं। यह सुविधा उन कंपनियों के लिए फायदेमंद है जो अनुकूलित लॉजिस्टिक्स सेवाएं चाहती हैं।",
   "deleteAccountMessage": "आप इस बटन पर क्लिक करके अपना उपयोगकर्ता खाता हटा सकते हैं।",
   "confirmDeletion": "हटाने की पुष्टि करें",
-  "deleteConfirmationMessage": "क्या आप वाकई अपना खाता हटाना चाहते हैं?"
+  "deleteConfirmationMessage": "क्या आप वाकई अपना खाता हटाना चाहते हैं?",
+  "Edit Company Details": "कंपनी विवरण संपादित करें",
+  "Bank Details": "बैंक विवरण",
+  "Company Details": "कंपनी विवरण",
+  "Go back": "वापस जाएं",
+  "Legal Name": "कानूनी नाम",
+  "Zipcode": "पिन कोड",
+  "Company Type": "कंपनी का प्रकार",
+  "Company Id No": "कंपनी आईडी नंबर",
+  "Company Name": "कंपनी का नाम",
+  "Alternative Phone Number": "वैकल्पिक फ़ोन नंबर",
+  "email_password_info": "यह ईमेल और पासवर्ड ड्राइवर को क्रेडेंशियल प्रदान करने के लिए है",
+  "allowed_documents": "केवल PDF, DOC, DOCX की अनुमति है",
+  "allowed_images": "केवल JPG, PNG, JPEG, SVG की अनुमति है"
 }

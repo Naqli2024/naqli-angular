@@ -16,6 +16,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { PaymentService } from '../../../services/payment.service';
+import { ShowBookingDetailsComponent } from '../super-user-dashboard/show-booking-details/show-booking-details.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-super-user-payments',
@@ -54,7 +56,8 @@ export class SuperUserPaymentsComponent implements AfterViewInit {
     private checkout: checkoutService,
     private toastr: ToastrService,
     private router: Router,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -259,5 +262,17 @@ export class SuperUserPaymentsComponent implements AfterViewInit {
 
   closePaymentOptions() {
     this.showPaymentOptions = false;
+  }
+
+  showBookingDetails(bookingId: string): void {
+    const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
+
+    modalRef.componentInstance.bookingId = bookingId;
   }
 }

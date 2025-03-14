@@ -10,6 +10,8 @@ import { checkoutService } from '../../../services/checkout.service';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { PaymentService } from '../../../services/payment.service';
+import { ShowBookingDetailsComponent } from '../super-user-dashboard/show-booking-details/show-booking-details.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-payments',
@@ -42,24 +44,25 @@ export class PaymentsComponent implements OnInit {
     private spinnerService: SpinnerService,
     private checkout: checkoutService,
     private router: Router,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
     this.fetchCompletedBookings();
-  
-       // Define the wpwlOptions in TypeScript
-       window['wpwlOptions'] = {
-        billingAddress: {},
-        mandatoryBillingFields: {
-          country: true,
-          state: true,
-          city: true,
-          postcode: true,
-          street1: true,
-          street2: false
-        }
-      };
+
+    // Define the wpwlOptions in TypeScript
+    window['wpwlOptions'] = {
+      billingAddress: {},
+      mandatoryBillingFields: {
+        country: true,
+        state: true,
+        city: true,
+        postcode: true,
+        street1: true,
+        street2: false,
+      },
+    };
   }
 
   fetchCompletedBookings() {
@@ -96,21 +99,17 @@ export class PaymentsComponent implements OnInit {
   ) {
     event.preventDefault();
 
-    if (
-      typeof amount !== 'number' ||
-      amount <= 0 ||
-      !status
-    ) {
+    if (typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid payment amount or status');
       return;
     }
 
     // Store the payment details globally
     this.paymentService.setRemainingPaymentDetails({
-    amount,
-    status,
-    partnerId,
-    bookingId
+      amount,
+      status,
+      partnerId,
+      bookingId,
     });
 
     // Show the payment options (MADA or Other cards)
@@ -192,7 +191,6 @@ export class PaymentsComponent implements OnInit {
     }, 100);
   }
 
-
   // Function to dynamically load the payment widget script
   loadPaymentScript() {
     const script = document.createElement('script');
@@ -208,12 +206,24 @@ export class PaymentsComponent implements OnInit {
     document.body.appendChild(script);
   }
 
-    // Method to close the payment form
-    closePaymentForm() {
-      this.showPaymentForm = false;
-    }
-  
-    closePaymentOptions() {
-      this.showPaymentOptions = false;
-    }
+  // Method to close the payment form
+  closePaymentForm() {
+    this.showPaymentForm = false;
+  }
+
+  closePaymentOptions() {
+    this.showPaymentOptions = false;
+  }
+
+  showBookingDetails(bookingId: string): void {
+    const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
+
+    modalRef.componentInstance.bookingId = bookingId;
+  }
 }

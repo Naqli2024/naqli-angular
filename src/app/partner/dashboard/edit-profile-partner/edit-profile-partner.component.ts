@@ -39,12 +39,16 @@ export class EditProfilePartnerComponent implements OnInit {
     if (partnerId) {
       this.partnerService.getPartnerDetails(partnerId).subscribe(
         (partnerDetails) => {
-          console.log(partnerDetails)
           this.formData.partnerName = partnerDetails.data.partnerName;
           this.formData.partnerId = partnerDetails.data._id;
           this.originalPartnerName = partnerDetails.data.partnerName;
           this.formData.email = partnerDetails.data.email;
           this.formData.mobileNo = partnerDetails.data.mobileNo;
+          this.formData.city = partnerDetails.data.city;
+          this.formData.company = partnerDetails.data.company;
+          this.formData.ibanNumber = partnerDetails.data.ibanNumber;
+          this.formData.region = partnerDetails.data.region;
+          this.formData.bank = partnerDetails.data.bank;
 
           if (partnerDetails.data.partnerProfile?.fileName) {
             const fileName = partnerDetails.data.partnerProfile.fileName;
@@ -107,6 +111,11 @@ export class EditProfilePartnerComponent implements OnInit {
     formData.append('mobileNo', this.formData.mobileNo);
     formData.append('password', this.formData.password || ''); // Handle empty password
     formData.append('confirmPassword', this.formData.confirmPassword || ''); // Handle empty confirmPassword
+    formData.append('city', this.formData.city);
+    formData.append('company', this.formData.company);
+    formData.append('ibanNumber', this.formData.ibanNumber);
+    formData.append('region', this.formData.region);
+    formData.append('bank', this.formData.bank);
 
     if (this.selectedFile) {
       formData.append(
@@ -125,5 +134,9 @@ export class EditProfilePartnerComponent implements OnInit {
         this.toastr.error('Error updating profile');
       }
     );
+  }
+
+  editCompanyDetails() {
+    this.router.navigate(['home/partner/dashboard/edit-profile/partner/edit-company-details'])
   }
 }

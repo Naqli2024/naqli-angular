@@ -6,6 +6,8 @@ import { Booking } from '../../../models/booking.model';
 import { CommonModule } from '@angular/common';
 import { SpinnerService } from '../../../services/spinner.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { ShowBookingDetailsComponent } from '../super-user-dashboard/show-booking-details/show-booking-details.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-booking-history',
@@ -19,9 +21,10 @@ export class BookingHistoryComponent implements OnInit {
 
   constructor(
     private bookingService: BookingService,
-    private toastr: ToastrService, 
+    private toastr: ToastrService,
     private authService: AuthService,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -50,5 +53,17 @@ export class BookingHistoryComponent implements OnInit {
     } else {
       this.toastr.error('User ID not available');
     }
+  }
+
+  showBookingDetails(bookingId: string): void {
+    const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
+
+    modalRef.componentInstance.bookingId = bookingId;
   }
 }

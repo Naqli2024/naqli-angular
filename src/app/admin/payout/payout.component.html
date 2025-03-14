@@ -77,12 +77,12 @@
                 <th>{{ "Date" | translate }}</th>
                 <th>{{ "Initial amount" | translate }}</th>
                 <th>{{ "PartnerName" | translate }}</th>
-                <th>Region</th>
-                <th>City</th>
-                <th>Bank name</th>
-                <th>Company</th>
-                <th>IBAN</th>
-              </ng-container>
+                <th>{{ "Region" | translate }}</th>
+                <th>{{ "City" | translate }}</th>
+                <th>{{ "Bank name" | translate }}</th>
+                <th>{{ "Company" | translate }}</th>
+                <th>{{ "IBAN" | translate }}</th></ng-container
+              >
 
               <ng-container *ngIf="!isInitialPayoutTab">
                 <th>
@@ -93,11 +93,11 @@
                   />
                 </th>
                 <th>{{ "PartnerName" | translate }}</th>
-                <th>Region</th>
-                <th>City</th>
-                <th>Bank name</th>
-                <th>Company</th>
-                <th>IBAN</th>
+                <th>{{ "Region" | translate }}</th>
+                <th>{{ "City" | translate }}</th>
+                <th>{{ "Bank name" | translate }}</th>
+                <th>{{ "Company" | translate }}</th>
+                <th>{{ "IBAN" | translate }}</th>
                 <th>{{ "Pending Amount" | translate }}</th>
                 <th>{{ "ExtraCharges" | translate }}</th>
                 <th>{{ "Refunds" | translate }}</th>
@@ -122,7 +122,7 @@
                 <td>{{ partners[booking.partner]?.partnerName }}</td>
                 <td>{{ partners[booking.partner]?.region }}</td>
                 <td>{{ partners[booking.partner]?.city }}</td>
-                <td>{{ partners[booking.partner]?.bankName }}</td>
+                <td>{{ partners[booking.partner]?.bank }}</td>
                 <td>{{ partners[booking.partner]?.company }}</td>
                 <td>{{ partners[booking.partner]?.ibanNumber }}</td>
               </ng-container>
@@ -133,7 +133,7 @@
                 <td>{{ partners[booking.partner]?.partnerName }}</td>
                 <td>{{ partners[booking.partner]?.region }}</td>
                 <td>{{ partners[booking.partner]?.city }}</td>
-                <td>{{ partners[booking.partner]?.bankName }}</td>
+                <td>{{ partners[booking.partner]?.bank }}</td>
                 <td>{{ partners[booking.partner]?.company }}</td>
                 <td>{{ partners[booking.partner]?.ibanNumber }}</td>
                 <td>{{ booking.remainingBalance }} SAR</td>

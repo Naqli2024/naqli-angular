@@ -10,11 +10,12 @@ import { PartnerService } from '../../../../services/partner/partner.service';
 import { BookingModalComponent } from './booking-modal/booking-modal.component';
 import { CommonModule } from '@angular/common';
 import { PaymentService } from '../../../../services/payment.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-trigger-booking-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './trigger-booking-modal.component.html',
   styleUrl: './trigger-booking-modal.component.css',
 })
@@ -28,7 +29,7 @@ export class TriggerBookingModalComponent {
   checkoutId: string | null = null;
   integrity: string = '';
   showPaymentForm: boolean = false;
-  shopperResultUrl: string = 'http://localhost:4200/home/user/payment-result';
+  shopperResultUrl: string = 'https://naqlee.com/home/user/payment-result';
   selectedBrand: string = '';
   showPaymentOptions: boolean = false;
   amount: number | undefined;
@@ -199,7 +200,7 @@ export class TriggerBookingModalComponent {
   // Function to dynamically load the payment widget script
   loadPaymentScript() {
     const script = document.createElement('script');
-    script.src = `https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${this.checkoutId}`;
+    script.src = `https://eu-prod.oppwa.com/v1/paymentWidgets.js?checkoutId=${this.checkoutId}`;
     script.crossOrigin = 'anonymous';
     script.integrity = this.integrity;
 

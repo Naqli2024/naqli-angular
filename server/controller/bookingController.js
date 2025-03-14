@@ -96,7 +96,7 @@ const createBooking = async (req, res) => {
     if (time) {
       try {
         bookingTime = convertAndValidateTime(time, date);
-        console.log(`Constructed booking date-time: ${bookingTime}`);
+        // console.log(`Constructed booking date-time: ${bookingTime}`);
       } catch (conversionError) {
         return res.status(400).json({
           message: conversionError.message, // Invalid time format or booking time

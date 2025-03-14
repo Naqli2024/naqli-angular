@@ -21,11 +21,11 @@
       <div class="row">
         <div class="col-md-6 col-sm-12">
           <div class="trigger-payment-model row justify-content-center">
-            <label class="col-md-6 col-sm-12">Vendor Name</label>
+            <label class="col-md-6 col-sm-12">{{"Vendor Name"|translate}}</label>
             <p class="col-md-6 col-sm-12">{{ vendor.name }}</p>
           </div>
           <div class="trigger-payment-model row">
-            <label class="col-md-6 col-sm-12">Phone Number</label>
+            <label class="col-md-6 col-sm-12">{{"PhoneNo"|translate}}</label>
             <p class="col-md-6 col-sm-12">{{ partnerNo }}</p>
           </div>
           <div class="trigger-payment-model row">
@@ -33,7 +33,7 @@
             <p class="col-md-6 col-sm-12">{{ booking._id }}</p>
           </div>
           <div class="trigger-payment-model row">
-            <label class="col-md-6 col-sm-12">Mode</label>
+            <label class="col-md-6 col-sm-12">{{"Mode"|translate}}</label>
             <p class="col-md-6 col-sm-12">
               {{ booking.name }}
               <span *ngIf="booking.type && booking.type.length > 0 && booking.type[0]?.typeName"> - {{ booking.type[0]?.typeName }}</span>
@@ -44,15 +44,15 @@
         <!-- Second Column -->
         <div class="col-md-6 col-sm-12">
           <div class="trigger-payment-model row">
-            <label class="col-md-6 col-sm-12">From</label>
+            <label class="col-md-6 col-sm-12">{{"From"|translate}}</label>
             <p class="col-md-6 col-sm-12">{{ booking.pickup }}</p>
           </div>
           <div class="trigger-payment-model row">
-            <label class="col-md-6 col-sm-12">To</label>
+            <label class="col-md-6 col-sm-12">{{"To"|translate}}</label>
             <p class="col-md-6 col-sm-12">{{ booking.dropPoints.join(", ") }}</p>
           </div>
           <div class="trigger-payment-model row">
-            <label class="col-md-6 col-sm-12">Extra Labour</label>
+            <label class="col-md-6 col-sm-12">{{"Extra Labour"|translate}}</label>
             <p class="col-md-6 col-sm-12">{{ booking.additionalLabour }}</p>
           </div>
         </div>

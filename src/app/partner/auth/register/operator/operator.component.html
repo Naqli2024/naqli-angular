@@ -168,26 +168,36 @@
 
           <div class="row">
             <div class="col-md-6">
-              <label class="col-form-label" style="font-size: 14px">{{
-                "Istimara Card" | translate
-              }}</label>
+              <label class="col-form-label" style="font-size: 14px"
+                >{{ "Istimara Card" | translate
+                }}<span style="font-size: 12px; color: gray; margin-left: 5px">
+                  <span style="color: red">*</span
+                  >{{ "allowed_documents" | translate }}
+                </span>
+              </label>
               <input
                 type="file"
                 class="form-control"
                 (change)="handleFileInput($event, 'istimaraCard')"
                 name="istimaraCard"
+                accept=".pdf,.doc,.docx"
                 required
               />
             </div>
             <div class="col-md-6">
-              <label class="col-form-label" style="font-size: 14px">{{
-                "Picture of Vehicle" | translate
-              }}</label>
+              <label class="col-form-label" style="font-size: 14px"
+                >{{ "Picture of Vehicle" | translate
+                }}<span style="font-size: 12px; color: gray; margin-left: 5px">
+                  <span style="color: red">*</span>
+                  {{ "allowed_images" | translate }}
+                </span>
+              </label>
               <input
                 type="file"
                 class="form-control"
                 (change)="handleFileInput($event, 'pictureOfVehicle')"
                 name="pictureOfVehicle"
+                accept=".jpg,.jpeg,.png,.svg"
                 required
               />
             </div>
@@ -222,9 +232,13 @@
 
           <div class="row">
             <div class="col-md-12">
-              <label class="col-form-label" style="font-size: 14px">{{
-                "Email ID" | translate
-              }}</label>
+              <label class="col-form-label" style="font-size: 14px"
+                >{{ "Email ID" | translate
+                }}<span style="font-size: 12px; color: gray; margin-left: 5px">
+                  <span style="color: red">*</span
+                  >{{ "email_password_info" | translate }}
+                </span>
+              </label>
               <input
                 type="email"
                 class="form-control"
@@ -237,9 +251,9 @@
 
           <div class="row">
             <div class="col-md-6">
-              <label class="col-form-label" style="font-size: 14px">{{
-                "Password" | translate
-              }}</label>
+              <label class="col-form-label" style="font-size: 14px"
+                >{{ "Password" | translate }}
+              </label>
               <div class="input-with-icon" style="position: relative">
                 <input
                   [type]="passwordVisible ? 'text' : 'password'"
@@ -346,38 +360,52 @@
 
           <div class="row">
             <div class="col-md-4">
-              <label class="col-form-label" style="font-size: 14px">{{
-                "Driving License" | translate
-              }}</label>
+              <label class="col-form-label" style="font-size: 14px"
+                >{{ "Driving License" | translate
+                }}<span style="font-size: 12px; color: gray; margin-left: 5px">
+                  <span style="color: red">*</span
+                  >{{ "allowed_documents" | translate }}
+                </span>
+              </label>
               <input
                 type="file"
                 class="form-control operator-file"
                 (change)="handleFileInput($event, 'drivingLicense')"
                 name="drivingLicense"
+                accept=".pdf,.doc,.docx"
                 required
               />
             </div>
             <div class="col-md-4">
-              <label class="col-form-label" style="font-size: 14px">{{
-                "Aramco License" | translate
-              }}</label>
+              <label class="col-form-label" style="font-size: 14px"
+                >{{ "Aramco License" | translate
+                }}<span style="font-size: 12px; color: gray; margin-left: 5px">
+                  <span style="color: red">*</span
+                  >{{ "allowed_documents" | translate }}
+                </span>
+              </label>
               <input
                 type="file"
                 class="form-control"
                 (change)="handleFileInput($event, 'aramcoLicense')"
                 name="aramcoLicense"
-                required
+                accept=".pdf,.doc,.docx"
               />
             </div>
             <div class="col-md-4">
-              <label class="col-form-label" style="font-size: 14px">{{
-                "National ID" | translate
-              }}</label>
+              <label class="col-form-label" style="font-size: 14px"
+                >{{ "National ID" | translate
+                }}<span style="font-size: 12px; color: gray; margin-left: 5px">
+                  <span style="color: red">*</span
+                  >{{ "allowed_documents" | translate }}
+                </span>
+              </label>
               <input
                 type="file"
                 class="form-control"
                 (change)="handleFileInput($event, 'nationalID')"
                 name="nationalID"
+                accept=".pdf,.doc,.docx"
                 required
               />
             </div>

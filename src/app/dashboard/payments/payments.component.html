@@ -63,7 +63,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let booking of bookings">
-            <td>{{ booking._id }}</td>
+            <td class="p2 trigger" (click)="showBookingDetails(booking._id)">{{ booking._id }}</td>
             <td>{{ booking.date }}</td>
             <td>{{ "unitTypes." + booking.unitType | translate }}</td>
             <td>{{ booking.paymentAmount }} SAR</td>

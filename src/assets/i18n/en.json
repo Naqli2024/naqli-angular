@@ -650,5 +650,18 @@
   "EXCLUSIVE_QUOTE_DESCRIPTION": "The 'Exclusive Quote on Request' feature provides consumers with personalized pricing depending on their specific transportation requirements, resulting in tailored solutions rather than fixed rates. This functionality is advantageous to firms who want personalized logistical services.",
   "deleteAccountMessage": "You can delete your user account by clicking this button.",
   "confirmDeletion": "Confirm Deletion",
-  "deleteConfirmationMessage": "Are you sure you want to delete your account?"
+  "deleteConfirmationMessage": "Are you sure you want to delete your account?",
+  "Edit Company Details": "Edit Company Details",
+  "Bank Details": "Bank Details",
+  "Company Details": "Company Details",
+  "Go back": "Go back",
+  "Legal Name": "Legal Name",
+  "Zipcode": "Zipcode",
+  "Company Type": "Company Type",
+  "Company Id No": "Company Id No",
+  "Company Name": "Company Name",
+  "Alternative Phone number": "Alternative Phone number",
+  "email_password_info": "This email and password is for providing credentials for the driver",
+  "allowed_documents": "Only PDF, DOC, DOCX allowed",
+  "allowed_images": "Only JPG, PNG, JPEG, SVG allowed"
 }

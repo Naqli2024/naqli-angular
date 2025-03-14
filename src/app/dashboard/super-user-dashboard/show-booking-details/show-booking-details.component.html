@@ -55,6 +55,14 @@
         <span>{{ booking.dropPoints.join(", ") }}</span>
       </p>
       <p>
+        <b>{{ "REGISTER.CITY" | translate }}:</b>
+        <span>{{ booking.cityName }}</span>
+      </p>
+      <p>
+        <b>{{ "Address" | translate }}:</b>
+        <span>{{ booking.address }}</span>
+      </p>
+      <p>
         <b>{{ "valueOfProduct" | translate }}:</b>
         <span>{{ booking.productValue }}</span>
       </p>
@@ -78,7 +86,9 @@
       </p>
       <p>
         <b>{{ "Booking Status" | translate }}:</b>
-        <span>{{ "status of booking." + booking.bookingStatus | translate }}</span>
+        <span>{{
+          "status of booking." + booking.bookingStatus | translate
+        }}</span>
       </p>
       <p>
         <b>{{ "terms.Payment Status" | translate }}:</b>

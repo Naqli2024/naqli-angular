@@ -865,10 +865,12 @@ const verifyOTP = async (req, res) => {
 const editPartner = async (req, res) => {
   try {
     const { partnerId } = req.params;
-    const { partnerName, email, password, confirmPassword, mobileNo } =
-      req.body;
+    const { 
+      partnerName, email, password, confirmPassword, mobileNo, region, city, 
+      bank, company, ibanNumber
+    } = req.body;
 
-    // Password validation (if present)
+    // Password validation
     if (password || confirmPassword) {
       if (password !== confirmPassword) {
         return res.status(400).json({ message: "Passwords do not match" });
@@ -883,43 +885,116 @@ const editPartner = async (req, res) => {
       };
     }
 
-    // Prepare the update object
+    // Prepare the partner update object (bank and city should be here)
     let updatePartner = {
       partnerName,
       email,
       mobileNo,
       partnerProfile,
+      region,
+      city, 
+      bank, 
+      company,
+      ibanNumber,
     };
 
     if (password) {
       updatePartner.password = await bcrypt.hash(password, 10);
     }
 
-    // Remove undefined fields from the update object
+    // Remove undefined fields from update objects
     Object.keys(updatePartner).forEach((key) => {
       if (updatePartner[key] === undefined) {
         delete updatePartner[key];
       }
     });
 
-    // Find and update the existing partner
+    // Find the existing partner
+    const partnerData = await partner.findById(partnerId);
+    if (!partnerData) {
+      return res.status(404).json({ message: "Partner not found" });
+    }
+
+    // Update the partner details
     const editedPartner = await partner.findByIdAndUpdate(
       partnerId,
-      updatePartner,
-      {
-        new: true,
-      }
+      { $set: updatePartner },
+      { new: true }
     );
 
     if (!editedPartner) {
       return res.status(404).json({ message: "Partner not found" });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Partner Profile Updated!", data: editedPartner });
+    return res.status(200).json({
+      message: "Partner Profile Updated!",
+      data: editedPartner,
+    });
   } catch (error) {
-    console.error(error); // For debugging
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+const editCompanyDetails = async (req, res) => {
+  try {
+    const { partnerId } = req.params;
+    const {
+      companyName,
+      legalName,
+      phoneNumber,
+      alternativePhoneNumber,
+      address,
+      cityName,
+      zipCode,
+      companyType,
+      companyIdNo,
+    } = req.body;
+
+    // Find the partner by ID
+    const partnerData = await partner.findById(partnerId);
+    if (!partnerData) {
+      return res.status(404).json({ message: "Partner not found" });
+    }
+
+    // Check if companyDetails exist, update the first entry
+    if (partnerData.companyDetails.length > 0) {
+      partnerData.companyDetails[0] = {
+        companyName: companyName || partnerData.companyDetails[0].companyName,
+        legalName: legalName || partnerData.companyDetails[0].legalName,
+        phoneNumber: phoneNumber || partnerData.companyDetails[0].phoneNumber,
+        alternativePhoneNumber:
+          alternativePhoneNumber ||
+          partnerData.companyDetails[0].alternativePhoneNumber,
+        address: address || partnerData.companyDetails[0].address,
+        cityName: cityName || partnerData.companyDetails[0].cityName,
+        zipCode: zipCode || partnerData.companyDetails[0].zipCode,
+        companyType: companyType || partnerData.companyDetails[0].companyType,
+        companyIdNo: companyIdNo || partnerData.companyDetails[0].companyIdNo,
+      };
+    } else {
+      // If no companyDetails exist, create a new one
+      partnerData.companyDetails.push({
+        companyName,
+        legalName,
+        phoneNumber,
+        alternativePhoneNumber,
+        address,
+        cityName,
+        zipCode,
+        companyType,
+        companyIdNo,
+      });
+    }
+
+    // Save the updated partner
+    await partnerData.save();
+
+    return res.status(200).json({
+      message: "Company details updated successfully!",
+      data: partnerData.companyDetails[0], // Return updated companyDetails
+    });
+  } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
@@ -939,3 +1014,4 @@ exports.updatePartnerStatus = updatePartnerStatus;
 exports.addCompanyDetails = addCompanyDetails;
 exports.assignOperator = assignOperator;
 exports.editPartner = editPartner;
+exports.editCompanyDetails = editCompanyDetails;

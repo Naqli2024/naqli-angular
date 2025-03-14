@@ -18,6 +18,8 @@ import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { QRCodeModule } from 'angularx-qrcode';
+import { ShowBookingDetailsComponent } from '../super-user-dashboard/show-booking-details/show-booking-details.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-invoice',
@@ -51,7 +53,8 @@ export class InvoiceUserComponent {
     private toastr: ToastrService,
     private partnerService: PartnerService,
     private userService: UserService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -287,4 +290,16 @@ export class InvoiceUserComponent {
       // console.error('Invoice container not found');
     }
   }
+
+  showBookingDetails(bookingId: string): void {
+      const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
+        size: 'lg',
+        centered: true,
+        backdrop: true,
+        scrollable: true,
+        windowClass: 'no-background',
+      });
+  
+      modalRef.componentInstance.bookingId = bookingId;
+    }
 }

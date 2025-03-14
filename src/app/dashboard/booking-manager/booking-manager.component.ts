@@ -13,6 +13,7 @@ import { EditBookingModalComponent } from './edit-booking-modal/edit-booking-mod
 import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
 import { PaymentService } from '../../../services/payment.service';
+import { ShowBookingDetailsComponent } from '../super-user-dashboard/show-booking-details/show-booking-details.component';
 
 @Component({
   selector: 'app-booking-manager',
@@ -379,4 +380,16 @@ export class BookingManagerComponent {
     );
     // console.log('Combined Filtered Bookings:', this.filterBookings);
   }
+
+  showBookingDetails(bookingId: string): void {
+      const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
+        size: 'lg',
+        centered: true,
+        backdrop: true,
+        scrollable: true,
+        windowClass: 'no-background',
+      });
+  
+      modalRef.componentInstance.bookingId = bookingId;
+    }
 }

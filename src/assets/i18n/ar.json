@@ -646,5 +646,18 @@
   "EXCLUSIVE_QUOTE_DESCRIPTION": "توفر ميزة 'عرض السعر الحصري عند الطلب' للمستهلكين أسعارًا مخصصة بناءً على احتياجاتهم الخاصة في النقل، مما ينتج عنه حلول مخصصة بدلاً من الأسعار الثابتة. هذه الوظيفة مفيدة للشركات التي ترغب في خدمات لوجستية مخصصة.",
   "deleteAccountMessage": "يمكنك حذف حساب المستخدم الخاص بك عن طريق النقر فوق هذا الزر.",
   "confirmDeletion": "تأكيد الحذف",
-  "deleteConfirmationMessage": "هل أنت متأكد أنك تريد حذف حسابك؟"
+  "deleteConfirmationMessage": "هل أنت متأكد أنك تريد حذف حسابك؟",
+  "Edit Company Details": "تحرير تفاصيل الشركة",
+  "Bank Details": "تفاصيل البنك",
+  "Company Details": "تفاصيل الشركة",
+  "Go back": "العودة",
+  "Legal Name": "الاسم القانوني",
+  "Zipcode": "الرمز البريدي",
+  "Company Type": "نوع الشركة",
+  "Company Id No": "رقم هوية الشركة",
+  "Company Name": "اسم الشركة",
+  "Alternative Phone Number": "رقم الهاتف البديل",
+  "email_password_info": "هذا البريد الإلكتروني وكلمة المرور لتوفير بيانات الاعتماد للسائق",
+  "allowed_documents": "فقط PDF, DOC, DOCX مسموح بها",
+  "allowed_images": "فقط JPG, PNG, JPEG, SVG مسموح بها"
 }

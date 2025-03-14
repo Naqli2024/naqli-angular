@@ -1,0 +1,144 @@
+<form class="edit-profile-partner edit-company-details">
+  <div (click)="goToEditProfile()" class="goToProfile">
+    <i class="fas fa-arrow-left"></i> {{ "Go back" | translate }}
+  </div>
+  <h5 style="text-align: center; margin: 20px 0px">
+    {{ "Company Details" | translate }}
+  </h5>
+  <div class="company-details-edit-form">
+    <div class="row">
+      <div class="col-md-6">
+        <label class="col-form-label" style="font-size: 14px">{{
+          "Company" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="formData.companyName"
+          name="companyName"
+          required
+        />
+      </div>
+      <div class="col-md-6">
+        <label class="col-form-label" style="font-size: 14px">{{
+          "Legal Name" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="formData.legalName"
+          name="legalName"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label class="col-form-label" style="font-size: 14px">{{
+          "PhoneNo" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="formData.phoneNumber"
+          name="phoneNumber"
+          required
+        />
+      </div>
+      <div class="col-md-6">
+        <label class="col-form-label" style="font-size: 14px">{{
+          "REGISTER.ALTERNATE_NUMBER" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="formData.alternativePhoneNumber"
+          name="alternativePhoneNumber"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label class="col-form-label" style="font-size: 14px">{{
+          "Address" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="formData.address"
+          name="address"
+          required
+        />
+      </div>
+      <div class="col-md-6">
+        <label class="col-form-label" style="font-size: 14px">{{
+          "City" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="formData.cityName"
+          name="cityName"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label class="col-form-label" style="font-size: 14px">{{
+          "Zipcode" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="formData.zipCode"
+          name="zipCode"
+          required
+        />
+      </div>
+      <div class="col-md-6">
+        <label class="col-form-label" style="font-size: 14px">{{
+          "Company Type" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="formData.companyType"
+          name="companyType"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <label class="col-form-label" style="font-size: 14px">{{
+          "Company Id No" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="formData.companyIdNo"
+          name="companyIdNo"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-12 text-center">
+        <button
+          type="submit"
+          class="btn custom-register-btn"
+          (click)="saveProfile()"
+        >
+          {{ "Save" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

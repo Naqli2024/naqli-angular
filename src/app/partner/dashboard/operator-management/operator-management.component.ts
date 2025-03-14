@@ -141,7 +141,7 @@ export class OperatorManagementComponent {
       this.formData.dateOfBirth &&
       this.formData.panelInformation &&
       this.formData.drivingLicense &&
-      this.formData.aramcoLicense &&
+      // this.formData.aramcoLicense &&
       this.formData.nationalID
         ? true
         : false;
@@ -160,7 +160,7 @@ export class OperatorManagementComponent {
       dateOfBirth: 'Date of Birth is required.',
       panelInformation: 'Panel Information is required.',
       drivingLicense: 'Driving License is required.',
-      aramcoLicense: 'Aramco License is required.',
+      // aramcoLicense: 'Aramco License is required.',
       nationalID: 'National ID is required.',
     };
 

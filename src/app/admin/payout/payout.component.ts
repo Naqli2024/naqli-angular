@@ -171,7 +171,7 @@ export class PayoutComponent implements OnInit {
 
     if (selectedBookings.length > 0) {
       if (this.isInitialPayoutTab) {
-        this.generatePDF(selectedBookings);
+        this.generateExcelForInitialPayout(selectedBookings);
       } else {
         this.generateExcel(selectedBookings);
       }
@@ -180,50 +180,59 @@ export class PayoutComponent implements OnInit {
     }
   }
 
-  generatePDF(selectedBookings: any[]) {
-    const doc = new jsPDF();
-    let y = 10;
-    
-    selectedBookings.forEach((booking, index) => {
-      const isLastBooking = index === selectedBookings.length - 1;
+  generateExcel(selectedBookings: any[]) {
+    const filteredData = selectedBookings.map(booking => {
+      const user = this.users[booking.user] || {};
+      const partner = this.partners[booking.partner] || {};
   
-      // Add booking details as text
-      doc.text(`Booking ID: ${booking._id}`, 10, y);
-      doc.text(`User: ${this.users[booking.user]?.firstName} ${this.users[booking.user]?.lastName}`, 10, y + 10);
-      doc.text(`Date: ${booking.date}`, 10, y + 20);
-      doc.text(`Initial Payout: ${booking.initialPayout} SAR`, 10, y + 30);
-  
-      // Draw the underline for each line except the last one
-      if (!isLastBooking) {
-        // Underline after the last line (Initial Payout)
-        doc.line(10, y + 35, 200, y + 35);  // adjust x2 to match the page width
-      }
-  
-      // Move the vertical position (y-coordinate) down for the next booking
-      y += 40;
-  
-      // Add a new page if we reach the bottom of the page
-      if (y > 270) {
-        doc.addPage();
-        y = 10;
-      }
+      return {
+        "Booking ID": booking._id || "N/A",
+        "User Name": booking.name || "N/A",
+        "Pickup Location": booking.pickup || "N/A",
+        "Drop Points": Array.isArray(booking.dropPoints) ? booking.dropPoints.join(", ") : booking.dropPoints || "N/A",
+        "Final Payout (SAR)": booking.finalPayout || 0,
+        "Partner Name": partner.partnerName || "N/A",
+        "Region": partner.region || "N/A",
+        "City": partner.city || "N/A",
+        "Bank Name": partner.bank || "N/A",
+        "IBAN": partner.ibanNumber || "N/A"
+      };
     });
   
-    // Save the PDF document
-    doc.save('selected-bookings.pdf');
-  }
-
-  generateExcel(selectedBookings: any[]) {
-    const filteredData = selectedBookings.map(booking => ({
-      _id: booking._id,
-      name: booking.name,
-      pickup: booking.pickup,
-      dropPoints: Array.isArray(booking.dropPoints) ? booking.dropPoints.join(", ") : booking.dropPoints,
-      finalPayout: booking.finalPayout
-    }));
+    // Create worksheet and workbook
     const ws = XLSX.utils.json_to_sheet(filteredData);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, 'selected-bookings.xlsx');
+    XLSX.utils.book_append_sheet(wb, ws, "Selected Bookings");
+  
+    // Download the Excel file
+    XLSX.writeFile(wb, "selected-bookings.xlsx");
+  }
+
+  generateExcelForInitialPayout(selectedBookings: any[]) {
+    const filteredData = selectedBookings.map(booking => {
+      const user = this.users[booking.user] || {};
+      const partner = this.partners[booking.partner] || {};
+  
+      return {
+        "Booking ID": booking._id || "N/A",
+        "User": `${user.firstName || "N/A"} ${user.lastName || ""}`,
+        "Date": booking.date || "N/A",
+        "Initial Payout (SAR)": booking.initialPayout || 0,
+        "Partner Name": partner.partnerName || "N/A",
+        "Region": partner.region || "N/A",
+        "City": partner.city || "N/A",
+        "Bank Name": partner.bank || "N/A",
+        "Company": partner.company || 'N/A',
+        "IBAN": partner.ibanNumber || "N/A"
+      };
+    });
+  
+    // Create worksheet and workbook
+    const ws = XLSX.utils.json_to_sheet(filteredData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Selected Bookings");
+  
+    // Download the Excel file
+    XLSX.writeFile(wb, "selected-bookings.xlsx");
   }
 }

@@ -48,7 +48,7 @@
             class="trigger-booking-table"
             *ngFor="let booking of filteredBookings"
           >
-            <td>{{ booking._id }}</td>
+            <td class="p2 trigger" (click)="showBookingDetails(booking._id)">{{ booking._id }}</td>
             <td>{{ "ITEMS." + booking.unitType | translate }}</td>
             <td>
               {{
