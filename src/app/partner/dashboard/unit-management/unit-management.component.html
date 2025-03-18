@@ -336,24 +336,48 @@
               "Password" | translate
             }}</label>
             <input
-              type="password"
+              [type]="passwordVisible ? 'text' : 'password'"
               class="form-control"
               [(ngModel)]="formData.password"
               name="password"
+              id="password"
               required
             />
+            <i
+              class="fas"
+              [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+              (click)="togglePasswordVisibility()"
+              style="
+                position: absolute;
+                right: 10px;
+                top: 38px;
+                cursor: pointer;
+              "
+            ></i>
           </div>
           <div class="col-md-6">
             <label class="col-form-label" style="font-size: 14px">{{
               "Confirm Password" | translate
             }}</label>
             <input
-              type="password"
+              [type]="confirmPasswordVisible ? 'text' : 'password'"
               class="form-control"
               [(ngModel)]="formData.confirmPassword"
               name="confirmPassword"
+              id="confirmPassword"
               required
             />
+            <i
+              class="fas"
+              [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+              (click)="toggleConfirmPasswordVisibility()"
+              style="
+                position: absolute;
+                right: 10px;
+                top: 38px;
+                cursor: pointer;
+              "
+            ></i>
           </div>
         </div>
 
@@ -430,7 +454,7 @@
               >{{ "Aramco License" | translate
               }}<span style="font-size: 12px; color: gray; margin-left: 5px">
                 <span style="color: red">*</span
-                >{{ "allowed_documents" | translate }}
+                >{{ "allowed_documents" | translate }} (Optional)
               </span>
             </label>
             <input

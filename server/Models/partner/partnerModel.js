@@ -85,7 +85,7 @@ const operatorDetailSchema = new mongoose.Schema({
   },
   aramcoLicense: {
     data: { type: Buffer },
-    contentType: { type: String, required: true },
+    contentType: { type: String, required: false },
     fileName: String,
   },
   nationalID: {

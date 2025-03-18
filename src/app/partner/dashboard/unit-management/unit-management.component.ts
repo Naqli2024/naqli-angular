@@ -66,6 +66,8 @@ export class UnitManagementComponent implements OnInit {
   clickedAdd: boolean = false;
   partnerDetails: Partner | null = null;
   selectedUnitType: string = '';
+  passwordVisible: boolean = false;
+  confirmPasswordVisible: boolean = false;
 
   constructor(
     private router: Router,
@@ -87,6 +89,14 @@ export class UnitManagementComponent implements OnInit {
 
   toggleNewUnitForm() {
     this.showNewUnitForm = !this.showNewUnitForm;
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
   openFile(fileName: string) {

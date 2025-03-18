@@ -62,6 +62,8 @@ export class OperatorManagementComponent {
   isFormDisabled = false;
   extraOperators: any[] = [];
   allOperators: any[] = [];
+  passwordVisible: boolean = false;
+  confirmPasswordVisible: boolean = false;
 
   constructor(
     private router: Router,
@@ -107,6 +109,14 @@ export class OperatorManagementComponent {
         }
       );
     }
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
   toggleNewUnitForm() {
