@@ -2,7 +2,7 @@ const Partner = require("../../Models/partner/partnerModel");
 const multer = require("multer");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -114,6 +114,18 @@ const createExtraOperator = async (req, res) => {
     } else if (partner.type === "multipleUnits") {
       const hashedPassword = await bcrypt.hash(password, 10);
 
+      // Null check for optional files to avoid undefined errors
+      const drivingLicenseFile = drivingLicense ? drivingLicense[0] : null;
+      const aramcoLicenseFile = aramcoLicense ? aramcoLicense[0] : null;
+      const nationalIDFile = nationalID ? nationalID[0] : null;
+
+      if (!drivingLicenseFile || !nationalIDFile) {
+        return res.status(400).json({
+          success: false,
+          message: "Driving license and National ID are required",
+        });
+      }
+
       // Push to extraOperators only if partner type is "multipleUnits"
       partner.extraOperators.push({
         unitType: unitType || undefined,
@@ -128,13 +140,15 @@ const createExtraOperator = async (req, res) => {
         dateOfBirth,
         panelInformation,
         drivingLicense: {
-          contentType: drivingLicense[0].mimetype,
-          fileName: drivingLicense[0].filename,
+          contentType: drivingLicenseFile.mimetype,
+          fileName: drivingLicenseFile.filename,
         },
-        aramcoLicense: {
-          contentType: aramcoLicense[0].mimetype,
-          fileName: aramcoLicense[0].filename,
-        },
+        aramcoLicense: aramcoLicenseFile
+          ? {
+              contentType: aramcoLicense[0].mimetype,
+              fileName: aramcoLicense[0].filename,
+            }
+          : undefined,
         nationalID: {
           contentType: nationalID[0].mimetype,
           fileName: nationalID[0].filename,
@@ -160,8 +174,6 @@ const createExtraOperator = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
-
 
 exports.createExtraOperator = createExtraOperator;
 exports.parseFormData = parseFormData;
