@@ -21,6 +21,7 @@
             <th>{{ "nationalId" | translate }}</th>
             <th>{{ "drivingLicense" | translate }}</th>
             <th>{{ "aramcoLicense" | translate }}</th>
+            <th>{{"Action"|translate}}</th>
           </tr>
         </thead>
         <tbody>
@@ -77,6 +78,14 @@
               >
                 {{ "view" | translate }}
               </p>
+            </td>
+            <td class="operator-edit-delete">
+              <fa-icon
+              [icon]="faEdit"
+              (click)="editOperator(operator)"
+              style="cursor: pointer;"
+            ></fa-icon>
+              <fa-icon [icon]="faTrashAlt" (click)="deleteOperator(operator._id)" style="cursor: pointer;"></fa-icon>
             </td>
           </tr>
         </tbody>

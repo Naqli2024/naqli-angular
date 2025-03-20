@@ -24,6 +24,7 @@ env.config();
 connectDb();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors({
   origin: ['https://naqlee.com'], // Allow only your frontend's domain
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods

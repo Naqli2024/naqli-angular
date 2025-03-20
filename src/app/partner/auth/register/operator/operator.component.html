@@ -22,6 +22,7 @@
               value="vehicle"
               (change)="onUnitTypeChange('vehicle')"
               required
+              [disabled]="!!editingOperatorId"
             />
             <label class="form-check-label">{{
               "ITEMS.Vehicle" | translate
@@ -36,6 +37,7 @@
               value="bus"
               (change)="onUnitTypeChange('bus')"
               required
+              [disabled]="!!editingOperatorId"
             />
             <label class="form-check-label">{{
               "ITEMS.Bus" | translate
@@ -50,6 +52,7 @@
               value="equipment"
               (change)="onUnitTypeChange('equipment')"
               required
+              [disabled]="!!editingOperatorId"
             />
             <label class="form-check-label">{{
               "ITEMS.Equipment" | translate
@@ -64,6 +67,7 @@
               value="special"
               (change)="onUnitTypeChange('special')"
               required
+              [disabled]="!!editingOperatorId"
             />
             <label class="form-check-label">{{
               "ITEMS.Special" | translate
@@ -77,6 +81,7 @@
               [(ngModel)]="formData.unitType"
               value="others"
               required
+              [disabled]="!!editingOperatorId"
             />
             <label class="form-check-label">{{
               "ITEMS.Others" | translate
@@ -94,6 +99,7 @@
                 name="unitClassification"
                 (change)="onClassificationChange($event)"
                 required
+                [disabled]="!!editingOperatorId"
               >
                 <option value="">
                   {{ "Select Classification" | translate }}
@@ -115,6 +121,7 @@
                 [(ngModel)]="formData.subClassification"
                 name="subClassification"
                 required
+                [disabled]="!!editingOperatorId"
               >
                 <option value="">
                   {{ "Select Sub Classification" | translate }}
@@ -150,6 +157,7 @@
                 [(ngModel)]="formData.plateInformation"
                 name="plateInformation"
                 required
+                [disabled]="!!editingOperatorId"
               />
             </div>
             <div class="col-md-6">
@@ -162,6 +170,7 @@
                 [(ngModel)]="formData.istimaraNo"
                 name="istimaraNo"
                 required
+                [disabled]="!!editingOperatorId"
               />
             </div>
           </div>
@@ -182,6 +191,7 @@
                 name="istimaraCard"
                 accept=".pdf,.doc,.docx"
                 required
+                [disabled]="!!editingOperatorId"
               />
             </div>
             <div class="col-md-6">
@@ -199,6 +209,7 @@
                 name="pictureOfVehicle"
                 accept=".jpg,.jpeg,.png,.svg"
                 required
+                [disabled]="!!editingOperatorId"
               />
             </div>
           </div>
@@ -380,7 +391,7 @@
               <label class="col-form-label" style="font-size: 14px"
                 >{{ "Aramco License" | translate
                 }}<span style="font-size: 12px; color: gray; margin-left: 5px">
-                  {{ "allowed_documents" | translate }} 
+                  {{ "allowed_documents" | translate }}
                 </span>
               </label>
               <input
@@ -447,6 +458,15 @@
                 [disabled]="!isSubmitEnabled"
               >
                 {{ "Submit" | translate }}
+              </button>
+              <button
+                *ngIf="editingOperatorId"
+                type="button"
+                class="btn btn-danger ms-3 custom-register-btn"
+                style="background-color: #dc3545 !important;"
+                (click)="onDeleteOperator()"
+              >
+                {{ "DELETE_OPERATOR" | translate }}
               </button>
             </div>
           </div>

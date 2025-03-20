@@ -17,4 +17,12 @@ export class OperatorService {
   addExtraOperator(operatorData: FormData): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/add-extra-operator`, operatorData);
   }
+
+  editOperator(operatorData: FormData): Observable<any> {
+    return this.http.put(`${this.baseUrl}/edit-operator`, operatorData)
+  }
+
+  deleteOperator(operatorId: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/delete-operator/${operatorId}`);
+  }
 }

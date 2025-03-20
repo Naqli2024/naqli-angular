@@ -25,13 +25,14 @@ export class EditProfilePartnerComponent implements OnInit {
   confirmPasswordVisible: boolean = false;
   faEdit = faEdit;
   originalPartnerName: string = ''; 
+  partnerType: string = '';
 
   constructor(
     private router: Router,
     private partnerService: PartnerService,
     private toastr: ToastrService,
     private spinnerService: SpinnerService,
-    private zone: NgZone
+    private zone: NgZone,
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +40,7 @@ export class EditProfilePartnerComponent implements OnInit {
     if (partnerId) {
       this.partnerService.getPartnerDetails(partnerId).subscribe(
         (partnerDetails) => {
+          this.partnerType = partnerDetails.data.type;
           this.formData.partnerName = partnerDetails.data.partnerName;
           this.formData.partnerId = partnerDetails.data._id;
           this.originalPartnerName = partnerDetails.data.partnerName;
@@ -63,6 +65,10 @@ export class EditProfilePartnerComponent implements OnInit {
     // console.log("Profile Photo URL:", this.profilePhoto);
   }
 
+  editOperatorDetails(): void {
+    this.router.navigate(['home/partner/operator'])
+  }
+ 
   // Handle file selection for profile photo
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

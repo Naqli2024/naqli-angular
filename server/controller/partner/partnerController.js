@@ -562,6 +562,10 @@ const assignOperator = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
+    if(booking.bookingStatus === "Completed") {
+      return res.status(409).json({message: "Cannot assign operator: This booking is already completed."})
+    }
+
     // Find the partner by ID from the booking
     const partnerId = booking.partner;
     const partnerFound = await partner.findById(partnerId);

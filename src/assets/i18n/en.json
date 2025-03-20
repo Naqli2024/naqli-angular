@@ -663,5 +663,7 @@
   "Alternative Phone number": "Alternative Phone number",
   "email_password_info": "This email and password is for providing credentials for the driver",
   "allowed_documents": "Only PDF, DOC, DOCX allowed",
-  "allowed_images": "Only JPG, PNG, JPEG, SVG allowed"
+  "allowed_images": "Only JPG, PNG, JPEG, SVG allowed",
+  "confirmDelete": "Are you sure you want to delete this operator?",
+  "DELETE_OPERATOR": "Delete Operator"
 }

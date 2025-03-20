@@ -42,7 +42,7 @@
                 <option value="" disabled>{{"selectPlateInformation"|translate}}</option>
                 <ng-container *ngFor="let operator of filteredOperators">
                   <option
-                    *ngIf="operator && matchesCriteria(booking, operator)"
+                  *ngIf="operator && operator.plateInformation && operator.plateInformation.trim() !== '' && matchesCriteria(booking, operator)"
                     [value]="operator.plateInformation"
                   >
                     {{ operator.plateInformation }}

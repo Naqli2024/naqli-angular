@@ -661,5 +661,7 @@
   "Alternative Phone Number": "वैकल्पिक फ़ोन नंबर",
   "email_password_info": "यह ईमेल और पासवर्ड ड्राइवर को क्रेडेंशियल प्रदान करने के लिए है",
   "allowed_documents": "केवल PDF, DOC, DOCX की अनुमति है",
-  "allowed_images": "केवल JPG, PNG, JPEG, SVG की अनुमति है"
+  "allowed_images": "केवल JPG, PNG, JPEG, SVG की अनुमति है",
+  "confirmDelete": "क्या आप वाकई इस ऑपरेटर को हटाना चाहते हैं?",
+  "DELETE_OPERATOR": "ऑपरेटर हटाएं"
 }

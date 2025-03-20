@@ -1,7 +1,10 @@
 <div class="profile-container edit-profile-container">
   <div class="edit-compnay-details-btn text-end">
-    <button class="btn edit-company" (click)="editCompanyDetails()">
-      {{ "Edit Company Details" | translate }}  <i class="fas fa-arrow-right"></i>
+    <button class="btn edit-company" (click)="editOperatorDetails()" *ngIf="partnerType === 'singleUnit + operator'">
+      {{ "Operator Details" | translate }} 
+    </button>
+    <button class="btn edit-company" (click)="editCompanyDetails()" style="margin: 0px 8px">
+      {{ "Company Details" | translate }} 
     </button>
   </div>
   <div class="profile-photo">

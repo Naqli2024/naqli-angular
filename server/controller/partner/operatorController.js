@@ -13,10 +13,12 @@ const storage = multer.diskStorage({
     let destinationFolder = "uploads/";
 
     if (
-      file.fieldname === "istimaraCard" ||
-      file.fieldname === "drivingLicense" ||
-      file.fieldname === "aramcoLicense" ||
-      file.fieldname === "nationalID"
+      [
+        "istimaraCard",
+        "drivingLicense",
+        "aramcoLicense",
+        "nationalID",
+      ].includes(file.fieldname)
     ) {
       destinationFolder += `pdf`;
     } else if (file.fieldname === "pictureOfVehicle") {
@@ -299,6 +301,207 @@ const createOperator = async (req, res) => {
   }
 };
 
+const editOperator = async (req, res) => {
+  const {
+    partnerId,
+    operatorId,
+    firstName,
+    lastName,
+    email,
+    password,
+    mobileNo,
+    iqamaNo,
+    dateOfBirth,
+    panelInformation,
+  } = req.body;
+
+  try {
+    const partner = await Partner.findById(partnerId);
+    if (!partner) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Partner not found" });
+    }
+
+    // Check if the operator exists in `operators.operatorDetail`
+    let operator = partner.operators
+      .flatMap((op) => op.operatorsDetail)
+      .find((op) => op._id.toString() === operatorId);
+
+    // If not found, check in `extraOperators`
+    if (!operator) {
+      operator = partner.extraOperators.find(
+        (op) => op._id.toString() === operatorId
+      );
+    }
+
+    if (!operator) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Operator not found" });
+    }
+
+    // Update only the allowed fields
+    operator.firstName = firstName || operator.firstName;
+    operator.lastName = lastName || operator.lastName;
+    operator.email = email || operator.email;
+    operator.mobileNo = mobileNo || operator.mobileNo;
+    operator.iqamaNo = iqamaNo || operator.iqamaNo;
+    operator.dateOfBirth = dateOfBirth || operator.dateOfBirth;
+    operator.panelInformation = panelInformation || operator.panelInformation;
+
+    // Hash the new password if provided
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      operator.password = await bcrypt.hash(password, salt);
+    }
+
+    // Handle file uploads
+    if (req.files) {
+      if (req.files.drivingLicense) {
+        operator.drivingLicense = {
+          url: `/uploads/pdf/${req.files.drivingLicense[0].filename}`,
+          name: req.files.drivingLicense[0].originalname,
+          contentType: req.files.drivingLicense[0].mimetype,
+        };
+      }
+
+      if (req.files.aramcoLicense) {
+        operator.aramcoLicense = {
+          url: `/uploads/pdf/${req.files.aramcoLicense[0].filename}`,
+          name: req.files.aramcoLicense[0].originalname,
+          contentType: req.files.aramcoLicense[0].mimetype,
+        };
+      }
+
+      if (req.files.nationalID) {
+        operator.nationalID = {
+          url: `/uploads/pdf/${req.files.nationalID[0].filename}`,
+          name: req.files.nationalID[0].originalname,
+          contentType: req.files.nationalID[0].mimetype,
+        };
+      }
+    }
+
+    // Update assignedOperator in booking requests
+    const updatedName = `${firstName} ${lastName}`;
+    for (const booking of partner.bookingRequest) {
+      if (
+        booking.assignedOperator &&
+        booking.assignedOperator.operatorId?.toString() ===
+          operator._id.toString()
+      ) {
+        booking.assignedOperator.operatorName = updatedName;
+        booking.assignedOperator.operatorMobileNo = mobileNo;
+      }
+    }
+
+    // Save the updated partner
+    await partner.save();
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Operator updated successfully",
+        operator,
+      });
+  } catch (error) {
+    console.error("Error updating operator:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+const deleteOperator = async (req, res) => {
+  try {
+    const { operatorId } = req.params;
+
+    // Find the partner containing the operatorId
+    const partner = await Partner.findOne({
+      $or: [
+        { "operators.operatorsDetail._id": operatorId },
+        { "extraOperators._id": operatorId }
+      ]
+    });
+
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        data: null,
+        message: "Operator not found."
+      });
+    }
+
+    // Check if the operator is assigned to an active booking
+    const isAssignedToActiveBooking = partner.bookingRequest.some(booking =>
+      booking.assignedOperator &&
+      booking.assignedOperator.operatorId?.toString() === operatorId &&
+      booking.bookingStatus !== "Completed"
+    );
+
+    if (isAssignedToActiveBooking) {
+      return res.status(409).json({
+        success: false,
+        data: null,
+        message: "Cannot delete: Operator is assigned to an active booking."
+      });
+    }
+
+    // New Condition: Check if the vehicle (unit) is still under booking
+    const isVehicleUnderBooking = partner.bookingRequest.some(booking => {
+      return (
+        booking.assignedOperator &&
+        booking.assignedOperator.unit &&
+        partner.operators.some(operator =>
+          operator.operatorsDetail.some(detail => detail._id.toString() === operatorId) &&
+          operator.plateInformation === booking.assignedOperator.unit &&
+          booking.bookingStatus !== "Completed"
+        )
+      );
+    });
+
+    if (isVehicleUnderBooking) {
+      return res.status(409).json({
+        success: false,
+        data: null,
+        message: "Cannot delete: The operator's vehicle is under booking. Wait until the booking is completed."
+      });
+    }
+
+    // Deletion logic for operators
+    partner.operators = partner.operators.filter((operator) => {
+      // Remove operatorDetail with the matching ID
+      operator.operatorsDetail = operator.operatorsDetail.filter(
+        (detail) => detail._id.toString() !== operatorId
+      );
+
+      // If operatorsDetail becomes empty, remove the entire operators object
+      return operator.operatorsDetail.length > 0;
+    });
+
+    // Deletion logic for extraOperators
+    partner.extraOperators = partner.extraOperators.filter(
+      (extra) => extra._id.toString() !== operatorId
+    );
+
+    await partner.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Operator deleted successfully."
+    });
+
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({
+      success: false,
+      data: null,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+
 const operatorLogin = async (req, res) => {
   try {
     // Validate request
@@ -400,11 +603,9 @@ const updateOperatorMode = async (req, res) => {
 
     // Validate the mode value
     if (!["online", "offline"].includes(mode)) {
-      return res
-        .status(400)
-        .json({
-          message: "Invalid mode value. Must be 'online' or 'offline'.",
-        });
+      return res.status(400).json({
+        message: "Invalid mode value. Must be 'online' or 'offline'.",
+      });
     }
 
     // Find the partner by partnerId
@@ -562,6 +763,8 @@ const getBookingRequest = async (req, res) => {
 };
 
 exports.createOperator = createOperator;
+exports.editOperator = editOperator;
+exports.deleteOperator = deleteOperator;
 exports.parseFormData = parseFormData;
 exports.operatorLogin = operatorLogin;
 exports.updateOperatorMode = updateOperatorMode;

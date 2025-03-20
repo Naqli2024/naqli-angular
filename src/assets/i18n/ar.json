@@ -659,5 +659,7 @@
   "Alternative Phone Number": "رقم الهاتف البديل",
   "email_password_info": "هذا البريد الإلكتروني وكلمة المرور لتوفير بيانات الاعتماد للسائق",
   "allowed_documents": "فقط PDF, DOC, DOCX مسموح بها",
-  "allowed_images": "فقط JPG, PNG, JPEG, SVG مسموح بها"
+  "allowed_images": "فقط JPG, PNG, JPEG, SVG مسموح بها",
+  "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا المشغل؟",
+  "DELETE_OPERATOR": "حذف المشغل"
 }

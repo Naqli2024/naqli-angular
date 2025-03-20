@@ -59,6 +59,7 @@ export class OperatorComponent implements OnInit {
   faCheck = faCheck;
   passwordVisible: boolean = false;
   confirmPasswordVisible: boolean = false;
+  editingOperatorId: string | null = null;
 
   constructor(
     private router: Router,
@@ -78,13 +79,44 @@ export class OperatorComponent implements OnInit {
     if (partnerId) {
       this.partnerService.getPartnerDetails(partnerId).subscribe(
         (partnerDetails) => {
+          // Initialize partner-related data
           this.formData.partnerName = partnerDetails.data.partnerName;
           this.formData.partnerId = partnerDetails.data._id;
           this.originalPartnerName = partnerDetails.data.partnerName;
+  
+          // Check if 'operators' exist and has at least one entry
+          if (partnerDetails.data.operators && partnerDetails.data.operators.length > 0) {
+            const operatorDetails = partnerDetails.data.operators[0];
+  
+            // Set form data from the operatorDetails object
+            this.formData.unitType = operatorDetails.unitType;
+            this.formData.unitClassification = operatorDetails.unitClassification;
+            this.formData.subClassification = operatorDetails.subClassification;
+            this.formData.plateInformation = operatorDetails.plateInformation;
+            this.formData.istimaraNo = operatorDetails.istimaraNo;
+  
+            // Check if 'operatorsDetail' exists and has at least one entry
+            if (operatorDetails.operatorsDetail && operatorDetails.operatorsDetail.length > 0) {
+              const operator = operatorDetails.operatorsDetail[0];
+              this.formData.firstName = operator.firstName;
+              this.formData.lastName = operator.lastName;
+              this.formData.email = operator.email;
+              this.formData.mobileNo = operator.mobileNo;
+              this.formData.iqamaNo = operator.iqamaNo;
+              this.formData.dateOfBirth = operator.dateOfBirth ? operator.dateOfBirth.split('T')[0] : ''; 
+              this.formData.panelInformation = operator.panelInformation;
+            }
+  
+            // Set edit mode to true since the operator exists
+            this.editingOperatorId = partnerDetails.data.operators[0].operatorsDetail[0]._id;
+          }
+  
+          // Enable submit button when data is loaded
           this.enableSubmitButton();
         },
         (error) => {
-          // console.error('Error fetching partner details:', error);
+          // Log error or handle it accordingly
+          console.error('Error fetching partner details:', error);
         }
       );
     }
@@ -103,56 +135,105 @@ export class OperatorComponent implements OnInit {
   }
 
   enableSubmitButton() {
-    this.isSubmitEnabled = !!(
-      this.formData.unitType &&
-      this.formData.unitClassification &&
-      this.formData.plateInformation &&
-      this.formData.istimaraNo &&
-      this.formData.firstName &&
-      this.formData.lastName &&
-      this.formData.email &&
-      this.formData.password &&
-      this.formData.confirmPassword &&
-      this.formData.mobileNo &&
-      this.formData.iqamaNo &&
-      this.formData.dateOfBirth &&
-      this.formData.panelInformation &&
-      this.formData.drivingLicense &&
-      // this.formData.aramcoLicense &&
-      this.formData.nationalID
-    );
+    if (this.editingOperatorId) {
+      this.isSubmitEnabled = true;
+    } else {
+      this.isSubmitEnabled = !!(
+        this.formData.unitType &&
+        this.formData.unitClassification &&
+        this.formData.plateInformation &&
+        this.formData.istimaraNo &&
+        this.formData.firstName &&
+        this.formData.lastName &&
+        this.formData.email &&
+        this.formData.password &&
+        this.formData.confirmPassword &&
+        this.formData.mobileNo &&
+        this.formData.iqamaNo &&
+        this.formData.dateOfBirth &&
+        this.formData.panelInformation &&
+        this.formData.drivingLicense &&
+        // this.formData.aramcoLicense &&
+        this.formData.nationalID
+      );
+    }
   }
 
   handleSubmit() {
-    // Check for required fields
-    if (!this.isFormValid()) {
-      this.toastr.error('All fields are required', 'Error');
-      return;
-    }
-
     const formData = new FormData();
+  
+    // Loop through formData and append values to FormData object
     Object.entries(this.formData).forEach(([key, value]) => {
       if (value instanceof File) {
-        formData.append(key, value);
+        formData.append(key, value);  // Append file fields if it's a File instance
       } else {
-        formData.append(key, value as string);
+        formData.append(key, value as string);  // Append other form data as string
       }
     });
-
+  
+    // Append the operatorId when editing
+    if (this.editingOperatorId) {
+      formData.append('operatorId', this.editingOperatorId);
+    }
+  
     this.spinnerService.show();
-    this.operatorService.addOperator(formData).subscribe(
-      (response) => {
+  
+    //  EDIT MODE: No validation required
+    if (this.editingOperatorId) {
+      this.operatorService.editOperator(formData).subscribe(
+        (response) => {
+          this.spinnerService.hide();
+          this.toastr.success(response.message, 'Success');
+          this.resetForm();
+          this.router.navigate(['/home/partner/login']);
+        },
+        (error) => {
+          this.spinnerService.hide();
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage, 'Error');
+        }
+      );
+    } else {
+      // ADD MODE: Apply validation
+      if (!this.isFormValid()) {
         this.spinnerService.hide();
-        this.toastr.success(response.message, 'Success');
-        this.router.navigate(['/home/partner/login']);
-        this.resetForm();
-      },
-      (error) => {
-        this.spinnerService.hide();
-        const errorMessage = error.error?.message || 'An error occurred';
-        this.toastr.error(errorMessage, 'Error');
+        this.toastr.error('All fields are required', 'Error');
+        return;
       }
-    );
+  
+      this.operatorService.addOperator(formData).subscribe(
+        (response) => {
+          this.spinnerService.hide();
+          this.toastr.success(response.message, 'Success');
+          this.router.navigate(['/home/partner/login']);
+          this.resetForm();
+        },
+        (error) => {
+          this.spinnerService.hide();
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage, 'Error');
+        }
+      );
+    }
+  }
+
+  onDeleteOperator() {
+    if (this.editingOperatorId) {
+      this.spinnerService.show();
+      this.operatorService.deleteOperator(this.editingOperatorId).subscribe(
+        (response) => {
+          this.spinnerService.hide();
+          this.toastr.success(response.message, "Success")
+          this.formData = this.initializeFormData();
+          this.editingOperatorId = null;
+        },
+        (error) => {
+          this.spinnerService.hide();
+          const errorMessage = error.error?.message || 'An error occurred';
+          this.toastr.error(errorMessage, 'Error');
+        }
+      );
+    }
   }
 
   isFormValid(): boolean {
