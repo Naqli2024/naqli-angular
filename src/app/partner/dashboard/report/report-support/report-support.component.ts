@@ -94,7 +94,7 @@ export class ReportSupportComponent {
   onSubmit(form: NgForm): void {
     if (form.valid) {
       const formData = new FormData();
-      formData.append('email', this.email);
+      formData.append('email', this.emailAddress);
       formData.append('reportMessage', this.reportMessage);
       if (this.file) {
         formData.append('pictureOfTheReport', this.file, this.file.name);
