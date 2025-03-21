@@ -8,24 +8,28 @@ const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const path = require("path");
 
-// Multer setup for file uploads with disk storage
+// Multer storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     try {
-      let destinationFolder = path.join(__dirname, 'uploads');
+      // Use process.cwd() for correct base directory
+      let destinationFolder = path.join(process.cwd(), 'uploads');
 
       if (
         ["istimaraCard", "drivingLicense", "aramcoLicense", "nationalID"].includes(file.fieldname)
       ) {
-        destinationFolder = path.join(destinationFolder, 'pdf');   
+        destinationFolder = path.join(destinationFolder, 'pdf');
       } else if (file.fieldname === "pictureOfVehicle") {
-        destinationFolder = path.join(destinationFolder, 'images');  
+        destinationFolder = path.join(destinationFolder, 'images');
       } else {
         return cb(new Error("Invalid fieldname"));
       }
 
       // Create directory if it doesn't exist
-      fs.mkdirSync(destinationFolder, { recursive: true });
+      if (!fs.existsSync(destinationFolder)) {
+        fs.mkdirSync(destinationFolder, { recursive: true });
+        console.log(`Directory created: ${destinationFolder}`);
+      }
 
       cb(null, destinationFolder);
     } catch (error) {
