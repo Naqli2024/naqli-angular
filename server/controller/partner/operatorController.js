@@ -9,8 +9,9 @@ const jwt = require("jsonwebtoken");
 
 // Multer setup for file uploads with disk storage
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    let destinationFolder = "uploads/";
+  destination: async(req, file, cb) => {
+    try {
+      let destinationFolder = path.join(__dirname, 'uploads');
 
     if (
       [
@@ -28,8 +29,12 @@ const storage = multer.diskStorage({
     }
 
     // Create directory if it doesn't exist
-    fs.mkdirSync(destinationFolder, { recursive: true });
+    await fs.promises.mkdir(destinationFolder, { recursive: true });
     cb(null, destinationFolder);
+  }catch(error) {
+    console.error("Error creating directory:", error);
+      cb(error);
+  }
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = uuidv4();
@@ -52,8 +57,11 @@ const parseFormData = (req, res, next) => {
     { name: "partnerId" },
     { name: "partnerName" },
   ])(req, res, (err) => {
-    if (err) {
-      return res.status(400).json({ success: false, message: err.message });
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ success: false, message: `File upload error: ${err.message}` });
+    } else if (err) {
+      console.error("Error parsing form data:", err);
+      return res.status(500).json({ success: false, message: "Internal server error" });
     }
     next();
   });
