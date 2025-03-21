@@ -13,14 +13,19 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     try {
       // Use process.cwd() for correct base directory
-      let destinationFolder = path.join(process.cwd(), 'uploads');
+      let destinationFolder = path.join(process.cwd(), "uploads");
 
       if (
-        ["istimaraCard", "drivingLicense", "aramcoLicense", "nationalID"].includes(file.fieldname)
+        [
+          "istimaraCard",
+          "drivingLicense",
+          "aramcoLicense",
+          "nationalID",
+        ].includes(file.fieldname)
       ) {
-        destinationFolder = path.join(destinationFolder, 'pdf');
+        destinationFolder = path.join(destinationFolder, "pdf");
       } else if (file.fieldname === "pictureOfVehicle") {
-        destinationFolder = path.join(destinationFolder, 'images');
+        destinationFolder = path.join(destinationFolder, "images");
       } else {
         return cb(new Error("Invalid fieldname"));
       }
@@ -39,13 +44,18 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = uuidv4();
-    const extension = file.originalname.split('.').pop();
+    const extension = file.originalname.split(".").pop();
     const fileName = `${uniqueSuffix}.${extension}`;
     cb(null, fileName);
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 50 * 1024 * 1024, // Set max file size to 50MB
+  },
+});
 
 // Middleware to parse form data and handle file uploads
 const parseFormData = (req, res, next) => {
@@ -59,10 +69,14 @@ const parseFormData = (req, res, next) => {
     { name: "partnerName" },
   ])(req, res, (err) => {
     if (err instanceof multer.MulterError) {
-      return res.status(400).json({ success: false, message: `File upload error: ${err.message}` });
+      return res
+        .status(400)
+        .json({ success: false, message: `File upload error: ${err.message}` });
     } else if (err) {
       console.error("Error parsing form data:", err);
-      return res.status(500).json({ success: false, message: "Internal server error" });
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
     }
     next();
   });
@@ -408,13 +422,11 @@ const editOperator = async (req, res) => {
     // Save the updated partner
     await partner.save();
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Operator updated successfully",
-        operator,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Operator updated successfully",
+      operator,
+    });
   } catch (error) {
     console.error("Error updating operator:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -429,42 +441,46 @@ const deleteOperator = async (req, res) => {
     const partner = await Partner.findOne({
       $or: [
         { "operators.operatorsDetail._id": operatorId },
-        { "extraOperators._id": operatorId }
-      ]
+        { "extraOperators._id": operatorId },
+      ],
     });
 
     if (!partner) {
       return res.status(404).json({
         success: false,
         data: null,
-        message: "Operator not found."
+        message: "Operator not found.",
       });
     }
 
     // Check if the operator is assigned to an active booking
-    const isAssignedToActiveBooking = partner.bookingRequest.some(booking =>
-      booking.assignedOperator &&
-      booking.assignedOperator.operatorId?.toString() === operatorId &&
-      booking.bookingStatus !== "Completed"
+    const isAssignedToActiveBooking = partner.bookingRequest.some(
+      (booking) =>
+        booking.assignedOperator &&
+        booking.assignedOperator.operatorId?.toString() === operatorId &&
+        booking.bookingStatus !== "Completed"
     );
 
     if (isAssignedToActiveBooking) {
       return res.status(409).json({
         success: false,
         data: null,
-        message: "Cannot delete: Operator is assigned to an active booking."
+        message: "Cannot delete: Operator is assigned to an active booking.",
       });
     }
 
     // New Condition: Check if the vehicle (unit) is still under booking
-    const isVehicleUnderBooking = partner.bookingRequest.some(booking => {
+    const isVehicleUnderBooking = partner.bookingRequest.some((booking) => {
       return (
         booking.assignedOperator &&
         booking.assignedOperator.unit &&
-        partner.operators.some(operator =>
-          operator.operatorsDetail.some(detail => detail._id.toString() === operatorId) &&
-          operator.plateInformation === booking.assignedOperator.unit &&
-          booking.bookingStatus !== "Completed"
+        partner.operators.some(
+          (operator) =>
+            operator.operatorsDetail.some(
+              (detail) => detail._id.toString() === operatorId
+            ) &&
+            operator.plateInformation === booking.assignedOperator.unit &&
+            booking.bookingStatus !== "Completed"
         )
       );
     });
@@ -473,7 +489,8 @@ const deleteOperator = async (req, res) => {
       return res.status(409).json({
         success: false,
         data: null,
-        message: "Cannot delete: The operator's vehicle is under booking. Wait until the booking is completed."
+        message:
+          "Cannot delete: The operator's vehicle is under booking. Wait until the booking is completed.",
       });
     }
 
@@ -497,16 +514,15 @@ const deleteOperator = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Operator deleted successfully."
+      message: "Operator deleted successfully.",
     });
-
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({
       success: false,
       data: null,
       message: "Internal server error",
-      error: error.message
+      error: error.message,
     });
   }
 };

@@ -60,6 +60,7 @@ export class OperatorComponent implements OnInit {
   passwordVisible: boolean = false;
   confirmPasswordVisible: boolean = false;
   editingOperatorId: string | null = null;
+  fileError: string | null = null;
 
   constructor(
     private router: Router,
@@ -83,34 +84,44 @@ export class OperatorComponent implements OnInit {
           this.formData.partnerName = partnerDetails.data.partnerName;
           this.formData.partnerId = partnerDetails.data._id;
           this.originalPartnerName = partnerDetails.data.partnerName;
-  
+
           // Check if 'operators' exist and has at least one entry
-          if (partnerDetails.data.operators && partnerDetails.data.operators.length > 0) {
+          if (
+            partnerDetails.data.operators &&
+            partnerDetails.data.operators.length > 0
+          ) {
             const operatorDetails = partnerDetails.data.operators[0];
-  
+
             // Set form data from the operatorDetails object
             this.formData.unitType = operatorDetails.unitType;
-            this.formData.unitClassification = operatorDetails.unitClassification;
+            this.formData.unitClassification =
+              operatorDetails.unitClassification;
             this.formData.subClassification = operatorDetails.subClassification;
             this.formData.plateInformation = operatorDetails.plateInformation;
             this.formData.istimaraNo = operatorDetails.istimaraNo;
-  
+
             // Check if 'operatorsDetail' exists and has at least one entry
-            if (operatorDetails.operatorsDetail && operatorDetails.operatorsDetail.length > 0) {
+            if (
+              operatorDetails.operatorsDetail &&
+              operatorDetails.operatorsDetail.length > 0
+            ) {
               const operator = operatorDetails.operatorsDetail[0];
               this.formData.firstName = operator.firstName;
               this.formData.lastName = operator.lastName;
               this.formData.email = operator.email;
               this.formData.mobileNo = operator.mobileNo;
               this.formData.iqamaNo = operator.iqamaNo;
-              this.formData.dateOfBirth = operator.dateOfBirth ? operator.dateOfBirth.split('T')[0] : ''; 
+              this.formData.dateOfBirth = operator.dateOfBirth
+                ? operator.dateOfBirth.split('T')[0]
+                : '';
               this.formData.panelInformation = operator.panelInformation;
             }
-  
+
             // Set edit mode to true since the operator exists
-            this.editingOperatorId = partnerDetails.data.operators[0].operatorsDetail[0]._id;
+            this.editingOperatorId =
+              partnerDetails.data.operators[0].operatorsDetail[0]._id;
           }
-  
+
           // Enable submit button when data is loaded
           this.enableSubmitButton();
         },
@@ -161,23 +172,23 @@ export class OperatorComponent implements OnInit {
 
   handleSubmit() {
     const formData = new FormData();
-  
+
     // Loop through formData and append values to FormData object
     Object.entries(this.formData).forEach(([key, value]) => {
       if (value instanceof File) {
-        formData.append(key, value);  // Append file fields if it's a File instance
+        formData.append(key, value); // Append file fields if it's a File instance
       } else {
-        formData.append(key, value as string);  // Append other form data as string
+        formData.append(key, value as string); // Append other form data as string
       }
     });
-  
+
     // Append the operatorId when editing
     if (this.editingOperatorId) {
       formData.append('operatorId', this.editingOperatorId);
     }
-  
+
     this.spinnerService.show();
-  
+
     //  EDIT MODE: No validation required
     if (this.editingOperatorId) {
       this.operatorService.editOperator(formData).subscribe(
@@ -185,7 +196,7 @@ export class OperatorComponent implements OnInit {
           this.spinnerService.hide();
           this.toastr.success(response.message, 'Success');
           this.resetForm();
-          this.router.navigate(['/home/partner/login']);
+          this.router.navigate(['/home/partner/dashboard']);
         },
         (error) => {
           this.spinnerService.hide();
@@ -200,7 +211,7 @@ export class OperatorComponent implements OnInit {
         this.toastr.error('All fields are required', 'Error');
         return;
       }
-  
+
       this.operatorService.addOperator(formData).subscribe(
         (response) => {
           this.spinnerService.hide();
@@ -223,7 +234,7 @@ export class OperatorComponent implements OnInit {
       this.operatorService.deleteOperator(this.editingOperatorId).subscribe(
         (response) => {
           this.spinnerService.hide();
-          this.toastr.success(response.message, "Success")
+          this.toastr.success(response.message, 'Success');
           this.formData = this.initializeFormData();
           this.editingOperatorId = null;
         },
@@ -342,8 +353,16 @@ export class OperatorComponent implements OnInit {
   handleFileInput(event: Event, field: string) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.formData[field] = input.files[0];
-      this.enableSubmitButton();
+      const file = input.files[0];
+      const maxFileSize = 10 * 1024 * 1024; //10MB
+      if (file.size > maxFileSize) {
+        this.fileError = `File size exceeds the 10MB limit for ${field}. Please upload a smaller file.`;
+        this.formData[field] = null;
+      } else {
+        this.formData[field] = file;
+        this.fileError = null;
+        this.enableSubmitButton();
+      }
     }
   }
 
@@ -353,13 +372,18 @@ export class OperatorComponent implements OnInit {
   }
 
   getTranslatedName(name: string): string {
-    const categories = ['vehicleName', 'busNames', 'equipmentName', 'specialUnits'];
+    const categories = [
+      'vehicleName',
+      'busNames',
+      'equipmentName',
+      'specialUnits',
+    ];
     for (let category of categories) {
       const translationKey = `${category}.${name}`;
       if (this.translate.instant(translationKey) !== translationKey) {
         return this.translate.instant(translationKey);
       }
     }
-    return name; 
+    return name;
   }
 }
