@@ -6,39 +6,36 @@ const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
+const path = require("path");
 
 // Multer setup for file uploads with disk storage
 const storage = multer.diskStorage({
-  destination: async(req, file, cb) => {
+  destination: (req, file, cb) => {
     try {
       let destinationFolder = path.join(__dirname, 'uploads');
 
-    if (
-      [
-        "istimaraCard",
-        "drivingLicense",
-        "aramcoLicense",
-        "nationalID",
-      ].includes(file.fieldname)
-    ) {
-      destinationFolder += `pdf`;
-    } else if (file.fieldname === "pictureOfVehicle") {
-      destinationFolder += `images`;
-    } else {
-      return cb(new Error("Invalid fieldname"));
-    }
+      if (
+        ["istimaraCard", "drivingLicense", "aramcoLicense", "nationalID"].includes(file.fieldname)
+      ) {
+        destinationFolder = path.join(destinationFolder, 'pdf');   
+      } else if (file.fieldname === "pictureOfVehicle") {
+        destinationFolder = path.join(destinationFolder, 'images');  
+      } else {
+        return cb(new Error("Invalid fieldname"));
+      }
 
-    // Create directory if it doesn't exist
-    await fs.promises.mkdir(destinationFolder, { recursive: true });
-    cb(null, destinationFolder);
-  }catch(error) {
-    console.error("Error creating directory:", error);
+      // Create directory if it doesn't exist
+      fs.mkdirSync(destinationFolder, { recursive: true });
+
+      cb(null, destinationFolder);
+    } catch (error) {
+      console.error("Error creating directory:", error);
       cb(error);
-  }
+    }
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = uuidv4();
-    const extension = file.originalname.split(".").pop();
+    const extension = file.originalname.split('.').pop();
     const fileName = `${uniqueSuffix}.${extension}`;
     cb(null, fileName);
   },
