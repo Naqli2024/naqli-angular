@@ -383,25 +383,22 @@ const editOperator = async (req, res) => {
     if (req.files) {
       if (req.files.drivingLicense) {
         operator.drivingLicense = {
-          url: `/uploads/pdf/${req.files.drivingLicense[0].filename}`,
-          name: req.files.drivingLicense[0].originalname,
           contentType: req.files.drivingLicense[0].mimetype,
+          fileName: req.files.drivingLicense[0].filename
         };
       }
 
       if (req.files.aramcoLicense) {
         operator.aramcoLicense = {
-          url: `/uploads/pdf/${req.files.aramcoLicense[0].filename}`,
-          name: req.files.aramcoLicense[0].originalname,
           contentType: req.files.aramcoLicense[0].mimetype,
+          fileName: req.files.aramcoLicense[0].filename
         };
       }
 
       if (req.files.nationalID) {
         operator.nationalID = {
-          url: `/uploads/pdf/${req.files.nationalID[0].filename}`,
-          name: req.files.nationalID[0].originalname,
           contentType: req.files.nationalID[0].mimetype,
+          fileName: req.files.nationalID[0].filename
         };
       }
     }

@@ -364,10 +364,10 @@ export class OperatorManagementComponent {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
   
-      // File size validation (max 5MB)
-      const maxSize = 5 * 1024 * 1024; // 5 MB
+      // File size validation (max 10KB)
+      const maxSize = 10 * 1024; // 10 KB
       if (file.size > maxSize) {
-        alert('File size exceeds 5MB. Please upload a smaller file.');
+        alert('File size exceeds 10KB. Please upload a smaller file.');
         input.value = ''; 
         return;
       }
