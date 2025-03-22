@@ -103,6 +103,21 @@ const createExtraOperator = async (req, res) => {
         .json({ success: false, message: "Partner not found" });
     }
 
+    // **Check for duplicate operator**
+    const isDuplicate = partner.extraOperators.some((op) =>
+      op.firstName === firstName &&
+      op.lastName === lastName &&
+      op.email === email &&
+      op.mobileNo === mobileNo
+    );
+
+    if (isDuplicate) {
+      return res.status(400).json({
+        success: false,
+        message: "Operator with the same credentials already exists",
+      });
+    }
+
     // Check the partner type
     if (partner.type === "singleUnit + operator") {
       if (partner.operators.length > 0) {

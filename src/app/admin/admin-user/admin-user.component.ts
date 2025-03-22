@@ -61,9 +61,9 @@ export class AdminUserComponent {
     }
 
     const statuses = {
-      'Block User': { isBlocked: true },
-      'Suspend User': { isSuspended: true },
-      'Reactivate User': { isBlocked: false, isSuspended: false },
+      'BlockUser': { isBlocked: true },
+      'SuspendUser': { isSuspended: true },
+      'ReactivateUser': { isBlocked: false, isSuspended: false },
     };
 
     const statusUpdate = statuses[action];

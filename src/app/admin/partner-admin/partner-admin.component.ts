@@ -68,13 +68,13 @@ export class PartnerAdminComponent {
     }
 
     switch (action) {
-      case 'Block Partner':
+      case 'BlockPartner':
         this.updatePartnerStatus(selectedPartners, { isBlocked: true });
         break;
-      case 'Suspend Partner':
+      case 'SuspendPartner':
         this.updatePartnerStatus(selectedPartners, { isSuspended: true });
         break;
-      case 'Reactivate Partner':
+      case 'ReactivatePartner':
         this.updatePartnerStatus(selectedPartners, {
           isBlocked: false,
           isSuspended: false,

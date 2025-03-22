@@ -358,10 +358,21 @@ export class OperatorManagementComponent {
     this.enableSubmitButton();
   }
 
-  handleFileInput(event: Event, field: string) {
+  handleFileInput(event: Event, field: string): void {
     const input = event.target as HTMLInputElement;
+  
     if (input.files && input.files.length > 0) {
-      (this.formData as any)[field] = input.files[0];
+      const file = input.files[0];
+  
+      // File size validation (max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5 MB
+      if (file.size > maxSize) {
+        alert('File size exceeds 5MB. Please upload a smaller file.');
+        input.value = ''; 
+        return;
+      }
+  
+      (this.formData as any)[field] = file;
     }
   }
 

@@ -60,7 +60,6 @@ export class OperatorComponent implements OnInit {
   passwordVisible: boolean = false;
   confirmPasswordVisible: boolean = false;
   editingOperatorId: string | null = null;
-  fileError: string | null = null;
 
   constructor(
     private router: Router,
@@ -350,19 +349,21 @@ export class OperatorComponent implements OnInit {
     this.enableSubmitButton();
   }
 
-  handleFileInput(event: Event, field: string) {
+  handleFileInput(event: Event, field: string): void {
     const input = event.target as HTMLInputElement;
+  
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      const maxFileSize = 10 * 1024 * 1024; //10MB
-      if (file.size > maxFileSize) {
-        this.fileError = `File size exceeds the 10MB limit for ${field}. Please upload a smaller file.`;
-        this.formData[field] = null;
-      } else {
-        this.formData[field] = file;
-        this.fileError = null;
-        this.enableSubmitButton();
+  
+      // File size validation (max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5 MB
+      if (file.size > maxSize) {
+        alert('File size exceeds 5MB. Please upload a smaller file.');
+        input.value = ''; 
+        return;
       }
+  
+      (this.formData as any)[field] = file;
     }
   }
 
