@@ -5,13 +5,13 @@ const connectDb = async () => {
 
   try {
     await mongoose.connect(connectionString
-    //   ,{
-    //   useNewUrlParser: true,
-    //   useUnifiedTopology: true,
-    //   serverSelectionTimeoutMS: 30000, // increase timeout to 30 seconds
-    //   socketTimeoutMS: 45000, // socket timeout
-    //   maxPoolSize: 10, // Correct pool size setting
-    // }
+      ,{
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 30000, // increase timeout to 30 seconds
+      socketTimeoutMS: 45000, // socket timeout
+      maxPoolSize: 10, // Correct pool size setting
+    }
   );
     console.log("Database Connected");
   } catch (error) {
