@@ -432,7 +432,7 @@
                   type="text"
                   class="form-control"
                   [(ngModel)]="formData.partnerName"
-                  [disabled]="!isEditing"
+                  [disabled]="!isEditing || !!editingOperatorId"
                   name="partnerId"
                   (input)="enableSubmitButton()"
                 />

@@ -6,7 +6,6 @@ import { BookingService } from '../../../services/booking.service';
 import { SpinnerService } from '../../../services/spinner.service';
 import { ToastrService, ActiveToast, IndividualConfig } from 'ngx-toastr';
 import { checkoutService } from '../../../services/checkout.service';
-import { MapComponent } from '../../map/map.component';
 import { AuthService } from '../../../services/auth.service';
 import { Booking } from '../../../models/booking.model';
 import { PartnerService } from '../../../services/partner/partner.service';
@@ -18,6 +17,7 @@ import { LoginComponent } from '../../auth/login/login.component';
 import { ChangeDetectorRef } from '@angular/core';
 import { PaymentService } from '../../../services/payment.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Socket } from 'socket.io-client';
 
 interface Vendor {
   name: string;
@@ -70,6 +70,9 @@ export class BookingComponent implements OnInit {
   status: string | undefined;
   partnerId: string | undefined;
   oldQuotePrice: number | undefined;
+  operatorId: string  = '';
+  public operatorLocation: { latitude: number; longitude: number } | null = null;
+  private socket!: Socket; 
 
   constructor(
     private modalService: NgbModal,
@@ -86,7 +89,7 @@ export class BookingComponent implements OnInit {
     private userService: UserService,
     private paymentService: PaymentService,
     private cdr: ChangeDetectorRef,
-    private translate: TranslateService
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -170,6 +173,16 @@ export class BookingComponent implements OnInit {
 
     // Initialize MapService with the newly created map
     this.mapService.initializeMapInContainer('map');
+    if (this.operatorId) {
+      this.mapService.markDriverLocation('6703a12ec38e83b903ed29cf', this.operatorId);
+    } else {
+      console.error("Operator Id is null, cannot call mapservice")
+    }
+  }
+
+  // Update the operator location from the socket data
+  updateOperatorLocation(latitude: number, longitude: number): void {
+    this.operatorLocation = { latitude, longitude };
   }
 
   openLoginModal(): void {
@@ -667,6 +680,9 @@ export class BookingComponent implements OnInit {
           this.partnerDetails = response.data;
           this.combineBookingAndPartnerDetails();
           this.spinnerService.hide();
+          //call collectOperatorId 
+        this.collectOperatorId();
+        this.initializeMap();
         } else {
           this.spinnerService.hide();
           this.toastr.error('Failed to fetch partner details');
@@ -707,11 +723,50 @@ export class BookingComponent implements OnInit {
     this.router.navigate(['/home/user']);
   }
 
+  collectOperatorId(): void {
+    console.log("combinedDetails:",this.combinedDetails)
+    
+    if (
+      this.combinedDetails?.partner?.type === 'singleUnit + operator' &&
+      this.combinedDetails?.partner?.operators?.[0]?.operatorsDetail?.length > 0
+    ) {
+      this.operatorId =
+        this.combinedDetails.partner.operators[0].operatorsDetail[0]._id;
+        console.log("OperatorId:", this.operatorId)
+    } else if (this.combinedDetails?.partner?.type === 'multipleUnits') {
+      this.operatorId = this.getOperatorIdFromBooking(
+        this.combinedDetails?.partner?.bookingRequest,
+        this.bookingId! // bookingId must be present here
+      );
+      console.log('Collected operatorId:', this.operatorId);
+
+    if (!this.operatorId || this.operatorId === 'N/A') {
+      this.toastr.info('OperatorId not found');
+    }
+    }
+
+    if (!this.operatorId || this.operatorId === 'N/A') {
+      console.warn('OperatorId not found');
+    }
+  }
+
+  getOperatorIdFromBooking(bookingRequests: any[], bookingId: string): string {
+    if (!bookingRequests) {
+      this.toastr.info('Booking requests are null or undefined');
+      return 'N/A';
+    }
+
+    const booking = bookingRequests.find(
+      (request) => request.bookingId === bookingId
+    );
+
+    return booking?.assignedOperator?.operatorId ?? 'N/A';
+  }
+
   getOperatorNameFromBooking(
     bookingRequests: any[],
     bookingId: string
   ): string {
-
     if (!bookingRequests) {
       console.warn('Booking requests are null or undefined');
       return 'N/A';

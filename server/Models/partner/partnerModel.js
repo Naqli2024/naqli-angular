@@ -103,6 +103,9 @@ const operatorDetailSchema = new mongoose.Schema({
     enum: ["online", "offline"],
     default: "offline",
   },
+  latitude: { type: Number, required: false },
+  longitude: { type: Number, required: false },
+  timeStamp: { type: Date, required: false },
 });
 
 const operatorSchema = new mongoose.Schema({
@@ -214,6 +217,9 @@ const extraOperatorSchema = new mongoose.Schema({
     enum: ["online", "offline"],
     default: "offline",
   },
+  latitude: { type: Number, required: false },
+  longitude: { type: Number, required: false },
+  timeStamp: { type: Date, required: false },
 });
 
 const payoutSchema = new mongoose.Schema({
@@ -372,7 +378,7 @@ const partnerSchema = new mongoose.Schema(
     payout: [payoutSchema],
     partnerProfile: {
       contentType: { type: String },
-      fileName: { type: String }, 
+      fileName: { type: String },
     },
   },
   {

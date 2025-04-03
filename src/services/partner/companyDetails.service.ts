@@ -6,7 +6,7 @@ import { Observable, retry } from 'rxjs';
   providedIn: 'root',
 })
 export class CompanyDetailsService {
-  private apiUrl = 'https://prod.naqlee.com:443/api/partner';
+  private apiUrl = 'http://localhost:4000/api/partner';
   constructor(private http: HttpClient) {}
 
   addCompanyDetails(partnerId: string, companyDetails: any): Observable<any> {
