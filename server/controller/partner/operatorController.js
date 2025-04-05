@@ -684,7 +684,7 @@ const updateOperatorMode = async (req, res) => {
 
 const getBookingRequest = async (req, res) => {
   try {
-    const { operatorId } = req.body; // Get operatorId from the request body
+    const { operatorId } = req.body; 
 
     // Find the partner either based on multipleUnits operatorId or check if singleUnit+operator type has the matching operator
     const partner = await Partner.findOne({
@@ -755,24 +755,26 @@ const getBookingRequest = async (req, res) => {
           .json({ message: "Operator not found in partner details" });
       }
 
-      // Since there's only one bookingRequest for singleUnit + operator, we access the first one
-      const booking = partner.bookingRequest[0]; // Assuming there's only one bookingRequest
+      // Filter bookingRequests assigned to this operator
+      const bookings = partner.bookingRequest;
 
-      // Check if the bookingRequest has paymentStatus and it's a valid status
-      if (
-        !booking.paymentStatus ||
-        !["Paid", "HalfPaid", "Completed"].includes(booking.paymentStatus)
-      ) {
+      // Check if at least one booking has a valid paymentStatus
+      const hasValidPaymentStatus = bookings.some(booking =>
+        booking.paymentStatus &&
+        ["Paid", "HalfPaid", "Completed"].includes(booking.paymentStatus)
+      );
+
+      if (!hasValidPaymentStatus) {
         return res
           .status(400)
           .json({ message: "Payment status not updated! Please wait!" });
       }
 
-      // Return the bookingRequest for singleUnit + operator type
+      // Return all the booking requests assigned to this operator
       return res.json({
         partnerId: partner._id,
         partnerName: partner.partnerName,
-        bookingRequest: booking, // The full bookingRequest
+        bookingRequests: bookings, // Return all bookings 
       });
     }
 

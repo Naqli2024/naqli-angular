@@ -208,7 +208,7 @@ export class PartnerBookingComponent implements OnInit {
 
   getQuotePrice(bookingId: string): number {
     const found = this.quotePrice.find((q) => q.bookingId === bookingId);
-    return found ? found.quotePrice : undefined;
+    return found ? found.quotePrice : 0;
   }
 
   setQuotePrice(newPrice: number, bookingId: string): void {

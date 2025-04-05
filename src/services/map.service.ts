@@ -16,6 +16,9 @@ export class MapService {
   private operatorId: string = '';
   private locationUpdateInterval: any;
   private lastKnownLocation: { latitude: number; longitude: number } | null = null;
+  private currentRoute: google.maps.DirectionsResult | null = null; // Store the current route
+  private driverReachedStart = false; // Flag to track if the driver has reached the start
+
 
   constructor(
     private driverLocationService: DriverLocationService,
@@ -38,6 +41,7 @@ export class MapService {
       this.directionsService = new google.maps.DirectionsService();
       this.directionsRenderer = new google.maps.DirectionsRenderer();
       this.directionsRenderer.setMap(this.map);
+      // console.log('DirectionsRenderer map set:', this.directionsRenderer);
       this.geocoder = new google.maps.Geocoder();
 
       this.isMapInitialized = true;
@@ -122,7 +126,7 @@ export class MapService {
     const cacheKey = `route_${start}_${waypoints.join('_')}_${end}`;
     const cachedRoute = localStorage.getItem(cacheKey);
 
-    if (cachedRoute) {
+    if (cachedRoute && !this.driverReachedStart) { // Only use cached route if driver hasn't reached start
       const parsedRoute = JSON.parse(cachedRoute);
       const cacheTimestamp = parsedRoute.timestamp || 0;
       const currentTime = Date.now();
@@ -131,10 +135,11 @@ export class MapService {
       if (currentTime - cacheTimestamp < CACHE_EXPIRATION_TIME) {
         this.directionsRenderer?.setDirections(parsedRoute.data);
         this.displayRouteInfo(parsedRoute.data.routes[0]);
-        console.log('Route loaded from cache.');
+        this.currentRoute = parsedRoute.data; // Store the cached route
+        // console.log('Route loaded from cache.');
         return;
       } else {
-        console.log('Cache expired, fetching new route...');
+        // console.log('Cache expired, fetching new route...');
       }
     }
 
@@ -160,7 +165,8 @@ export class MapService {
           localStorage.setItem(cacheKey, JSON.stringify(cacheData));
           this.directionsRenderer?.setDirections(response);
           this.displayRouteInfo(response.routes[0]);
-          console.log('Route calculated and cached.');
+          this.currentRoute = response; // Store the fetched route
+          // console.log('Route calculated and cached.');
         } else {
           console.error('Directions request failed due to ', status);
         }
@@ -169,6 +175,7 @@ export class MapService {
   }
 
   private displayRouteInfo(route: google.maps.DirectionsRoute): void {
+    // console.log('displayRouteInfo called, directionsRenderer:', this.directionsRenderer);
     if (!this.map) {
       return;
     }
@@ -185,28 +192,24 @@ export class MapService {
       totalDistance += leg.distance.value;
       totalDuration += leg.duration.value;
 
-      const path = leg.steps.map((step) => step.path).flat();
-      const polyline = new google.maps.Polyline({
-        path: path,
-        strokeColor: '#0000FF',
-        strokeOpacity: 0.7,
-        strokeWeight: 5,
-        map: this.map,
-      });
+      const midpointIndex = Math.floor(leg.steps.length / 2);
+      if (leg.steps[midpointIndex] && leg.steps[midpointIndex].path.length > 0) {
+        // Get the midpoint LatLng from the step's path
+        const midpoint = leg.steps[midpointIndex].path[
+          Math.floor(leg.steps[midpointIndex].path.length / 2)
+        ];
 
-      const midpointIndex = Math.floor(path.length / 2);
-      const midpoint = path[midpointIndex];
+        const tooltipContent = `
+          <div class="custom-tooltip">
+            <div>${leg.distance.text},</div>
+            <div>${leg.duration.text}</div>
+          </div>
+        `;
 
-      const tooltipContent = `
-        <div class="custom-tooltip">
-          <div>${leg.distance.text},</div>
-          <div>${leg.duration.text}</div>
-        </div>
-      `;
-
-      infoWindow.setContent(tooltipContent);
-      infoWindow.setPosition(midpoint);
-      infoWindow.open(this.map);
+        infoWindow.setContent(tooltipContent);
+        infoWindow.setPosition(midpoint);
+        infoWindow.open(this.map);
+      }
     });
 
     const hours = Math.floor(totalDuration / 3600);
@@ -231,7 +234,7 @@ export class MapService {
         position: location,
         title: fullAddress,
       });
-      console.log('Location loaded from cache.');
+      // console.log('Location loaded from cache.');
       return;
     }
 
@@ -246,7 +249,7 @@ export class MapService {
             position: location,
             title: fullAddress,
           });
-          console.log('Location geocoded and cached.');
+          // console.log('Location geocoded and cached.');
         } else {
           console.error(
             'Geocode was not successful for the following reason: ' + status
@@ -259,10 +262,10 @@ export class MapService {
   }
 
   markDriverLocation(partnerId: string, operatorId: string): void {
-    console.log('markDriverLocation called with:', {
-      partnerId,
-      operatorId,
-    });
+    // console.log('markDriverLocation called with:', {
+    //   partnerId,
+    //   operatorId,
+    // });
     this.operatorId = operatorId;
 
     if (!this.map) {
@@ -284,11 +287,11 @@ export class MapService {
   
             // Only update the marker if the driver has moved significantly
             if (!this.lastKnownLocation || this.hasDriverMoved(newLocation)) {
-              console.log('Updating Driver Location:', data);
+              // console.log('Updating Driver Location:', data);
               this.updateDriverMarker(data);
               this.lastKnownLocation = newLocation;
             } else {
-              console.log('No significant movement detected. Skipping update.');
+              // console.log('No significant movement detected. Skipping update.');
             }
           } else {
             console.warn('No valid location data received.');
@@ -298,7 +301,7 @@ export class MapService {
           console.error('Error fetching driver location:', error);
         }
       );
-    }, 15000); // Fetch every 15 seconds
+    }, 5000); // Fetch every 5 seconds
   }
 
   private hasDriverMoved(newLocation: { latitude: number; longitude: number }): boolean {
@@ -352,5 +355,48 @@ export class MapService {
         new google.maps.LatLng(location.latitude, location.longitude)
       );
     }
+    // Check if the driver has reached the start point
+    if (this.currentRoute && !this.driverReachedStart) {
+      const startLocation = this.currentRoute.routes[0].legs[0].start_location;
+      const driverLatLng = new google.maps.LatLng(location.latitude, location.longitude);
+      const startLatLng = new google.maps.LatLng(startLocation.lat(), startLocation.lng());
+
+      const distanceToStart = google.maps.geometry.spherical.computeDistanceBetween(driverLatLng, startLatLng);
+
+      if (distanceToStart < 100) { // Check if driver is within 100 meters of the start
+        this.driverReachedStart = true;
+        this.updateRouteFromDriverLocationToEnd(); // Update the route
+      }
+    }
+  }
+
+  private updateRouteFromDriverLocationToEnd(): void {
+    if (!this.map || !this.directionsService || !this.directionsRenderer || !this.lastKnownLocation || !this.currentRoute) {
+      return;
+    }
+
+    const endLocation = this.currentRoute.routes[0].legs[this.currentRoute.routes[0].legs.length - 1].end_location;
+    const waypoints = this.currentRoute.routes[0].legs.slice(0, -1).map(leg => ({
+      location: leg.end_location,
+      stopover: true
+    }));
+
+    this.directionsService.route(
+      {
+        origin: new google.maps.LatLng(this.lastKnownLocation.latitude, this.lastKnownLocation.longitude),
+        destination: endLocation,
+        waypoints: waypoints,
+        optimizeWaypoints: true,
+        travelMode: google.maps.TravelMode.DRIVING,
+      },
+      (response, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          this.directionsRenderer?.setDirections(response);
+          this.displayRouteInfo(response.routes[0]);
+        } else {
+          console.error('Directions request failed due to ', status);
+        }
+      }
+    );
   }
 }

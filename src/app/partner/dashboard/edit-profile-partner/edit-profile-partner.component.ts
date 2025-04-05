@@ -8,6 +8,7 @@ import { SpinnerService } from '../../../../services/spinner.service';
 import { FormsModule } from '@angular/forms';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FileService } from '../../../../services/file.service';
 
 @Component({
   selector: 'app-edit-profile-partner',
@@ -33,6 +34,7 @@ export class EditProfilePartnerComponent implements OnInit {
     private toastr: ToastrService,
     private spinnerService: SpinnerService,
     private zone: NgZone,
+    private fileService: FileService
   ) {}
 
   ngOnInit(): void {
@@ -54,7 +56,8 @@ export class EditProfilePartnerComponent implements OnInit {
 
           if (partnerDetails.data.partnerProfile?.fileName) {
             const fileName = partnerDetails.data.partnerProfile.fileName;
-            this.profilePhoto = `https://prod.naqlee.com:443/uploads/partnerProfile/${fileName}`;
+            // this.profilePhoto = `https://prod.naqlee.com:443/uploads/partnerProfile/${fileName}`;
+            this.profilePhoto = this.fileService.getImageUrl(fileName);
           }
         },
         (error) => {

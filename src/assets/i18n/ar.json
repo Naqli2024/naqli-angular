@@ -118,7 +118,10 @@
     "hydraulic": "هيدروليكي",
     "VIP": "VIP",
     "Two Cars": "سيارتين",
-    "Trucks": "شاحنات"
+    "Trucks": "شاحنات",
+    "15 - 30 Pax": "15 - 30 Pax",
+    "+30 Pax": "+30 Pax",
+    "<15 Pax": "<15 Pax"
   },
   "loads": {
     "Food": "طعام",

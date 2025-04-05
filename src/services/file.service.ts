@@ -5,12 +5,16 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class FileService {
-  private baseUrl = 'http://localhost:4000/api/files'; 
+  private baseUrl = 'https://prod.naqlee.com:443/api'; 
   
   constructor(private http: HttpClient) {}
 
   // Function to get the file URL
   getFileUrl(fileName: string): string {
-    return `${this.baseUrl}/${fileName}`;
+    return `${this.baseUrl}/files/${fileName}`;
+  }
+
+  getImageUrl(fileName: string): string {
+    return `${this.baseUrl}/image/${fileName}`;
   }
 }

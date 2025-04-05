@@ -6,7 +6,6 @@ import { SpinnerService } from '../../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
 import { PartnerService } from '../../../../services/partner/partner.service';
 import { CommonModule } from '@angular/common';
-import { MapComponent } from '../../../map/map.component';
 import { GoogleMapsService } from '../../../../services/googlemap.service';
 import { MapService } from '../../../../services/map.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-user-details',
   standalone: true,
-  imports: [CommonModule, MapComponent, TranslateModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './user-details.component.html',
   styleUrl: './user-details.component.css',
 })
@@ -23,6 +22,7 @@ export class UserDetailsComponent implements OnInit {
   bookingDetails: any = null;
   partnerDetails: any = null;
   combinedDetails: any = null;
+  operatorId: string = '';
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -117,13 +117,14 @@ export class UserDetailsComponent implements OnInit {
         partner: this.partnerDetails
       };
   
-      // console.log('Combined Details:', this.combinedDetails);
+      console.log('Combined Details:', this.combinedDetails);
     } else {
       this.combinedDetails = {
         booking: this.bookingDetails,
         partner: this.partnerDetails
       };
     }
+    this.extractOperatorId();
   }
 
   getOperatorNameFromBooking(bookingRequests: any[] | null, bookingId: string): string {
@@ -148,5 +149,36 @@ export class UserDetailsComponent implements OnInit {
       (request) => request.bookingId === bookingId
     );
     return booking?.assignedOperator?.operatorMobileNo ?? 'N/A';
+  }
+
+  extractOperatorId(): void {
+    const partner = this.combinedDetails?.partner;
+  
+    if (!partner || !partner.type) {
+      console.warn('Partner details not found');
+      return;
+    }
+  
+    if (partner.type === 'singleUnit + operator') {
+      const operatorDetail = partner.operators?.[0]?.operatorsDetail?.[0];
+      if (operatorDetail && operatorDetail._id) {
+        this.operatorId = operatorDetail._id;
+      } else {
+        console.warn('Operator details not found for singleUnit + operator');
+      }
+    } else if (partner.type === 'multipleUnits') {
+      const booking = partner.bookingRequest?.find(
+        (request: any) => request.bookingId === this.bookingId
+      );
+      if (booking?.assignedOperator?.operatorId) {
+        this.operatorId = booking.assignedOperator.operatorId;
+      } else {
+        console.warn('Operator ID not found in booking for multipleUnits');
+      }
+    }
+       // Call the API only after operatorId is set
+   this.mapService.markDriverLocation(partner._id, this.operatorId);
+   console.log("PartnerId:", partner._id);
+   console.log("OperatorId:", this.operatorId);
   }
 }

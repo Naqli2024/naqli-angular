@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class EstimateService {
-  private apiUrl = 'http://localhost:4000/estimate';
+  private apiUrl = 'https://prod.naqlee.com:443/estimate';
 
   constructor(private http: HttpClient) {}
 

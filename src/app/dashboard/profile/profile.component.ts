@@ -7,6 +7,7 @@ import { Partner } from '../../../models/partnerData.model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { FileService } from '../../../services/file.service';
 
 @Component({
   selector: 'app-profile',
@@ -24,7 +25,8 @@ export class ProfileComponent {
     private userService: UserService,
     private partnerService: PartnerService,
     public toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private fileService: FileService
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +46,8 @@ export class ProfileComponent {
       (response: User) => {
         this.users = response;
         if (response.userProfile?.fileName) {
-          this.profilePhoto = `https://prod.naqlee.com:443/uploads/userProfile/${response.userProfile.fileName}`;
+          // this.profilePhoto = `https://prod.naqlee.com:443/uploads/userProfile/${response.userProfile.fileName}`;
+          this.profilePhoto = this.fileService.getImageUrl(response.userProfile.fileName);
         }
       },
       (error) => {
@@ -62,7 +65,8 @@ export class ProfileComponent {
         this.partner = response.data;
         if (response.data.partnerProfile?.fileName) {
           const fileName = response.data.partnerProfile.fileName;
-          this.profilePhoto = `https://prod.naqlee.com:443/uploads/partnerProfile/${fileName}`;
+          // this.profilePhoto = `https://prod.naqlee.com:443/uploads/partnerProfile/${fileName}`;
+          this.profilePhoto = this.fileService.getImageUrl(fileName);
         }
       },
       (error) => {

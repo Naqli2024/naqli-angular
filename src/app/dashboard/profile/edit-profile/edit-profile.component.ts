@@ -7,6 +7,7 @@ import { UserService } from '../../../../services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FileService } from '../../../../services/file.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -55,7 +56,8 @@ export class EditProfileComponent {
   constructor(
     private zone: NgZone,
     private userService: UserService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private fileService: FileService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +75,8 @@ export class EditProfileComponent {
       (response: User) => {
         this.user = response;
         if (response.userProfile?.fileName) {
-          this.profilePhoto = `https://prod.naqlee.com:443/uploads/userProfile/${response.userProfile.fileName}`;
+          // this.profilePhoto = `https://prod.naqlee.com:443/uploads/userProfile/${response.userProfile.fileName}`;
+          this.profilePhoto = this.fileService.getImageUrl(response.userProfile.fileName);
         }
       },
       (error) => {

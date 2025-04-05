@@ -31,7 +31,9 @@ export class PaymentConfirmationComponent implements OnInit {
   additionalChargesReason = [];
   bookings: Booking[] = [];
   partnerId: string = '';
+  operatorId: string = '';
   isPaymentSuccessful:boolean = false;
+  partnerDetails: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -68,11 +70,70 @@ export class PaymentConfirmationComponent implements OnInit {
       );
     });
     this.partnerId = this.getPartnerId();
+    if(this.partnerId) {
+      this.getPartnerDetails();
+    }
     this.googleMapsService.loadGoogleMapsScript();
     // Define the global initMap function
     (window as any).initMap = () => {
       this.mapService.initializeMapInContainer('mapContainer');
     };
+  }
+
+  getPartnerDetails(): void {
+    this.partnerService.getPartnerDetails(this.partnerId).subscribe(
+      (response) => {
+        if (response.success) {
+          this.partnerDetails = response.data;
+          console.log(this.partnerDetails)
+          this.collectOperatorId();
+          this.spinnerService.hide();
+        } else {
+          this.spinnerService.hide();
+          this.toastr.error('Failed to fetch partner details');
+        }
+      },
+      (error) => {
+        this.spinnerService.hide();
+      }
+    );
+  }
+
+  collectOperatorId(): void {
+    if (
+      this.partnerDetails?.type === 'singleUnit + operator' &&
+      this.partnerDetails?.operators?.[0]?.operatorsDetail?.length > 0
+    ) {
+      this.operatorId =
+        this.partnerDetails?.operators[0].operatorsDetail[0]._id;
+    } else if (this.partnerDetails?.type === 'multipleUnits') {
+      this.operatorId = this.getOperatorIdFromBooking(
+        this.partnerDetails?.bookingRequest,
+        this.bookingId! // bookingId must be present here
+      );
+      console.log('Collected operatorId:', this.operatorId);
+
+    if (!this.operatorId || this.operatorId === 'N/A') {
+      this.toastr.info('OperatorId not found');
+    }
+    }
+    // Call the API only after operatorId is set
+  this.mapService.markDriverLocation(this.partnerId, this.operatorId);
+  console.log("PartnerId:", this.partnerId);
+  console.log("OperatorId:", this.operatorId);
+  }
+
+  getOperatorIdFromBooking(bookingRequests: any[], bookingId: string): string {
+    if (!bookingRequests) {
+      this.toastr.info('Booking requests are null or undefined');
+      return 'N/A';
+    }
+
+    const booking = bookingRequests.find(
+      (request) => request.bookingId === bookingId
+    );
+
+    return booking?.assignedOperator?.operatorId ?? 'N/A';
   }
 
   updateRoute(): void {

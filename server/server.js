@@ -18,7 +18,7 @@ const fileRoute = require("./routes/fileRoutes");
 const createPayment = require("./routes/createPaymentRoute");
 const estimate = require("./routes/estimateRoute");
 const driverLocationRoute = require("./routes/driverLocationRoute");
-
+const driverOtpRoute = require("./routes/driverTripRoutes");
 
 //environment variables
 env.config();
@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 //CORS configuration
 app.use(
   cors({
-    origin: ["https://naqlee.com", "http://localhost:4200"], // Allow only your frontend's domain
+    origin: ["https://naqlee.com"], // Allow only your frontend's domain
     methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
     credentials: true, // Include cookies if needed
@@ -61,6 +61,7 @@ app.use("/api", createPayment);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api", estimate);
 app.use("/api", driverLocationRoute);
+app.use("/api", driverOtpRoute);
 
 // Use HTTP/1.1 server instead of HTTP/2
 const server = http.createServer(app);

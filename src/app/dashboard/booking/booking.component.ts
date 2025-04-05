@@ -173,11 +173,7 @@ export class BookingComponent implements OnInit {
 
     // Initialize MapService with the newly created map
     this.mapService.initializeMapInContainer('map');
-    if (this.operatorId) {
-      this.mapService.markDriverLocation('6703a12ec38e83b903ed29cf', this.operatorId);
-    } else {
-      console.error("Operator Id is null, cannot call mapservice")
-    }
+    this.mapService.markDriverLocation(this.partnerDetails?._id, this.operatorId);
   }
 
   // Update the operator location from the socket data
@@ -477,7 +473,7 @@ export class BookingComponent implements OnInit {
         },
         (error) => {
           this.spinnerService.hide();
-          this.toastr.error('Failed to fetch bookings');
+          // this.toastr.error('Failed to fetch bookings');
           // console.error('Error fetching bookings:', error);
         }
       );
@@ -724,7 +720,6 @@ export class BookingComponent implements OnInit {
   }
 
   collectOperatorId(): void {
-    console.log("combinedDetails:",this.combinedDetails)
     
     if (
       this.combinedDetails?.partner?.type === 'singleUnit + operator' &&
@@ -732,13 +727,11 @@ export class BookingComponent implements OnInit {
     ) {
       this.operatorId =
         this.combinedDetails.partner.operators[0].operatorsDetail[0]._id;
-        console.log("OperatorId:", this.operatorId)
     } else if (this.combinedDetails?.partner?.type === 'multipleUnits') {
       this.operatorId = this.getOperatorIdFromBooking(
         this.combinedDetails?.partner?.bookingRequest,
         this.bookingId! // bookingId must be present here
       );
-      console.log('Collected operatorId:', this.operatorId);
 
     if (!this.operatorId || this.operatorId === 'N/A') {
       this.toastr.info('OperatorId not found');

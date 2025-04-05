@@ -90,16 +90,15 @@
               }}
               -
               {{
-                ("typeNames." + combinedDetails.booking?.unitName
-                  | translate) !==
+                ("typeNames." + combinedDetails.booking?.unitName | translate) !==
                 "typeNames." + combinedDetails.booking?.unitName
-                  ? ("typeNames." + combinedDetails.booking?.unitName
-                    | translate)
-                  : ("equipmentTypeName." + combinedDetails.booking?.unitName
-                      | translate) !==
+                  ? ("typeNames." + combinedDetails.booking?.unitName | translate)
+                  : ("equipmentTypeName." + combinedDetails.booking?.unitName | translate) !==
                     "equipmentTypeName." + combinedDetails.booking?.unitName
-                  ? ("equipmentTypeName." + combinedDetails.booking?.unitName
-                    | translate)
+                  ? ("equipmentTypeName." + combinedDetails.booking?.unitName | translate)
+                  : ("specialUnits." + combinedDetails.booking?.unitName | translate) !==
+                    "specialUnits." + combinedDetails.booking?.unitName
+                  ? ("specialUnits." + combinedDetails.booking?.unitName | translate)
                   : ("" | translate)
               }}
             </span>
