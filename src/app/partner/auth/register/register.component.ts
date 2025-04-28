@@ -29,6 +29,7 @@ export class RegisterComponent {
     bank: '',
     company: '',
     ibanNumber: '',
+    CRNumber: ''
   };
   passwordVisible: boolean = false;
   confirmPasswordVisible: boolean = false;
@@ -96,6 +97,7 @@ export class RegisterComponent {
       bank: '',
       company: '',
       ibanNumber: '',
+      CRNumber: ''
     };
   }
 }

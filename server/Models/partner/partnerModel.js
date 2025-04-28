@@ -253,8 +253,7 @@ const partnerSchema = new mongoose.Schema(
       enum: [
         "enterprise",
         "multipleUnits",
-        "singleUnit + operator",
-        "operator",
+        "singleUnit + operator"
       ],
     },
     partnerName: {
@@ -276,18 +275,27 @@ const partnerSchema = new mongoose.Schema(
     },
     region: {
       type: String,
+      required: true
     },
     city: {
       type: String,
+      required: true
     },
     bank: {
       type: String,
+      required: true
     },
     company: {
       type: String,
+      required: true
     },
     ibanNumber: {
       type: String,
+      required: true
+    },
+    CRNumber: {
+      type: String,
+      required: true
     },
     resetOTP: {
       type: String,

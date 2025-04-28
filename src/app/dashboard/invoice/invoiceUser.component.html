@@ -116,7 +116,7 @@
             <span>{{ booking.invoiceDate }}</span>
           </div>
           <div class="col-md-3">
-            <b>Booking id</b> 
+            <b>Booking Id</b> 
             <span>{{ booking._id }}</span>
           </div>
           <div class="col-md-3">
@@ -156,7 +156,7 @@
               <tbody>
                 <tr>
                   <td>1</td>
-                  <td>xxxxxxxxxxxxxx</td>
+                  <td>{{ booking.pickup }}, {{ booking.dropPoints.join(' , ') }}</td>
                   <td>1</td>
                   <td>{{ booking.paymentAmount }}</td>
                   <td>{{ booking.paymentAmount }}</td>
@@ -172,14 +172,14 @@
             <div class="col-md-4 col-sm-12">
               <p class="d-flex justify-content-between">
                 <b>{{ "Subtotal" | translate }}</b>
-                <span>{{ booking.paymentAmount }}</span>
+                <span>{{ booking.paymentAmount }} SAR</span>
               </p>
               <p class="d-flex justify-content-between">
                 <b>VAT:</b> <span>0%</span>
               </p>
               <p class="d-flex justify-content-between">
                 <b>{{ "Total amount" | translate }}</b>
-                <span>{{ booking.paymentAmount }}</span>
+                <span>{{ booking.paymentAmount }} SAR</span>
               </p>
             </div>
           </div>

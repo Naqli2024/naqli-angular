@@ -122,7 +122,7 @@ export class HeaderComponent implements OnInit {
         }).length;
       },
       (error) => {
-        this.toastr.error('Failed to fetch notifications');
+        // this.toastr.error('Failed to fetch notifications');
       }
     );
   }
