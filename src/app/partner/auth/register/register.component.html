@@ -15,6 +15,7 @@
                 id="enterprise"
                 [(ngModel)]="formData.type"
                 value="enterprise"
+                required
               />
               <label class="form-check-label" for="enterprise">{{
                 "Enterprise" | translate
@@ -28,6 +29,7 @@
                 id="multipleUnits"
                 [(ngModel)]="formData.type"
                 value="multipleUnits"
+                required
               />
               <label class="form-check-label" for="multipleUnits">{{
                 "Multiple Units" | translate
@@ -41,12 +43,13 @@
                 id="singleUnit + operator"
                 [(ngModel)]="formData.type"
                 value="singleUnit + operator"
+                required
               />
               <label class="form-check-label" for="singleUnitOperator">{{
                 "Single Unit + Operator" | translate
               }}</label>
             </div>
-            <div class="col form-check">
+            <!-- <div class="col form-check">
               <input
                 class="form-check-input"
                 type="radio"
@@ -58,13 +61,13 @@
               <label class="form-check-label" for="operator">{{
                 "Operator" | translate
               }}</label>
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="partner-register">
           <div class="row">
             <div class="col-md-6">
-              <label for="partnerName">{{ "Partner Name" | translate }}</label>
+              <label for="partnerName">{{ "PartnerName" | translate }}</label>
               <input
                 type="text"
                 class="form-control"
@@ -131,26 +134,26 @@
         <div class="partner-register">
           <div class="row">
             <div class="col-md-6">
-              <label for="region">Region</label>
+              <label for="region">{{"Region"|translate}}</label>
               <input
                 type="text"
                 class="form-control"
                 id="region"
                 name="region"
-                placeholder="Enter your region"
+                placeholder="{{ 'EnterYourRegion' | translate }}"
                 [(ngModel)]="formData.region"
                 required
               />
             </div>
             <div class="col-md-6">
-              <label for="city">City</label>
+              <label for="city">{{"City"|translate}}</label>
               <div class="input-with-icon" style="position: relative">
                 <input
                   type="text"
                   class="form-control"
                   id="city"
                   name="city"
-                  placeholder="Enter your city"
+                  placeholder="{{ 'EnterYourCity' | translate }}"
                   [(ngModel)]="formData.city"
                   required
                 />
@@ -162,25 +165,25 @@
         <div class="partner-register">
           <div class="row">
             <div class="col-md-6">
-              <label for="bank">Bank</label>
+              <label for="bank">{{"Bank name"|translate}}</label>
               <input
                 type="text"
                 class="form-control"
                 id="bank"
                 name="bank"
-                placeholder="Enter your Bank name"
+                placeholder="{{ 'EnterYourBankName' | translate }}"
                 [(ngModel)]="formData.bank"
                 required
               />
             </div>
             <div class="col-md-6">
-              <label for="company">Company</label>
+              <label for="company">{{"Company"|translate}}</label>
               <input
                 type="text"
                 class="form-control"
                 id="company"
                 name="company"
-                placeholder="Enter your company"
+                placeholder="{{ 'EnterYourCompany' | translate }}"
                 [(ngModel)]="formData.company"
                 required
               />
@@ -191,14 +194,26 @@
         <div class="partner-register">
           <div class="row">
             <div class="col-md-6">
-              <label for="IBAN Number">IBAN Number</label>
+              <label for="IBAN Number">{{"IBAN"|translate}}</label>
               <input
                 type="text"
                 class="form-control"
                 id="IBAN Number"
                 name="IBAN Number"
-                placeholder="Enter your IBAN Number"
+                placeholder="{{ 'EnterYourIBANNumber' | translate }}"
                 [(ngModel)]="formData.ibanNumber"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="CR Number">{{"IDCRNumber"|translate}}</label>
+              <input
+                type="text"
+                class="form-control"
+                id="CR Number"
+                name="CR Number"
+                placeholder="{{ 'EnterYourIDCRNumber' | translate }}"
+                [(ngModel)]="formData.CRNumber"
                 required
               />
             </div>

@@ -58,9 +58,14 @@ const driverToTakeTrip = async (req, res) => {
 
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
     const otpExpiry = new Date(Date.now() + 10 * 60000); // 10 minutes expiry
+    console.log('Generated OTP Expiry:', otpExpiry);
 
-    // Save OTP to driverTrip collection
-    await DriverTrip.create({ bookingId, resetOTP: otp, otpExpiry });
+     // Find and update if bookingId exists, otherwise create new
+     const trip = await DriverTrip.findOneAndUpdate(
+      { bookingId },
+      { resetOTP: otp, otpExpiry: otpExpiry, isVerified: false }, 
+      { new: true, upsert: true }
+    );
 
     // Send OTP
     const result = await sendOTP(user.contactNumber, otp);
@@ -74,21 +79,32 @@ const driverToTakeTrip = async (req, res) => {
 const verifyOTP = async (req, res) => {
   const { bookingId, otp } = req.body;
 
-  if (!bookingId || !otp) return res.status(400).json({ message: 'Booking ID and OTP are required.' });
+  if (!bookingId || !otp) {
+    return res.status(400).json({ message: 'Booking ID and OTP are required.' });
+  }
 
   try {
     const trip = await DriverTrip.findOne({ bookingId });
-    if (!trip) return res.status(404).json({ message: 'Trip record not found.' });
+    if (!trip) {
+      return res.status(404).json({ message: 'Trip record not found.' });
+    }
 
-    const isExpired = new Date() > new Date(trip.otpExpiry);
-    if (isExpired) return res.status(400).json({ message: 'OTP has expired.' });
+    const nowTimestamp = Date.now(); 
+    const expiryTimestamp = new Date(trip.otpExpiry).getTime(); 
 
-    if (trip.resetOTP !== otp) return res.status(400).json({ message: 'Invalid OTP.' });
+    const isExpired = nowTimestamp > expiryTimestamp;
+    if (isExpired) {
+      return res.status(400).json({ message: 'OTP has expired.' });
+    }
+
+    if (trip.resetOTP !== otp) {
+      return res.status(400).json({ message: 'Invalid OTP.' });
+    }
 
     trip.isVerified = true;
     await trip.save();
 
-    return res.status(200).json({ message: 'OTP verified successfully.' });
+    return res.status(200).json({ message: 'OTP verified successfully.', data: trip.isVerified });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

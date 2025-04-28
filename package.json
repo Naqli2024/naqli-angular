@@ -13,17 +13,17 @@
   "dependencies": {
     "@agm/core": "^3.0.0-beta.0",
     "@angular-builders/custom-webpack": "^18.0.0-beta.3",
-    "@angular/animations": "^17.3.11",
-    "@angular/cdk": "^18.0.2",
-    "@angular/common": "^17.3.0",
-    "@angular/compiler": "^17.3.0",
-    "@angular/core": "^17.3.0",
-    "@angular/forms": "^17.3.0",
-    "@angular/google-maps": "^18.0.2",
-    "@angular/material": "^18.0.2",
-    "@angular/platform-browser": "^17.3.0",
-    "@angular/platform-browser-dynamic": "^17.3.0",
-    "@angular/router": "^17.3.0",
+    "@angular/animations": "^17.3.12",
+    "@angular/cdk": "^17.3.10",
+    "@angular/common": "^17.3.12",
+    "@angular/compiler": "^17.3.12",
+    "@angular/core": "^17.3.12",
+    "@angular/forms": "^17.3.12",
+    "@angular/google-maps": "^18.2.14",
+    "@angular/material": "^17.3.10",
+    "@angular/platform-browser": "^17.3.12",
+    "@angular/platform-browser-dynamic": "^17.3.12",
+    "@angular/router": "^17.3.12",
     "@coreui/angular": "^5.2.23",
     "@fortawesome/angular-fontawesome": "^0.15.0",
     "@fortawesome/fontawesome-free": "^6.5.2",
@@ -66,17 +66,17 @@
     "ngx-socket-io": "^4.8.4",
     "ngx-toastr": "^18.0.0",
     "ngx-translate-messageformat-compiler": "^7.0.0",
-    "rxjs": "~7.8.0",
+    "rxjs": "~7.8.2",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.8.1",
     "tslib": "^2.6.3",
     "xlsx": "^0.18.5",
-    "zone.js": "~0.14.3"
+    "zone.js": "~0.14.10"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.7",
-    "@angular/cli": "^17.3.7",
-    "@angular/compiler-cli": "^17.3.0",
+    "@angular/cli": "^17.3.12",
+    "@angular/compiler-cli": "^17.3.12",
     "@types/jasmine": "~5.1.0",
     "@types/lodash": "^4.17.16",
     "dotenv-webpack": "^8.1.0",
@@ -86,6 +86,6 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.4.2"
+    "typescript": "~5.4.5"
   }
 }
