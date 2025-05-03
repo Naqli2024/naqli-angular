@@ -376,8 +376,6 @@ const updateBookingPaymentStatus = async (req, res) => {
         oldQuotePrice <= slab.slabRateEnd
       ) {
         commissionRate = parseFloat(slab.commissionRate) / 100; // Convert to decimal
-        console.log(`Applicable Slab Rate: ${slab.commissionRate}%`);
-        console.log(`Commission Rate: ${commissionRate}`);
         break;
       }
     }
@@ -391,7 +389,6 @@ const updateBookingPaymentStatus = async (req, res) => {
 
     // Calculate admin commission based on the oldQuotePrice
     const adminCommission = oldQuotePrice * commissionRate;
-    console.log(`Calculated Admin Commission: ${adminCommission}`);
 
     // Ensure adminCommission is set only if it's not already set
     if (

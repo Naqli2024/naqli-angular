@@ -18,6 +18,9 @@ const partnerRegister = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
+    // Normalize email
+    const normalizedEmail = req.body.email.toLowerCase();
+
     // Check if partner selected "enterprise" as the type
     if (req.body.type === "enterprise") {
       return res.status(400).json({
@@ -28,7 +31,18 @@ const partnerRegister = async (req, res) => {
       });
     }
 
-    const existPartner = await partner.findOne({ email: req.body.email });
+    // Check for existing mobile number
+    const mobileExists = await partner.findOne({ mobileNo: req.body.mobileNo });
+    if (mobileExists) {
+      return res.status(400).json({
+        message: "Partner with this mobile number already exists",
+        success: false,
+        data: null,
+      });
+    }
+
+    // Check for existing email
+    const existPartner = await partner.findOne({ email: normalizedEmail });
     if (existPartner) {
       return res.status(400).json({
         message: "Partner already exists",
@@ -47,6 +61,7 @@ const partnerRegister = async (req, res) => {
     // Create new partner with OTP and its expiry time
     const newPartner = new partner({
       ...req.body,
+      email: normalizedEmail,
       resetOTP: otp,
       otpExpiry: Date.now() + 300000, // 5 minutes expiry
     });
@@ -74,7 +89,6 @@ const partnerRegister = async (req, res) => {
         },
       });
     } catch (otpError) {
-      console.error("OTP sending failed:", otpError);
       res.status(500).json({
         message: "Partner created but failed to send OTP.",
         success: false,
@@ -82,7 +96,6 @@ const partnerRegister = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error during partner registration:", error.message);
     res.status(400).json({
       message: error.message,
       success: false,

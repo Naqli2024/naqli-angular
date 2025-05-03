@@ -199,13 +199,11 @@ export class PayoutComponent implements OnInit {
       };
     });
   
-    // Create worksheet and workbook
     const ws = XLSX.utils.json_to_sheet(filteredData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Selected Bookings");
   
-    // Download the Excel file
-    XLSX.writeFile(wb, "selected-bookings.xlsx");
+    XLSX.writeFile(wb, "selected-bookings.csv", { bookType: "csv" });
   }
 
   generateExcelForInitialPayout(selectedBookings: any[]) {
@@ -222,17 +220,15 @@ export class PayoutComponent implements OnInit {
         "Region": partner.region || "N/A",
         "City": partner.city || "N/A",
         "Bank Name": partner.bank || "N/A",
-        "Company": partner.company || 'N/A',
+        "Company": partner.company || "N/A",
         "IBAN": partner.ibanNumber || "N/A"
       };
     });
   
-    // Create worksheet and workbook
     const ws = XLSX.utils.json_to_sheet(filteredData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Selected Bookings");
   
-    // Download the Excel file
-    XLSX.writeFile(wb, "selected-bookings.xlsx");
+    XLSX.writeFile(wb, "initial-payout.csv", { bookType: "csv" });
   }
 }

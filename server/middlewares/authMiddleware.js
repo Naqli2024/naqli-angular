@@ -24,7 +24,6 @@ const protect = async (req, res, next) => {
               req.userId = decoded.userId;
           } else if (decoded.partnerId) {
               req.partner = await Partner.findById(decoded.partnerId).select('-password');
-              console.log(req.partner)
               if (!req.partner) {
                   console.warn(`Partner not found: ${decoded.partnerId}`);
                   return res.status(401).json({ message: 'Not authorized, partner not found' });

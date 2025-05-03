@@ -6,7 +6,7 @@ const userRegisterValidation = [
   check("emailAddress")
     .isEmail()
     .withMessage("Email is invalid")
-    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/)
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
     .withMessage("Invalid Email Address"),
   check("password")
     .isLength({ min: 6 })

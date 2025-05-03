@@ -60,7 +60,7 @@ export class LoginComponent {
       (error) => {
         this.spinnerService.hide();
         const errorMessage = error.error?.message || 'An error occurred';
-        if (errorMessage === 'Account not verified') {
+        if (errorMessage === 'Account not verified! Verify your account') {
           this.otpVerificatoionModal();
         } else {
           this.toastr.error(errorMessage, 'Error');

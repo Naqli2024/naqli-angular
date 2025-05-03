@@ -32,6 +32,9 @@ const userRegister = async (req, res) => {
       idNumber,
     } = req.body;
 
+    // Normalize email to lowercase
+    const normalizedEmail = emailAddress.toLowerCase();
+
     // Check if the user has selected "Enterprise User"
     if (accountType === "Enterprise User") {
       return res.status(400).json({
@@ -43,7 +46,7 @@ const userRegister = async (req, res) => {
     }
 
     // Check for existing users with any of the fields
-    const existUserByEmail = await user.findOne({ emailAddress });
+    const existUserByEmail = await user.findOne({ emailAddress: normalizedEmail });
     const existUserByIdNumber = await user.findOne({ idNumber });
     const existUserByContactNumber = await user.findOne({ contactNumber });
 
@@ -105,7 +108,7 @@ const userRegister = async (req, res) => {
     const newUser = new user({
       firstName,
       lastName,
-      emailAddress,
+      emailAddress: normalizedEmail,
       password: hashedPassword,
       confirmPassword: hashedConfirmPassword,
       contactNumber,

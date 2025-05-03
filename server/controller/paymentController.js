@@ -12,7 +12,6 @@ const checkout = async (req, res) => {
         source: token.id,
       })
       .then((customer) => {
-        console.log(customer);
         return stripe.charges.create({
           amount: 1000,
           description: "Naqli Trasportation",
@@ -21,7 +20,6 @@ const checkout = async (req, res) => {
         });
       })
       .then((charge) => {
-        console.log(charge);
         res.json({
           message: "Payment success!",
           success: true,
