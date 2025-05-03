@@ -785,8 +785,13 @@ const sendOTP = async (mobileNo, otp) => {
  *******************************************/
 const resendOTP = async (req, res) => {
   try {
-    const { email } = req.body;
-    const existPartner = await partner.findOne({ email });
+    const { emailAddress } = req.body;
+    const existPartner = await partner.findOne({
+      $or: [
+        { email: emailAddress },
+        { mobileNo: emailAddress }
+      ]
+    });
 
     if (!existPartner) {
       return res.status(400).json({

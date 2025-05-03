@@ -109,6 +109,7 @@ export class LoginComponent {
         } else {
           if (response.message === 'User not verified') {
             this.toastr.error(response.message, 'Error');
+            localStorage.setItem('emailAddress', this.loginData.emailAddress);
             this.otpVerificatoionModal();
           } else {
             this.toastr.error(response.message, 'Error');

@@ -61,6 +61,7 @@ export class LoginComponent {
         this.spinnerService.hide();
         const errorMessage = error.error?.message || 'An error occurred';
         if (errorMessage === 'Account not verified! Verify your account') {
+          localStorage.setItem('emailAddress', this.loginData.emailOrMobile);
           this.otpVerificatoionModal();
         } else {
           this.toastr.error(errorMessage, 'Error');
