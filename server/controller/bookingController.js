@@ -6,9 +6,23 @@ const User = require("../Models/userModel");
 const Commission = require("../Models/commissionModel");
 const convertAndValidateTime = require("../middlewares/convertAndValidateTime");
 
-const isSaudiLocation = (location) =>
-  typeof location === "string" &&
-  location.toLowerCase().includes("saudi arabia");
+const isSaudiLocation = (location) => {
+  if (!location || typeof location !== 'string') return false;
+
+  const normalized = location.toLowerCase().trim();
+
+  return (
+    normalized.includes("saudi arabia") ||
+    normalized.includes("ksa") ||
+    normalized.includes("المملكة العربية السعودية") ||
+    normalized.includes("المملكة") ||
+    (normalized.includes("saudi") && normalized.includes("arabia")) ||
+    (normalized.includes("السعودية") && normalized.includes("العربية")) ||
+    normalized.includes("السعودية") || 
+    normalized.includes("سعودي") ||     
+    normalized.includes("arabia")       
+  );
+};
 
 const createBooking = async (req, res) => {
   const {
@@ -43,11 +57,11 @@ const createBooking = async (req, res) => {
         .json({ message: "Please enter a valid city within Saudi Arabia." });
     }
 
-    if (address && !isSaudiLocation(address)) {
-      return res
-        .status(400)
-        .json({ message: "Please enter an address located in Saudi Arabia." });
-    }
+    // if (address && !isSaudiLocation(address)) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "Please enter an address located in Saudi Arabia." });
+    // }
 
     if (Array.isArray(dropPoints)) {
       for (let point of dropPoints) {
