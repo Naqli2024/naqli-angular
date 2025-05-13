@@ -180,6 +180,19 @@
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-md-12">
+      <label class="col-form-label" style="font-size: 14px">{{ "CR Number" | translate }}</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formData.CRNumber"
+        name="CRNumber"
+        required
+      />
+    </div>
+  </div>
+
   <div class="row mt-3">
     <div class="col-md-12 text-center">
       <button type="submit" class="btn custom-register-btn" (click)="saveProfile()">

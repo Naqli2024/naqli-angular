@@ -6,6 +6,10 @@ const User = require("../Models/userModel");
 const Commission = require("../Models/commissionModel");
 const convertAndValidateTime = require("../middlewares/convertAndValidateTime");
 
+const isSaudiLocation = (location) =>
+  typeof location === "string" &&
+  location.toLowerCase().includes("saudi arabia");
+
 const createBooking = async (req, res) => {
   const {
     unitType,
@@ -16,7 +20,7 @@ const createBooking = async (req, res) => {
     dropPoints,
     productValue,
     date,
-    time, // time is optional
+    time,
     fromTime,
     additionalLabour,
     toTime,
@@ -26,6 +30,35 @@ const createBooking = async (req, res) => {
   } = req.body;
 
   try {
+    // Validate Saudi Arabia-only locations
+    if (pickup && !isSaudiLocation(pickup)) {
+      return res
+        .status(400)
+        .json({ message: "Please select a pickup location within Saudi Arabia." });
+    }
+
+    if (cityName && !isSaudiLocation(cityName)) {
+      return res
+        .status(400)
+        .json({ message: "Please enter a valid city within Saudi Arabia." });
+    }
+
+    if (address && !isSaudiLocation(address)) {
+      return res
+        .status(400)
+        .json({ message: "Please enter an address located in Saudi Arabia." });
+    }
+
+    if (Array.isArray(dropPoints)) {
+      for (let point of dropPoints) {
+        if (point && !isSaudiLocation(point)) {
+          return res
+            .status(400)
+            .json({ message: "All drop points must be located within Saudi Arabia." });
+        }
+      }
+    }
+
     // Check if the user is suspended
     const user = await User.findById(req.user._id);
     if (!user) {
@@ -165,7 +198,8 @@ const createBooking = async (req, res) => {
 
 const editBooking = async (req, res) => {
   const { bookingId } = req.params;
-  const { date, pickup, dropPoints, additionalLabour, cityName, address } = req.body;
+  const { date, pickup, dropPoints, additionalLabour, cityName, address } =
+    req.body;
 
   try {
     // Find the booking by bookingId
@@ -195,11 +229,11 @@ const editBooking = async (req, res) => {
     if (additionalLabour) {
       booking.additionalLabour = additionalLabour;
     }
-    if(cityName) {
-      booking.cityName = cityName
+    if (cityName) {
+      booking.cityName = cityName;
     }
-    if(address) {
-      booking.address = address
+    if (address) {
+      booking.address = address;
     }
     // Save the updated booking
     const updatedBooking = await booking.save();
@@ -561,7 +595,9 @@ const getBookingsById = async (req, res) => {
   }
 
   try {
-    const booking = await Booking.find({ user: userId }).sort({ createdAt: -1 });
+    const booking = await Booking.find({ user: userId }).sort({
+      createdAt: -1,
+    });
     if (!booking.length) {
       return res.status(404).json({ message: "Booking not found" });
     }
@@ -904,14 +940,16 @@ const getUnitDetails = async (req, res) => {
 };
 
 const updateBookingForPaymentBrand = async (req, res) => {
-  const { bookingId, brand } = req.body; 
+  const { bookingId, brand } = req.body;
 
   try {
     // Find the booking by ID
     const booking = await Booking.findById(bookingId);
 
     if (!booking) {
-      return res.status(404).json({ success: false, message: "Booking not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
     }
 
     // Update the paymentType field with the brand
@@ -937,25 +975,27 @@ const updateBookingForPaymentBrand = async (req, res) => {
 const getBookingsWithInvoice = async (req, res) => {
   try {
     // Query the bookings collection for bookings that have an invoiceId field
-    const bookingsWithInvoice = await Booking.find({ invoiceId: { $exists: true, $ne: null } }).sort({ createdAt: -1 });
+    const bookingsWithInvoice = await Booking.find({
+      invoiceId: { $exists: true, $ne: null },
+    }).sort({ createdAt: -1 });
 
     if (bookingsWithInvoice.length === 0) {
       return res.status(404).json({
         success: false,
-        message: 'No bookings found with an invoiceId.',
+        message: "No bookings found with an invoiceId.",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: 'Bookings with invoiceId fetched successfully.',
+      message: "Bookings with invoiceId fetched successfully.",
       bookings: bookingsWithInvoice,
     });
   } catch (error) {
-    console.error('Error fetching bookings with invoiceId:', error);
+    console.error("Error fetching bookings with invoiceId:", error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to fetch bookings with invoiceId.',
+      message: "Failed to fetch bookings with invoiceId.",
     });
   }
 };
@@ -974,5 +1014,5 @@ module.exports = {
   getBookingsWithPendingPayment,
   getUnitDetails,
   updateBookingForPaymentBrand,
-  getBookingsWithInvoice
+  getBookingsWithInvoice,
 };

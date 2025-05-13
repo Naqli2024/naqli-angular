@@ -712,7 +712,7 @@ const getBookingRequest = async (req, res) => {
       // Find the bookingRequest with the assignedOperator matching the given operatorId
       const booking = partner.bookingRequest.find(
         (request) =>
-          request.assignedOperator.operatorId.toString() === operatorId
+          request.assignedOperator?.operatorId?.toString() === operatorId
       );
 
       // If no matching bookingRequest found

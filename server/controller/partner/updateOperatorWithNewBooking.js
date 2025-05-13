@@ -1,9 +1,14 @@
 const partner = require("../../Models/partner/partnerModel");
 const mongoose = require('mongoose');
 
+const isSaudiMatch = (bookingLocation, partnerLocation) => {
+  if (!bookingLocation || !partnerLocation) return false;
+  return bookingLocation.toLowerCase().includes(partnerLocation.toLowerCase());
+};
+
 const updateOperatorsWithNewBooking = async (booking, isCanceled = false) => {
   try {
-    const { type, name } = booking;
+    const { type, name, pickup, cityName, address } = booking;
     const subClassification = type && type.length > 0 ? type[0].typeName : "";
 
     if (isCanceled) {
@@ -28,6 +33,20 @@ const updateOperatorsWithNewBooking = async (booking, isCanceled = false) => {
       });
 
       for (const p of partners) {
+        const locationMatch =
+          isSaudiMatch(pickup, p.city) ||
+          isSaudiMatch(cityName, p.city) ||
+          isSaudiMatch(address, p.city);
+
+        const regionMatch =
+          isSaudiMatch(pickup, p.region) ||
+          isSaudiMatch(cityName, p.region) ||
+          isSaudiMatch(address, p.region);
+
+        if (!locationMatch && !regionMatch) {
+          continue; // Skip this partner — no city/region match
+        }
+        
         // Check if bookingRequest exists and is an array
         if (Array.isArray(p.bookingRequest)) {
           // Push the new booking request to the partner

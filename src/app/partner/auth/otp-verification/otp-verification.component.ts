@@ -54,6 +54,7 @@ export class OtpVerificationComponent {
             this.toastr.success(response.message, 'Success');
             this.clearForm();
             this.activeModal.dismiss();
+            localStorage.setItem('partnerId', response.data)
             this.accountVerificationModal();
           } else {
             this.toastr.error(response.message, 'Error');

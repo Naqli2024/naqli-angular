@@ -67,7 +67,7 @@ export class OverviewComponent implements OnInit {
 
     this.pendingPaymentsCount = filteredBookings.filter(
       (booking) =>
-        booking.paymentStatus === 'Pending' ||
+        booking.paymentStatus === 'NotPaid' ||
         booking.paymentStatus === 'HalfPaid'
     ).length;
 

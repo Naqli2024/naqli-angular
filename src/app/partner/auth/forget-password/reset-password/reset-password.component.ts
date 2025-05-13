@@ -19,6 +19,8 @@ export class ResetPasswordComponent {
   @ViewChild('ngOtpInput') ngOtpInput: any;
   newPassword: string = '';
   confirmNewPassword: string = '';
+  newPasswordVisible: boolean = false;
+  newConfirmPasswordVisible: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -27,6 +29,14 @@ export class ResetPasswordComponent {
     public activeModal: NgbActiveModal,
     private spinnerService: SpinnerService
   ) {}
+
+ toggleNewPasswordVisibility() {
+    this.newPasswordVisible = !this.newPasswordVisible;
+  }
+
+  toggleConfirmNewPasswordVisibility() {
+    this.newConfirmPasswordVisible = !this.newConfirmPasswordVisible;
+  }
 
   verifyOtpAndUpdatePassword(): void {
     this.spinnerService.show();

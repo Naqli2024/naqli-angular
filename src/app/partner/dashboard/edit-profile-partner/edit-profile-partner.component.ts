@@ -53,6 +53,7 @@ export class EditProfilePartnerComponent implements OnInit {
           this.formData.ibanNumber = partnerDetails.data.ibanNumber;
           this.formData.region = partnerDetails.data.region;
           this.formData.bank = partnerDetails.data.bank;
+          this.formData.CRNumber = partnerDetails.data.CRNumber;
 
           if (partnerDetails.data.partnerProfile?.fileName) {
             const fileName = partnerDetails.data.partnerProfile.fileName;
@@ -125,6 +126,7 @@ export class EditProfilePartnerComponent implements OnInit {
     formData.append('ibanNumber', this.formData.ibanNumber);
     formData.append('region', this.formData.region);
     formData.append('bank', this.formData.bank);
+    formData.append('CRNumber', this.formData.CRNumber);
 
     if (this.selectedFile) {
       formData.append(

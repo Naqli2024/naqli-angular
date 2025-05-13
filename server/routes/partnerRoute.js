@@ -15,7 +15,7 @@ const forgetPartnerPasswordValidation = [
   check("email")
     .isEmail()
     .withMessage("Email is invalid")
-    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/)
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
     .withMessage("Invalid Email Address"),
 ];
 

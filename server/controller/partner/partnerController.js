@@ -785,11 +785,11 @@ const sendOTP = async (mobileNo, otp) => {
  *******************************************/
 const resendOTP = async (req, res) => {
   try {
-    const { emailAddress } = req.body;
+    const { email } = req.body;
     const existPartner = await partner.findOne({
       $or: [
-        { email: emailAddress },
-        { mobileNo: emailAddress }
+        { email: email },
+        { mobileNo: email }
       ]
     });
 
@@ -872,7 +872,7 @@ const verifyOTP = async (req, res) => {
     res.status(200).json({
       message: "OTP verified successfully",
       success: true,
-      data: null, // You can include additional data if needed
+      data: existPartner._id, // You can include additional data if needed
     });
   } catch (error) {
     console.error("Error during OTP verification:", error.message);
@@ -889,7 +889,7 @@ const editPartner = async (req, res) => {
     const { partnerId } = req.params;
     const { 
       partnerName, email, password, confirmPassword, mobileNo, region, city, 
-      bank, company, ibanNumber
+      bank, company, ibanNumber, CRNumber
     } = req.body;
 
     // Password validation
@@ -918,6 +918,7 @@ const editPartner = async (req, res) => {
       bank, 
       company,
       ibanNumber,
+      CRNumber
     };
 
     if (password) {
