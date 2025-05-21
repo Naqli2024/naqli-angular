@@ -20,7 +20,7 @@
               name="unitType"
               [(ngModel)]="formData.unitType"
               value="vehicle"
-              (change)="onUnitTypeChange('vehicle')"
+              (change)="onUnitTypeChange('vehicle'); enableSubmitButton()"
               required
               [disabled]="!!editingOperatorId"
             />
@@ -35,7 +35,7 @@
               name="unitType"
               [(ngModel)]="formData.unitType"
               value="bus"
-              (change)="onUnitTypeChange('bus')"
+              (change)="onUnitTypeChange('bus'); enableSubmitButton()"
               required
               [disabled]="!!editingOperatorId"
             />
@@ -50,7 +50,7 @@
               name="unitType"
               [(ngModel)]="formData.unitType"
               value="equipment"
-              (change)="onUnitTypeChange('equipment')"
+              (change)="onUnitTypeChange('equipment'); enableSubmitButton()"
               required
               [disabled]="!!editingOperatorId"
             />
@@ -65,7 +65,7 @@
               name="unitType"
               [(ngModel)]="formData.unitType"
               value="special"
-              (change)="onUnitTypeChange('special')"
+              (change)="onUnitTypeChange('special'); enableSubmitButton()"
               required
               [disabled]="!!editingOperatorId"
             />
@@ -97,7 +97,7 @@
                 class="form-select"
                 [(ngModel)]="formData.unitClassification"
                 name="unitClassification"
-                (change)="onClassificationChange($event)"
+                (change)="onClassificationChange($event); enableSubmitButton()"
                 required
                 [disabled]="!!editingOperatorId"
               >
@@ -120,6 +120,7 @@
                 class="form-select"
                 [(ngModel)]="formData.subClassification"
                 name="subClassification"
+                (change)="enableSubmitButton()"
                 required
                 [disabled]="!!editingOperatorId"
               >
@@ -156,6 +157,7 @@
                 class="form-control"
                 [(ngModel)]="formData.plateInformation"
                 name="plateInformation"
+                (ngModelChange)="enableSubmitButton()"
                 required
                 [disabled]="!!editingOperatorId"
               />
@@ -169,6 +171,7 @@
                 class="form-control"
                 [(ngModel)]="formData.istimaraNo"
                 name="istimaraNo"
+                (ngModelChange)="enableSubmitButton()"
                 required
                 [disabled]="!!editingOperatorId"
               />
@@ -187,7 +190,7 @@
               <input
                 type="file"
                 class="form-control"
-                (change)="handleFileInput($event, 'istimaraCard')"
+                (change)="handleFileInput($event, 'istimaraCard'); enableSubmitButton()"
                 name="istimaraCard"
                 accept=".pdf,.doc,.docx"
                 required
@@ -205,7 +208,7 @@
               <input
                 type="file"
                 class="form-control"
-                (change)="handleFileInput($event, 'pictureOfVehicle')"
+                (change)="handleFileInput($event, 'pictureOfVehicle'); enableSubmitButton()"
                 name="pictureOfVehicle"
                 accept=".jpg,.jpeg,.png,.svg"
                 required
@@ -224,6 +227,7 @@
                 class="form-control"
                 [(ngModel)]="formData.firstName"
                 name="firstName"
+                (ngModelChange)="enableSubmitButton()"
                 required
               />
             </div>
@@ -236,6 +240,7 @@
                 class="form-control"
                 [(ngModel)]="formData.lastName"
                 name="lastName"
+                (ngModelChange)="enableSubmitButton()"
                 required
               />
             </div>
@@ -255,6 +260,7 @@
                 class="form-control"
                 [(ngModel)]="formData.email"
                 name="email"
+                (ngModelChange)="enableSubmitButton()"
                 required
               />
             </div>
@@ -272,6 +278,7 @@
                   [(ngModel)]="formData.password"
                   name="password"
                   id="password"
+                  (ngModelChange)="enableSubmitButton()"
                   required
                 />
                 <i
@@ -298,6 +305,7 @@
                   [(ngModel)]="formData.confirmPassword"
                   name="confirmPassword"
                   id="confirmPassword"
+                  (ngModelChange)="enableSubmitButton()"
                   required
                 />
                 <i
@@ -325,6 +333,7 @@
                 class="form-control"
                 [(ngModel)]="formData.mobileNo"
                 name="mobileNo"
+                (ngModelChange)="enableSubmitButton()"
                 required
               />
             </div>
@@ -337,6 +346,7 @@
                 class="form-control"
                 [(ngModel)]="formData.iqamaNo"
                 name="iqamaNo"
+                (ngModelChange)="enableSubmitButton()"
                 required
               />
             </div>
@@ -352,6 +362,7 @@
                 class="form-control"
                 [(ngModel)]="formData.dateOfBirth"
                 name="dateOfBirth"
+                (ngModelChange)="enableSubmitButton()"
                 required
               />
             </div>
@@ -364,6 +375,7 @@
                 class="form-control"
                 [(ngModel)]="formData.panelInformation"
                 name="panelInformation"
+                (ngModelChange)="enableSubmitButton()"
                 required
               />
             </div>
@@ -381,7 +393,7 @@
               <input
                 type="file"
                 class="form-control operator-file"
-                (change)="handleFileInput($event, 'drivingLicense')"
+                (change)="handleFileInput($event, 'drivingLicense'); enableSubmitButton()"
                 name="drivingLicense"
                 accept=".pdf,.doc,.docx"
                 required
@@ -413,7 +425,7 @@
               <input
                 type="file"
                 class="form-control"
-                (change)="handleFileInput($event, 'nationalID')"
+                (change)="handleFileInput($event, 'nationalID'); enableSubmitButton()"
                 name="nationalID"
                 accept=".pdf,.doc,.docx"
                 required
@@ -434,7 +446,6 @@
                   [(ngModel)]="formData.partnerName"
                   [disabled]="!isEditing || !!editingOperatorId"
                   name="partnerId"
-                  (input)="enableSubmitButton()"
                 />
                 <button
                   type="button"

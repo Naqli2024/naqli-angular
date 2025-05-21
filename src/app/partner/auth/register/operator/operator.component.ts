@@ -301,6 +301,9 @@ export class OperatorComponent implements OnInit {
     this.subClassifications = [];
     this.allData = [];
 
+    this.formData.unitClassification = ''; // Clear selected classification
+  this.formData.subClassification = '';
+
     // Reset isEditing flag when changing unitType
     this.isEditing = false;
 
