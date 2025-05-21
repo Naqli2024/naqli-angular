@@ -297,10 +297,10 @@ export class UnitManagementComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
   
-      // File size validation (max 1MB)
-      const maxSize = 1 * 1024 * 1024; // 1 MB
+      // File size validation (max 100KB)
+      const maxSize = 100 * 1024; // 100 KB
       if (file.size > maxSize) {
-        alert('File size exceeds 1MB. Please upload a smaller file.');
+        alert('File size exceeds 100KB. Please upload a smaller file.');
         input.value = ''; 
         return;
       }
