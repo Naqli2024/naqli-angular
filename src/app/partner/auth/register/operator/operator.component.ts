@@ -13,6 +13,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastrService } from 'ngx-toastr';
 import { SpinnerService } from '../../../../../services/spinner.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import partner from '../../../../../../server/Models/partner/partnerModel';
 
 interface FormData {
   type: string;
@@ -121,6 +122,13 @@ export class OperatorComponent implements OnInit {
               partnerDetails.data.operators[0].operatorsDetail[0]._id;
           }
 
+          // After setting unitType, trigger the classification and sub-classification loading
+          // as if the user had selected the unit type and then classification.
+          this.loadClassificationsAndSubClassificationsForEdit(
+            this.formData.unitType,
+            this.formData.unitClassification
+          );
+
           // Enable submit button when data is loaded
           this.enableSubmitButton();
         },
@@ -129,6 +137,50 @@ export class OperatorComponent implements OnInit {
           console.error('Error fetching partner details:', error);
         }
       );
+    }
+  }
+
+  loadClassificationsAndSubClassificationsForEdit(
+    unitType: string,
+    unitClassification: string
+  ): void {
+    let serviceObservable;
+
+    switch (unitType) {
+      case 'vehicle':
+        serviceObservable = this.vehicleService.getVehicles();
+        break;
+      case 'bus':
+        serviceObservable = this.busService.getBuses();
+        break;
+      case 'equipment':
+        serviceObservable = this.equipmentService.getEquipment();
+        break;
+      case 'special':
+        serviceObservable = this.specialService.getSpecialUnits();
+        break;
+      default:
+        this.classifications = [];
+        this.subClassifications = [];
+        this.allData = [];
+        return; // No service call needed for 'others' or unknown
+    }
+
+    if (serviceObservable) {
+      serviceObservable.subscribe((data: any) => {
+        this.classifications = data;
+        this.allData = data; // Store all data for lookup
+
+        // Now, populate subClassifications if unitClassification has a value
+        if (unitClassification) {
+          const selectedClassification = this.allData.find(
+            (item) => item.name === unitClassification
+          );
+          this.subClassifications = selectedClassification
+            ? selectedClassification.type
+            : [];
+        }
+      });
     }
   }
 
@@ -148,9 +200,18 @@ export class OperatorComponent implements OnInit {
     if (this.editingOperatorId) {
       this.isSubmitEnabled = true;
     } else {
+      // Determine if subClassification is required based on unitType
+      const isSubClassificationRequired =
+        this.formData.unitType === 'vehicle' ||
+        this.formData.unitType === 'equipment';
+
       this.isSubmitEnabled = !!(
         this.formData.unitType &&
         this.formData.unitClassification &&
+        // Conditionally check subClassification
+        (isSubClassificationRequired
+          ? this.formData.subClassification
+          : true) &&
         this.formData.plateInformation &&
         this.formData.istimaraNo &&
         this.formData.firstName &&
@@ -164,7 +225,9 @@ export class OperatorComponent implements OnInit {
         this.formData.panelInformation &&
         this.formData.drivingLicense &&
         // this.formData.aramcoLicense &&
-        this.formData.nationalID
+        this.formData.nationalID &&
+        this.formData.istimaraCard &&
+        this.formData.pictureOfVehicle
       );
     }
   }
@@ -215,7 +278,7 @@ export class OperatorComponent implements OnInit {
         (response) => {
           this.spinnerService.hide();
           this.toastr.success(response.message, 'Success');
-          this.router.navigate(['/home/partner/login']);
+          this.router.navigate(['/home/partner/dashboard']);
           this.resetForm();
         },
         (error) => {
@@ -236,6 +299,7 @@ export class OperatorComponent implements OnInit {
           this.toastr.success(response.message, 'Success');
           this.formData = this.initializeFormData();
           this.editingOperatorId = null;
+          this.router.navigate(['/home/partner/dashboard']);
         },
         (error) => {
           this.spinnerService.hide();
@@ -247,9 +311,15 @@ export class OperatorComponent implements OnInit {
   }
 
   isFormValid(): boolean {
+    // Determine if subClassification is required based on unitType
+    const isSubClassificationRequired =
+      this.formData.unitType === 'vehicle' ||
+      this.formData.unitType === 'equipment';
+
     return !!(
       this.formData.unitType &&
       this.formData.unitClassification &&
+      (isSubClassificationRequired ? this.formData.subClassification : true) &&
       this.formData.plateInformation &&
       this.formData.istimaraNo &&
       this.formData.firstName &&
@@ -264,7 +334,8 @@ export class OperatorComponent implements OnInit {
       this.formData.drivingLicense &&
       // this.formData.aramcoLicense &&
       this.formData.nationalID &&
-      this.formData.pictureOfVehicle
+      this.formData.pictureOfVehicle &&
+      this.formData.istimaraCard
     );
   }
 
@@ -302,7 +373,7 @@ export class OperatorComponent implements OnInit {
     this.allData = [];
 
     this.formData.unitClassification = ''; // Clear selected classification
-  this.formData.subClassification = '';
+    this.formData.subClassification = '';
 
     // Reset isEditing flag when changing unitType
     this.isEditing = false;
@@ -336,6 +407,12 @@ export class OperatorComponent implements OnInit {
           this.enableSubmitButton();
         });
         break;
+      case 'others':
+        this.classifications = [];
+        this.subClassifications = [];
+        this.allData = [];
+        this.enableSubmitButton();
+        break;
     }
   }
 
@@ -354,18 +431,18 @@ export class OperatorComponent implements OnInit {
 
   handleFileInput(event: Event, field: string): void {
     const input = event.target as HTMLInputElement;
-  
+
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-  
+
       // File size validation (max 100KB)
       const maxSize = 100 * 1024; // 100 KB
       if (file.size > maxSize) {
         alert('File size exceeds 100KB. Please upload a smaller file.');
-        input.value = ''; 
+        input.value = '';
         return;
       }
-  
+
       (this.formData as any)[field] = file;
     }
   }
