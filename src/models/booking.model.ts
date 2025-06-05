@@ -28,6 +28,13 @@ export interface Booking {
     additionalChargesReason: string[];
     finalPayout: number;
     createdAt: string;
+    shipmentType: string;
+    shippingCondition: string;
+    cargoLength: string;
+    cargoBreadth: string;
+    cargoHeight: string;
+    cargoUnit: string;
+    shipmentWeight: string
   }
 
   

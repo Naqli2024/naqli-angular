@@ -27,7 +27,8 @@
     "equipment": "उपकरण",
     "special": "विशेष",
     "others": "अन्य",
-    "All": "सभी"
+    "All": "सभी",
+    "Shared-cargo": "साझा माल"
   },
   "ESTIMATE": {
     "GET_ESTIMATE": "एक अनुमान प्राप्त करें"
@@ -228,7 +229,8 @@
     "bus": "बस",
     "equipment": "उपकरण",
     "special": "विशेष",
-    "others": "अन्य"
+    "others": "अन्य",
+    "shared-cargo": "साझा माल"
   },
   "paymentStatus": {
     "HalfPaid": "आधा भुगतान",
@@ -673,5 +675,19 @@
   "allowed_documents": "केवल PDF, DOC, DOCX की अनुमति है",
   "allowed_images": "केवल JPG, PNG, JPEG, SVG की अनुमति है",
   "confirmDelete": "क्या आप वाकई इस ऑपरेटर को हटाना चाहते हैं?",
-  "DELETE_OPERATOR": "ऑपरेटर हटाएं"
+  "DELETE_OPERATOR": "ऑपरेटर हटाएं",
+  "Cost for Shared Shipping": "साझा शिपिंग की लागत",
+  "Shipment Type": "शिपमेंट का प्रकार",
+  "Shipping Condition": "शिपिंग की स्थिति",
+  "Length": "लंबाई",
+  "Breadth": "चौड़ाई",
+  "Height": "ऊंचाई",
+  "Shipment Weight": "शिपमेंट का वजन",
+  "Shipping Date": "शिपिंग की तारीख",
+  "Shipping Time": "शिपिंग का समय",
+  "Shipment Value": "शिपमेंट का मूल्य",
+  "Get Estimate": "अनुमान प्राप्त करें",
+  "Select condition": "स्थिति चुनें",
+  "Refrigerator": "रेफ्रिजरेटर",
+  "Dry Storage": "सूखा भंडारण"
 }

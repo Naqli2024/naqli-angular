@@ -32,18 +32,28 @@ const normalizeCityOrRegion = (input) => {
 
   const cleanInput = input.toLowerCase().replace(/saudi arabia/gi, "").trim();
 
-  const match = cityRegionMap.find((entry) => {
+  const matches = cityRegionMap.filter((entry) => {
+    const en = entry.en.toLowerCase();
+    const ar = entry.ar.toLowerCase();
     return (
-      cleanInput.includes(entry.en.toLowerCase()) ||
-      cleanInput.includes(entry.ar.toLowerCase())
+      cleanInput.includes(en) ||
+      en.includes(cleanInput) ||
+      cleanInput.includes(ar) ||
+      ar.includes(cleanInput)
     );
   });
 
-  const result = match
-    ? [match.en.toLowerCase(), match.ar.toLowerCase()]
-    : [cleanInput];
+  // Return all matching normalized city forms (both English and Arabic)
+  if (matches.length > 0) {
+    const result = new Set();
+    matches.forEach((m) => {
+      result.add(m.en.toLowerCase());
+      result.add(m.ar.toLowerCase());
+    });
+    return Array.from(result);
+  }
 
-  return result;
+  return [cleanInput];
 };
 
 module.exports = { normalizeCityOrRegion };

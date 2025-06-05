@@ -22,6 +22,7 @@
             <th>{{ "Booking No" | translate }}</th>
             <th>{{ "Additional Labour" | translate }}</th>
             <th>{{ "Quote Price" | translate }}</th>
+            <th>{{ "Shipment type" | translate }}</th>
             <th>{{ "terms.Date" | translate }}</th>
             <th>{{ "Time" | translate }}</th>
             <th>{{ "Mode" | translate }}</th>
@@ -61,6 +62,7 @@
                   (ngModelChange)="setQuotePrice($event, booking._id)"
                 />
               </td>
+              <td class="bookingId" style="cursor: pointer;" (click)="showBookingDetails(booking._id)">{{ booking.shipmentType }}</td>
               <td>
                 {{ booking.date }}
               </td>

@@ -27,7 +27,8 @@
     "equipment": "معدات",
     "special": "خاص",
     "others": "آخرى",
-    "All": "الكل"
+    "All": "الكل",
+    "Shared-cargo": "البضائع المشتركة"
   },
   "ESTIMATE": {
     "GET_ESTIMATE": "احصل على تسعيرة"
@@ -228,7 +229,8 @@
     "bus": "حافلة",
     "equipment": "معدات",
     "special": "خاص",
-    "others": "آخرون"
+    "others": "آخرون",
+    "shared-cargo": "البضائع المشتركة"
   },
   "paymentStatus": {
     "HalfPaid": "مدفوع نصف",
@@ -671,5 +673,19 @@
   "allowed_documents": "فقط PDF, DOC, DOCX مسموح بها",
   "allowed_images": "فقط JPG, PNG, JPEG, SVG مسموح بها",
   "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا المشغل؟",
-  "DELETE_OPERATOR": "حذف المشغل"
+  "DELETE_OPERATOR": "حذف المشغل",
+  "Cost for Shared Shipping": "تكلفة الشحن المشترك",
+  "Shipment Type": "نوع الشحنة",
+  "Shipping Condition": "حالة الشحن",
+  "Length": "الطول",
+  "Breadth": "العرض",
+  "Height": "الارتفاع",
+  "Shipment Weight": "وزن الشحنة",
+  "Shipping Date": "تاريخ الشحن",
+  "Shipping Time": "وقت الشحن",
+  "Shipment Value": "قيمة الشحنة",
+  "Get Estimate": "احصل على تقدير",
+  "Select condition": "اختر الحالة",
+  "Refrigerator": "ثلاجة",
+  "Dry Storage": "تخزين جاف"
 }

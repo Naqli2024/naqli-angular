@@ -46,6 +46,7 @@ export class AuthGuard implements CanActivate {
               state.url === '/home/user/bus' ||
               state.url === '/home/user/equipment' ||
               state.url === '/home/user/special' ||
+              state.url === '/home/user/shared-cargo' ||
               state.url === '/home/user/others'
             ) {
               return true; // Allow access to this specific route

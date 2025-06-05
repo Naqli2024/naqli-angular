@@ -131,10 +131,10 @@ export class HeaderComponent implements OnInit {
     const token = localStorage.getItem('authToken');
     const userId = localStorage.getItem('userId');
     const partnerId = localStorage.getItem('partnerId');
-  
+
     if (token && (userId || partnerId)) {
       this.isAuthenticated = true;
-      
+
       if (userId) {
         this.firstName = localStorage.getItem('firstName') || '';
         this.lastName = localStorage.getItem('lastName') || '';
@@ -276,6 +276,24 @@ export class HeaderComponent implements OnInit {
           this.updateUserState();
         }
       );
+    }
+  }
+
+  handleLogoClick(event: MouseEvent): void {
+    event.preventDefault();
+
+    // Navigate manually based on current localStorage
+    const userId = localStorage.getItem('userId');
+    const partnerId = localStorage.getItem('partnerId');
+
+    if (userId) {
+      this.router.navigate(['/home/user']);
+      this.logout();
+    } else if (partnerId) {
+      this.router.navigate(['/home/partner']);
+      this.logout();
+    } else {
+      this.router.navigate(['/']);
     }
   }
 }

@@ -7,7 +7,7 @@ const Commission = require("../Models/commissionModel");
 const convertAndValidateTime = require("../middlewares/convertAndValidateTime");
 
 const isSaudiLocation = (location) => {
-  if (!location || typeof location !== 'string') return false;
+  if (!location || typeof location !== "string") return false;
 
   const normalized = location.toLowerCase().trim();
 
@@ -18,9 +18,9 @@ const isSaudiLocation = (location) => {
     normalized.includes("المملكة") ||
     (normalized.includes("saudi") && normalized.includes("arabia")) ||
     (normalized.includes("السعودية") && normalized.includes("العربية")) ||
-    normalized.includes("السعودية") || 
-    normalized.includes("سعودي") ||     
-    normalized.includes("arabia")       
+    normalized.includes("السعودية") ||
+    normalized.includes("سعودي") ||
+    normalized.includes("arabia")
   );
 };
 
@@ -41,14 +41,21 @@ const createBooking = async (req, res) => {
     cityName,
     address,
     zipCode,
+    shipmentType,
+    shippingCondition,
+    cargoLength,
+    cargoBreadth,
+    cargoHeight,
+    cargoUnit,
+    shipmentWeight,
   } = req.body;
 
   try {
     // Validate Saudi Arabia-only locations
     if (pickup && !isSaudiLocation(pickup)) {
-      return res
-        .status(400)
-        .json({ message: "Please select a pickup location within Saudi Arabia." });
+      return res.status(400).json({
+        message: "Please select a pickup location within Saudi Arabia.",
+      });
     }
 
     if (cityName && !isSaudiLocation(cityName)) {
@@ -66,9 +73,9 @@ const createBooking = async (req, res) => {
     if (Array.isArray(dropPoints)) {
       for (let point of dropPoints) {
         if (point && !isSaudiLocation(point)) {
-          return res
-            .status(400)
-            .json({ message: "All drop points must be located within Saudi Arabia." });
+          return res.status(400).json({
+            message: "All drop points must be located within Saudi Arabia.",
+          });
         }
       }
     }
@@ -160,10 +167,10 @@ const createBooking = async (req, res) => {
           message: conversionError.message, // Invalid fromTime or toTime format
         });
       }
-    } else if (!time && !fromTime && !toTime) {
+    } else if (!time && !fromTime && !toTime && !shippingTime) {
       return res.status(400).json({
         message:
-          "At least one time field (time, fromTime, toTime) must be provided.",
+          "At least one time field (time, fromTime, toTime, shippingTime) must be provided.",
       });
     }
 
@@ -185,6 +192,13 @@ const createBooking = async (req, res) => {
       address,
       zipCode,
       user: req.user._id,
+      shipmentType,
+      shippingCondition,
+      cargoLength,
+      cargoBreadth,
+      cargoHeight,
+      cargoUnit,
+      shipmentWeight
     });
 
     const validationError = booking.validateSync();
@@ -281,70 +295,62 @@ const cancelBooking = async (req, res) => {
       "bookingRequest.bookingId": bookingId,
     });
 
-    if (!partner) {
-      return res
-        .status(404)
-        .json({ message: "No partner associated with this bookingId" });
-    }
+    if (partner && Array.isArray(partner.bookingRequest)) {
+      const bookingRequest = partner.bookingRequest.find(
+        (br) => br.bookingId.toString() === bookingId.toString()
+      );
 
-    // Find the bookingRequest to get the assigned operator
-    const bookingRequest = partner.bookingRequest.find(
-      (br) => br.bookingId.toString() === bookingId.toString()
-    );
-
-    if (
-      bookingRequest &&
-      bookingRequest.assignedOperator &&
-      bookingRequest.assignedOperator.operatorId
-    ) {
-      const assignedOperator = bookingRequest.assignedOperator;
-
-      // If the assigned operator's bookingId matches the deleted bookingId, update the status
-      if (bookingRequest.bookingId.toString() === bookingId.toString()) {
-        // Update status for the operator in `operatorsDetail`
+      if (
+        bookingRequest &&
+        bookingRequest.assignedOperator &&
+        bookingRequest.assignedOperator.operatorId
+      ) {
+        const assignedOperator = bookingRequest.assignedOperator;
         let operatorFound = false;
+
+        // Update status for the operator in `operatorsDetail`
         for (const operator of partner.operators) {
-          let operatorDetail = operator.operatorsDetail.find(
+          const operatorDetail = operator.operatorsDetail.find(
             (op) => op._id.toString() === assignedOperator.operatorId.toString()
           );
           if (operatorDetail) {
-            operatorDetail.status = "available"; // Set status to 'available'
+            operatorDetail.status = "available";
             operatorFound = true;
             break;
           }
         }
 
         // Check and update status in `extraOperators`
-        let extraOperator = partner.extraOperators.find(
+        const extraOperator = partner.extraOperators.find(
           (op) => op._id.toString() === assignedOperator.operatorId.toString()
         );
         if (extraOperator) {
-          extraOperator.status = "available"; // Set status to 'available'
+          extraOperator.status = "available";
+          operatorFound = true;
         }
 
-        // Save the updated operator status if any were found and updated
-        if (operatorFound || extraOperator) {
-          await partner.save(); // Save updated operator status in the partner document
+        // Save if any update occurred
+        if (operatorFound) {
+          await partner.save();
         } else {
           console.log("No operator found with the assigned operator ID.");
         }
       } else {
-        console.log("Assigned operator does not match this bookingId.");
+        console.log("No assigned operator found in booking request.");
       }
     } else {
-      console.log("No assigned operator found in booking request.");
+      console.log("No partner or bookingRequest found for this booking.");
     }
 
-    // If the booking was found and deleted, update operators to remove the canceled booking
+    // Cleanup: remove booking from operators list
     await updateOperatorsWithNewBooking(deletedBooking, true);
 
-    // Successfully canceled the booking
     res.status(200).json({ success: true, message: "Booking Cancelled" });
   } catch (error) {
     console.error("Error cancelling booking:", error);
     res
       .status(500)
-      .json({ success: false, message: "Failed to cancel booking", error });
+      .json({ success: false, message: "Failed to cancel booking", error: error.message });
   }
 };
 

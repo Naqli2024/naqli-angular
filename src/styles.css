@@ -377,6 +377,7 @@ body {
 }
 .form-label {
   font-size: 14px !important;
+  font-weight: 600 !important;
 }
 .form-label a {
   text-decoration: none;
@@ -659,7 +660,6 @@ mdb-carousel-item img {
   cursor: pointer;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding-bottom: 30px !important;
 }
 
 .item a {
@@ -681,6 +681,7 @@ mdb-carousel-item img {
 .item-name {
   font-size: 14px;
   font-weight: 600;
+  margin-bottom: 0px !important
 }
 .home-container::-webkit-scrollbar {
   width: 10px;

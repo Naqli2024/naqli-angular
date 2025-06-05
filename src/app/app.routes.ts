@@ -59,6 +59,7 @@ import { PrivacyPolicyComponent } from './auth/privacy-policy/privacy-policy.com
 import { DeleteUserComponent } from './dashboard/delete-user/delete-user.component';
 import { DeleteAccountInfoComponent } from './home/delete-account-info/delete-account-info.component';
 import { EditCompanyDetailsComponent } from './partner/auth/register/company-details/edit-company-details/edit-company-details.component';
+import { SharedCargoComponent } from './home/bookings/shared-cargo/shared-cargo.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -86,6 +87,11 @@ export const routes: Routes = [
   {
     path: 'home/user/special',
     component: SpecialComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'home/user/shared-cargo',
+    component: SharedCargoComponent,
     canActivate: [AuthGuard],
   },
   {

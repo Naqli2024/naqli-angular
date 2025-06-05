@@ -1,0 +1,300 @@
+<div class="home-container">
+  <div class="custom-slider">
+    <h2 class="booking-container-head">
+      {{ "Cost for Shared Shipping" | translate }}
+    </h2>
+  </div>
+  <div class="container booking-container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="vehicle-cols">
+          <div class="row" style="margin: 20px 0px">
+            <div class="col-md-12 booking-inputs">
+              <label for="typeOfLoadSelect" class="form-label">
+                {{ "Shipment Type" | translate }}
+              </label>
+              <select
+                class="form-select"
+                [(ngModel)]="bookingData.shipmentType"
+                name="shipmentType"
+                required
+              >
+                <option value="" disabled selected>
+                  {{ "loadType" | translate }}
+                </option>
+                <option *ngFor="let load of typeOfLoad" [value]="load">
+                  {{ "loads." + load | translate }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row" style="margin: 20px 0px">
+            <div class="col-md-12 booking-inputs">
+              <label for="shippingCondition" class="form-label">
+                {{ "Shipping Condition" | translate }}
+              </label>
+              <select
+                class="form-select"
+                [(ngModel)]="bookingData.shippingCondition"
+                name="shippingCondition"
+                required
+              >
+                <option value="" disabled selected>
+                  {{ "Select condition" | translate }}
+                </option>
+                <option value="Refrigerator">
+                  {{ "Refrigerator" | translate }}
+                </option>
+                <option value="Dry Storage">
+                  {{ "Dry Storage" | translate }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 booking-inputs text-start">
+              <label class="form-label">
+                {{ "Length" | translate }}
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="bookingData.cargoLength"
+                name="cargoLength"
+                [placeholder]="'Length' | translate"
+                required
+              />
+            </div>
+            <div class="col-md-3 booking-inputs">
+              <label class="form-label">
+                {{ "Breadth" | translate }}
+              </label>
+              <input
+                type="text"
+                class="form-control mx-auto"
+                [(ngModel)]="bookingData.cargoBreadth"
+                name="cargoBreadth"
+                [placeholder]="'Breadth' | translate"
+                required
+              />
+            </div>
+            <div class="col-md-3 booking-inputs">
+              <label class="form-label d-block">
+                {{ "Height" | translate }}
+              </label>
+              <input
+                type="text"
+                class="form-control ms-auto"
+                [(ngModel)]="bookingData.cargoHeight"
+                name="cargoHeight"
+                [placeholder]="'Height' | translate"
+                required
+              />
+            </div>
+            <div class="col-md-3 booking-inputs">
+              <label class="form-label d-block">
+                {{ "Unit" | translate }}
+              </label>
+              <select
+                class="form-select"
+                [(ngModel)]="bookingData.cargoUnit"
+                name="cargoUnit"
+                required
+              >
+                <option value="mm">mm</option>
+                <option value="cm">cm</option>
+                <option value="ft">ft</option>
+                <option value="inch">inch</option>
+              </select>
+            </div>
+          </div>
+          <div class="row" style="margin: 20px 0px">
+            <div class="col-md-12 booking-inputs">
+              <label class="form-label d-block">
+                {{ "Shipment Weight" | translate }}
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="bookingData.shipmentWeight"
+                name="shipmentWeight"
+                [placeholder]="('Shipment Weight' | translate) + ' (kg)'"
+                required
+              />
+            </div>
+          </div>
+          <div class="row align-items-center" style="margin: 20px 0px">
+            <div class="col-md-6 booking-inputs">
+              <label class="form-label d-block">
+                {{ "Shipping Date" | translate }}
+              </label>
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="bookingData.date"
+                name="date"
+                [placeholder]="'Date' | translate"
+                required
+              />
+            </div>
+            <div class="col-md-6 booking-inputs">
+              <label class="form-label d-block">
+                {{ "Shipping Time" | translate }}
+              </label>
+              <ngb-timepicker
+                class="custom-timepicker"
+                [(ngModel)]="bookingData.time"
+                [spinners]="true"
+                [meridian]="true"
+                required
+                name="time"
+              ></ngb-timepicker>
+            </div>
+          </div>
+          <div class="row" style="margin: 20px 0px">
+            <div class="col-md-12 booking-inputs">
+              <label class="form-label d-block">
+                {{ "Shipment Value" | translate }} (SAR)
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="bookingData.productValue"
+                name="productValue"
+                [placeholder]="'Shipment Value' | translate"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 text-center">
+        <div class="row-container">
+          <div class="input-field" style="position: relative">
+            <div class="pick-up"></div>
+            <input
+              type="text"
+              [placeholder]="'pickupLocation' | translate"
+              [(ngModel)]="bookingData.pickup"
+              (focus)="setActiveInputField('pickup')"
+              (input)="onPickupInputChange()"
+              required
+              style="margin-bottom: 8px"
+            />
+            <!-- Pickup Suggestions -->
+            <div
+              class="suggestions-dropdown"
+              *ngIf="pickupSuggestions.length > 0"
+            >
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of pickupSuggestions"
+                (click)="selectPickupSuggestion(suggestion)"
+                [ngClass]="{
+                  'your-location': suggestion.description === 'Your location'
+                }"
+                style="display: flex; align-items: center"
+              >
+                <span *ngIf="suggestion.description === 'Your location'">
+                  <i
+                    class="fas fa-crosshairs"
+                    style="margin-right: 8px; color: #0d6efd"
+                  ></i>
+                </span>
+                <span
+                  [style.color]="
+                    suggestion.description === 'Your location'
+                      ? '#0d6efd'
+                      : 'inherit'
+                  "
+                >
+                  {{ suggestion.description }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngFor="
+              let dropPoint of bookingData.dropPoints;
+              let i = index;
+              trackBy: trackByIndex
+            "
+            class="input-field"
+            style="position: relative"
+          >
+            <div class="drop-point"></div>
+            <input
+              type="text"
+              [placeholder]="('dropPointLocation' | translate) + ' ' + (i + 1)"
+              [(ngModel)]="bookingData.dropPoints[i]"
+              (focus)="setActiveInputField('dropPoint', i)"
+              (input)="onDropPointInputChange(i)"
+              required
+            />
+            <div
+              class="circle"
+              *ngIf="i === 0 && bookingData.dropPoints.length === 1"
+              (click)="addInputField()"
+            >
+              <i class="fas fa-plus"></i>
+            </div>
+            <div class="circle" *ngIf="i !== 0" (click)="removeInputField(i)">
+              <i class="fas fa-times"></i>
+            </div>
+            <div
+              class="suggestions-dropdown"
+              *ngIf="
+                dropPointSuggestions[i] && dropPointSuggestions[i].length > 0
+              "
+            >
+              <div
+                class="suggestion-item"
+                *ngFor="let suggestion of dropPointSuggestions[i]"
+                (click)="selectDropPointSuggestion(suggestion, i)"
+                [ngClass]="{
+                  'your-location': suggestion.description === 'Your location'
+                }"
+                style="display: flex; align-items: center"
+              >
+                <span *ngIf="suggestion.description === 'Your location'">
+                  <i
+                    class="fas fa-crosshairs"
+                    style="margin-right: 8px; color: #0d6efd"
+                  ></i>
+                </span>
+                <span
+                  [style.color]="
+                    suggestion.description === 'Your location'
+                      ? '#0d6efd'
+                      : 'inherit'
+                  "
+                >
+                  {{ suggestion.description }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="buttons">
+          <button
+            type="submit"
+            class="btn create-booking"
+            (click)="updateRoute()"
+          >
+            {{ "getDirection" | translate }}
+          </button>
+        </div>
+        <div id="map" class="google-map-style"></div>
+        <div class="buttons">
+          <button
+            type="submit"
+            class="btn create-booking"
+            (click)="submitBooking()"
+          >
+            {{ "Get Estimate" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

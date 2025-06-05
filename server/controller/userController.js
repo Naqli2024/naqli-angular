@@ -434,7 +434,7 @@ const deleteUser = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: null,
-        message: `No bookings found for user ${userId}`,
+        // message: `No bookings found for user ${userId}`,
       });
     }
     // Cancel each booking associated with the user

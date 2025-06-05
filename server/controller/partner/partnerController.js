@@ -260,34 +260,45 @@ const deletedBookingRequest = async (req, res) => {
 };
 
 const getTopPartners = async (req, res) => {
-  const { unitType, unitClassification, subClassification, bookingId } =
-    req.body;
+  const { unitType, unitClassification, subClassification, bookingId } = req.body;
 
   try {
-    // Query partners matching criteria
-    const partners = await partner.find({
-      "operators.unitType": unitType,
-      "operators.unitClassification": unitClassification,
-      ...(subClassification && {
-        "operators.subClassification": subClassification,
-      }),
-    });
+    // Conditional query based on unitType
+    let partners;
+    if (unitType === "shared-cargo") {
+      // Only check for bookingRequest existence
+      partners = await partner.find({
+        bookingRequest: { $exists: true, $ne: [] },
+      });
+    } else {
+      // Query partners matching all criteria
+      partners = await partner.find({
+        "operators.unitType": unitType,
+        "operators.unitClassification": unitClassification,
+        ...(subClassification && {
+          "operators.subClassification": subClassification,
+        }),
+      });
+    }
 
     // Prepare filtered results
     const filteredPartners = partners.reduce((filtered, partner) => {
-      const matchingOperators = partner.operators.filter(
-        (operator) =>
-          operator.unitType === unitType &&
-          operator.unitClassification === unitClassification &&
-          (!subClassification ||
-            operator.subClassification === subClassification)
-      );
+      // For shared-cargo, skip operator filtering
+      const matchingOperators =
+        unitType === "shared-cargo"
+          ? partner.operators
+          : partner.operators.filter(
+              (operator) =>
+                operator.unitType === unitType &&
+                operator.unitClassification === unitClassification &&
+                (!subClassification ||
+                  operator.subClassification === subClassification)
+            );
 
       const filteredBookingRequests = partner.bookingRequest.filter(
         (booking) => {
           const bookingIdValid = bookingId && bookingId.toString();
-          const bookingIdMatch =
-            booking.bookingId && booking.bookingId.toString();
+          const bookingIdMatch = booking.bookingId && booking.bookingId.toString();
           return (
             bookingIdValid &&
             bookingIdMatch &&
@@ -308,13 +319,12 @@ const getTopPartners = async (req, res) => {
       return filtered;
     }, []);
 
-    // Flatten the results into the desired format
+    // Process each partner and booking
     const results = [];
     for (const partner of filteredPartners) {
-      if (!partner.partnerId) continue; // Ensure partnerId is not undefined
+      if (!partner.partnerId) continue;
 
       for (const booking of partner.bookingRequests) {
-        // Fetch user details from booking collection
         const bookingDetails = await Booking.findById(booking.bookingId);
         if (!bookingDetails) continue;
 
@@ -324,6 +334,7 @@ const getTopPartners = async (req, res) => {
 
         const accountType = user.accountType;
         const commission = await Commission.findOne({ userType: accountType });
+
         if (
           !commission ||
           !commission.slabRates ||
@@ -337,14 +348,14 @@ const getTopPartners = async (req, res) => {
 
         const quotePrice = booking.quotePrice;
 
-        // Determine the applicable slab rate based on the amount
+        // Determine applicable commission rate
         let commissionRate = 0;
         for (const slab of commission.slabRates) {
           if (
             quotePrice >= slab.slabRateStart &&
             quotePrice <= slab.slabRateEnd
           ) {
-            commissionRate = parseFloat(slab.commissionRate) / 100; // Convert to decimal
+            commissionRate = parseFloat(slab.commissionRate) / 100;
             break;
           }
         }
@@ -361,18 +372,21 @@ const getTopPartners = async (req, res) => {
             ? parseFloat((quotePrice * (1 + commissionRate)).toFixed(0))
             : quotePrice;
 
-        // Find the matching operator details for the current partner
-        const operator = partner.operators.find(
-          (op) =>
-            op.unitType === unitType &&
-            op.unitClassification === unitClassification &&
-            (!subClassification || op.subClassification === subClassification)
-        );
+        // Match operator (if needed)
+        const operator =
+          unitType === "shared-cargo"
+            ? partner.operators[0] // just take the first, no filtering
+            : partner.operators.find(
+                (op) =>
+                  op.unitType === unitType &&
+                  op.unitClassification === unitClassification &&
+                  (!subClassification || op.subClassification === subClassification)
+              );
 
-        if (!operator) continue; // Ensure operator is found
+        if (!operator) continue;
 
         results.push({
-          partnerId: partner.partnerId, // Use the already set partnerId
+          partnerId: partner.partnerId,
           partnerName: partner.partnerName,
           quotePrice: finalQuotePrice,
           unitType: operator.unitType,
@@ -387,44 +401,24 @@ const getTopPartners = async (req, res) => {
       }
     }
 
-    // Filter out entries with null or undefined quotePrice
+    // Final filtering and response
     const validResults = results.filter((result) => result.quotePrice != null);
+    const sortedResults = validResults.sort((a, b) => a.quotePrice - b.quotePrice);
 
-    // Sort the valid results by ascending quotePrice
-    const sortedResults = validResults.sort(
-      (a, b) => a.quotePrice - b.quotePrice
-    );
-
-    // Return based on the number of valid results
-    if (sortedResults.length === 1) {
-      // Only one result, return it
-      return res.status(200).json({
-        success: true,
-        data: sortedResults,
-      });
-    } else if (sortedResults.length === 2) {
-      // Two results, return both in ascending order
-      return res.status(200).json({
-        success: true,
-        data: sortedResults,
-      });
+    let finalData = [];
+    if (sortedResults.length === 1 || sortedResults.length === 2) {
+      finalData = sortedResults;
     } else if (sortedResults.length >= 3) {
-      // More than three results, return the top 3 in ascending order
-      const topResults = sortedResults.slice(0, 3);
-      return res.status(200).json({
-        success: true,
-        data: topResults,
-      });
-    } else {
-      // No valid quotePrices, return empty data
-      return res.status(200).json({
-        success: true,
-        data: [],
-      });
+      finalData = sortedResults.slice(0, 3);
     }
+
+    return res.status(200).json({
+      success: true,
+      data: finalData,
+    });
   } catch (error) {
     console.error("Error fetching partners:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Server error",
     });

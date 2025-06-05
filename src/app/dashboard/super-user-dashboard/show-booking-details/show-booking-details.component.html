@@ -14,6 +14,7 @@
         </button>
       </div>
     </div>
+
     <div
       class="booking-modal-body show-booking-details"
       style="
@@ -29,71 +30,107 @@
         <b>{{ "terms.Unit Type" | translate }}:</b>
         <span>{{ "unitTypes." + booking.unitType | translate }}</span>
       </p>
-      <p>
-        <b>{{ "Unit Classification" | translate }}:</b>
-        <span>{{ getTranslatedName(booking.name) }}</span>
-        <span *ngIf="booking?.type && booking.type[0]?.typeName">
-          -
-          {{
-            ("typeNames." + booking.type[0]?.typeName | translate) !==
-            "typeNames." + booking.type[0]?.typeName
-              ? ("typeNames." + booking.type[0]?.typeName | translate)
-              : ("equipmentTypeName." + booking.type[0]?.typeName
-                  | translate) !==
-                "equipmentTypeName." + booking.type[0]?.typeName
-              ? ("equipmentTypeName." + booking.type[0]?.typeName | translate)
-              : ("" | translate)
-          }}
-        </span>
-      </p>
-      <p>
-        <b>{{ "pickupLocation" | translate }}:</b>
-        <span>{{ booking.pickup }}</span>
-      </p>
-      <p>
-        <b>{{ "dropPointLocation" | translate }}:</b>
-        <span>{{ booking.dropPoints.join(", ") }}</span>
-      </p>
-      <p>
-        <b>{{ "REGISTER.CITY" | translate }}:</b>
-        <span>{{ booking.cityName }}</span>
-      </p>
-      <p>
-        <b>{{ "Address" | translate }}:</b>
-        <span>{{ booking.address }}</span>
-      </p>
-      <p>
-        <b>{{ "valueOfProduct" | translate }}:</b>
-        <span>{{ booking.productValue }}</span>
-      </p>
-      <p>
-        <b>{{ "terms.Date" | translate }}:</b> <span>{{ booking.date }}</span>
-      </p>
-      <p>
-        <b>{{ "Time" | translate }}:</b>
-        <span *ngIf="booking.time; else timeRange">
-          {{ booking.time }}
-        </span>
-        <ng-template #timeRange>
-          <span *ngIf="booking.fromTime && booking.toTime">
-            {{ booking.fromTime }} - {{ booking.toTime }}
+
+      <!-- Shared Cargo Details -->
+      <ng-container
+        *ngIf="booking.unitType === 'shared-cargo'; else normalBooking"
+      >
+        <p>
+          <b>{{ "Shipment Type" | translate }}:</b>
+          <span>{{ booking.shipmentType }}</span>
+        </p>
+        <p>
+          <b>{{ "Shipping Condition" | translate }}:</b>
+          <span>{{ booking.shippingCondition }}</span>
+        </p>
+        <p>
+          <b>{{ "Cargo Length" | translate }}:</b>
+          <span>{{ booking.cargoLength }} {{ booking.cargoUnit }}</span>
+        </p>
+        <p>
+          <b>{{ "Cargo Breadth" | translate }}:</b>
+          <span>{{ booking.cargoBreadth }} {{ booking.cargoUnit }}</span>
+        </p>
+        <p>
+          <b>{{ "Cargo Height" | translate }}:</b>
+          <span>{{ booking.cargoHeight }} {{ booking.cargoUnit }}</span>
+        </p>
+        <p>
+          <b>{{ "Shipment Weight" | translate }}:</b>
+          <span>{{ booking.shipmentWeight }} kg</span>
+        </p>
+      </ng-container>
+
+      <!-- Normal Booking Details -->
+      <ng-template #normalBooking>
+        <p>
+          <b>{{ "Unit Classification" | translate }}:</b>
+          <span>{{ getTranslatedName(booking.name) }}</span>
+          <span *ngIf="booking?.type && booking.type[0]?.typeName">
+            -
+            {{
+              ("typeNames." + booking.type[0]?.typeName | translate) !==
+              "typeNames." + booking.type[0]?.typeName
+                ? ("typeNames." + booking.type[0]?.typeName | translate)
+                : ("equipmentTypeName." + booking.type[0]?.typeName
+                    | translate) !==
+                  "equipmentTypeName." + booking.type[0]?.typeName
+                ? ("equipmentTypeName." + booking.type[0]?.typeName | translate)
+                : ("" | translate)
+            }}
           </span>
-        </ng-template>
-      </p>
-      <p>
-        <b>{{ "Additional Labour" | translate }}:</b>
-        <span>{{ booking.additionalLabour }}</span>
-      </p>
-      <p>
-        <b>{{ "Booking Status" | translate }}:</b>
-        <span>{{
-          "status of booking." + booking.bookingStatus | translate
-        }}</span>
-      </p>
-      <p>
-        <b>{{ "terms.Payment Status" | translate }}:</b>
-        <span>{{ "paymentStatus." + booking.paymentStatus | translate }}</span>
-      </p>
+        </p>
+        <p>
+          <b>{{ "pickupLocation" | translate }}:</b>
+          <span>{{ booking.pickup }}</span>
+        </p>
+        <p>
+          <b>{{ "dropPointLocation" | translate }}:</b>
+          <span>{{ booking.dropPoints.join(", ") }}</span>
+        </p>
+        <p>
+          <b>{{ "REGISTER.CITY" | translate }}:</b>
+          <span>{{ booking.cityName }}</span>
+        </p>
+        <p>
+          <b>{{ "Address" | translate }}:</b>
+          <span>{{ booking.address }}</span>
+        </p>
+        <p>
+          <b>{{ "valueOfProduct" | translate }}:</b>
+          <span>{{ booking.productValue }}</span>
+        </p>
+        <p>
+          <b>{{ "terms.Date" | translate }}:</b> <span>{{ booking.date }}</span>
+        </p>
+        <p>
+          <b>{{ "Time" | translate }}:</b>
+          <span *ngIf="booking.time; else timeRange">
+            {{ booking.time }}
+          </span>
+          <ng-template #timeRange>
+            <span *ngIf="booking.fromTime && booking.toTime">
+              {{ booking.fromTime }} - {{ booking.toTime }}
+            </span>
+          </ng-template>
+        </p>
+        <p>
+          <b>{{ "Additional Labour" | translate }}:</b>
+          <span>{{ booking.additionalLabour }}</span>
+        </p>
+        <p>
+          <b>{{ "Booking Status" | translate }}:</b>
+          <span>{{
+            "status of booking." + booking.bookingStatus | translate
+          }}</span>
+        </p>
+        <p>
+          <b>{{ "terms.Payment Status" | translate }}:</b>
+          <span>{{
+            "paymentStatus." + booking.paymentStatus | translate
+          }}</span>
+        </p>
+      </ng-template>
     </div>
   </div>
 </div>

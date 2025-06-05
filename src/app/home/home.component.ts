@@ -30,6 +30,10 @@ export class HomeComponent {
       name: 'Special',
     },
     {
+      image: 'assets/images/Shared cargo.svg',
+      name: 'Shared-cargo'
+    },
+    {
       image: 'assets/images/others.svg',
       name: 'Others',
     },

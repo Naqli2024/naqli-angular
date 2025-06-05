@@ -11,6 +11,8 @@ import { PartnerService } from '../../../../services/partner/partner.service';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ShowBookingDetailsComponent } from '../../../dashboard/super-user-dashboard/show-booking-details/show-booking-details.component';
 
 @Component({
   selector: 'app-booking',
@@ -37,7 +39,8 @@ export class PartnerBookingComponent implements OnInit {
     private toastr: ToastrService,
     private partnerService: PartnerService,
     private translateService: TranslateService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -263,4 +266,16 @@ export class PartnerBookingComponent implements OnInit {
     }
     return name;
   }
+
+  showBookingDetails(bookingId: string): void {
+      const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
+        size: 'lg',
+        centered: true,
+        backdrop: true,
+        scrollable: true,
+        windowClass: 'no-background',
+      });
+  
+      modalRef.componentInstance.bookingId = bookingId;
+    }
 }

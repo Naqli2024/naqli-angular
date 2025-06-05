@@ -4,7 +4,7 @@ const partner = require("./partner/partnerModel");
 
 const bookingSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: false },
     unitType: String,
     type: [
       {
@@ -26,7 +26,14 @@ const bookingSchema = new mongoose.Schema(
     cityName: { type: String },
     address: { type: String },
     zipCode: { type: String },
-    bookingId: { type: String, unique: true, default: uuidv4 },
+    shipmentType: {type: String},
+    shippingCondition: {type: String},
+    cargoLength: {type: String},
+    cargoBreadth: {type: String},
+    cargoHeight: {type: String},
+    cargoUnit: {type: String},
+    shipmentWeight: {type: String},
+    // bookingId: { type: String, unique: true, default: uuidv4 },
     bookingStatus: {
       type: String,
       enum: ["Yet to start", "Running", "Completed"],
