@@ -61,8 +61,8 @@ export class BookingManagerComponent {
   ngOnInit(): void {
     this.getBookingDetails();
 
-     // Define the wpwlOptions in TypeScript
-     window['wpwlOptions'] = {
+    // Define the wpwlOptions in TypeScript
+    window['wpwlOptions'] = {
       billingAddress: {},
       mandatoryBillingFields: {
         country: true,
@@ -70,8 +70,8 @@ export class BookingManagerComponent {
         city: true,
         postcode: true,
         street1: true,
-        street2: false
-      }
+        street2: false,
+      },
     };
   }
 
@@ -170,21 +170,17 @@ export class BookingManagerComponent {
   ) {
     event.preventDefault();
 
-    if (
-      typeof amount !== 'number' ||
-      amount <= 0 ||
-      !status
-    ) {
+    if (typeof amount !== 'number' || amount <= 0 || !status) {
       this.toastr.error('Invalid payment amount or status');
       return;
     }
 
-   // Store the payment details globally
-   this.paymentService.setRemainingPaymentDetails({
-    amount,
-    status,
-    partnerId,
-    bookingId
+    // Store the payment details globally
+    this.paymentService.setRemainingPaymentDetails({
+      amount,
+      status,
+      partnerId,
+      bookingId,
     });
 
     // Show the payment options (MADA or Other cards)
@@ -266,7 +262,6 @@ export class BookingManagerComponent {
     }, 100);
   }
 
-
   // Function to dynamically load the payment widget script
   loadPaymentScript() {
     const script = document.createElement('script');
@@ -282,14 +277,14 @@ export class BookingManagerComponent {
     document.body.appendChild(script);
   }
 
-    // Method to close the payment form
-    closePaymentForm() {
-      this.showPaymentForm = false;
-    }
-  
-    closePaymentOptions() {
-      this.showPaymentOptions = false;
-    }
+  // Method to close the payment form
+  closePaymentForm() {
+    this.showPaymentForm = false;
+  }
+
+  closePaymentOptions() {
+    this.showPaymentOptions = false;
+  }
 
   openEditModal(booking: any): void {
     const modalRef = this.modalService.open(EditBookingModalComponent, {
@@ -361,8 +356,7 @@ export class BookingManagerComponent {
           );
         case 'Pending for payment':
           return (
-            booking.tripStatus === 'Completed' &&
-            booking.remainingBalance != 0
+            booking.tripStatus === 'Completed' && booking.remainingBalance != 0
           );
         default:
           return true;
@@ -382,14 +376,98 @@ export class BookingManagerComponent {
   }
 
   showBookingDetails(bookingId: string): void {
-      const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
-        size: 'lg',
-        centered: true,
-        backdrop: true,
-        scrollable: true,
-        windowClass: 'no-background',
-      });
-  
-      modalRef.componentInstance.bookingId = bookingId;
+    const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
+
+    modalRef.componentInstance.bookingId = bookingId;
+  }
+
+  getOperatorName(partner: any, bookingId: string): string {
+    if (
+      partner?.type === 'singleUnit + operator' &&
+      partner?.operators?.[0]?.operatorsDetail?.length > 0
+    ) {
+      const operator = partner.operators[0].operatorsDetail[0];
+      return (
+        `${operator.firstName || ''} ${operator.lastName || ''}`.trim() || 'N/A'
+      );
+    } else if (partner?.type === 'multipleUnits') {
+      return this.getOperatorNameFromBooking(
+        partner?.bookingRequest,
+        bookingId
+      );
     }
+    return 'N/A';
+  }
+
+  getOperatorMobile(partner: any, bookingId: string): string {
+    if (
+      partner?.type === 'singleUnit + operator' &&
+      partner?.operators?.[0]?.operatorsDetail?.length > 0
+    ) {
+      return partner.operators[0].operatorsDetail[0].mobileNo || 'N/A';
+    } else if (partner?.type === 'multipleUnits') {
+      return this.getOperatorMobileFromBooking(
+        partner?.bookingRequest,
+        bookingId
+      );
+    }
+    return 'N/A';
+  }
+
+  getOperatorNameFromBooking(
+    bookingRequests: any[],
+    bookingId: string
+  ): string {
+    if (!bookingRequests) {
+      console.warn('Booking requests are null or undefined');
+      return 'N/A';
+    }
+
+    const booking = bookingRequests.find(
+      (request) => request.bookingId === bookingId
+    );
+
+    // console.log('Found Booking:', booking);
+    if (booking && booking.assignedOperator) {
+      // console.log('Assigned Operator:', booking.assignedOperator);
+    } else {
+      console.warn(
+        'Assigned Operator details are missing for booking ID:',
+        bookingId
+      );
+    }
+
+    return booking?.assignedOperator?.operatorName ?? 'N/A';
+  }
+
+  getOperatorMobileFromBooking(
+    bookingRequests: any[],
+    bookingId: string
+  ): string {
+    if (!bookingRequests) {
+      console.warn('Booking requests are null or undefined');
+      return 'N/A';
+    }
+
+    const booking = bookingRequests.find(
+      (request) => request.bookingId === bookingId
+    );
+
+    if (booking && booking.assignedOperator) {
+      // console.log('Assigned Operator:', booking.assignedOperator);
+    } else {
+      console.warn(
+        'Assigned Operator details are missing for booking ID:',
+        bookingId
+      );
+    }
+
+    return booking?.assignedOperator?.operatorMobileNo ?? 'N/A';
+  }
 }

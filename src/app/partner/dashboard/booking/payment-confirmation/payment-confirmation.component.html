@@ -25,8 +25,8 @@
           </p>
         </div>
         <div class="partner-field">
-          <label>{{ "User id" | translate }}</label>
-          <p>#{{ (user$ | async)?._id }}</p>
+          <label>{{ "Mobile No" | translate }}</label>
+          <p>{{ (user$ | async)?.contactNumber }}</p>
         </div>
         <div class="partner-field">
           <label>{{ "Mode" | translate }}</label>

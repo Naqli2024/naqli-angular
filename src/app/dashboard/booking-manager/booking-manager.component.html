@@ -5,7 +5,10 @@
   <ng-container *ngFor="let booking of filteredBookings; let i = index">
     <div class="col-md-5 booking-history" *ngIf="filteredBookings.length > 0">
       <div class="table-container booking-manager-table">
-        <table class="table" style="margin-bottom: 0 !important; border-bottom: 1px solid #ddd;">
+        <table
+          class="table"
+          style="margin-bottom: 0 !important; border-bottom: 1px solid #ddd"
+        >
           <thead>
             <tr class="trigger-booking-table">
               <th>{{ "BookingWithNumber" | translate : { number: i + 1 } }}</th>
@@ -114,7 +117,7 @@
                 width="82.998"
                 height="89.999"
                 viewBox="0 0 82.998 89.999"
-                style="margin: 48px 0px !important;"
+                style="margin: 48px 0px !important"
               >
                 <path
                   id="Union_1"
@@ -246,6 +249,9 @@
             <th>Booking ID</th>
             <th>{{ "Mode" | translate }}</th>
             <th>{{ "Vendor Name" | translate }}</th>
+            <th>{{ "vendorMobile" | translate }}</th>
+            <th>{{ "Operator Name" | translate }}/th></th>
+            <th>{{ "Operator Mobile" | translate }}</th>
             <th>{{ "terms.Payment Status" | translate }}</th>
             <th>{{ "status.Status" | translate }}</th>
           </tr>
@@ -256,10 +262,26 @@
               class="trigger-booking-table"
               *ngFor="let booking of filterBookings"
             >
-              <td class="p2 trigger" (click)="showBookingDetails(booking._id)">{{ booking._id }}</td>
+              <td class="p2 trigger" (click)="showBookingDetails(booking._id)">
+                {{ booking._id }}
+              </td>
               <td>{{ "unitTypes." + booking.unitType | translate }}</td>
               <td>
                 {{ partnerDetails[booking.partner]?.partnerName || "N/A" }}
+              </td>
+              <td>{{ partnerDetails[booking.partner]?.mobileNo || "N/A" }}</td>
+              <td>
+                {{
+                  getOperatorName(partnerDetails[booking.partner], booking._id)
+                }}
+              </td>
+              <td>
+                {{
+                  getOperatorMobile(
+                    partnerDetails[booking.partner],
+                    booking._id
+                  )
+                }}
               </td>
               <td>
                 <span

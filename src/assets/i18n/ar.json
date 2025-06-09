@@ -358,6 +358,7 @@
   "Size": "حجم",
   "Cancel Request": "إلغاء الطلب",
   "Vendor Name": "اسم البائع",
+  "vendorMobile": "جوال المورد",
   "Operator Name": "اسم المشغل",
   "Operator Mobile": "رقم هاتف المشغل",
   "Unit": "الوحدة",

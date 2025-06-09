@@ -275,4 +275,88 @@ export class SuperUserPaymentsComponent implements AfterViewInit {
 
     modalRef.componentInstance.bookingId = bookingId;
   }
+
+  getOperatorName(partner: any, bookingId: string): string {
+    if (
+      partner?.type === 'singleUnit + operator' &&
+      partner?.operators?.[0]?.operatorsDetail?.length > 0
+    ) {
+      const operator = partner.operators[0].operatorsDetail[0];
+      return (
+        `${operator.firstName || ''} ${operator.lastName || ''}`.trim() || 'N/A'
+      );
+    } else if (partner?.type === 'multipleUnits') {
+      return this.getOperatorNameFromBooking(
+        partner?.bookingRequest,
+        bookingId
+      );
+    }
+    return 'N/A';
+  }
+
+  getOperatorMobile(partner: any, bookingId: string): string {
+    if (
+      partner?.type === 'singleUnit + operator' &&
+      partner?.operators?.[0]?.operatorsDetail?.length > 0
+    ) {
+      return partner.operators[0].operatorsDetail[0].mobileNo || 'N/A';
+    } else if (partner?.type === 'multipleUnits') {
+      return this.getOperatorMobileFromBooking(
+        partner?.bookingRequest,
+        bookingId
+      );
+    }
+    return 'N/A';
+  }
+
+  getOperatorNameFromBooking(
+    bookingRequests: any[],
+    bookingId: string
+  ): string {
+    if (!bookingRequests) {
+      console.warn('Booking requests are null or undefined');
+      return 'N/A';
+    }
+
+    const booking = bookingRequests.find(
+      (request) => request.bookingId === bookingId
+    );
+
+    // console.log('Found Booking:', booking);
+    if (booking && booking.assignedOperator) {
+      // console.log('Assigned Operator:', booking.assignedOperator);
+    } else {
+      console.warn(
+        'Assigned Operator details are missing for booking ID:',
+        bookingId
+      );
+    }
+
+    return booking?.assignedOperator?.operatorName ?? 'N/A';
+  }
+
+  getOperatorMobileFromBooking(
+    bookingRequests: any[],
+    bookingId: string
+  ): string {
+    if (!bookingRequests) {
+      console.warn('Booking requests are null or undefined');
+      return 'N/A';
+    }
+
+    const booking = bookingRequests.find(
+      (request) => request.bookingId === bookingId
+    );
+
+    if (booking && booking.assignedOperator) {
+      // console.log('Assigned Operator:', booking.assignedOperator);
+    } else {
+      console.warn(
+        'Assigned Operator details are missing for booking ID:',
+        bookingId
+      );
+    }
+
+    return booking?.assignedOperator?.operatorMobileNo ?? 'N/A';
+  }
 }

@@ -34,6 +34,13 @@
             <th class="no-scroll-header">Booking ID</th>
             <th class="no-scroll-header">{{ "Mode" | translate }}</th>
             <th class="no-scroll-header">{{ "Vendor Name" | translate }}</th>
+            <th class="no-scroll-header">{{ "vendorMobile" | translate }}</th>
+            <th class="no-scroll-header">
+              {{ "Operator Name" | translate }}/th>
+            </th>
+            <th class="no-scroll-header">
+              {{ "Operator Mobile" | translate }}
+            </th>
             <th class="no-scroll-header">{{ "status.Status" | translate }}</th>
             <th class="no-scroll-header">
               {{ "status.Payment Made" | translate }}
@@ -48,13 +55,32 @@
             class="trigger-booking-table"
             *ngFor="let booking of filteredBookings"
           >
-            <td class="p2 trigger" (click)="showBookingDetails(booking._id)">{{ booking._id }}</td>
+            <td class="p2 trigger" (click)="showBookingDetails(booking._id)">
+              {{ booking._id }}
+            </td>
             <td>{{ "ITEMS." + booking.unitType | translate }}</td>
             <td>
               {{
                 booking.partner
                   ? partnerDetails[booking.partner]?.partnerName || "Loading..."
                   : "N/A"
+              }}
+            </td>
+            <td>
+              {{
+                booking.partner
+                  ? partnerDetails[booking.partner]?.mobileNo || "Loading..."
+                  : "N/A"
+              }}
+            </td>
+            <td>
+              {{
+                getOperatorName(partnerDetails[booking.partner], booking._id)
+              }}
+            </td>
+            <td>
+              {{
+                getOperatorMobile(partnerDetails[booking.partner], booking._id)
               }}
             </td>
             <td>
