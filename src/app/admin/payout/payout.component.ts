@@ -26,7 +26,6 @@ import { SpinnerService } from '../../../services/spinner.service';
   templateUrl: './payout.component.html',
   styleUrl: './payout.component.css',
 })
-
 export class PayoutComponent implements OnInit {
   isInitialPayoutTab: boolean = true;
   isHourlyTab: boolean = false; // To track which tab is selected
@@ -55,34 +54,40 @@ export class PayoutComponent implements OnInit {
       .pipe(
         switchMap((bookings) => {
           this.bookings = bookings;
-          
+
           if (!bookings.length) {
-            this.spinnerService.hide(); 
-            return of([]); 
+            this.spinnerService.hide();
+            return of([]);
           }
 
           const userRequests = bookings.map((booking) =>
-            this.userService.getUserById(booking.user).pipe(
-              catchError(() => of(undefined)) 
-            )
+            this.userService
+              .getUserById(booking.user)
+              .pipe(catchError(() => of(undefined)))
           );
 
           const partnerRequests = bookings.map((booking) =>
             booking.partner
-              ? this.partnerService.getPartnerDetails(booking.partner).pipe(
-                  catchError(() => of(undefined)) 
-                )
+              ? this.partnerService
+                  .getPartnerDetails(booking.partner)
+                  .pipe(catchError(() => of(undefined)))
               : of(undefined)
           );
 
           return forkJoin([...userRequests, ...partnerRequests]);
         }),
-        finalize(() => this.spinnerService.hide()) 
+        finalize(() => this.spinnerService.hide())
       )
       .subscribe(
         (results) => {
-          const userResults = results.slice(0, this.bookings.length) as (any | undefined)[];
-          const partnerResults = results.slice(this.bookings.length) as ({ success: boolean; data: any } | undefined)[];
+          const userResults = results.slice(0, this.bookings.length) as (
+            | any
+            | undefined
+          )[];
+          const partnerResults = results.slice(this.bookings.length) as (
+            | { success: boolean; data: any }
+            | undefined
+          )[];
 
           userResults.forEach((user, index) => {
             if (user) this.users[this.bookings[index].user] = user;
@@ -90,8 +95,15 @@ export class PayoutComponent implements OnInit {
 
           partnerResults.forEach((partnerResponse, index) => {
             if (partnerResponse && partnerResponse.success) {
-              this.partners[this.bookings[index].partner] = partnerResponse.data;
+              this.partners[this.bookings[index].partner] =
+                partnerResponse.data;
             }
+          });
+
+          // Initialize selection flags
+          this.bookings.forEach((booking) => {
+            booking.selectedInitial = false;
+            booking.selectedFinal = false;
           });
 
           this.filteredBookings = this.bookings; // Load all bookings initially
@@ -108,6 +120,7 @@ export class PayoutComponent implements OnInit {
 
   selectTab(tab: string) {
     this.isInitialPayoutTab = tab === 'initialPayout';
+    this.selectAll = false;
   }
 
   selectTimeRange(range: string) {
@@ -160,14 +173,21 @@ export class PayoutComponent implements OnInit {
   }
 
   toggleSelectAll() {
-    // Toggle all checkboxes based on the header checkbox
-    this.filteredBookings.forEach((booking) => {
-      booking.selected = this.selectAll;
-    });
+    if (this.isInitialPayoutTab) {
+      this.filteredBookings.forEach((booking) => {
+        booking.selectedInitial = this.selectAll;
+      });
+    } else {
+      this.filteredBookings.forEach((booking) => {
+        booking.selectedFinal = this.selectAll;
+      });
+    }
   }
 
   generatePDFOrExcel() {
-    const selectedBookings = this.filteredBookings.filter((booking) => booking.selected);
+    const selectedBookings = this.filteredBookings.filter((booking) =>
+      this.isInitialPayoutTab ? booking.selectedInitial : booking.selectedFinal
+    );
 
     if (selectedBookings.length > 0) {
       if (this.isInitialPayoutTab) {
@@ -181,54 +201,74 @@ export class PayoutComponent implements OnInit {
   }
 
   generateExcel(selectedBookings: any[]) {
-    const filteredData = selectedBookings.map(booking => {
-      const user = this.users[booking.user] || {};
+    const filteredData = selectedBookings.map((booking) => {
       const partner = this.partners[booking.partner] || {};
-  
+
       return {
-        "Booking ID": booking._id || "N/A",
-        "User Name": booking.name || "N/A",
-        "Pickup Location": booking.pickup || "N/A",
-        "Drop Points": Array.isArray(booking.dropPoints) ? booking.dropPoints.join(", ") : booking.dropPoints || "N/A",
-        "Final Payout (SAR)": booking.finalPayout || 0,
-        "Partner Name": partner.partnerName || "N/A",
-        "Region": partner.region || "N/A",
-        "City": partner.city || "N/A",
-        "Bank Name": partner.bank || "N/A",
-        "IBAN": partner.ibanNumber || "N/A"
+        'Bank': partner.bank || 'N/A',
+        'Account Number': partner.ibanNumber || 'N/A',
+        'Amount': booking.finalPayout || 0,
+        'Comments': 'Final payment',
+        'Beneficiary Name': partner.partnerName || 'N/A',
+        'CR/ID Number': partner.CRNumber || 'N/A',
+        'Beneficiary Address': `${partner.region || 'N/A'}, ${
+          partner.city || 'N/A'
+        }`,
       };
     });
-  
+
     const ws = XLSX.utils.json_to_sheet(filteredData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Selected Bookings");
-  
-    XLSX.writeFile(wb, "selected-bookings.csv", { bookType: "csv" });
+    const csv = XLSX.utils.sheet_to_csv(ws, {
+      FS: ',',
+      RS: '\r\n',
+    });
+
+    // No BOM or UTF-8 here
+    const blob = new Blob([csv], {
+      type: 'text/csv;',
+    });
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'final-payout.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 
   generateExcelForInitialPayout(selectedBookings: any[]) {
-    const filteredData = selectedBookings.map(booking => {
-      const user = this.users[booking.user] || {};
+    const filteredData = selectedBookings.map((booking) => {
       const partner = this.partners[booking.partner] || {};
-  
+
       return {
-        "Booking ID": booking._id || "N/A",
-        "User": `${user.firstName || "N/A"} ${user.lastName || ""}`,
-        "Date": booking.date || "N/A",
-        "Initial Payout (SAR)": booking.initialPayout || 0,
-        "Partner Name": partner.partnerName || "N/A",
-        "Region": partner.region || "N/A",
-        "City": partner.city || "N/A",
-        "Bank Name": partner.bank || "N/A",
-        "Company": partner.company || "N/A",
-        "IBAN": partner.ibanNumber || "N/A"
+        'Bank': partner.bank || 'N/A',
+        'Account Number': partner.ibanNumber || 'N/A',
+        'Amount': booking.initialPayout || 0,
+        'Comments': 'Initial payment',
+        'Beneficiary Name': partner.partnerName || 'N/A',
+        'CR/ID Number': partner.CRNumber || 'N/A',
+        'Beneficiary Address': `${partner.region || 'N/A'}, ${
+          partner.city || 'N/A'
+        }`,
       };
     });
-  
+
     const ws = XLSX.utils.json_to_sheet(filteredData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Selected Bookings");
-  
-    XLSX.writeFile(wb, "initial-payout.csv", { bookType: "csv" });
+    const csv = XLSX.utils.sheet_to_csv(ws, {
+      FS: ',',
+      RS: '\r\n',
+    });
+
+    // No UTF-8 BOM
+    const blob = new Blob([csv], {
+      type: 'text/csv;',
+    });
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'initial-payout.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }

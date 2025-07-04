@@ -72,19 +72,14 @@
                     (change)="toggleSelectAll()"
                   />
                 </th>
-                <th>{{ "UserName" | translate }}</th>
-                <th>{{ "terms.BookingID" | translate }}</th>
-                <th>{{ "Date" | translate }}</th>
-                <th>{{ "Initial amount" | translate }}</th>
-                <th>{{ "Partner Name" | translate }}</th>
-                <th>{{ "Region" | translate }}</th>
-                <th>{{ "City" | translate }}</th>
                 <th>{{ "Bank name" | translate }}</th>
-                <th>{{ "Company" | translate }}</th>
-                <th>{{ "IBAN" | translate }}</th>
-                <th>{{"IDCRNumber" |translate}}</th>
-                </ng-container
-              >
+                <th>{{ "accountNumber" | translate }}</th>
+                <th>{{ "totalAmount" | translate }}</th>
+                <th>{{ "notes" | translate }}</th>
+                <th>{{ "beneficiaryName" | translate }}</th>
+                <th>{{ "IDCRNumber" | translate }}</th>
+                <th>{{ "beneficiaryAddress" | translate }}</th>
+              </ng-container>
 
               <ng-container *ngIf="!isInitialPayoutTab">
                 <th>
@@ -94,18 +89,13 @@
                     (change)="toggleSelectAll()"
                   />
                 </th>
-                <th>{{ "Partner Name" | translate }}</th>
-                <th>{{ "Region" | translate }}</th>
-                <th>{{ "City" | translate }}</th>
                 <th>{{ "Bank name" | translate }}</th>
-                <th>{{ "Company" | translate }}</th>
-                <th>{{ "IBAN" | translate }}</th>
-                <th>{{"IDCRNumber" |translate}}</th>
-                <th>{{ "Pending Amount" | translate }}</th>
-                <th>{{ "ExtraCharges" | translate }}</th>
-                <th>{{ "Refunds" | translate }}</th>
-                <th>{{ "Commission" | translate }}</th>
-                <th>{{ "FinalPayout" | translate }}</th>
+                <th>{{ "accountNumber" | translate }}</th>
+                <th>{{ "totalAmount" | translate }}</th>
+                <th>{{ "notes" | translate }}</th>
+                <th>{{ "beneficiaryName" | translate }}</th>
+                <th>{{ "IDCRNumber" | translate }}</th>
+                <th>{{ "beneficiaryAddress" | translate }}</th>
               </ng-container>
             </tr>
           </thead>
@@ -113,53 +103,36 @@
             <tr *ngFor="let booking of filteredBookings">
               <ng-container *ngIf="isInitialPayoutTab">
                 <td>
-                  <input type="checkbox" [(ngModel)]="booking.selected" />
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="booking.selectedInitial"
+                  />
                 </td>
-                <td>
-                  {{ users[booking.user]?.firstName }}
-                  {{ users[booking.user]?.lastName }}
-                </td>
-                <td>{{ booking._id }}</td>
-                <td>{{ booking.date }}</td>
-                <td>{{ booking.initialPayout }} SAR</td>
-                <td>{{ partners[booking.partner]?.partnerName }}</td>
-                <td>{{ partners[booking.partner]?.region }}</td>
-                <td>{{ partners[booking.partner]?.city }}</td>
                 <td>{{ partners[booking.partner]?.bank }}</td>
-                <td>{{ partners[booking.partner]?.company }}</td>
                 <td>{{ partners[booking.partner]?.ibanNumber }}</td>
-                <td>{{partners[booking.partner]?.CRNumber}}</td>
+                <td>{{ booking.initialPayout }} SAR</td>
+                <td>{{ "Initial payment" | translate }}</td>
+                <td>{{ partners[booking.partner]?.partnerName }}</td>
+                <td>{{ partners[booking.partner]?.CRNumber }}</td>
+                <td>
+                  {{ partners[booking.partner]?.region }},
+                  {{ partners[booking.partner]?.city }}
+                </td>
               </ng-container>
               <ng-container *ngIf="!isInitialPayoutTab">
                 <td>
-                  <input type="checkbox" [(ngModel)]="booking.selected" />
+                  <input type="checkbox" [(ngModel)]="booking.selectedFinal" />
                 </td>
-                <td>{{ partners[booking.partner]?.partnerName }}</td>
-                <td>{{ partners[booking.partner]?.region }}</td>
-                <td>{{ partners[booking.partner]?.city }}</td>
                 <td>{{ partners[booking.partner]?.bank }}</td>
-                <td>{{ partners[booking.partner]?.company }}</td>
                 <td>{{ partners[booking.partner]?.ibanNumber }}</td>
-                <td>{{partners[booking.partner]?.CRNumber}}</td>
-                <td>{{ booking.remainingBalance }} SAR</td>
-                <td>
-                  {{ booking.additionalCharges }} SAR
-                  <!-- <span *ngIf="booking.additionalChargesReason.length > 0">
-                    (Reasons:
-                    <ng-container
-                      *ngFor="
-                        let reason of booking.additionalChargesReason;
-                        let isLast = last
-                      "
-                    >
-                      {{ reason }}<span *ngIf="!isLast">, </span>
-                    </ng-container>
-                    )
-                  </span> -->
-                </td>
-                <td></td>
-                <td>{{ booking.adminCommission }} SAR</td>
                 <td>{{ booking.finalPayout }} SAR</td>
+                <td>{{ "Final payment" | translate }}</td>
+                <td>{{ partners[booking.partner]?.partnerName }}</td>
+                <td>{{ partners[booking.partner]?.CRNumber }}</td>
+                <td>
+                  {{ partners[booking.partner]?.region }},
+                  {{ partners[booking.partner]?.city }}
+                </td>
               </ng-container>
             </tr>
           </tbody>

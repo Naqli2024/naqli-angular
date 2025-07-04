@@ -391,7 +391,6 @@
   "Multiple Units": "Multiple Units",
   "Single Unit + Operator": "Single Unit + Operator",
   "Operator": "Operator",
-  "Partner Name": "Partner Name",
   "Mobile No": "Mobile No",
   "Email": "Email",
   "Password": "Password",
@@ -521,7 +520,8 @@
     "ReactivatePartner": "Reactivate Partner"
   },
   "Partners": "Partners",
-  "PartnerName": "Partner Name (Same as Bank Account Holder Name)",
+  "PartnerName": "Partner Name (must be in English, same as Passport name)",
+  "Partner Name": "Partner Name (must be in English, same as Passport name)",
   "PartnerID": "Partner ID",
   "Payment": "Payment",
   "Commission": "Commission",
@@ -578,6 +578,7 @@
   "unitClassification": "Unit Classification",
   "unitSubClassification": "Unit SubClassification",
   "operator": "Operator",
+  "Operator Details": "Operator Details",
   "vehicleDetailDoc": "Vehicle Detail/Doc",
   "view": "View",
   "newUnit": "New Unit",
@@ -692,5 +693,12 @@
   "Get Estimate": "Get Estimate",
   "Select condition": "Select condition",
   "Refrigerator": "Refrigerator",
-  "Dry Storage": "Dry Storage"
+  "Dry Storage": "Dry Storage",
+  "accountNumber": "Account Number (IBAN)",
+  "totalAmount": "Total Amount",
+  "notes": "Notes",
+  "beneficiaryName": "Beneficiary Name",
+  "beneficiaryAddress": "Beneficiary Address",
+  "Initial payment": "Initial payment",
+  "Final payment": "Final payment"
 }

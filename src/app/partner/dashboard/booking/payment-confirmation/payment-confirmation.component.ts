@@ -85,7 +85,7 @@ export class PaymentConfirmationComponent implements OnInit {
       (response) => {
         if (response.success) {
           this.partnerDetails = response.data;
-          console.log(this.partnerDetails)
+          // console.log(this.partnerDetails)
           this.collectOperatorId();
           this.spinnerService.hide();
         } else {
@@ -119,8 +119,8 @@ export class PaymentConfirmationComponent implements OnInit {
     }
     // Call the API only after operatorId is set
   this.mapService.markDriverLocation(this.partnerId, this.operatorId);
-  console.log("PartnerId:", this.partnerId);
-  console.log("OperatorId:", this.operatorId);
+  // console.log("PartnerId:", this.partnerId);
+  // console.log("OperatorId:", this.operatorId);
   }
 
   getOperatorIdFromBooking(bookingRequests: any[], bookingId: string): string {

@@ -390,7 +390,7 @@
   "Multiple Units": "وحدات متعددة",
   "Single Unit + Operator": "وحدة واحدة + مشغل",
   "Operator": "مشغل",
-  "Partner Name": "اسم الشريك",
+  "Partner Name": "اسم الشريك (نفس اسم صاحب الحساب البنكي)",
   "Mobile No": "رقم الجوال",
   "Email": "البريد الإلكتروني",
   "Password": "كلمة المرور",
@@ -520,7 +520,7 @@
     "ReactivatePartner": "إعادة تنشيط الشريك"
   },
   "Partners": "الشركاء",
-  "PartnerName": "اسم الشريك (كما هو في اسم صاحب الحساب البنكي)",
+  "PartnerName": "اسم الشريك (يجب أن يكون باللغة الإنجليزية، كما هو في جواز السفر)",
   "PartnerID": "معرف الشريك",
   "Payment": "الدفع",
   "Commission": "العمولة",
@@ -577,6 +577,7 @@
   "unitClassification": "تصنيف الوحدة",
   "unitSubClassification": "تصنيف فرعي للوحدة",
   "operator": "مشغل",
+  "Operator Details": "تفاصيل المشغل",
   "vehicleDetailDoc": "تفاصيل المركبة/المستند",
   "view": "عرض",
   "newUnit": "وحدة جديدة",
@@ -688,5 +689,12 @@
   "Get Estimate": "احصل على تقدير",
   "Select condition": "اختر الحالة",
   "Refrigerator": "ثلاجة",
-  "Dry Storage": "تخزين جاف"
+  "Dry Storage": "تخزين جاف",
+  "accountNumber": "رقم الحساب (IBAN)",
+  "totalAmount": "المبلغ الإجمالي",
+  "notes": "ملاحظات",
+  "beneficiaryName": "اسم المستفيد",
+  "beneficiaryAddress": "عنوان المستفيد",
+  "Initial payment": "الدفع المبدئي",
+  "Final payment": "الدفع النهائي"
 }

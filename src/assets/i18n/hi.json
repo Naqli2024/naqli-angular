@@ -390,7 +390,7 @@
   "Multiple Units": "कई इकाइयाँ",
   "Single Unit + Operator": "एकल इकाई + ऑपरेटर",
   "Operator": "ऑपरेटर",
-  "Partner Name": "साझेदार का नाम",
+  "Partner Name": "साझेदार का नाम (बैंक खाता धारक के नाम जैसा ही)",
   "Mobile No": "मोबाइल नंबर",
   "Email": "ईमेल",
   "Password": "पासवर्ड",
@@ -520,7 +520,7 @@
     "ReactivatePartner": "साझेदार को फिर से सक्रिय करें"
   },
   "Partners": "भागीदार",
-  "PartnerName": "साझेदार का नाम (बैंक खाता धारक के नाम के अनुसार)",
+  "PartnerName": "पार्टनर का नाम (पासपोर्ट में जैसा है, वही अंग्रेज़ी में होना चाहिए)",
   "PartnerID": "भागीदार आईडी",
   "Payment": "भुगतान",
   "Commission": "आयोग",
@@ -577,6 +577,7 @@
   "unitClassification": "यूनिट वर्गीकरण",
   "unitSubClassification": "यूनिट उप-वर्गीकरण",
   "operator": "ऑपरेटर",
+  "Operator Details": "ऑपरेटर विवरण",
   "vehicleDetailDoc": "वाहन विवरण/दस्तावेज़",
   "view": "देखें",
   "newUnit": "नई यूनिट",
@@ -690,5 +691,12 @@
   "Get Estimate": "अनुमान प्राप्त करें",
   "Select condition": "स्थिति चुनें",
   "Refrigerator": "रेफ्रिजरेटर",
-  "Dry Storage": "सूखा भंडारण"
+  "Dry Storage": "सूखा भंडारण",
+  "accountNumber": "खाता संख्या (आईबीएएन)",
+  "totalAmount": "कुल राशि",
+  "notes": "टिप्पणियाँ",
+  "beneficiaryName": "प्राप्तकर्ता का नाम",
+  "beneficiaryAddress": "प्राप्तकर्ता का पता",
+  "Initial payment": "प्रारंभिक भुगतान",
+  "Final payment": "अंतिम भुगतान"
 }
