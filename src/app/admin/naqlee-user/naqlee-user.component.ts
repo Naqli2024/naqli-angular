@@ -37,12 +37,12 @@ export class NaqleeUserComponent {
 
   dropdownList = [
     { id: 1, itemName: 'Payout' },
-    { id: 2, itemName: 'SupportTickets' },
+    { id: 2, itemName: 'Support tickets' },
     { id: 3, itemName: 'User' },
     { id: 4, itemName: 'Partner' },
     { id: 5, itemName: 'Payments' },
-    { id: 6, itemName: 'NotificationManagement' },
-    { id: 7, itemName: 'NaqleeUser' },
+    { id: 6, itemName: 'Notification Management' },
+    { id: 7, itemName: 'Naqlee user' },
   ];
 
   selectedItems: string[] = [];
@@ -89,7 +89,7 @@ export class NaqleeUserComponent {
     this.toastr.error('Photo must be less than 100KB');
     return;
   }
-  
+
     const formData = new FormData();
     formData.append('name', this.newUser.name);
     formData.append('emailID', this.newUser.emailID);
