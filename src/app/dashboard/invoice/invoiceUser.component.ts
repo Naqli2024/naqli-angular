@@ -72,6 +72,11 @@ export class InvoiceUserComponent {
     if (booking) {
       // Generate a URL with query parameters for the booking details
       const baseUrl = 'https://naqlee.com/home/user/invoice-data';
+
+      const pickup = booking.pickup || '';
+      const dropPoints = booking.dropPoints?.join(', ') || '';
+      const description = `${pickup}${dropPoints ? ', ' + dropPoints : ''}`;
+
       const queryParams = new URLSearchParams({
         InvoiceId: booking.invoiceId,
         InvoiceDate: booking.invoiceDate,
@@ -81,7 +86,8 @@ export class InvoiceUserComponent {
         bookingId: booking._id,
         unitType: booking.unitType,
         partnerName: booking.partnerDetails?.partnerName,
-        paymentType: booking.paymentType
+        paymentType: booking.paymentType,
+        description: description,
       });
 
       // Encode the URL into the QR code
@@ -292,14 +298,14 @@ export class InvoiceUserComponent {
   }
 
   showBookingDetails(bookingId: string): void {
-      const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
-        size: 'lg',
-        centered: true,
-        backdrop: true,
-        scrollable: true,
-        windowClass: 'no-background',
-      });
-  
-      modalRef.componentInstance.bookingId = bookingId;
-    }
+    const modalRef = this.modalService.open(ShowBookingDetailsComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: true,
+      scrollable: true,
+      windowClass: 'no-background',
+    });
+
+    modalRef.componentInstance.bookingId = bookingId;
+  }
 }

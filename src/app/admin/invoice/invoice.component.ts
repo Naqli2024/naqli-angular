@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEdit, faPrint, faDownload, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faPrint,
+  faDownload,
+  faArrowLeft,
+} from '@fortawesome/free-solid-svg-icons';
 import { BookingService } from '../../../services/booking.service';
 import { SpinnerService } from '../../../services/spinner.service';
 import { ToastrService } from 'ngx-toastr';
@@ -17,7 +22,13 @@ import { QRCodeModule } from 'angularx-qrcode';
 @Component({
   selector: 'app-invoice',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule, FormsModule, TranslateModule, QRCodeModule],
+  imports: [
+    CommonModule,
+    FontAwesomeModule,
+    FormsModule,
+    TranslateModule,
+    QRCodeModule,
+  ],
   templateUrl: './invoice.component.html',
   styleUrl: './invoice.component.css',
 })
@@ -28,20 +39,20 @@ export class InvoiceComponent {
   faDownload = faDownload;
   faArrowLeft = faArrowLeft;
   bookingsWithInvoice: any[] = [];
-  detailedBookings: any[] = []; 
+  detailedBookings: any[] = [];
   selectedInvoiceId: string | null = null;
   searchTerm: string = '';
   filteredBookings: any[] = [];
   qrCodeData: string = '';
 
-    constructor(
-      private bookingService: BookingService,
-      private spinnerService: SpinnerService,
-      private toastr: ToastrService,
-      private partnerService: PartnerService,
-      private userService: UserService,
-      private translate: TranslateService
-    ) {}
+  constructor(
+    private bookingService: BookingService,
+    private spinnerService: SpinnerService,
+    private toastr: ToastrService,
+    private partnerService: PartnerService,
+    private userService: UserService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.fetchBookingsWithInvoice();
@@ -58,6 +69,11 @@ export class InvoiceComponent {
     if (booking) {
       // Generate a URL with query parameters for the booking details
       const baseUrl = 'https://naqlee.com/home/user/invoice-data';
+
+      const pickup = booking.pickup || '';
+      const dropPoints = booking.dropPoints?.join(', ') || '';
+      const description = `${pickup}${dropPoints ? ', ' + dropPoints : ''}`;
+
       const queryParams = new URLSearchParams({
         InvoiceId: booking.invoiceId,
         InvoiceDate: booking.invoiceDate,
@@ -67,7 +83,8 @@ export class InvoiceComponent {
         bookingId: booking._id,
         unitType: booking.unitType,
         partnerName: booking.partnerDetails?.partnerName,
-        paymentType: booking.paymentType
+        paymentType: booking.paymentType,
+        description: description,
       });
 
       // Encode the URL into the QR code
@@ -85,8 +102,8 @@ export class InvoiceComponent {
       (response) => {
         this.spinnerService.hide();
         if (response.success) {
-          this.bookingsWithInvoice = response.bookings; 
-          this.enrichBookingsWithDetails(); 
+          this.bookingsWithInvoice = response.bookings;
+          this.enrichBookingsWithDetails();
           this.filteredBookings = this.bookingsWithInvoice;
         } else {
           this.toastr.error(response.message);
@@ -100,28 +117,38 @@ export class InvoiceComponent {
   }
 
   filterBookings(): void {
-    const searchTermLower = this.searchTerm.toLowerCase();  
+    const searchTermLower = this.searchTerm.toLowerCase();
 
     this.filteredBookings = this.bookingsWithInvoice.filter((booking) => {
       return (
         booking.invoiceId.toLowerCase().includes(searchTermLower) ||
-        (booking.date && booking.date.toLowerCase().includes(searchTermLower)) || 
-        (booking.userDetails?.firstName && booking.userDetails?.firstName.toLowerCase().includes(searchTermLower)) || 
-        (booking.userDetails?.lastName && booking.userDetails?.lastName.toLowerCase().includes(searchTermLower)) || 
-        (booking.partnerDetails?.partnerName && booking.partnerDetails?.partnerName.toLowerCase().includes(searchTermLower)) 
+        (booking.date &&
+          booking.date.toLowerCase().includes(searchTermLower)) ||
+        (booking.userDetails?.firstName &&
+          booking.userDetails?.firstName
+            .toLowerCase()
+            .includes(searchTermLower)) ||
+        (booking.userDetails?.lastName &&
+          booking.userDetails?.lastName
+            .toLowerCase()
+            .includes(searchTermLower)) ||
+        (booking.partnerDetails?.partnerName &&
+          booking.partnerDetails?.partnerName
+            .toLowerCase()
+            .includes(searchTermLower))
       );
     });
   }
 
   onSearchInputChange(): void {
-    this.filterBookings(); 
+    this.filterBookings();
   }
 
   // Helper function to extract and format the Invoice Date
   getInvoiceDate(invoiceId: string): string {
     // Extract the date part from invoiceId (format: INV-20241223-iPvoZ5)
-    const dateString = invoiceId.split('-')[1];  // Get the date portion "20241223"
-    
+    const dateString = invoiceId.split('-')[1]; // Get the date portion "20241223"
+
     // Format the date to "dd/MM/yyyy"
     const year = dateString.substring(0, 4);
     const month = dateString.substring(4, 6);
@@ -134,14 +161,14 @@ export class InvoiceComponent {
   enrichBookingsWithDetails(): void {
     // Iterate over all bookings and fetch partner and user details
     this.bookingsWithInvoice.forEach((booking) => {
-      const partnerId = booking.partner;  // Extract partnerId from booking
-      const userId = booking.user;  // Extract userId from booking
+      const partnerId = booking.partner; // Extract partnerId from booking
+      const userId = booking.user; // Extract userId from booking
       booking.invoiceDate = this.getInvoiceDate(booking.invoiceId);
 
       // Fetch partner details
       this.partnerService.getPartnerDetails(partnerId).subscribe(
         (partner) => {
-          booking.partnerDetails = partner.data;  // Store partner details in the booking
+          booking.partnerDetails = partner.data; // Store partner details in the booking
           this.checkIfBookingIsComplete(booking);
         },
         (error) => {
@@ -152,7 +179,7 @@ export class InvoiceComponent {
       // Fetch user details
       this.userService.getUserById(userId).subscribe(
         (user) => {
-          booking.userDetails = user;  // Store user details in the booking
+          booking.userDetails = user; // Store user details in the booking
           this.checkIfBookingIsComplete(booking);
         },
         (error) => {
@@ -177,62 +204,72 @@ export class InvoiceComponent {
     const options = {
       filename: 'invoice.pdf',
       html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
     };
     html2pdf(element, options);
   }
 
   printInvoice() {
     const element = document.getElementById('invoice-container'); // Get the element to capture
-    
+
     if (element) {
       html2canvas(element, {
-        useCORS: true,  
-        scale: 2,       
-      }).then((canvas) => {
-        const doc = new jsPDF();
-        
-        // Get the content dimensions
-        const contentWidth = canvas.width;
-        const contentHeight = canvas.height;
-        
-        // Get the page dimensions of the PDF
-        const pageWidth = doc.internal.pageSize.width;
-        const pageHeight = doc.internal.pageSize.height;
-        
-        // Set the margins (e.g., 10px on the left and right, 20px on the top)
-        const marginLeft = 10;
-        const marginTop = 20;
-        const marginRight = 10;
+        useCORS: true,
+        scale: 2,
+      })
+        .then((canvas) => {
+          const doc = new jsPDF();
 
-        // Calculate the scale factor based on the page width and content width
-        const scaleFactor = (pageWidth - marginLeft - marginRight) / contentWidth;
+          // Get the content dimensions
+          const contentWidth = canvas.width;
+          const contentHeight = canvas.height;
 
-        // Calculate the x position (starting from the left margin)
-        const x = marginLeft;
+          // Get the page dimensions of the PDF
+          const pageWidth = doc.internal.pageSize.width;
+          const pageHeight = doc.internal.pageSize.height;
 
-        // Set the y position to start from the top margin
-        const y = marginTop;
+          // Set the margins (e.g., 10px on the left and right, 20px on the top)
+          const marginLeft = 10;
+          const marginTop = 20;
+          const marginRight = 10;
 
-        // Add image to the PDF, scaling it to fit the page and keeping aspect ratio
-        doc.addImage(canvas.toDataURL('image/png'), 'PNG', x, y, contentWidth * scaleFactor, contentHeight * scaleFactor);
-        
-        // Trigger the print dialog automatically after adding the image
-        doc.autoPrint();
-        
-        // Generate the PDF and open it in a new window for printing
-        const pdfBlob = doc.output('blob');
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-        const printWindow = window.open(pdfUrl, '_blank');
-        
-        if (printWindow) {
-          printWindow.print();  // Trigger the print dialog in the new window
-        } else {
-          // console.error('Failed to open print window');
-        }
-      }).catch((error) => {
-        // console.error('Error capturing element:', error);
-      });
+          // Calculate the scale factor based on the page width and content width
+          const scaleFactor =
+            (pageWidth - marginLeft - marginRight) / contentWidth;
+
+          // Calculate the x position (starting from the left margin)
+          const x = marginLeft;
+
+          // Set the y position to start from the top margin
+          const y = marginTop;
+
+          // Add image to the PDF, scaling it to fit the page and keeping aspect ratio
+          doc.addImage(
+            canvas.toDataURL('image/png'),
+            'PNG',
+            x,
+            y,
+            contentWidth * scaleFactor,
+            contentHeight * scaleFactor
+          );
+
+          // Trigger the print dialog automatically after adding the image
+          doc.autoPrint();
+
+          // Generate the PDF and open it in a new window for printing
+          const pdfBlob = doc.output('blob');
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          const printWindow = window.open(pdfUrl, '_blank');
+
+          if (printWindow) {
+            printWindow.print(); // Trigger the print dialog in the new window
+          } else {
+            // console.error('Failed to open print window');
+          }
+        })
+        .catch((error) => {
+          // console.error('Error capturing element:', error);
+        });
     } else {
       // console.error('Invoice container not found');
     }
