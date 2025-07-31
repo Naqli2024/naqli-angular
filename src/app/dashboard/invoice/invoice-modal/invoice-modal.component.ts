@@ -26,18 +26,6 @@ export class InvoiceModalComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       if (params['InvoiceId']) {
-        this.qrCodeData = {
-          InvoiceId: params['InvoiceId'],
-          InvoiceDate: params['InvoiceDate'],
-          CustomerName: params['CustomerName'],
-          PaymentAmount: params['PaymentAmount'],
-          Address: params['Address'],
-          bookingId: params['bookingId'],
-          unitType: params['unitType'],
-          partnerName: params['partnerName'],
-          paymentType: params['paymentType'],
-        };
-
         this.isModalOpen = true;
 
         if (params['bookingId']) {
@@ -46,6 +34,27 @@ export class InvoiceModalComponent implements OnInit {
             .subscribe(
               (response) => {
                 this.booking = response.data;
+
+                const description = [
+                  this.booking?.pickup,
+                  ...(this.booking?.dropPoints || []),
+                ]
+                  .filter(Boolean)
+                  .join(', ');
+
+                this.qrCodeData = {
+                  InvoiceId: params['InvoiceId'],
+                  InvoiceDate: params['InvoiceDate'],
+                  CustomerName: params['CustomerName'],
+                  PaymentAmount: params['PaymentAmount'],
+                  Address: params['Address'],
+                  bookingId: params['bookingId'],
+                  unitType: params['unitType'],
+                  partnerName: params['partnerName'],
+                  paymentType: params['paymentType'],
+                  description: description, 
+                };
+
                 this.cd.detectChanges();
               },
               (error) => {
@@ -53,7 +62,19 @@ export class InvoiceModalComponent implements OnInit {
               }
             );
         } else {
-          this.cd.detectChanges(); // Only if no bookingId is present
+          this.qrCodeData = {
+            InvoiceId: params['InvoiceId'],
+            InvoiceDate: params['InvoiceDate'],
+            CustomerName: params['CustomerName'],
+            PaymentAmount: params['PaymentAmount'],
+            Address: params['Address'],
+            bookingId: '',
+            unitType: params['unitType'],
+            partnerName: params['partnerName'],
+            paymentType: params['paymentType'],
+            description: '',
+          };
+          this.cd.detectChanges();
         }
       }
     });
