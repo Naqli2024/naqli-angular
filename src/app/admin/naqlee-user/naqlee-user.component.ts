@@ -82,6 +82,14 @@ export class NaqleeUserComponent {
   }
 
   onSubmit() {
+    const MAX_FILE_SIZE = 100 * 1024; // 100KB in bytes
+
+    // Check photo size before uploading
+  if (this.newUser.userPhoto && this.newUser.userPhoto.size > MAX_FILE_SIZE) {
+    this.toastr.error('Photo must be less than 100KB');
+    return;
+  }
+  
     const formData = new FormData();
     formData.append('name', this.newUser.name);
     formData.append('emailID', this.newUser.emailID);

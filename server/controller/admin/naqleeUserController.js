@@ -29,9 +29,9 @@ const updateNaqleeUserPhoto = async (userId, file) => {
     }
 
     user.userPhoto = {
-      data: file.buffer,
+      fileName: file.filename,
       contentType: file.mimetype,
-      fileName: file.filename, // Save the filename for reference
+      path: file.path,
     };
 
     await user.save();

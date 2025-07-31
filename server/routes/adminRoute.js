@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+const path = require("path");
 const {
   createNaqleeUser, updateNaqleeUserPhoto ,getAllNaqleeUsers, getNaqleeUserById, deleteNaqleeUser
 } = require("../controller/admin/naqleeUserController");
@@ -14,9 +15,10 @@ const storage = multer.diskStorage({
     cb(null, "uploads/userPhoto");
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = uuidv4(); 
-    const extension = file.originalname.split('.').pop();
-    cb(null, `${uniqueSuffix}.${extension}`);
+    const uniqueSuffix = uuidv4();
+    const extension = path.extname(file.originalname); // includes the dot (e.g., ".png")
+    const filename = `${uniqueSuffix}${extension}`;
+    cb(null, filename);
   },
 });
 
