@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const User = require("../Models/userModel");
 const Commission = require("../Models/commissionModel");
 const convertAndValidateTime = require("../middlewares/convertAndValidateTime");
+const DeletedBooking = require("../Models/deletedBooking");
 
 const isSaudiLocation = (location) => {
   if (!location || typeof location !== "string") return false;
@@ -283,12 +284,20 @@ const cancelBooking = async (req, res) => {
   const { bookingId } = req.params;
 
   try {
-    // Try to find and delete the booking by bookingId
-    const deletedBooking = await Booking.findByIdAndDelete(bookingId);
-
-    if (!deletedBooking) {
+    // Try to find the booking first
+    const existingBooking = await Booking.findById(bookingId);
+    if (!existingBooking) {
       return res.status(404).json({ message: "Booking not found" });
     }
+
+    // Backup booking into deletedBookings collection
+    await DeletedBooking.create({
+      originalBookingId: existingBooking._id,
+      bookingData: existingBooking.toObject()
+    });
+
+    // Try to find and delete the booking by bookingId
+    const deletedBooking = await Booking.findByIdAndDelete(bookingId)
 
     // Now, proceed to find the partner associated with this booking
     const partner = await Partner.findOne({

@@ -6,6 +6,10 @@ require("dotenv").config();
 const axios = require("axios");
 const querystring = require("querystring");
 const { cancelBooking } = require('./bookingController'); 
+const DeletedUser = require('../Models/deletedUser');
+const updateOperatorsWithNewBooking = require("./partner/updateOperatorWithNewBooking");
+const Partner = require("../Models/partner/partnerModel");
+const DeletedBooking = require("../Models/deletedBooking");
 
 /*****************************************
             User registration
@@ -421,7 +425,7 @@ const editUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   const { userId } = req.body;
   try {
-    const userFound = await user.findOneAndDelete({ _id: userId });
+    const userFound = await user.findById(userId);
     if (!userFound) {
       return res.status(404).json({
         success: false,
@@ -429,7 +433,14 @@ const deleteUser = async (req, res) => {
         message: "User not found",
       });
     }
-    const userBookings = await Bookings.findOne({ user: userId });
+
+    // Store deleted user in DeletedUser collection
+    await DeletedUser.create({
+      originalUserId: userFound._id,
+      userData: userFound.toObject()
+    });
+
+    const userBookings = await Bookings.find({ user: userId });
     if (userBookings.length === 0) {
       return res.status(404).json({
         success: false,
@@ -439,23 +450,18 @@ const deleteUser = async (req, res) => {
     }
     // Cancel each booking associated with the user
     for (const booking of userBookings) {
-      const bookingId = booking._id;
-
-      // Call the cancelBooking function by passing bookingId
-      const cancelBookingResponse = await cancelBooking(
-        { params: { bookingId } },
-        res
-      );
-
-      if (!cancelBookingResponse.success) {
-        // If cancellation fails for a particular booking, return the failure message
+      const result = await cancelBookingInternal(booking._id);
+      if (!result.success) {
         return res.status(500).json({
           success: false,
-          data: null,
-          message: `Failed to cancel booking ${bookingId}.`,
+          message: `Failed to cancel booking ${booking._id}: ${result.message}`,
         });
       }
     }
+
+    // Delete the user from main collection
+    await user.findByIdAndDelete(userId);
+
     return res.status(200).json({
       success: true,
       data: userFound,
@@ -467,6 +473,89 @@ const deleteUser = async (req, res) => {
       data: null,
       message: error.message,
     });
+  }
+};
+
+
+// --- Internal cancelBooking function (for deleteUser flow) ---
+const cancelBookingInternal = async (bookingId) => {
+  try {
+    // Try to find the booking first
+        const existingBooking = await Bookings.findById(bookingId);
+        if (!existingBooking) {
+          return res.status(404).json({ message: "Booking not found" });
+        }
+    
+        // Backup booking into deletedBookings collection
+        await DeletedBooking.create({
+          originalBookingId: existingBooking._id,
+          bookingData: existingBooking.toObject()
+        });
+
+    // Try to find and delete the booking by bookingId
+    const deletedBooking = await Bookings.findByIdAndDelete(bookingId);
+
+    // Now, proceed to find the partner associated with this booking
+    const partner = await Partner.findOne({
+      "bookingRequest.bookingId": bookingId,
+    });
+
+    if (partner && Array.isArray(partner.bookingRequest)) {
+      const bookingRequest = partner.bookingRequest.find(
+        (br) => br.bookingId.toString() === bookingId.toString()
+      );
+
+      if (
+        bookingRequest &&
+        bookingRequest.assignedOperator &&
+        bookingRequest.assignedOperator.operatorId
+      ) {
+        const assignedOperator = bookingRequest.assignedOperator;
+        let operatorFound = false;
+
+        // Update status for the operator in `operatorsDetail`
+        for (const operator of partner.operators) {
+          const operatorDetail = operator.operatorsDetail.find(
+            (op) =>
+              op._id.toString() === assignedOperator.operatorId.toString()
+          );
+          if (operatorDetail) {
+            operatorDetail.status = "available";
+            operatorFound = true;
+            break;
+          }
+        }
+
+        // Check and update status in `extraOperators`
+        const extraOperator = partner.extraOperators.find(
+          (op) =>
+            op._id.toString() === assignedOperator.operatorId.toString()
+        );
+        if (extraOperator) {
+          extraOperator.status = "available";
+          operatorFound = true;
+        }
+
+        // Save if any update occurred
+        if (operatorFound) {
+          await partner.save();
+        } else {
+          console.log("No operator found with the assigned operator ID.");
+        }
+      } else {
+        console.log("No assigned operator found in booking request.");
+      }
+    } else {
+      console.log("No partner or bookingRequest found for this booking.");
+    }
+
+    // Cleanup: remove booking from operators list
+    await updateOperatorsWithNewBooking(deletedBooking, true);
+
+    return { success: true, message: "Booking Cancelled" };
+  } catch (error) {
+    console.error("Error cancelling booking:", error);
+    return { success: false, message: "Failed to cancel booking", error: error.message };
   }
 };
 
