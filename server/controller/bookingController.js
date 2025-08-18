@@ -199,7 +199,7 @@ const createBooking = async (req, res) => {
       cargoBreadth,
       cargoHeight,
       cargoUnit,
-      shipmentWeight
+      shipmentWeight,
     });
 
     const validationError = booking.validateSync();
@@ -293,11 +293,11 @@ const cancelBooking = async (req, res) => {
     // Backup booking into deletedBookings collection
     await DeletedBooking.create({
       originalBookingId: existingBooking._id,
-      bookingData: existingBooking.toObject()
+      bookingData: existingBooking.toObject(),
     });
 
     // Try to find and delete the booking by bookingId
-    const deletedBooking = await Booking.findByIdAndDelete(bookingId)
+    const deletedBooking = await Booking.findByIdAndDelete(bookingId);
 
     // Now, proceed to find the partner associated with this booking
     const partner = await Partner.findOne({
@@ -359,7 +359,11 @@ const cancelBooking = async (req, res) => {
     console.error("Error cancelling booking:", error);
     res
       .status(500)
-      .json({ success: false, message: "Failed to cancel booking", error: error.message });
+      .json({
+        success: false,
+        message: "Failed to cancel booking",
+        error: error.message,
+      });
   }
 };
 
@@ -543,7 +547,16 @@ const updateBookingPaymentStatus = async (req, res) => {
     // Correctly update the payment status in partner's booking requests
     partner.bookingRequest.forEach((request) => {
       if (request.bookingId.equals(booking._id)) {
+        // Update payment status
         request.paymentStatus = status;
+
+        // Update booking status only if trip is completed and balance cleared
+        if (
+          booking.tripStatus === "Completed" &&
+          booking.remainingBalance === 0
+        ) {
+          request.bookingStatus = "Completed";
+        }
       }
     });
 
