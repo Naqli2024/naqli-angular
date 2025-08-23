@@ -384,21 +384,21 @@ const editOperator = async (req, res) => {
       if (req.files.drivingLicense) {
         operator.drivingLicense = {
           contentType: req.files.drivingLicense[0].mimetype,
-          fileName: req.files.drivingLicense[0].filename
+          fileName: req.files.drivingLicense[0].filename,
         };
       }
 
       if (req.files.aramcoLicense) {
         operator.aramcoLicense = {
           contentType: req.files.aramcoLicense[0].mimetype,
-          fileName: req.files.aramcoLicense[0].filename
+          fileName: req.files.aramcoLicense[0].filename,
         };
       }
 
       if (req.files.nationalID) {
         operator.nationalID = {
           contentType: req.files.nationalID[0].mimetype,
-          fileName: req.files.nationalID[0].filename
+          fileName: req.files.nationalID[0].filename,
         };
       }
     }
@@ -684,7 +684,7 @@ const updateOperatorMode = async (req, res) => {
 
 const getBookingRequest = async (req, res) => {
   try {
-    const { operatorId } = req.body; 
+    const { operatorId } = req.body;
 
     // Find the partner either based on multipleUnits operatorId or check if singleUnit+operator type has the matching operator
     const partner = await Partner.findOne({
@@ -710,10 +710,18 @@ const getBookingRequest = async (req, res) => {
     // If the partner type is "multipleUnits"
     if (partner.type === "multipleUnits") {
       // Find the bookingRequest with the assignedOperator matching the given operatorId
-      const booking = partner.bookingRequest.find(
-        (request) =>
-          request.assignedOperator?.operatorId?.toString() === operatorId
-      );
+      const booking = partner.bookingRequest.find((request) => {
+        const isOperatorMatch =
+          request.assignedOperator?.operatorId?.toString() === operatorId;
+
+        // If bookingStatus is missing → only check operator match
+        if (request.bookingStatus === undefined) {
+          return isOperatorMatch;
+        }
+
+        // If bookingStatus exists → it must not be "Completed"
+        return isOperatorMatch && request.bookingStatus !== "Completed";
+      });
 
       // If no matching bookingRequest found
       if (!booking) {
@@ -759,10 +767,19 @@ const getBookingRequest = async (req, res) => {
       const bookings = partner.bookingRequest;
 
       // Check if at least one booking has a valid paymentStatus
-      const hasValidPaymentStatus = bookings.some(booking =>
-        booking.paymentStatus &&
-        ["Paid", "HalfPaid", "Completed"].includes(booking.paymentStatus)
-      );
+      const hasValidPaymentStatus = bookings.some((booking) => {
+        const validPayment =
+          booking.paymentStatus &&
+          ["Paid", "HalfPaid", "Completed"].includes(booking.paymentStatus);
+
+        // If bookingStatus is not present, only payment check matters
+        if (booking.bookingStatus === undefined) {
+          return validPayment;
+        }
+
+        // If bookingStatus is present, must NOT be "Completed"
+        return validPayment && booking.bookingStatus !== "Completed";
+      });
 
       if (!hasValidPaymentStatus) {
         return res
@@ -774,7 +791,7 @@ const getBookingRequest = async (req, res) => {
       return res.json({
         partnerId: partner._id,
         partnerName: partner.partnerName,
-        bookingRequests: bookings, // Return all bookings 
+        bookingRequests: bookings, // Return all bookings
       });
     }
 
