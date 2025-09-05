@@ -38,7 +38,7 @@ export class BookingManagementComponent implements OnInit {
   assignBooking = {
     bookingId: '',
     unit: '',
-    operatorName: ''
+    operatorName: '',
   };
 
   constructor(
@@ -75,9 +75,22 @@ export class BookingManagementComponent implements OnInit {
         this.partner = response?.data;
 
         if (this.partner) {
-          this.bookingRequests = this.partner.bookingRequest.map(
-            (booking: any) => booking.bookingId
-          );
+          this.bookingRequests = this.partner.bookingRequest
+            .sort((a: any, b: any) => {
+              // Push "not Completed" to the top
+              if (
+                a.bookingStatus !== 'Completed' &&
+                b.bookingStatus === 'Completed'
+              )
+                return -1;
+              if (
+                a.bookingStatus === 'Completed' &&
+                b.bookingStatus !== 'Completed'
+              )
+                return 1;
+              return 0; // keep relative order if both are same
+            })
+            .map((booking: any) => booking.bookingId);
 
           this.partner.bookingRequest.forEach((booking: any) => {
             this.selectedPlateInformation[booking.bookingId] =
@@ -222,7 +235,7 @@ export class BookingManagementComponent implements OnInit {
     this.selectedPlateInformation[bookingId] = plateInformation;
     this.selectedOperatorName[bookingId] = ''; // Reset operatorName when plate information changes
 
-     // Update the assignBooking.unit with the new plate information
+    // Update the assignBooking.unit with the new plate information
     this.assignBooking.unit = plateInformation;
     this.assignBooking.bookingId = bookingId;
   }
@@ -241,29 +254,38 @@ export class BookingManagementComponent implements OnInit {
 
   assignOperators() {
     this.spinnerService.show();
-  
+
     // Assuming assignBooking is already populated with bookingId, unit, and operatorName
-    if (this.assignBooking.bookingId && this.assignBooking.unit && this.assignBooking.operatorName) {
+    if (
+      this.assignBooking.bookingId &&
+      this.assignBooking.unit &&
+      this.assignBooking.operatorName
+    ) {
       // Directly send assignBooking data to the API
-      this.partnerService.assignOperator(
-        this.assignBooking.bookingId,
-        this.assignBooking.unit,
-        this.assignBooking.operatorName
-      ).subscribe(
-        () => {
-          this.spinnerService.hide();
-          this.toastr.success('Operator assigned successfully');
-          this.getPartnerDetails(); // Refresh partner details after successful assignment
-        },
-        (error) => {
-          this.spinnerService.hide();
-          const errorMessage = error.error?.message || 'Failed to assign operator';
-          this.toastr.error(errorMessage);
-        }
-      );
+      this.partnerService
+        .assignOperator(
+          this.assignBooking.bookingId,
+          this.assignBooking.unit,
+          this.assignBooking.operatorName
+        )
+        .subscribe(
+          () => {
+            this.spinnerService.hide();
+            this.toastr.success('Operator assigned successfully');
+            this.getPartnerDetails(); // Refresh partner details after successful assignment
+          },
+          (error) => {
+            this.spinnerService.hide();
+            const errorMessage =
+              error.error?.message || 'Failed to assign operator';
+            this.toastr.error(errorMessage);
+          }
+        );
     } else {
       this.spinnerService.hide();
-      this.toastr.error('Missing required fields: bookingId, unit, or operatorName');
+      this.toastr.error(
+        'Missing required fields: bookingId, unit, or operatorName'
+      );
     }
   }
 

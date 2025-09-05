@@ -260,7 +260,8 @@ const deletedBookingRequest = async (req, res) => {
 };
 
 const getTopPartners = async (req, res) => {
-  const { unitType, unitClassification, subClassification, bookingId } = req.body;
+  const { unitType, unitClassification, subClassification, bookingId } =
+    req.body;
 
   try {
     // Conditional query based on unitType
@@ -298,7 +299,8 @@ const getTopPartners = async (req, res) => {
       const filteredBookingRequests = partner.bookingRequest.filter(
         (booking) => {
           const bookingIdValid = bookingId && bookingId.toString();
-          const bookingIdMatch = booking.bookingId && booking.bookingId.toString();
+          const bookingIdMatch =
+            booking.bookingId && booking.bookingId.toString();
           return (
             bookingIdValid &&
             bookingIdMatch &&
@@ -380,7 +382,8 @@ const getTopPartners = async (req, res) => {
                 (op) =>
                   op.unitType === unitType &&
                   op.unitClassification === unitClassification &&
-                  (!subClassification || op.subClassification === subClassification)
+                  (!subClassification ||
+                    op.subClassification === subClassification)
               );
 
         if (!operator) continue;
@@ -403,7 +406,9 @@ const getTopPartners = async (req, res) => {
 
     // Final filtering and response
     const validResults = results.filter((result) => result.quotePrice != null);
-    const sortedResults = validResults.sort((a, b) => a.quotePrice - b.quotePrice);
+    const sortedResults = validResults.sort(
+      (a, b) => a.quotePrice - b.quotePrice
+    );
 
     let finalData = [];
     if (sortedResults.length === 1 || sortedResults.length === 2) {
@@ -569,8 +574,12 @@ const assignOperator = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    if(booking.bookingStatus === "Completed") {
-      return res.status(409).json({message: "Cannot assign operator: This booking is already completed."})
+    if (booking.bookingStatus === "Completed") {
+      return res
+        .status(409)
+        .json({
+          message: "Cannot assign operator: This booking is already completed.",
+        });
     }
 
     // Find the partner by ID from the booking
@@ -634,11 +643,19 @@ const assignOperator = async (req, res) => {
             req.bookingId.toString() !== booking._id.toString()
         );
 
-        // Check if the unit is assigned and the booking status is not 'Completed'
-        const isUnitAvailable = partnerFound.bookingRequest.some(
-          (req) =>
-            req.assignedOperator?.unit === unit &&
-            req.bookingStatus !== "Completed"
+        // Get all bookings that share the same unit with this partner
+        const unitBookings = await Booking.find({
+          _id: { $in: partnerFound.bookingRequest.map((r) => r.bookingId) },
+          tripStatus: { $ne: "Completed" }, // only ongoing trips
+        }).select("_id tripStatus");
+
+        const isUnitAvailable = unitBookings.some((b) =>
+          partnerFound.bookingRequest.find(
+            (req) =>
+              req.bookingId.toString() === b._id.toString() &&
+              req.assignedOperator?.unit === unit &&
+              b._id.toString() !== booking._id.toString()
+          )
         );
 
         if (
@@ -728,8 +745,8 @@ const sendOTP = async (mobileNo, otp) => {
   // Convert the number to a string for manipulation
   let contactNumberStr = mobileNo.toString();
 
-   // Remove any "+" at the start
-   contactNumberStr = contactNumberStr.replace(/^\+/, "");
+  // Remove any "+" at the start
+  contactNumberStr = contactNumberStr.replace(/^\+/, "");
 
   if (!contactNumberStr.startsWith("966")) {
     contactNumberStr = "966" + contactNumberStr.replace(/^0/, ""); // Remove leading 0 and add '966'
@@ -781,10 +798,7 @@ const resendOTP = async (req, res) => {
   try {
     const { email } = req.body;
     const existPartner = await partner.findOne({
-      $or: [
-        { email: email },
-        { mobileNo: email }
-      ]
+      $or: [{ email: email }, { mobileNo: email }],
     });
 
     if (!existPartner) {
@@ -881,9 +895,18 @@ const verifyOTP = async (req, res) => {
 const editPartner = async (req, res) => {
   try {
     const { partnerId } = req.params;
-    const { 
-      partnerName, email, password, confirmPassword, mobileNo, region, city, 
-      bank, company, ibanNumber, CRNumber
+    const {
+      partnerName,
+      email,
+      password,
+      confirmPassword,
+      mobileNo,
+      region,
+      city,
+      bank,
+      company,
+      ibanNumber,
+      CRNumber,
     } = req.body;
 
     // Password validation
@@ -908,11 +931,11 @@ const editPartner = async (req, res) => {
       mobileNo,
       partnerProfile,
       region,
-      city, 
-      bank, 
+      city,
+      bank,
       company,
       ibanNumber,
-      CRNumber
+      CRNumber,
     };
 
     if (password) {
