@@ -172,7 +172,7 @@ export class BookingManagementComponent implements OnInit {
       this.bookings,
       operators
     );
-    console.log('filteredOperators:', filteredOperators);
+    // console.log('filteredOperators:', filteredOperators);
     const filteredExtraOperators = this.filterExtraOperators(extraOperators);
 
     this.filteredOperators = [...filteredOperators, ...filteredExtraOperators];
