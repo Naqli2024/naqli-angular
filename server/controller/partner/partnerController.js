@@ -586,7 +586,7 @@ const assignOperator = async (req, res) => {
     const partnerId = booking.partner;
     const partnerFound = await partner.findById(partnerId);
     if (!partnerFound) {
-      return res.status(404).json({ message: "Partner not found" });
+      return res.status(404).json({ message: "Partner not found or payment not updated. Please wait" });
     }
 
     // Find the booking request object in the partner's bookingRequest array

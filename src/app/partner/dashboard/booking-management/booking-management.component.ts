@@ -172,6 +172,7 @@ export class BookingManagementComponent implements OnInit {
       this.bookings,
       operators
     );
+    console.log('filteredOperators:', filteredOperators);
     const filteredExtraOperators = this.filterExtraOperators(extraOperators);
 
     this.filteredOperators = [...filteredOperators, ...filteredExtraOperators];
@@ -193,6 +194,11 @@ export class BookingManagementComponent implements OnInit {
 
     const bookingUnitClassification = booking.unitClassification?.trim();
     const operatorUnitClassification = operator.unitClassification?.trim();
+
+    // Special case: shared-cargo booking can match bus operator
+    if (bookingUnitType === 'shared-cargo' && operatorUnitType === 'bus') {
+      return true;
+    }
 
     const unitTypeMatch = bookingUnitType === operatorUnitType;
     const unitClassificationMatch =

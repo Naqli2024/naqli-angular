@@ -37,7 +37,9 @@ const updateOperatorsWithNewBooking = async (booking, isCanceled = false) => {
     let partners = [];
 
     if (unitType === "shared-cargo") {
-      partners = await partner.find({});
+      partners = await partner.find({
+        "operators.unitType": "bus",
+      });
     } else {
       partners = await partner.find({
         "operators.unitClassification": new RegExp(`^${name}$`, "i"),
