@@ -700,5 +700,9 @@
   "beneficiaryName": "Beneficiary Name",
   "beneficiaryAddress": "Beneficiary Address",
   "Initial payment": "Initial payment",
-  "Final payment": "Final payment"
+  "Final payment": "Final payment",
+  "contact": "Contact",
+  "contactInformation": "Contact Information",
+  "workingHours": "Working Hours",
+  "alDammam": "al-dammam"
 }

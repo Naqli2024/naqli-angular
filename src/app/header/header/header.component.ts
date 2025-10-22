@@ -296,4 +296,8 @@ export class HeaderComponent implements OnInit {
       this.router.navigate(['/']);
     }
   }
+
+  navigateToContact() {
+    this.router.navigate(['/home/user/contact']);
+  }
 }

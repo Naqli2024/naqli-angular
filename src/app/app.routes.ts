@@ -60,6 +60,7 @@ import { DeleteUserComponent } from './dashboard/delete-user/delete-user.compone
 import { DeleteAccountInfoComponent } from './home/delete-account-info/delete-account-info.component';
 import { EditCompanyDetailsComponent } from './partner/auth/register/company-details/edit-company-details/edit-company-details.component';
 import { SharedCargoComponent } from './home/bookings/shared-cargo/shared-cargo.component';
+import { ContactComponent } from './auth/contact/contact.component';
 
 export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
@@ -106,6 +107,10 @@ export const routes: Routes = [
   {
     path: 'home/user/privacy-policy',
     component: PrivacyPolicyComponent,
+  },
+  {
+    path: 'home/user/contact',
+    component: ContactComponent,
   },
   { path: 'home/user/invoice-data', component: InvoiceModalComponent },
   { path: 'home/user/vehicle-estimate', component: VechileEstimateComponent },

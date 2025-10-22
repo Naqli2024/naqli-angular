@@ -696,5 +696,9 @@
   "beneficiaryName": "اسم المستفيد",
   "beneficiaryAddress": "عنوان المستفيد",
   "Initial payment": "الدفع المبدئي",
-  "Final payment": "الدفع النهائي"
+  "Final payment": "الدفع النهائي",
+  "contact": "اتصال",
+  "contactInformation": "معلومات الاتصال",
+  "workingHours": "ساعات العمل",
+  "alDammam": "الدمام"
 }

@@ -698,5 +698,9 @@
   "beneficiaryName": "प्राप्तकर्ता का नाम",
   "beneficiaryAddress": "प्राप्तकर्ता का पता",
   "Initial payment": "प्रारंभिक भुगतान",
-  "Final payment": "अंतिम भुगतान"
+  "Final payment": "अंतिम भुगतान",
+  "contact": "संपर्क",
+  "contactInformation": "संपर्क जानकारी",
+  "workingHours": "कार्य समय",
+  "alDammam": "अल-दम्माम"
 }
