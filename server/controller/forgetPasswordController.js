@@ -17,8 +17,11 @@ const forgotPassword = async (req, res) => {
        return res.status(400).json({ errors: errors.array() });
      }
 
+     // Normalize email to lowercase
+    const normalizedEmail = req.body.emailAddress.toLowerCase();
+
      const existingUser = await User.findOne({
-      emailAddress: req.body.emailAddress
+      emailAddress: normalizedEmail
     });
 
     if (!existingUser) {
