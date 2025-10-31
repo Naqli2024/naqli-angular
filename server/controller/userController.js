@@ -213,8 +213,11 @@ const resendOTP = async (req, res) => {
   try {
     const { emailAddress } = req.body; // Assuming you pass userId to identify the user
 
+    // Normalize email to lowercase
+    const normalizedEmail = req.body.emailAddress.toLowerCase();
+
     // Find the user by userId
-    const existUser = await user.findOne({ emailAddress });
+    const existUser = await user.findOne({ emailAddress: normalizedEmail });
 
     if (!existUser) {
       return res.status(400).json({
