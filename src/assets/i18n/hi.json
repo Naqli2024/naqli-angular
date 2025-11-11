@@ -522,6 +522,8 @@
   "Partners": "भागीदार",
   "PartnerName": "पार्टनर का नाम (पासपोर्ट में जैसा है, वही अंग्रेज़ी में होना चाहिए)",
   "PartnerID": "भागीदार आईडी",
+  "partnerType": "साझेदार प्रकार",
+  "unitOperatorDetails": "यूनिट और ऑपरेटर विवरण",
   "Payment": "भुगतान",
   "Commission": "आयोग",
   "Payout": "भुगतान",

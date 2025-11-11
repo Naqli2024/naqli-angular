@@ -522,6 +522,8 @@
   "Partners": "الشركاء",
   "PartnerName": "اسم الشريك (يجب أن يكون باللغة الإنجليزية، كما هو في جواز السفر)",
   "PartnerID": "معرف الشريك",
+  "partnerType": "نوع الشريك",
+  "unitOperatorDetails": "تفاصيل الوحدة والمشغل",
   "Payment": "الدفع",
   "Commission": "العمولة",
   "Payout": "الدفع",

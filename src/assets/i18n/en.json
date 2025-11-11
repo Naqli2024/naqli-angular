@@ -523,6 +523,8 @@
   "PartnerName": "Partner Name (must be in English, same as Passport name)",
   "Partner Name": "Partner Name (must be in English, same as Passport name)",
   "PartnerID": "Partner ID",
+  "partnerType": "Partner Type",
+  "unitOperatorDetails": "Unit & Operator Details",
   "Payment": "Payment",
   "Commission": "Commission",
   "Payout": "Payout",

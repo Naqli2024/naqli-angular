@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 import { SpinnerService } from '../../../services/spinner.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ShowPartnerDetailsComponent } from './show-partner-details/show-partner-details.component';
 
 @Component({
   selector: 'app-partner-admin',
@@ -28,7 +30,8 @@ export class PartnerAdminComponent {
   constructor(
     private partnerService: PartnerService,
     private toastr: ToastrService,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -111,5 +114,17 @@ export class PartnerAdminComponent {
     this.isAllSelected =
       this.partners.length > 0 &&
       this.partners.every((partner) => partner.selected);
+  }
+
+  showPartnerDetails(partnerId: String): void {
+    const modalRef = this.modalService.open(ShowPartnerDetailsComponent, {
+          size: 'lg',
+          centered: true,
+          backdrop: true,
+          scrollable: true,
+          windowClass: 'no-background',
+        });
+    
+        modalRef.componentInstance.partnerId = partnerId;
   }
 }

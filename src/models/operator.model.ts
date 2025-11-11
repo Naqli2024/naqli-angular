@@ -33,6 +33,7 @@ export interface Operator {
       contentType: string;
       fileName: string;
     };
+    status: string;
     _id: string;
   }>;
   bookingRequest: Array<{

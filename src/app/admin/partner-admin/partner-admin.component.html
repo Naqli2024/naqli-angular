@@ -57,7 +57,7 @@
               />
             </td>
             <td>{{ partner.partnerName }}</td>
-            <td>{{ partner._id }}</td>
+            <td class="trigger" (click)="showPartnerDetails(partner._id)">{{ partner._id }}</td>
             <td>{{ partner.email }}</td>
             <td>{{ partner.updatedAt | date : "short" }}</td>
             <td>{{ partner.mobileNo }}</td>

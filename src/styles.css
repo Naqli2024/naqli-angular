@@ -5341,3 +5341,103 @@ h1 {
     width: 100px;
   }
 }
+
+/*************Partner modal*************/
+.partner-details-model {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.section-title {
+  margin-top: 20px;
+  font-size: 16px;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 4px;
+  width: 100%;
+}
+
+.table-responsive-partner-model {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  margin-top: 10px;
+  max-height: 400px;
+}
+
+.operator-table-partner-model {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 900px;
+}
+
+.operator-table-partner-model th,
+.operator-table-partner-model td {
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  vertical-align: top;
+}
+
+.operator-table-partner-model th {
+  background-color: #f8f8f8;
+  font-weight: bold;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.operator-table-partner-model tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Nested operator list styling */
+.operator-list-partner-model {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.operator-item-partner-model {
+  padding: 4px 0;
+}
+
+.operator-name-partner-model {
+  font-weight: 600;
+  color: #333;
+}
+
+.operator-meta-partner-model {
+  font-size: 13px;
+  color: #444;
+  margin: 5px 0px;
+}
+
+.operator-meta-partner-model .label {
+  font-weight: 500;
+  margin-right: 4px;
+  color: #666;
+}
+
+.no-operator-partner-model {
+  color: #888;
+  font-style: italic;
+}
+
+/* Status badges */
+.partner-model-status {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.partner-model-status.available {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.partner-model-status.unavailable {
+  background-color: #f8d7da;
+  color: #721c24;
+}

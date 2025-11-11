@@ -1,0 +1,200 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="booking-modal">
+      <h2 style="text-align: left">{{"PartnerId"|translate}}: {{ partnerId }}</h2>
+      <div class="modal-close">
+        <button
+          type="button"
+          class="close"
+          aria-label="Close"
+          (click)="closeModalAndNavigate()"
+          style="margin-right: 10px; color: white"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="booking-modal-body show-booking-details"
+      style="
+        color: #000;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 20px;
+      "
+    >
+      <!-- Partner Details -->
+      <div class="partner-details-model">
+        <p>
+          <b>{{ "partnerType" | translate }}:</b>
+          <span>{{ partner.type }}</span>
+        </p>
+        <p>
+          <b>{{ "PartnerName" | translate }}:</b>
+          <span>{{ partner.partnerName }}</span>
+        </p>
+        <p>
+          <b>{{ "City" | translate }}:</b> <span>{{ partner.city }}</span>
+        </p>
+        <p>
+          <b>{{ "Region" | translate }}:</b> <span>{{ partner.region }}</span>
+        </p>
+      </div>
+
+      <p class="section-title">
+        <b>{{ "unitOperatorDetails" | translate }}</b>
+      </p>
+
+      <!-- Operator Unit Details Table -->
+      <div class="table-responsive-partner-model">
+        <table class="operator-table-partner-model">
+          <thead>
+            <tr>
+              <th>{{ "UnitType" | translate }}</th>
+              <th>{{ "unitClassification" | translate }}</th>
+              <th>{{ "Sub Classification" | translate }}</th>
+              <th>{{ "Plate Information" | translate }}</th>
+              <th>{{ "Istimara Card" | translate }}</th>
+              <th>{{ "Picture of Vehicle" | translate }}</th>
+              <th>{{ "Operator Details" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let op of partner.operators">
+              <td>{{ op.unitType }}</td>
+              <td>{{ op.unitClassification }}</td>
+              <td>{{ op.subClassification ? op.subClassification : "-" }}</td>
+              <td>{{ op.plateInformation }}</td>
+              <!-- Istimara Card -->
+              <td>
+                <span *ngIf="op.istimaraCard?.fileName; else noIstimara">
+                  <p
+                    style="
+                      color: #914f9d;
+                      text-decoration: underline;
+                      cursor: pointer;
+                      margin-top: -10px !important;
+                    "
+                    (click)="openFile(op.istimaraCard.fileName)"
+                  >
+                    {{ "view" | translate }}
+                  </p>
+                </span>
+                <ng-template #noIstimara>-</ng-template>
+              </td>
+
+              <!-- Vehicle Picture -->
+              <td>
+                <span *ngIf="op.pictureOfVehicle?.fileName; else noVehicle">
+                  <p
+                    style="
+                      color: #914f9d;
+                      text-decoration: underline;
+                      cursor: pointer;
+                      margin-top: -10px !important;
+                    "
+                    (click)="openImage(op.pictureOfVehicle.fileName)"
+                  >
+                    {{ "view" | translate }}
+                  </p>
+                </span>
+                <ng-template #noVehicle>-</ng-template>
+              </td>
+              <td>
+                <div
+                  *ngIf="
+                    op.operatorsDetail && op.operatorsDetail.length > 0;
+                    else noOperator
+                  "
+                  class="operator-list-partner-model"
+                >
+                  <div
+                    *ngFor="let od of op.operatorsDetail; let last = last"
+                    class="operator-item-partner-model"
+                  >
+                    <div class="operator-name-partner-model">
+                      <b>{{ od.firstName }} {{ od.lastName }}</b>
+                    </div>
+                    <div class="operator-meta-partner-model">
+                      <span
+                        class="partner-model-status"
+                        [ngClass]="{
+                          available: od?.status === 'available',
+                          unavailable: od?.status !== 'available'
+                        }"
+                      >
+                        {{ od?.status ? (od.status | titlecase) : "-" }}
+                      </span>
+                    </div>
+                    <!-- File Links for Each Operator -->
+                    <div class="operator-files">
+                      <div>
+                        <b class="label"
+                          >{{ "Driving License" | translate }}:</b
+                        >
+                        <div
+                          *ngIf="od.drivingLicense?.fileName; else noDL"
+                          style="
+                            color: #914f9d;
+                            text-decoration: underline;
+                            cursor: pointer;
+                            margin-top: 5px !important;
+                          "
+                          (click)="openFile(od.drivingLicense.fileName)"
+                        >
+                          {{ "view" | translate }}
+                        </div>
+                        <ng-template #noDL>-</ng-template>
+                      </div>
+
+                      <div>
+                        <b class="label">{{ "Aramco License" | translate }}:</b>
+                        <div
+                          *ngIf="od.aramcoLicense?.fileName; else noAramco"
+                          style="
+                            color: #914f9d;
+                            text-decoration: underline;
+                            cursor: pointer;
+                            margin-top: 5px !important;
+                          "
+                          (click)="openFile(od.aramcoLicense.fileName)"
+                        >
+                          {{ "view" | translate }}
+                        </div>
+                        <ng-template #noAramco>-</ng-template>
+                      </div>
+
+                      <div>
+                        <b class="label">{{ "National ID" | translate }}:</b>
+                        <div
+                          *ngIf="od.nationalID?.fileName; else noNID"
+                          style="
+                            color: #914f9d;
+                            text-decoration: underline;
+                            cursor: pointer;
+                            margin-top: 5px !important;
+                          "
+                          (click)="openFile(od.nationalID.fileName)"
+                        >
+                          {{ "view" | translate }}
+                        </div>
+                        <ng-template #noNID>-</ng-template>
+                      </div>
+                    </div>
+                    <hr *ngIf="!last" />
+                  </div>
+                </div>
+                <ng-template #noOperator>
+                  <span class="partner-model-no-operator">-</span>
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
