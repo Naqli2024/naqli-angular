@@ -35,13 +35,16 @@
             >
               {{ item.booking._id }}
             </td>
-            <td>{{ getTranslatedName(item.booking.name) }}</td>
-            <td>{{  ('typeNames.' + item.booking.type?.[0]?.typeName | translate) !== 'typeNames.' + item.booking.type?.[0]?.typeName
+            <td>
+              {{ getTranslatedName(item.booking.name) }} -
+              {{  ('typeNames.' + item.booking.type?.[0]?.typeName | translate) !== 'typeNames.' + item.booking.type?.[0]?.typeName
               ? ('typeNames.' + item.booking.type?.[0]?.typeName | translate)
               : ('equipmentTypeName.' + item.booking.type?.[0]?.typeName | translate) !== 'equipmentTypeName.' + item.booking.type?.[0]?.typeName
               ? ('equipmentTypeName.' + item.booking.type?.[0]?.typeName | translate )
               : ''
-            | translate }}</td>
+            | translate }}
+            </td>
+            <td>{{ item.booking.unitType }}</td>
             <td>{{ item.partner?.data?.partnerName }}</td>
             <td>{{ item.booking.paymentAmount }}</td>
             <td
