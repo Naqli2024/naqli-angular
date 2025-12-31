@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 //CORS configuration
 app.use(
   cors({
-    origin: ["https://naqlee.com"], // Allow only your frontend's domain
+    origin: ["https://naqlee.com", "https://www.naqlee.com"], // Allow only your frontend's domain
     methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
     credentials: true, // Include cookies if needed
