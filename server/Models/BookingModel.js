@@ -26,13 +26,13 @@ const bookingSchema = new mongoose.Schema(
     cityName: { type: String },
     address: { type: String },
     zipCode: { type: String },
-    shipmentType: {type: String},
-    shippingCondition: {type: String},
-    cargoLength: {type: String},
-    cargoBreadth: {type: String},
-    cargoHeight: {type: String},
-    cargoUnit: {type: String},
-    shipmentWeight: {type: String},
+    shipmentType: { type: String },
+    shippingCondition: { type: String },
+    cargoLength: { type: String },
+    cargoBreadth: { type: String },
+    cargoHeight: { type: String },
+    cargoUnit: { type: String },
+    shipmentWeight: { type: String },
     // bookingId: { type: String, unique: true, default: uuidv4 },
     bookingStatus: {
       type: String,
@@ -60,6 +60,21 @@ const bookingSchema = new mongoose.Schema(
       ref: "partner",
     },
     invoiceId: { type: String },
+    initialPayoutDownloaded: {
+      type: Boolean,
+      default: false,
+    },
+    initialPayoutDownloadedAt: {
+      type: Date,
+    },
+
+    finalPayoutDownloaded: {
+      type: Boolean,
+      default: false,
+    },
+    finalPayoutDownloadedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

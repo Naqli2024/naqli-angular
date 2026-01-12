@@ -136,24 +136,37 @@ export class BookingService {
   }
 
   getUnitDetails(bookingId: string): Observable<any> {
-    return this.http.get(
-      `${this.apiUrl}/bookings/getUnitDetails/${bookingId}`
-    );
+    return this.http.get(`${this.apiUrl}/bookings/getUnitDetails/${bookingId}`);
   }
 
-  updateBookingForPaymentBrand(bookingId: string, brand: string): Observable<any> {
+  updateBookingForPaymentBrand(
+    bookingId: string,
+    brand: string
+  ): Observable<any> {
     const token = localStorage.getItem('authToken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const requestBody = { bookingId, brand };
     // console.log(requestBody)
 
     return this.http.post(
-     `${this.apiUrl}/updateBookingForPaymentBrand`, requestBody,
+      `${this.apiUrl}/updateBookingForPaymentBrand`,
+      requestBody,
       { headers }
     );
   }
 
   getBookingsWithInvoice(): Observable<any> {
     return this.http.get(`${this.apiUrl}/bookings-with-invoice`);
+  }
+
+  markPayoutDownloaded(data: {
+    bookingIds: string[];
+    payoutType: 'initial' | 'final';
+  }): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.apiUrl}/markPayoutDownloaded`, data, {
+      headers,
+    });
   }
 }

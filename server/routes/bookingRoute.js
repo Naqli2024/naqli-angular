@@ -14,7 +14,8 @@ const {
   getBookingsWithPendingPayment,
   getUnitDetails,
   updateBookingForPaymentBrand,
-  getBookingsWithInvoice
+  getBookingsWithInvoice,
+  markPayoutDownloaded
 } = require("../controller/bookingController");
 const { protect } = require("../middlewares/authMiddleware");
 
@@ -32,5 +33,6 @@ router.get("/bookings/getBookingsWithPendingPayment/:id", protect, getBookingsWi
 router.get('/bookings/getUnitDetails/:bookingId', getUnitDetails);
 router.post('/updateBookingForPaymentBrand', protect, updateBookingForPaymentBrand);
 router.get('/bookings-with-invoice', getBookingsWithInvoice);
+router.post("/markPayoutDownloaded", protect, markPayoutDownloaded);
 
 module.exports = router;

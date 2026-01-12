@@ -1042,6 +1042,36 @@ const getBookingsWithInvoice = async (req, res) => {
   }
 };
 
+const markPayoutDownloaded = async (req, res) => {
+  try {
+    const { bookingIds, payoutType } = req.body;
+    // payoutType: "initial" | "final"
+
+    const update =
+      payoutType === "initial"
+        ? {
+            initialPayoutDownloaded: true,
+            initialPayoutDownloadedAt: new Date(),
+          }
+        : {
+            finalPayoutDownloaded: true,
+            finalPayoutDownloadedAt: new Date(),
+          };
+
+    await Booking.updateMany(
+      { _id: { $in: bookingIds } },
+      { $set: update }
+    );
+
+    return res.json({ success: true });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update payout download status",
+    });
+  }
+};
+
 module.exports = {
   createBooking,
   editBooking,
@@ -1057,4 +1087,5 @@ module.exports = {
   getUnitDetails,
   updateBookingForPaymentBrand,
   getBookingsWithInvoice,
+  markPayoutDownloaded
 };

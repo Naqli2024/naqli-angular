@@ -34,7 +34,9 @@ export interface Booking {
     cargoBreadth: string;
     cargoHeight: string;
     cargoUnit: string;
-    shipmentWeight: string
+    shipmentWeight: string,
+    initialPaid: boolean,
+    finalPaid: boolean
   }
 
   

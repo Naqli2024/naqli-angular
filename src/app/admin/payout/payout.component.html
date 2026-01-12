@@ -3,8 +3,11 @@
     <div class="head-element">
       <h2>{{ "Payout" | translate }}</h2>
     </div>
+
     <div style="margin-top: 20px">
+      <!-- ================= TIME RANGE + PAYOUT TABS ================= -->
       <div class="tab-buttons payout-tab">
+        <!-- Time Range Tabs -->
         <div>
           <button
             class="tab-button"
@@ -13,6 +16,7 @@
           >
             All
           </button>
+
           <button
             class="tab-button"
             [class.active]="isHourlyTab"
@@ -20,6 +24,7 @@
           >
             Hourly
           </button>
+
           <button
             class="tab-button"
             [class.active]="isWeeklyTab"
@@ -27,6 +32,7 @@
           >
             Weekly
           </button>
+
           <button
             class="tab-button"
             [class.active]="isDailyTab"
@@ -34,7 +40,17 @@
           >
             Daily
           </button>
+
+          <button
+            class="tab-button"
+            [class.active]="isHistoryTab"
+            (click)="selectTimeRange('history')"
+          >
+            Payout Downloaded History
+          </button>
         </div>
+
+        <!-- Payout Type Tabs -->
         <div>
           <button
             class="tab-button"
@@ -43,6 +59,7 @@
           >
             {{ "InitialPayout" | translate }}
           </button>
+
           <button
             class="tab-button"
             [class.active]="!isInitialPayoutTab"
@@ -52,102 +69,123 @@
           </button>
         </div>
       </div>
+
+      <!-- ================= TABLE ================= -->
       <div
         class="table-container booking-manager-table"
-        style="max-height: 450px !important; overflow-y: auto !important"
+        style="max-height: 450px; overflow-y: auto"
       >
         <table
           class="table table-responsive"
-          style="width: 100%; box-shadow: none !important; margin: 0px 0px"
+          style="width: 100%; box-shadow: none; margin: 0"
         >
           <thead
             style="position: sticky; top: 0; z-index: 1; background-color: #fff"
           >
             <tr>
-              <ng-container *ngIf="isInitialPayoutTab">
-                <th>
-                  <input
-                    type="checkbox"
-                    [(ngModel)]="selectAll"
-                    (change)="toggleSelectAll()"
-                  />
-                </th>
-                <th>{{ "Bank name" | translate }}</th>
-                <th>{{ "accountNumber" | translate }}</th>
-                <th>{{ "totalAmount" | translate }}</th>
-                <th>{{ "notes" | translate }}</th>
-                <th>{{ "beneficiaryName" | translate }}</th>
-                <th>{{ "IDCRNumber" | translate }}</th>
-                <th>{{ "beneficiaryAddress" | translate }}</th>
-              </ng-container>
+              <!-- Select All -->
+              <th>
+                <input
+                  type="checkbox"
+                  [(ngModel)]="selectAll"
+                  [disabled]="isHistoryTab"
+                  (change)="toggleSelectAll()"
+                />
+              </th>
 
-              <ng-container *ngIf="!isInitialPayoutTab">
-                <th>
-                  <input
-                    type="checkbox"
-                    [(ngModel)]="selectAll"
-                    (change)="toggleSelectAll()"
-                  />
-                </th>
-                <th>{{ "Bank name" | translate }}</th>
-                <th>{{ "accountNumber" | translate }}</th>
-                <th>{{ "totalAmount" | translate }}</th>
-                <th>{{ "notes" | translate }}</th>
-                <th>{{ "beneficiaryName" | translate }}</th>
-                <th>{{ "IDCRNumber" | translate }}</th>
-                <th>{{ "beneficiaryAddress" | translate }}</th>
-              </ng-container>
+              <th>{{ "Bank name" | translate }}</th>
+              <th>{{ "accountNumber" | translate }}</th>
+              <th>{{ "totalAmount" | translate }}</th>
+              <th>{{ "notes" | translate }}</th>
+              <th>{{ "beneficiaryName" | translate }}</th>
+              <th>{{ "IDCRNumber" | translate }}</th>
+              <th>{{ "beneficiaryAddress" | translate }}</th>
+              <th *ngIf="isHistoryTab">
+                {{ "Downloaded At" | translate }}
+              </th>
             </tr>
           </thead>
+
           <tbody>
             <tr *ngFor="let booking of filteredBookings">
-              <ng-container *ngIf="isInitialPayoutTab">
-                <td>
-                  <input
-                    type="checkbox"
-                    [(ngModel)]="booking.selectedInitial"
-                  />
-                </td>
-                <td>{{ partners[booking.partner]?.bank }}</td>
-                <td>{{ partners[booking.partner]?.ibanNumber }}</td>
-                <td>{{ booking.initialPayout }} SAR</td>
-                <td>{{ "Initial payment" | translate }}</td>
-                <td>{{ partners[booking.partner]?.partnerName }}</td>
-                <td>{{ partners[booking.partner]?.CRNumber }}</td>
-                <td>
-                  {{ partners[booking.partner]?.region }},
-                  {{ partners[booking.partner]?.city }}
-                </td>
-              </ng-container>
-              <ng-container *ngIf="!isInitialPayoutTab">
-                <td>
-                  <input type="checkbox" [(ngModel)]="booking.selectedFinal" />
-                </td>
-                <td>{{ partners[booking.partner]?.bank }}</td>
-                <td>{{ partners[booking.partner]?.ibanNumber }}</td>
-                <td>{{ booking.finalPayout }} SAR</td>
-                <td>{{ "Final payment" | translate }}</td>
-                <td>{{ partners[booking.partner]?.partnerName }}</td>
-                <td>{{ partners[booking.partner]?.CRNumber }}</td>
-                <td>
-                  {{ partners[booking.partner]?.region }},
-                  {{ partners[booking.partner]?.city }}
-                </td>
-              </ng-container>
+              <!-- ================= CHECKBOX (FIXED) ================= -->
+              <td *ngIf="isInitialPayoutTab">
+                <input
+                  type="checkbox"
+                  [disabled]="isHistoryTab"
+                  [(ngModel)]="booking.selectedInitial"
+                />
+              </td>
+
+              <td *ngIf="!isInitialPayoutTab">
+                <input
+                  type="checkbox"
+                  [disabled]="isHistoryTab"
+                  [(ngModel)]="booking.selectedFinal"
+                />
+              </td>
+
+              <!-- ================= DATA ================= -->
+              <td>{{ partners[booking.partner]?.bank || "—" }}</td>
+              <td>{{ partners[booking.partner]?.ibanNumber || "—" }}</td>
+
+              <td>
+                {{
+                  isInitialPayoutTab
+                    ? booking.initialPayout
+                    : booking.finalPayout
+                }}
+                SAR
+              </td>
+
+              <td>
+                {{
+                  isInitialPayoutTab
+                    ? ("Initial payment" | translate)
+                    : ("Final payment" | translate)
+                }}
+              </td>
+
+              <td>{{ partners[booking.partner]?.partnerName || "—" }}</td>
+              <td>{{ partners[booking.partner]?.CRNumber || "—" }}</td>
+
+              <td>
+                {{ partners[booking.partner]?.region || "—" }},
+                {{ partners[booking.partner]?.city || "—" }}
+              </td>
+              <td *ngIf="isHistoryTab">
+                {{
+                  isInitialPayoutTab
+                    ? (booking.initialPayoutDownloadedAt
+                      | date : "dd-MM-yyyy HH:mm")
+                    : (booking.finalPayoutDownloadedAt
+                      | date : "dd-MM-yyyy HH:mm")
+                }}
+              </td>
+            </tr>
+
+            <!-- ================= EMPTY STATE ================= -->
+            <tr *ngIf="!filteredBookings.length">
+              <td colspan="8" class="text-center text-muted py-4">
+                No bookings found
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="d-flex justify-content-end">
+
+      <!-- ================= ACTION BUTTON ================= -->
+      <div class="d-flex justify-content-end mt-3">
         <button
           class="btn btn-payNow btn-payout"
+          [disabled]="isHistoryTab"
           (click)="generatePDFOrExcel()"
         >
           <i class="fas fa-download"></i>
           {{
             isInitialPayoutTab
               ? "Processing initial amount"
-              : "Processing Completed amount"
+              : "Processing completed amount"
           }}
         </button>
       </div>

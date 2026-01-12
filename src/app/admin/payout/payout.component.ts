@@ -32,6 +32,7 @@ export class PayoutComponent implements OnInit {
   isWeeklyTab: boolean = false; // To track weekly tab selection
   isAllTab: boolean = true; // Set All tab as default
   isDailyTab: boolean = false;
+  isHistoryTab = false;
   bookings: any[] = [];
   filteredBookings: any[] = []; // To store filtered bookings
   users: { [key: string]: any } = {};
@@ -46,169 +47,202 @@ export class PayoutComponent implements OnInit {
     private toastr: ToastrService
   ) {}
 
+  /* ---------------- INIT ---------------- */
+
   ngOnInit() {
     this.spinnerService.show();
 
     this.bookingService
       .getAllBookings()
       .pipe(
-        switchMap((bookings) => {
-          this.bookings = bookings;
+        switchMap((bookings: any[]) => {
+          this.bookings = bookings || [];
 
-          if (!bookings.length) {
-            this.spinnerService.hide();
+          if (!this.bookings.length) {
             return of([]);
           }
 
-          const userRequests = bookings.map((booking) =>
+          const userRequests = this.bookings.map((b) =>
             this.userService
-              .getUserById(booking.user)
-              .pipe(catchError(() => of(undefined)))
+              .getUserById(b.user)
+              .pipe(catchError(() => of(null)))
           );
 
-          const partnerRequests = bookings.map((booking) =>
-            booking.partner
+          const partnerRequests = this.bookings.map((b) =>
+            b.partner
               ? this.partnerService
-                  .getPartnerDetails(booking.partner)
-                  .pipe(catchError(() => of(undefined)))
-              : of(undefined)
+                  .getPartnerDetails(b.partner)
+                  .pipe(catchError(() => of(null)))
+              : of(null)
           );
 
           return forkJoin([...userRequests, ...partnerRequests]);
         }),
         finalize(() => this.spinnerService.hide())
       )
-      .subscribe(
-        (results) => {
-          const userResults = results.slice(0, this.bookings.length) as (
-            | any
-            | undefined
-          )[];
-          const partnerResults = results.slice(this.bookings.length) as (
-            | { success: boolean; data: any }
-            | undefined
-          )[];
+      .subscribe((results: any[]) => {
+        const users = results.slice(0, this.bookings.length);
+        const partners = results.slice(this.bookings.length);
 
-          userResults.forEach((user, index) => {
-            if (user) this.users[this.bookings[index].user] = user;
-          });
+        users.forEach((u, i) => {
+          if (u) this.users[this.bookings[i].user] = u;
+        });
 
-          partnerResults.forEach((partnerResponse, index) => {
-            if (partnerResponse && partnerResponse.success) {
-              this.partners[this.bookings[index].partner] =
-                partnerResponse.data;
-            }
-          });
+        partners.forEach((p, i) => {
+          if (p?.success) this.partners[this.bookings[i].partner] = p.data;
+        });
 
-          // Initialize selection flags
-          this.bookings.forEach((booking) => {
-            booking.selectedInitial = false;
-            booking.selectedFinal = false;
-          });
+        // Init flags
+        this.bookings.forEach((b) => {
+          b.selectedInitial = false;
+          b.selectedFinal = false;
 
-          this.filteredBookings = this.bookings; // Load all bookings initially
-        },
-        (error) => {
-          console.error('Error fetching bookings:', error);
-          this.toastr.error('Failed to load booking details', 'Error');
-        }
-      );
+          b.initialPayoutDownloaded ??= false;
+          b.finalPayoutDownloaded ??= false;
+        });
 
-    // Set default to 'All' tab to show all bookings
-    this.selectTimeRange('all');
+        this.selectTimeRange('all');
+      });
   }
 
-  selectTab(tab: string) {
+  /* ---------------- TAB HANDLERS ---------------- */
+
+  selectTab(tab: 'initialPayout' | 'finalPayout') {
     this.isInitialPayoutTab = tab === 'initialPayout';
     this.selectAll = false;
+    this.applyFilters();
   }
 
   selectTimeRange(range: string) {
-    if (range === 'hourly') {
-      this.isHourlyTab = true;
-      this.isWeeklyTab = false;
-      this.isAllTab = false;
-      this.filterBookingsByTime('hourly');
-    } else if (range === 'weekly') {
-      this.isWeeklyTab = true;
-      this.isHourlyTab = false;
-      this.isAllTab = false;
-      this.filterBookingsByTime('weekly');
-    } else if (range === 'daily') {
-      this.isDailyTab = true;
-      this.isHourlyTab = false;
-      this.isWeeklyTab = false;
-      this.isAllTab = false;
-      this.filterBookingsByTime('daily');
-    } else if (range === 'all') {
-      this.isAllTab = true;
-      this.isHourlyTab = false;
-      this.isWeeklyTab = false;
-      this.showAllBookings(); // Show all bookings
+    this.isAllTab = range === 'all';
+    this.isHourlyTab = range === 'hourly';
+    this.isDailyTab = range === 'daily';
+    this.isWeeklyTab = range === 'weekly';
+    this.isHistoryTab = range === 'history';
+
+    this.selectAll = false;
+    this.applyFilters();
+  }
+
+  /* ---------------- FILTERS ---------------- */
+
+  applyFilters() {
+    if (this.isHistoryTab) {
+      this.applyHistoryFilter();
+    } else if (this.isAllTab) {
+      this.applyAllFilter();
+    } else {
+      this.applyTimeFilter();
     }
   }
 
-  filterBookingsByTime(range: string) {
-    const now = new Date();
-    let startOfDay: Date;
+  applyAllFilter() {
+    this.filteredBookings = this.bookings.filter((b) =>
+      this.isInitialPayoutTab
+        ? !b.initialPayoutDownloaded
+        : !b.finalPayoutDownloaded
+    );
+  }
 
-    if (range === 'hourly') {
-      startOfDay = new Date(now.getTime() - 60 * 60 * 1000); // 1 hour ago
-    } else if (range === 'weekly') {
-      startOfDay = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
-    } else if (range === 'daily') {
-      startOfDay = new Date(now.setHours(0, 0, 0, 0)); // Start of today
+  applyTimeFilter() {
+    const now = new Date();
+    let start: Date;
+
+    if (this.isHourlyTab) {
+      start = new Date(now.getTime() - 60 * 60 * 1000);
+    } else if (this.isDailyTab) {
+      start = new Date();
+      start.setHours(0, 0, 0, 0);
+    } else {
+      start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     }
 
-    // Filter bookings based on the createdAt timestamp
-    this.filteredBookings = this.bookings.filter((booking) => {
-      const createdAt = new Date(booking.createdAt).getTime();
-      return createdAt >= startOfDay.getTime();
+    this.filteredBookings = this.bookings.filter((b) => {
+      const createdAt = new Date(b.createdAt).getTime();
+      const notDownloaded = this.isInitialPayoutTab
+        ? !b.initialPayoutDownloaded
+        : !b.finalPayoutDownloaded;
+
+      return createdAt >= start.getTime() && notDownloaded;
     });
   }
 
-  showAllBookings() {
-    // Show all bookings without filtering
-    this.filteredBookings = this.bookings;
+  applyHistoryFilter() {
+    this.filteredBookings = this.bookings.filter((b) =>
+      this.isInitialPayoutTab
+        ? b.initialPayoutDownloaded
+        : b.finalPayoutDownloaded
+    );
   }
+
+  /* ---------------- SELECTION ---------------- */
 
   toggleSelectAll() {
-    if (this.isInitialPayoutTab) {
-      this.filteredBookings.forEach((booking) => {
-        booking.selectedInitial = this.selectAll;
-      });
-    } else {
-      this.filteredBookings.forEach((booking) => {
-        booking.selectedFinal = this.selectAll;
-      });
-    }
+    this.filteredBookings.forEach((b) => {
+      if (this.isInitialPayoutTab) {
+        b.selectedInitial = this.selectAll;
+      } else {
+        b.selectedFinal = this.selectAll;
+      }
+    });
   }
+
+  /* ---------------- DOWNLOAD & PAYOUT ---------------- */
 
   generatePDFOrExcel() {
-    const selectedBookings = this.filteredBookings.filter((booking) =>
-      this.isInitialPayoutTab ? booking.selectedInitial : booking.selectedFinal
+    const selected = this.filteredBookings.filter((b) =>
+      this.isInitialPayoutTab ? b.selectedInitial : b.selectedFinal
     );
 
-    if (selectedBookings.length > 0) {
-      if (this.isInitialPayoutTab) {
-        this.generateExcelForInitialPayout(selectedBookings);
-      } else {
-        this.generateExcel(selectedBookings);
-      }
-    } else {
-      alert('Please select at least one item.');
+    if (!selected.length) {
+      this.toastr.warning('Please select at least one booking');
+      return;
     }
+
+    if (this.isInitialPayoutTab) {
+      this.generateInitialPayoutCSV(selected);
+    } else {
+      this.generateFinalPayoutCSV(selected);
+    }
+
+    this.processPayout(selected);
   }
 
-  generateExcel(selectedBookings: any[]) {
+  processPayout(bookings: any[]) {
+    const bookingIds = bookings.map((b) => b._id);
+    const payoutType = this.isInitialPayoutTab ? 'initial' : 'final';
+
+    this.bookingService
+      .markPayoutDownloaded({ bookingIds, payoutType })
+      .subscribe(() => {
+        console.log('API SUCCESS');
+        bookings.forEach((b) => {
+          if (payoutType === 'initial') {
+            b.initialPayoutDownloaded = true;
+            b.initialPayoutDownloadedAt = new Date();
+            b.selectedInitial = false;
+          } else {
+            b.finalPayoutDownloaded = true;
+            b.finalPayoutDownloadedAt = new Date();
+            b.selectedFinal = false;
+          }
+        });
+
+        this.applyFilters();
+      });
+  }
+
+  /* ---------------- FILE GENERATION (STRICT CSV – NO BOM) ---------------- */
+
+  generateInitialPayoutCSV(selectedBookings: any[]) {
     const filteredData = selectedBookings.map((booking) => {
       const partner = this.partners[booking.partner] || {};
 
       return {
-        'Bank': partner.bank || 'N/A',
+        Bank: partner.bank || 'N/A',
         'Account Number': partner.ibanNumber || 'N/A',
-        'Amount': booking.finalPayout || 0,
-        'Comments': 'Final payment',
+        Amount: booking.initialPayout || 0,
+        Comments: 'Initial payment',
         'Beneficiary Name': partner.partnerName || 'N/A',
         'CR/ID Number': partner.CRNumber || 'N/A',
         'Beneficiary Address': `${partner.region || 'N/A'}, ${
@@ -218,33 +252,31 @@ export class PayoutComponent implements OnInit {
     });
 
     const ws = XLSX.utils.json_to_sheet(filteredData);
+
     const csv = XLSX.utils.sheet_to_csv(ws, {
       FS: ',',
       RS: '\r\n',
     });
 
-    // No BOM or UTF-8 here
-    const blob = new Blob([csv], {
-      type: 'text/csv;',
-    });
+    const blob = new Blob([csv], { type: 'text/csv;' });
 
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'final-payout.csv';
+    a.download = 'initial-payout.csv';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
   }
 
-  generateExcelForInitialPayout(selectedBookings: any[]) {
+  generateFinalPayoutCSV(selectedBookings: any[]) {
     const filteredData = selectedBookings.map((booking) => {
       const partner = this.partners[booking.partner] || {};
 
       return {
-        'Bank': partner.bank || 'N/A',
+        Bank: partner.bank || 'N/A',
         'Account Number': partner.ibanNumber || 'N/A',
-        'Amount': booking.initialPayout || 0,
-        'Comments': 'Initial payment',
+        Amount: booking.finalPayout || 0,
+        Comments: 'Final payment',
         'Beneficiary Name': partner.partnerName || 'N/A',
         'CR/ID Number': partner.CRNumber || 'N/A',
         'Beneficiary Address': `${partner.region || 'N/A'}, ${
@@ -254,19 +286,17 @@ export class PayoutComponent implements OnInit {
     });
 
     const ws = XLSX.utils.json_to_sheet(filteredData);
+
     const csv = XLSX.utils.sheet_to_csv(ws, {
       FS: ',',
       RS: '\r\n',
     });
 
-    // No UTF-8 BOM
-    const blob = new Blob([csv], {
-      type: 'text/csv;',
-    });
+    const blob = new Blob([csv], { type: 'text/csv;' });
 
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'initial-payout.csv';
+    a.download = 'final-payout.csv';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
